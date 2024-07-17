@@ -25,10 +25,10 @@ public class UploadService {
     UploadMapper uploadMapper;
 
     // 이미지 파일 넣을때 사용
-    // uploadDto에 넣어야 하는 정보 MultipartFile file, foreignType, foreignNo
-    // 예시1 ) uploadService.uploadInsert(UploadDto.builder().foreignType("ap").foreignNo(2).file(file).build());
+    // uploadDto에 넣어야 하는 정보 MultipartFile file, categoryCode, foreignNo
+    // 예시1 ) uploadService.uploadInsert(UploadDto.builder().categoryCode("ap").foreignNo(2).file(file).build());
     // 예시2 ) UploadDto uploadDto = new UploadDto();
-    // uploadDto.setFile(file); uploadDto.setForeignType(foreignType); uploadDto.setForeignNo(foreignNo);
+    // uploadDto.setFile(file); uploadDto.setCategoryCode(categoryCode); uploadDto.setForeignNo(foreignNo);
     // uploadService.uploadInsert(uploadDto);
     public int uploadInsert(UploadDto uploadDto){
         UploadDto uploadDto1 = createUploadImage(uploadDto);
@@ -38,13 +38,13 @@ public class UploadService {
 
     // 해당 게시글의 저장된 이미지 이름을 리스트로 받아옴
     // order by file_no asc로 되어있습니다. 먼저 들어온 이미지가 제일 앞으로 갑니다.
-    // foreignType과 foreignNo을 파라미터 값으로 받아 줌
-    // 예시) List<String> imageList = uploadSelect(foreignType, foreignNo);
+    // categoryCode과 foreignNo을 파라미터 값으로 받아 줌
+    // 예시) List<String> imageList = uploadSelect(categoryCode, foreignNo);
     // 사용할때 th, js사용해서 for문 돌려서 사용하셔야 합니다.
     // SelectOne으로 한개만 받는 것도 하나 더 만들어도 괜찮으나 범용성을 위해서 이런식으로 개발
     // 필요하다면 후에 추가 해드리겠습니다.
-    public List<String> uploadSelect(String foreignType, long foreignNo) {
-        UploadDto uploadDto = UploadDto.builder().foreignType(foreignType).foreignNo(foreignNo).build();
+    public List<String> uploadSelect(String categoryCode, long foreignNo) {
+        UploadDto uploadDto = UploadDto.builder().categoryCode(categoryCode).foreignNo(foreignNo).build();
 
         return uploadMapper.uploadSelectList(uploadDto);
     }
@@ -59,7 +59,7 @@ public class UploadService {
             int extIndex = fileName.lastIndexOf(".") + 1;
             String ext = fileName.substring(extIndex);
             storeFileName = uuid + "." + ext;
-            saveFile(uploadDto.getFile(), storeFileName, uploadDto.getForeignType());
+            saveFile(uploadDto.getFile(), storeFileName, uploadDto.getCategoryCode());
 
             uploadDto.setImageName(fileName);
             uploadDto.setStoredFileName(storeFileName);
@@ -68,15 +68,15 @@ public class UploadService {
         return uploadDto;
     }
 
-    private String saveFile(MultipartFile file, String storeFileName, String foreignType) {
+    private String saveFile(MultipartFile file, String storeFileName, String categoryCode) {
 
-        foreignType = "/" +foreignType + "/";
+        categoryCode = "/" +categoryCode + "/";
         // 파일 저장 경로
-        String filePath = projectPath + fileDir + foreignType + storeFileName;
+        String filePath = projectPath + fileDir + categoryCode + storeFileName;
 
 
         // 파일 디렉토리가 없으면 생성
-        File directory = new File(projectPath + fileDir + foreignType);
+        File directory = new File(projectPath + fileDir + categoryCode);
         if (!directory.exists()) {
             directory.mkdirs();
         }
