@@ -36,14 +36,14 @@ public class UploadService {
         return uploadMapper.uploadInsert(uploadDto1);
     }
 
-    // 해당 게시글의 저장된 이미지 이름을 리스트로 받아옴
+    // 해당 게시글의 저장된 이미지 Dto를 받아옴
     // order by file_no asc로 되어있습니다. 먼저 들어온 이미지가 제일 앞으로 갑니다.
     // categoryCode과 foreignNo을 파라미터 값으로 받아 줌
-    // 예시) List<String> imageList = uploadSelect(categoryCode, foreignNo);
+    // 예시) List<UploadDto> imageList = uploadSelect(categoryCode, foreignNo);
     // 사용할때 th, js사용해서 for문 돌려서 사용하셔야 합니다.
     // SelectOne으로 한개만 받는 것도 하나 더 만들어도 괜찮으나 범용성을 위해서 이런식으로 개발
     // 필요하다면 후에 추가 해드리겠습니다.
-    public List<String> uploadSelect(String categoryCode, long foreignNo) {
+    public List<UploadDto> uploadSelect(String categoryCode, long foreignNo) {
         UploadDto uploadDto = UploadDto.builder().categoryCode(categoryCode).foreignNo(foreignNo).build();
 
         return uploadMapper.uploadSelectList(uploadDto);

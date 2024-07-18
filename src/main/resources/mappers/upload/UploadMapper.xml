@@ -10,7 +10,7 @@
     </insert>
 
     <select id="uploadSelectList">
-        SELECT STORED_FILE_NAME FROM TB_FILE WHERE CATEGORY_CODE = #{categoryCode} AND FOREIGN_NO = #{foreignNo} ORDER BY FILE_NO ASC
+        SELECT * FROM TB_FILE WHERE CATEGORY_CODE = #{categoryCode} AND FOREIGN_NO = #{foreignNo} ORDER BY FILE_NO ASC
     </select>
 
 </mapper>

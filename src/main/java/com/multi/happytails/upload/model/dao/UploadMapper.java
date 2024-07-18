@@ -8,5 +8,5 @@ import java.util.List;
 @Mapper
 public interface UploadMapper {
     public int uploadInsert(UploadDto uploadDto);
-    public List<String> uploadSelectList(UploadDto uploadDto);
+    public List<UploadDto> uploadSelectList(UploadDto uploadDto);
 }
