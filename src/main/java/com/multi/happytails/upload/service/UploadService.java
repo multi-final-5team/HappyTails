@@ -19,7 +19,8 @@ import java.util.UUID;
 public class UploadService {
 
     String projectPath = System.getProperty("user.dir");
-    @Value("${file.dir}") String fileDir;
+    @Value("${file.dir}")
+    String fileDir;
 
     @Autowired
     UploadMapper uploadMapper;
@@ -30,9 +31,9 @@ public class UploadService {
     // 예시2 ) UploadDto uploadDto = new UploadDto();
     // uploadDto.setFile(file); uploadDto.setCategoryCode(categoryCode); uploadDto.setForeignNo(foreignNo);
     // uploadService.uploadInsert(uploadDto);
-    public int uploadInsert(UploadDto uploadDto){
+    public int uploadInsert(UploadDto uploadDto) {
         UploadDto uploadDto1 = createUploadImage(uploadDto);
-        System.out.println(uploadDto1);
+
         return uploadMapper.uploadInsert(uploadDto1);
     }
 
@@ -49,7 +50,19 @@ public class UploadService {
         return uploadMapper.uploadSelectList(uploadDto);
     }
 
-    private UploadDto createUploadImage(UploadDto uploadDto){
+    public int uploadDelete(long imageNo) {
+        deleteFile(uploadMapper.uploadSelect(imageNo));
+        return uploadMapper.uploadDelete(imageNo);
+    }
+
+    public int uploadUpdate(long imageNo, MultipartFile multipartFile) {
+        UploadDto uploadDto = uploadMapper.uploadSelect(imageNo);
+        uploadDto.setFile(multipartFile);
+        createUploadImage(uploadDto);
+        return uploadMapper.uploadUpdate(uploadDto);
+    }
+
+    private UploadDto createUploadImage(UploadDto uploadDto) {
         String fileName = null;
         String storeFileName = null;
 
@@ -70,7 +83,7 @@ public class UploadService {
 
     private String saveFile(MultipartFile file, String storeFileName, String categoryCode) {
 
-        categoryCode = "/" +categoryCode + "/";
+        categoryCode = "/" + categoryCode + "/";
         // 파일 저장 경로
         String filePath = projectPath + fileDir + categoryCode + storeFileName;
 
@@ -91,10 +104,16 @@ public class UploadService {
         return filePath;
     }
 
-    private void deleteFile(String storeFileName) throws IOException {
-        if (storeFileName != null) {
-            Path filePath = Paths.get(projectPath + fileDir + storeFileName);
-            Files.deleteIfExists(filePath);
+    private void deleteFile(UploadDto uploadDto) {
+
+        try {
+            if (uploadDto.getStoredFileName() != null) {
+                Path filePath = Paths.get(projectPath + fileDir + uploadDto.getCategoryCode() + uploadDto.getStoredFileName());
+                Files.deleteIfExists(filePath);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 }

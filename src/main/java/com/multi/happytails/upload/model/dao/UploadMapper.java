@@ -9,4 +9,7 @@ import java.util.List;
 public interface UploadMapper {
     public int uploadInsert(UploadDto uploadDto);
     public List<UploadDto> uploadSelectList(UploadDto uploadDto);
+    public int uploadDelete(long imageNo);
+    public int uploadUpdate(UploadDto uploadDto);
+    public UploadDto uploadSelect(long imageNo);
 }

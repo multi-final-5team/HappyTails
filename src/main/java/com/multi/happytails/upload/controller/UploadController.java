@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.File;
 /*
     업로드 부분에 필요한 부분이 있으시면 말해주세요
-    현재 삭제, 수정, Selectone이 없긴합니다.
-    그 외에도 필요한거 있으시면 말씀 하시면 됩니다.
  */
 @Controller
 public class UploadController {
@@ -59,5 +57,4 @@ public class UploadController {
         headers.add("Content-Type", mimeType);
         return new ResponseEntity(resource, headers, HttpStatus.OK);
     }
-    // 수정 테스트
 }
