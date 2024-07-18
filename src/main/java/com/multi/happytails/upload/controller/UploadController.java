@@ -28,15 +28,15 @@ public class UploadController {
     @Value("${file.dir}")
     String fileDir;
 
-    // 이미지 불러오는 부분 <img src='/image/foreignType/fileName'>으로 불러오면 됨
-    @GetMapping({"/images/{foreignType}/{fileName}"})
+    // 이미지 불러오는 부분 <img src='/image/categoryCode/fileName'>으로 불러오면 됨
+    @GetMapping({"/images/{categoryCode}/{fileName}"})
     @ResponseBody
     public ResponseEntity<Resource> downloadImage(@PathVariable("fileName") String fileName,
-                                                  @PathVariable("foreignType")  String foreignType) {
-        System.out.println(fileName + foreignType);
+                                                  @PathVariable("categoryCode")  String categoryCode) {
+        System.out.println(fileName + categoryCode);
         String projectPath = System.getProperty("user.dir");
         String directory = projectPath + this.fileDir;
-        String filePath = directory + foreignType + "/" +fileName;
+        String filePath = directory + categoryCode + "/" +fileName;
         File file = new File(filePath);
         Resource resource = new FileSystemResource(file);
         String mimeType;

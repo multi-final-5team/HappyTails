@@ -5,12 +5,12 @@
 <mapper namespace="com.multi.happytails.upload.model.dao.UploadMapper">
 
     <insert id="uploadInsert" useGeneratedKeys="true" keyProperty="imageNo">
-        INSERT INTO TB_FILE (IMAGE_NO, IMAGE_NAME, STORED_FILE_NAME, FOREIGN_TYPE, FOREIGN_NO)
-        VALUES(#{imageNo}, #{imageName}, #{storedFileName}, #{foreignType}, #{foreignNo})
+        INSERT INTO TB_FILE (IMAGE_NO, IMAGE_NAME, STORED_FILE_NAME, CATEGORY_CODE, FOREIGN_NO)
+        VALUES(#{imageNo}, #{imageName}, #{storedFileName}, #{categoryCode}, #{foreignNo})
     </insert>
 
     <select id="uploadSelectList">
-        SELECT STORED_FILE_NAME FROM TB_FILE WHERE FOREIGN_TYPE = #{foreignType} AND FOREIGN_NO = #{foreignNo} ORDER BY FILE_NO ASC
+        SELECT * FROM TB_FILE WHERE CATEGORY_CODE = #{categoryCode} AND FOREIGN_NO = #{foreignNo} ORDER BY FILE_NO ASC
     </select>
 
 </mapper>

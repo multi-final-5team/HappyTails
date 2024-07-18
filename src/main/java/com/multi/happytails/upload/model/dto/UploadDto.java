@@ -14,6 +14,6 @@ public class UploadDto {
     private long imageNo;
     private String imageName;
     private String storedFileName;
-    private String foreignType;
+    private String categoryCode;
     private long foreignNo;
 }
