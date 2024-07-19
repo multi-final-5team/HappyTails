@@ -1,2 +1,4 @@
-package com.multi.happytails.shop.service;public interface PurchaseService {
+package com.multi.happytails.shop.service;
+
+public interface PurchaseService {
 }

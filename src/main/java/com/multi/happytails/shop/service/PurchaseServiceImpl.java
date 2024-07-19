@@ -1,2 +1,5 @@
-package com.multi.happytails.shop.service;public class PurchaseServiceImpl {
+package com.multi.happytails.shop.service;
+
+public class PurchaseServiceImpl implements PurchaseService{
+
 }
