@@ -1,9 +1,6 @@
 package com.multi.happytails.help.model.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 
@@ -11,6 +8,8 @@ import java.util.Date;
 @Setter
 @ToString
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class InquiryDto {
     private long inquiryNo;
     private String helpCategoryCode;

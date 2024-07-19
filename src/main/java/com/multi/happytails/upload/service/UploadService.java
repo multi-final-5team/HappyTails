@@ -5,6 +5,7 @@ import com.multi.happytails.upload.model.dto.UploadDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class UploadService {
 
     String projectPath = System.getProperty("user.dir");
@@ -41,12 +43,11 @@ public class UploadService {
     // order by file_no asc로 되어있습니다. 먼저 들어온 이미지가 제일 앞으로 갑니다.
     // categoryCode과 foreignNo을 파라미터 값으로 받아 줌
     // 예시) List<UploadDto> imageList = uploadSelect(categoryCode, foreignNo);
-    // 사용할때 th, js사용해서 for문 돌려서 사용하셔야 합니다.
     // SelectOne으로 한개만 받는 것도 하나 더 만들어도 괜찮으나 범용성을 위해서 이런식으로 개발
-    // 필요하다면 후에 추가 해드리겠습니다.
     public List<UploadDto> uploadSelect(String categoryCode, long foreignNo) {
         UploadDto uploadDto = UploadDto.builder().categoryCode(categoryCode).foreignNo(foreignNo).build();
-
+        System.out.println(uploadDto);
+        System.out.println(uploadMapper.uploadSelectList(uploadDto));
         return uploadMapper.uploadSelectList(uploadDto);
     }
 
@@ -55,6 +56,7 @@ public class UploadService {
         return uploadMapper.uploadDelete(imageNo);
     }
 
+    // 테스트 x
     public int uploadUpdate(long imageNo, MultipartFile multipartFile) {
         UploadDto uploadDto = uploadMapper.uploadSelect(imageNo);
         uploadDto.setFile(multipartFile);
@@ -109,6 +111,7 @@ public class UploadService {
         try {
             if (uploadDto.getStoredFileName() != null) {
                 Path filePath = Paths.get(projectPath + fileDir + uploadDto.getCategoryCode() + uploadDto.getStoredFileName());
+                System.out.println(filePath);
                 Files.deleteIfExists(filePath);
             }
         } catch (IOException e) {
