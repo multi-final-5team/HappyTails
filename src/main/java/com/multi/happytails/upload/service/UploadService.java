@@ -5,6 +5,7 @@ import com.multi.happytails.upload.model.dto.UploadDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -16,10 +17,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class UploadService {
 
     String projectPath = System.getProperty("user.dir");
-    @Value("${file.dir}") String fileDir;
+    @Value("${file.dir}")
+    String fileDir;
 
     @Autowired
     UploadMapper uploadMapper;
@@ -30,9 +33,9 @@ public class UploadService {
     // 예시2 ) UploadDto uploadDto = new UploadDto();
     // uploadDto.setFile(file); uploadDto.setCategoryCode(categoryCode); uploadDto.setForeignNo(foreignNo);
     // uploadService.uploadInsert(uploadDto);
-    public int uploadInsert(UploadDto uploadDto){
+    public int uploadInsert(UploadDto uploadDto) {
         UploadDto uploadDto1 = createUploadImage(uploadDto);
-        System.out.println(uploadDto1);
+
         return uploadMapper.uploadInsert(uploadDto1);
     }
 
@@ -40,16 +43,28 @@ public class UploadService {
     // order by file_no asc로 되어있습니다. 먼저 들어온 이미지가 제일 앞으로 갑니다.
     // categoryCode과 foreignNo을 파라미터 값으로 받아 줌
     // 예시) List<UploadDto> imageList = uploadSelect(categoryCode, foreignNo);
-    // 사용할때 th, js사용해서 for문 돌려서 사용하셔야 합니다.
     // SelectOne으로 한개만 받는 것도 하나 더 만들어도 괜찮으나 범용성을 위해서 이런식으로 개발
-    // 필요하다면 후에 추가 해드리겠습니다.
     public List<UploadDto> uploadSelect(String categoryCode, long foreignNo) {
         UploadDto uploadDto = UploadDto.builder().categoryCode(categoryCode).foreignNo(foreignNo).build();
-
+        System.out.println(uploadDto);
+        System.out.println(uploadMapper.uploadSelectList(uploadDto));
         return uploadMapper.uploadSelectList(uploadDto);
     }
 
-    private UploadDto createUploadImage(UploadDto uploadDto){
+    public int uploadDelete(long imageNo) {
+        deleteFile(uploadMapper.uploadSelect(imageNo));
+        return uploadMapper.uploadDelete(imageNo);
+    }
+
+    // 테스트 x
+    public int uploadUpdate(long imageNo, MultipartFile multipartFile) {
+        UploadDto uploadDto = uploadMapper.uploadSelect(imageNo);
+        uploadDto.setFile(multipartFile);
+        createUploadImage(uploadDto);
+        return uploadMapper.uploadUpdate(uploadDto);
+    }
+
+    private UploadDto createUploadImage(UploadDto uploadDto) {
         String fileName = null;
         String storeFileName = null;
 
@@ -70,7 +85,7 @@ public class UploadService {
 
     private String saveFile(MultipartFile file, String storeFileName, String categoryCode) {
 
-        categoryCode = "/" +categoryCode + "/";
+        categoryCode = "/" + categoryCode + "/";
         // 파일 저장 경로
         String filePath = projectPath + fileDir + categoryCode + storeFileName;
 
@@ -91,10 +106,17 @@ public class UploadService {
         return filePath;
     }
 
-    private void deleteFile(String storeFileName) throws IOException {
-        if (storeFileName != null) {
-            Path filePath = Paths.get(projectPath + fileDir + storeFileName);
-            Files.deleteIfExists(filePath);
+    private void deleteFile(UploadDto uploadDto) {
+
+        try {
+            if (uploadDto.getStoredFileName() != null) {
+                Path filePath = Paths.get(projectPath + fileDir + uploadDto.getCategoryCode() + uploadDto.getStoredFileName());
+                System.out.println(filePath);
+                Files.deleteIfExists(filePath);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 }
