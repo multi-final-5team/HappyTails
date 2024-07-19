@@ -4,13 +4,25 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.multi.happytails.upload.model.dao.UploadMapper">
 
-    <insert id="uploadInsert" useGeneratedKeys="true" keyProperty="imageNo">
-        INSERT INTO TB_FILE (IMAGE_NO, IMAGE_NAME, STORED_FILE_NAME, CATEGORY_CODE, FOREIGN_NO)
-        VALUES(#{imageNo}, #{imageName}, #{storedFileName}, #{categoryCode}, #{foreignNo})
+    <insert id="uploadInsert">
+        INSERT INTO TB_UPLOAD_IMAGE (IMAGE_NAME, STORED_IMAGE_NAME, CATEGORY_CODE, FOREIGN_NO)
+        VALUES(#{imageName}, #{storedFileName}, #{categoryCode}, #{foreignNo})
     </insert>
 
     <select id="uploadSelectList">
-        SELECT * FROM TB_FILE WHERE CATEGORY_CODE = #{categoryCode} AND FOREIGN_NO = #{foreignNo} ORDER BY FILE_NO ASC
+        SELECT IMAGE_NO AS imageNo, IMAGE_NAME AS imageName, STORED_IMAGE_NAME AS storedFileName, CATEGORY_CODE AS categoryCode, FOREIGN_NO AS foreignNo
+        FROM TB_UPLOAD_IMAGE WHERE CATEGORY_CODE = #{categoryCode} AND FOREIGN_NO = #{foreignNo} ORDER BY IMAGE_NO ASC
     </select>
 
+    <delete id="uploadDelete">
+        DELETE FROM TB_UPLOAD_IMAGE WHERE IMAGE_NO = #{imageNo}
+    </delete>
+
+    <update id="uploadUpdate">
+        UPDATE TB_UPLOAD_IMAGE SET STORED_IMAGE_NAME = #{stored_image_name} WHERE IMAGE_NO = #{imageNo}
+    </update>
+
+    <select id="uploadSelect">
+        SELECT IMAGE_NO AS imageNo, IMAGE_NAME AS imageName, STORED_IMAGE_NAME AS storedFileName, CATEGORY_CODE AS categoryCode, FOREIGN_NO AS foreignNo FROM TB_UPLOAD_IMAGE WHERE IMAGE_NO = #{imageNo}
+    </select>
 </mapper>
