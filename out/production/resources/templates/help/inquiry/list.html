@@ -3,8 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <title>문의</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="/js/help/function.js"></script>
+    <script src="/js/help/page.js"></script>
+    <script>
+        $(document).ready(function() {
+            getList();
+        // 카테고리 불러오기 Start
+            getHelpCategoryTag(); // /js/help/function.js
+        // 카테고리 불러오기 End
+        // list 불러오기 Start
+            function getList(nowPage,categoryCode) {
+                $('#clubTableDiv').html('');
+
+                let searchSel = 'title';
+                let keyword = $('#keyword').val();
+
+                $.ajax({
+                    type : "GET",
+                    url : "/help/inquiry/getList",
+                    dataType : "json",
+                    data : {'searchValue' : searchSel, 'keyword' : keyword, 'nowPage' : nowPage, 'categoryCode' : categoryCode},
+                    success : function(result) {
+                        console.log(result);
+                        let template = '';
+                        for (var i = 0; i < result.viewAll.length; i++) {
+                            template += `
+                                     <thead>
+                                        <tr>
+                                            <td>생성 날짜</td>
+                                            <td>제목</td>
+                                            <td>결과</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>2024-07-12 16:30:20</td>
+                                            <td>제목 1 입니다.</td>
+                                            <td><div style="border-style: double;">결과</div></td>
+                                        </tr>
+                                    </tbody>
+                                `;
+                        }
+                        getpaging(result);
+                        $('#tableDiv').append(template);
+                    }
+
+
+                });
+            }
+        // list 불러오기 End
+        });
+    </script>
 </head>
 <body>
-
+    <h1>고객센터</h1>
+    <h3>내 문의 보기</h3>
+    <div id="categoryTag"></div>
+    <input type="text"> <button id="searchBtn">검색</button>
+    <div>
+        <table id="tableDiv">
+            <thead>
+                <tr>
+                    <td>생성 날짜</td>
+                    <td>제목</td>
+                    <td>결과</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2024-07-12 16:30:20</td>
+                    <td>제목 1 입니다.</td>
+                    <td><div style="border-style: double;">결과</div></td>
+                </tr>
+                <tr>
+                    <td>2024-07-12 16:30:20</td>
+                    <td>제목 1 입니다.</td>
+                    <td><div style="border-style: double;">결과</div></td>
+                </tr>
+                <tr>
+                    <td>2024-07-12 16:30:20</td>
+                    <td>제목 1 입니다.</td>
+                    <td><div style="border-style: double;">결과</div></td>
+                </tr>
+                <tr>
+                    <td>2024-07-12 16:30:20</td>
+                    <td>제목 1 입니다.</td>
+                    <td><div style="border-style: double;">결과</div></td>
+                </tr>
+                <tr>
+                    <td>2024-07-12 16:30:20</td>
+                    <td>제목 1 입니다.</td>
+                    <td><div style="border-style: double;">결과</div></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="paginationDiv">
+        < 1 2 3 4 5 >
+    </div>
 </body>
 </html>

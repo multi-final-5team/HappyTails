@@ -34,4 +34,38 @@
             </choose>
         </where>
     </select>
+
+    <select id="inquiryListCount">
+        SELECT COUNT(*) AS CNT
+        FROM TB_INQUIRY
+        <where>
+            <if test="pageDto.searchValue == 'title' and pageDto.keyword != null">
+                AND TITLE LIKE CONCAT('%', #{pageDto.keyword}, '%')
+            </if>
+            <if test="categoryCode != null">
+                AND HELP_CATEGORY_CODE = #{categoryCode}
+            </if>
+        </where>
+    </select>
+    <select id="getInquiryList">
+        SELECT * FROM (
+        SELECT
+        ROW_NUMBER() OVER (ORDER BY INQUIRY_NO DESC) AS RNUM,
+        A.*
+        FROM (
+        SELECT *
+        FROM TB_INQUIRY
+        <where>
+            <if test="pageDto.searchValue == 'title' and pageDto.keyword != null">
+                AND TITLE LIKE CONCAT('%', #{pageDto.keyword}, '%')
+            </if>
+            <if test="categoryCode != null">
+                AND HELP_CATEGORY_CODE = #{categoryCode}
+            </if>
+        </where>
+        ) AS A
+        LEFT JOIN TB_HELP_CATEGORY AS HC ON A.HELP_CATEGORY_CODE = HC.HELP_CATEGORY_CODE
+        ) AS SubQuery
+        WHERE RNUM BETWEEN  #{pageDto.start} AND #{pageDto.end}
+    </select>
 </mapper>
