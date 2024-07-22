@@ -33,6 +33,8 @@ public class HelpController {
         System.out.println(uploadService.uploadSelect(UPLOAD_INQUIRY_CODE,5));
         uploadService.uploadDelete(4);
     }
+    @GetMapping("/inquiry/list")
+    public void inquiryList() {}
 
     @GetMapping("/main")
     public void helpMain() {}
@@ -69,6 +71,5 @@ public class HelpController {
         List<QuestionDto> list = helpService.questionList(categoryCode);
         return list;
     }
-
 
 }
