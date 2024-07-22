@@ -31,6 +31,8 @@ public class HelpController {
         System.out.println(uploadService.uploadSelect(UPLOAD_INQUIRY_CODE,5));
         uploadService.uploadDelete(4);
     }
+    @GetMapping("/main")
+    public void helpMain() {}
 
     @GetMapping("/getCategory")
     @ResponseBody
@@ -49,7 +51,6 @@ public class HelpController {
         UploadDto uploadDto = new UploadDto();
         uploadDto.setForeignNo(helpService.inquiryInsert(inquiryDto));
         uploadDto.setCategoryCode(UPLOAD_INQUIRY_CODE);
-
 
         for (int i = 0; i < imageFiles.size(); i++) {
             uploadDto.setFile(imageFiles.get(i));
