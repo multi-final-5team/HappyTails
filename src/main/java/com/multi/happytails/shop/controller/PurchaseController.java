@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/sales")
-public class PurchaserController {
+public class PurchaseController {
 
     @Autowired
     private PurchaseService purchaseService;

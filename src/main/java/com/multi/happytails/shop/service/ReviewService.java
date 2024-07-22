@@ -1,12 +1,10 @@
-package com.multi.happytails.shop.model.dao;
+package com.multi.happytails.shop.service;
 
 import com.multi.happytails.shop.model.dto.ReviewDTO;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-@Mapper
-public interface ReviewDAO {
+public interface ReviewService {
     void insertReview(ReviewDTO reviewDTO);
 
     void updateReview(ReviewDTO reviewDTO);

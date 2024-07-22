@@ -10,11 +10,34 @@
         <result column="GOODS_NO" property="goodsNo" />
         <result column="STAR_RATING" property="starRating" />
         <result column="CONTENT" property="content" />
-        <result column="REVIEW_DATE" property="ReviewDate" />
+        <result column="REVIEW_DATE" property="reviewDate" />
     </resultMap>
 
-    <select id="findMemberById" resultMap="ReviewResultMap">
+    <insert id="insertReview" parameterType="com.multi.happytails.shop.model.dto.ReviewDTO">
+        INSERT INTO TB_REVIEW (
+        ID, GOODS_NO, STAR_RATING, CONTENT, REVIEW_DATE
+        ) VALUES (
+        #{id}, #{goodsNo}, #{starRating}, #{content}, #{reviewDate}
+        )
+    </insert>
 
+    <update id="updateReview" parameterType="com.multi.happytails.shop.model.dto.ReviewDTO">
+        UPDATE TB_REVIEW
+        SET
+        STAR_RATING = #{starRating},
+        CONTENT = #{content}
+        WHERE
+        REVIEW_NO = #{no} AND ID = #{id} AND GOODS_NO = #{goodsNo}
+    </update>
+
+    <delete id="deleteReview">
+        DELETE FROM TB_REVIEW
+        WHERE
+        REVIEW_NO = #{no} AND ID = #{id} AND GOODS_NO = #{goodsNo}
+    </delete>
+
+    <select id="reviewList" parameterType="com.multi.happytails.shop.model.dto.ReviewDTO" resultMap="ReviewResultMap">
+        SELECT * FROM TB_REVIEW
+        WHERE GOODS_NO = #{goodsNo}
     </select>
-
 </mapper>
