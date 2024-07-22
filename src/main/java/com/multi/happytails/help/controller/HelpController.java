@@ -31,6 +31,7 @@ public class HelpController {
         System.out.println(uploadService.uploadSelect(UPLOAD_INQUIRY_CODE,5));
         uploadService.uploadDelete(4);
     }
+
     @GetMapping("/main")
     public void helpMain() {}
 
