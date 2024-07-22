@@ -7,6 +7,10 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script>
         $(document).ready(function() {
+            // 자주묻는질문 list
+                getQuestionList();
+            //
+
         // 카테고리 불러오기 Start
             $.ajax({
                 type : "GET",
@@ -15,13 +19,50 @@
                 success : function(result) {
                     for (var i = 0 ; i < result.length; i++) {
                         let htmlStr = `
-                            <button value='`+result[i].helpCategoryCode+`'>`+result[i].categoryName+`</button>
+                            <button class='categoryBtns' value='`+result[i].helpCategoryCode+`'>`+result[i].categoryName+`</button>
                         `;
                         $('#categoryTag').append(htmlStr);
                     }
                 }
             });
         // 카테고리 불러오기 End
+        // 자주 묻는 질문 List function Start
+            function getQuestionList(categoryCode) {
+                $('#questionTable').html('');
+                $.ajax({
+                    type : "GET",
+                    url : "/help/question/list",
+                    dataType : "json",
+                    data : {categoryCode : categoryCode},
+                    success : function(result) {
+                        console.log(result);
+                        for (var i = 0 ; i < result.length; i++) {
+                            let htmlStr = `
+                                <tr>
+                                    <td class="questionTds" style="border-style: double;" data-answer="`+result[i].answerContent+`">Q.`+result[i].questionContent+`</td>
+                                </tr>
+                            `;
+                            $('#questionTable').append(htmlStr);
+                        }
+
+                    }
+                });
+            }
+        // 자주 묻는 질문 List function End
+
+        // categoryButton 클릭 시 리스트 변경 Start
+            $(document).on('click', '.categoryBtns', function() {
+                let btnValue = $(this).val();
+                getQuestionList(btnValue);
+            });
+        // categoryButton 클릭 시 리스트 변경 End
+        // question 리스트 클릭 시 상세 내용 보기 Start
+            $(document).on('click', '.questionTds', function() {
+                $('.answerTd').remove('');
+                let answer = $(this).data('answer');
+                $(this).append('<td class="answerTd">'+answer+'</td>');
+            });
+        // question 리스트 클릭 시 상세 내용 보기 End
         });
     </script>
 </head>
@@ -31,20 +72,8 @@
     <h3>자주 묻는 질문</h3>
     <div id="categoryTag"></div>
     <table id="questionTable">
-        <tr>
-            <td>Q. 강아지 순찰대는 어떻게 가입하나요.</td>
-        </tr>
-        <tr>
-            <td>Q. 집사 마당에서는 무엇을 할 수 있죠?</td>
-        </tr>
-        <tr>
-            <td>Q. 댕댕이 마당에서는 무엇을 할 수 있나요?</td>
-        </tr>
-        <tr>
-            <td>Q. 명예의 전당에 오르려면 어떻게 해야하나요?</td>
-        </tr>
-    </table>
 
+    </table>
     <button>문의 하기</button>
     <button>이전 내 문의 보기</button>
 </body>

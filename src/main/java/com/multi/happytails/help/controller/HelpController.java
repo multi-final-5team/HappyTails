@@ -2,9 +2,11 @@ package com.multi.happytails.help.controller;
 
 import com.multi.happytails.help.model.dto.HelpCategoryDto;
 import com.multi.happytails.help.model.dto.InquiryDto;
+import com.multi.happytails.help.model.dto.QuestionDto;
 import com.multi.happytails.help.service.HelpService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -59,6 +61,13 @@ public class HelpController {
         }
         
         return "문의 작성이 완료 되었습니다.";
+    }
+
+    @GetMapping("/question/list")
+    @ResponseBody
+    public List<QuestionDto> questionList(@RequestParam("categoryCode") @Nullable String categoryCode) {
+        List<QuestionDto> list = helpService.questionList(categoryCode);
+        return list;
     }
 
 
