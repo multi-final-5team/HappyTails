@@ -60,6 +60,4 @@ public class HelpController {
         
         return "문의 작성이 완료 되었습니다.";
     }
-
-
 }
