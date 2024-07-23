@@ -237,6 +237,5 @@ public class SalesController {
 //        return "redirect:/sales/salesList";
 //    }
     //Delete
-
-
+    
 }
