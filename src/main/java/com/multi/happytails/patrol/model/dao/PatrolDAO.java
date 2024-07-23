@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface PatrolDAO {
 
-    public int patrolInsert(PatrolDTO patrolDTO);
+    int patrolInsert(PatrolDTO patrolDTO);
 
     List<PatrolDTO> findAllPatrol();
 
