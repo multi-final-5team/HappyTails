@@ -1,4 +1,5 @@
 function getpaging(result){
+    console.log(result.paging.startPage);
     $('#paginationDiv').html('');
     let pageHtml= '';
     // 이전 페이지 블록 화살표 처리-+

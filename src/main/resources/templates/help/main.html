@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
+
     <meta charset="UTF-8">
     <title>고객센터</title>
   
@@ -27,12 +29,11 @@
                         for (var i = 0 ; i < result.length; i++) {
                             let htmlStr = `
                                 <tr>
-                                    <td class="questionTds" style="border-style: double;" data-answer="`+result[i].answerContent+`">Q.`+result[i].questionContent+`</td>
+                                    <td class="questionTds" style="border-style: double;" data-answer="` + result[i].answerContent + `">Q.` + result[i].questionContent + `</td>
                                 </tr>
                             `;
                             $('#questionTable').append(htmlStr);
                         }
-
                     }
                 });
             }
@@ -70,7 +71,9 @@
     <table id="questionTable">
 
     </table>
-    <button id="inquiryWriteGo">문의 하기</button>
-    <button id="inquiryListGo">이전 내 문의 보기</button>
+    <!-- 로그인 한 일반 유저만 접근 가능 (후 if문 추가)-->
+        <button id="inquiryWriteGo">문의 하기</button>
+        <button id="inquiryListGo">이전 내 문의 보기</button>
+    <!-- 로그인 한 일반 유저만 접근 가능 -->
 </body>
 </html>
