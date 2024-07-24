@@ -34,8 +34,8 @@ public class PatrolController {
     UploadService uploadService;
 
     @RequestMapping("patrol")
-    public void patrol(@AuthenticationPrincipal CustomUser customUser){
-        System.out.println("유저넘버" + customUser.getNo());
+    public void patrol(){
+
     }
 
     @RequestMapping("patrolinsert")
@@ -49,10 +49,10 @@ public class PatrolController {
     }
 
     @PostMapping("makepatrol")
-    public String makepatrol(PatrolDTO patrolDTO , @RequestParam(value = "imageFiles") List<MultipartFile> imageFiles){
+    public String makepatrol(PatrolDTO patrolDTO , @RequestParam(value = "imageFiles") List<MultipartFile> imageFiles, @AuthenticationPrincipal CustomUser customUser){
 
 
-        patrolDTO.setUserNo(16);
+        patrolDTO.setUserNo((int)customUser.getNo());
 
         System.out.println("patrolDTO >>>> " + patrolDTO);
 
@@ -78,7 +78,6 @@ public class PatrolController {
     @GetMapping(value="findAllPatrol", produces = "application/json; charset=UTF-8")
     @ResponseBody
     public PatrolImgDTO findAllPatrol(Model model){
-
 
         List<UploadDto> uploadDtos = new ArrayList<>();
 
@@ -120,9 +119,9 @@ public class PatrolController {
     }
 
     @PostMapping("patrolUpdate")
-    public String patrolUpdate(PatrolDTO patrolDTO){
+    public String patrolUpdate(PatrolDTO patrolDTO, @AuthenticationPrincipal CustomUser customUser){
 
-        patrolDTO.setUserNo(16);
+        patrolDTO.setUserNo((int)customUser.getNo());
 
         System.out.println("patrolDTO >>>> " + patrolDTO);
 
@@ -132,8 +131,9 @@ public class PatrolController {
     }
 
     @PostMapping("patrolDelete")
-    public String patrolDelete(PatrolDTO patrolDTO){
-        patrolDTO.setUserNo(16);
+    public String patrolDelete(PatrolDTO patrolDTO, @AuthenticationPrincipal CustomUser customUser){
+
+        patrolDTO.setUserNo((int)customUser.getNo());
 
         int result = patrolService.patrolDelete(patrolDTO.getPatrolNo());
 
