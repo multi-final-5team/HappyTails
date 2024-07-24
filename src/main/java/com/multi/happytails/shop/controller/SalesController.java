@@ -1,7 +1,9 @@
 package com.multi.happytails.shop.controller;
 
 import com.multi.happytails.authentication.model.dto.CustomUser;
+import com.multi.happytails.shop.model.dto.ReviewDTO;
 import com.multi.happytails.shop.model.dto.SalesGoodsDTO;
+import com.multi.happytails.shop.service.ReviewService;
 import com.multi.happytails.shop.service.SalesService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
@@ -18,6 +20,17 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.Principal;
 import java.util.List;
 
+/**
+ * packageName    : com.multi.happytails.shop.controller
+ * fileName       : SalesController.java
+ * author         : ShinHyeoncheol
+ * date           : 2024-07-24
+ * description    :
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2024-07-24        ShinHyeoncheol       최초 생성
+ */
 @Controller
 @RequestMapping("/sales")
 public class SalesController {
@@ -28,6 +41,9 @@ public class SalesController {
 
     @Autowired
     private UploadService uploadService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     final String UPLOAD_INQUIRY_CODE = "S";
 
@@ -87,11 +103,16 @@ public class SalesController {
 
         SalesGoodsDTO salesGoodsDTO = new SalesGoodsDTO();
         salesGoodsDTO.setNo(no);
-
         SalesGoodsDTO salesDetails = salesService.selectSales(salesGoodsDTO);
+
+        ReviewDTO reviewDTO = new ReviewDTO();
+        reviewDTO.setGoodsNo(no); // 상품 번호를 설정
+        List<ReviewDTO> reviewList = reviewService.reviewList(reviewDTO);
 
         model.addAttribute("salesDetails", salesDetails);
         model.addAttribute("uploadDtoList", uploadService.uploadSelect(UPLOAD_INQUIRY_CODE, no));
+        model.addAttribute("reviewList", reviewList);
+        model.addAttribute("goodsNo", no);
         return "sales/salesDetails";
     }
     //Read
@@ -237,5 +258,5 @@ public class SalesController {
 //        return "redirect:/sales/salesList";
 //    }
     //Delete
-    
+
 }

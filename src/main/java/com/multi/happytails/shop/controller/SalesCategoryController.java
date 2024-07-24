@@ -10,6 +10,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
+/**
+ * packageName    : com.multi.happytails.shop.controller
+ * fileName       : SalesCategoryController.java
+ * author         : ShinHyeoncheol
+ * date           : 2024-07-24
+ * description    :
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2024-07-24        ShinHyeoncheol       최초 생성
+ */
 @Controller
 @RequestMapping("/sales")
 public class SalesCategoryController {
@@ -17,6 +28,13 @@ public class SalesCategoryController {
     @Autowired
     private SalesCategoryService salesCategoryService;
 
+    /**
+     * methodName : categoryList
+     * author : Shin HyeonCheol
+     * description :
+     *
+     * @return the list
+     */
     @GetMapping("/categoryList")
     @ResponseBody
     public List<SalesCategoryDTO> categoryList() {
