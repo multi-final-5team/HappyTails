@@ -1,24 +1,31 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+
     <title>중심좌표 변경 이벤트 등록하기</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a76def1c0c0dd8e389a263fe93ef2974"></script>
 </head>
-<body>
+<body class="container mt-5">
+
+<menu th:replace="fragments/head :: menu"></menu>
+
+<h1 class="mb-4">멍지도</h1>
+
+
 <div id="map" style="width:100%;height:350px;"></div>
+
 <p><em>지도 중심좌표가 변경되면 지도 정보가 표출됩니다</em></p>
 <p id="result"></p>
 
-<select name="serchplace" id="serchplace">
+<select class="form-select" name="serchplace" id="serchplace">
     <option value="동물병원">동물병원</option>
     <option value="도보여행">산책로</option>
     <option value="애견카페">애견카페</option>
     <option value="반려동물미용">반려동물미용</option>
 </select>
 
-<select name="radius" id="radius">
+<select class="form-select" name="radius" id="radius">
     <option value="1000">1Km</option>
     <option value="5000">5Km</option>
     <option value="10000">10Km</option>
@@ -26,7 +33,7 @@
     <option value="20000">20Km</option>
 </select>
 
-<button id="btnserch">검색</button>
+<button class="btn btn-info" id="btnserch">검색</button>
 <input type="hidden" id="hidden_lat" value="">
 <input type="hidden" id="hidden_lng" value="">
 
@@ -109,17 +116,25 @@
                 $('#placediv').append(
                     $('<div>').prop({
                         id: 'place' + index,
-                        className: 'place'
+                        className: 'card'
                         }).attr("onclick", "")
                     );
+
                     $('#' + 'place' + index).append(
-                        '<b>' + placelist[index].place_name + '</b><br>'
+                        $('<div>').prop({
+                            id: 'divbody' + index,
+                            className: 'card-body'
+                        })
                     );
-                    $('#' + 'place' + index).append(
-                        '<sub>' + placelist[index].road_address_name + '</sub><br>'
+
+                    $('#' + 'divbody' + index).append(
+                        '<b class="card-text">' + placelist[index].place_name + '</b><br>'
                     );
-                    $('#' + 'place' + index).append(
-                        '<sub>' + placelist[index].phone + '</sub>'
+                    $('#' + 'divbody' + index).append(
+                        '<sub class="card-text">' + placelist[index].road_address_name + '</sub><br>'
+                    );
+                    $('#' + 'divbody' + index).append(
+                        '<sub class="card-text">' + placelist[index].phone + '</sub>'
                     );
             }
 

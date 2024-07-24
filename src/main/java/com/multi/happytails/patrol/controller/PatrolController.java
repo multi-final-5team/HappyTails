@@ -22,32 +22,66 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Patrol controller.
+ */
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/patrol")
 public class PatrolController {
 
+    /**
+     * The Patrol service.
+     */
     @Autowired
     PatrolService patrolService;
 
+    /**
+     * The Upload service.
+     */
     @Autowired
     UploadService uploadService;
 
+    /**
+     * methodName : patrol
+     * author : 우재협
+     * 설명 : 순찰대 조회 화면으로 이동
+     */
     @RequestMapping("patrol")
     public void patrol(){
 
     }
 
+    /**
+     * methodName : patrolinsert
+     * author : 우재협
+     * 설명 : 순찰대 생성 화면으로 이동
+     */
     @RequestMapping("patrolinsert")
     public void patrolinsert(){
 
     }
 
+    /**
+     * methodName : patrolview
+     * author : 우재협
+     * 설명 : 순찰대 상세 화면으로 이동
+     */
     @RequestMapping("patrolview")
     public void patrolview(){
 
     }
 
+    /**
+     * methodName : makepatrol
+     * author : 우재협
+     * 설명 : 순찰대 생성
+     *
+     * @param patrol dto
+     * @param image  files
+     * @param custom user
+     * @return string
+     */
     @PostMapping("makepatrol")
     public String makepatrol(PatrolDTO patrolDTO , @RequestParam(value = "imageFiles") List<MultipartFile> imageFiles, @AuthenticationPrincipal CustomUser customUser){
 
@@ -75,6 +109,14 @@ public class PatrolController {
         return "patrol/patrol";
     }
 
+    /**
+     * methodName : findAllPatrol
+     * author : 우재협
+     * 설명 : 모든 순찰대 조회
+     *
+     * @param model
+     * @return patrol img dto
+     */
     @GetMapping(value="findAllPatrol", produces = "application/json; charset=UTF-8")
     @ResponseBody
     public PatrolImgDTO findAllPatrol(Model model){
@@ -109,6 +151,14 @@ public class PatrolController {
         return dto;
     }
 
+    /**
+     * methodName : findOnePatrolByPatrolNo
+     * author : 우재협
+     * 설명 : 순찰대 번호로 순찰대 하나 조회
+     *
+     * @param parol no
+     * @return patrol dto
+     */
     @GetMapping(value="findOnePatrolByPatrolNo", produces = "application/json; charset=UTF-8")
     @ResponseBody
     public PatrolDTO findOnePatrolByPatrolNo(@RequestParam(value = "parolNo") int parolNo){
@@ -118,6 +168,15 @@ public class PatrolController {
         return patrolDTO;
     }
 
+    /**
+     * methodName : patrolUpdate
+     * author : 우재협
+     * 설명 : 유저번호에 해당하는 순찰대 정보 수정
+     *
+     * @param patrol dto
+     * @param custom user
+     * @return string
+     */
     @PostMapping("patrolUpdate")
     public String patrolUpdate(PatrolDTO patrolDTO, @AuthenticationPrincipal CustomUser customUser){
 
@@ -130,6 +189,15 @@ public class PatrolController {
         return "patrol/patrol";
     }
 
+    /**
+     * methodName : patrolDelete
+     * author : 우재협
+     * 설명 : 유저번호에 해당하는 순찰대 정보 삭제
+     *
+     * @param patrol dto
+     * @param custom user
+     * @return string
+     */
     @PostMapping("patrolDelete")
     public String patrolDelete(PatrolDTO patrolDTO, @AuthenticationPrincipal CustomUser customUser){
 
