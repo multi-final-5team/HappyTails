@@ -1,10 +1,8 @@
-package com.multi.happytails.shop.model.dao;
-
-import org.apache.ibatis.annotations.Mapper;
+package com.multi.happytails.shop.controller;
 
 /**
- * packageName    : com.multi.happytails.shop.model.dao
- * fileName       : DeliveryStatusDAO.java
+ * packageName    : com.multi.happytails.shop.controller
+ * fileName       : dedkwdkj
  * author         : ShinHyeoncheol
  * date           : 2024-07-24
  * description    :
@@ -13,6 +11,5 @@ import org.apache.ibatis.annotations.Mapper;
  * -----------------------------------------------------------
  * 2024-07-24        ShinHyeoncheol       최초 생성
  */
-@Mapper
-public interface DeliveryStatusDAO {
+public class dedkwdkj {
 }

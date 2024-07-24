@@ -1,10 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <title>상품 등록</title>
-
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
     <script>
         $(document).ready(function() {
         // 카테고리 불러오기 Start
@@ -47,7 +43,7 @@
                if (file && file.type.startsWith('image/')) {
                  var reader = new FileReader();
                  reader.onload = function(e) {
-                   $('#imgAddDiv').append('<img src="' + e.target.result + '" alt="Selected Image" width="100px" height="100px">');
+                   $('#imgAddDiv').append('<img src="' + e.target.result + '" alt="Selected Image" class="inputImg">'); // width="100px" height="100px">');
                  }
                  imageFiles.push(file);
                  reader.readAsDataURL(file);
@@ -59,64 +55,81 @@
         // 폼 서브밋 Start
 
              $('#insertForm').submit(function(event){
-    event.preventDefault();
-    let formData = new FormData(this);
-    formData.append('imageFile', imageFile);
+                event.preventDefault();
+                let formData = new FormData(this);
+                formData.append('imageFile', imageFile);
 
-    for (let i = 0; i < imageFiles.length; i++) {
-        formData.append('imageFiles', imageFiles[i]);
-    }
+                for (let i = 0; i < imageFiles.length; i++) {
+                    formData.append('imageFiles', imageFiles[i]);
+                }
 
-    $.ajax({
-        url : "/sales/insertGoods",
-        processData : false,
-        contentType : false,
-        type : 'POST',
-        data : formData,
-        success : function(data) {
-            alert('상품이 성공적으로 등록되었습니다.');
-            window.location.href = '/sales/salesList';
-        },
-        error: function(xhr, status, error) {
-            alert('상품 등록에 실패하였습니다. 다시 시도해주세요.');
-        }
-    });
-});
-        // 폼 서브밋 End
-    });
+                $.ajax({
+                    url : "/sales/insertGoods",
+                    processData : false,
+                    contentType : false,
+                    type : 'POST',
+                    data : formData,
+                    success : function(data) {
+                        alert('상품이 성공적으로 등록되었습니다.');
+                        window.location.href = '/sales/salesList';
+                    },
+                    error: function(xhr, status, error) {
+                        alert('상품 등록에 실패하였습니다. 다시 시도해주세요.');
+                    }
+                });
+            });
+            // 폼 서브밋 End
+        });
     </script>
 </head>
-<body>
-<h1>상품 등록</h1>
-<form action="/sales/insertGoods" method="post" enctype="multipart/form-data" id="insertForm">
-    <label for="name">상품 이름:</label>
-    <input type="text" id="name" name="name" required><br><br>
+<body class="container mt-5">
+<menu th:replace="fragments/head :: menu"></menu>
+<main>
+    <h1 class="mb-4">상품 등록</h1>
+    <form action="/sales/insertGoods" method="post" enctype="multipart/form-data" id="insertForm">
+        <div class="mb-3">
+            <label for="name" class="form-label">상품 이름:</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
 
-    <label for="name">대표이미지:</label>
-    <input type="file" id="IMGFile" name="IMGFile" required><br><br>
-    <div id="DetailsIMG">
+        <div class="mb-3">
+            <label for="IMGFile" class="form-label">대표이미지:</label>
+            <input type="file" class="form-control" id="IMGFile" name="IMGFile" required>
+        </div>
 
-    </div>
+        <div id="DetailsIMG" class="mb-3">
+        </div>
 
-    <label for="category">카테고리:</label>
-    <select id="category" name="categoryCode"></select> <br>
+        <div class="mb-3">
+            <label for="category" class="form-label">카테고리:</label>
+            <select id="category" name="categoryCode" class="form-select"></select>
+        </div>
 
-    <label for="price">가격:</label>
-    <input type="number" id="price" name="price" required><br><br>
+        <div class="mb-3">
+            <label for="price" class="form-label">가격:</label>
+            <input type="number" class="form-control" id="price" name="price" required>
+        </div>
 
-    <label for="quantity">수량:</label>
-    <input type="number" id="quantity" name="quantity" required><br><br>
+        <div class="mb-3">
+            <label for="quantity" class="form-label">수량:</label>
+            <input type="number" class="form-control" id="quantity" name="quantity" required>
+        </div>
 
-    <label for="content">상세 설명:</label>
-    <textarea id="content" name="content" required></textarea><br><br>
+        <div class="mb-3">
+            <label for="content" class="form-label">상세 설명:</label>
+            <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+        </div>
 
-    상세 이미지: <br>
-    <input type="file" id="imageInput"/>
-    <div id="imgAddDiv">
+        <div class="mb-3">
+            <label class="form-label">상세 이미지:</label>
+            <input type="file" class="form-control" id="imageInput"/>
+        </div>
 
-    </div>
+        <div id="imgAddDiv" class="mb-3">
+        </div>
 
-    <input type="submit" value="등록">
-</form>
+        <button type="submit" class="btn btn-primary">등록</button>
+    </form>
+</main>
 </body>
 </html>
