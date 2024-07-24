@@ -7,6 +7,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * packageName    : com.multi.happytails.shop.service
+ * fileName       : ReviewServiceImpl.java
+ * author         : ShinHyeoncheol
+ * date           : 2024-07-24
+ * description    :
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2024-07-24        ShinHyeoncheol       최초 생성
+ */
 @Service
 public class ReviewServiceImpl implements ReviewService{
 
@@ -31,5 +42,10 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     public List<ReviewDTO> reviewList(ReviewDTO reviewDTO) {
         return reviewDAO.reviewList(reviewDTO);
+    }
+
+    @Override
+    public int getReviewNo() {
+        return reviewDAO.getReviewNo();
     }
 }

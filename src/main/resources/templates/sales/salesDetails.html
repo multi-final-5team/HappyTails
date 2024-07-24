@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Details</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function() {
+            // 이미지 road Start
+            let imageFiles = [];
+            $('#imageInput').on('change', function(event) {
+                console.log('실행');
+                var file = event.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#imgAddDiv').append('<img src="' + e.target.result + '" alt="Selected Image" width="100px" height="100px">');
+                    }
+                    imageFiles.push(file);
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('이미지 파일을 선택해주세요');
+                }
+            });
+            // 이미지 road End
+            // 폼 서브밋 Start
+
+            $('#insertForm').submit(function(event){
+                event.preventDefault();
+                let formData = new FormData();
+
+                formData.append('goodsNo', $('#goodsNo').val());
+                formData.append('starRating', $('#starRating').val());
+                formData.append('content', $('#content').val());
+
+                for (let i = 0; i < imageFiles.length; i++) {
+                    formData.append('imageFiles', imageFiles[i]);
+                }
+
+                $.ajax({
+                    url : "/review/insertReview",
+                    processData : false,
+                    contentType : false,
+                    type : 'POST',
+                    data : formData,
+                    success : function(data) {
+                        alert('리뷰 등록 성공!.');
+                        window.location.href = '/sales/salesList';
+                    },
+                    error: function(xhr, status, error) {
+                        alert('리뷰 등록 실패!.');
+                    }
+                });
+            });
+            // 폼 서브밋 End
+        });
+    </script>
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">Sales Details</h1>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title" th:text="${salesDetails.name}">Product Name</h5>
+            <h6 class="card-subtitle mb-2 text-muted" th:text="'Category: ' + ${salesDetails.categoryCode}">Category Code</h6>
+            <p class="card-text"><strong>ID:</strong> <span th:text="${salesDetails.id}">ID</span></p>
+            <p class="card-text"><strong>Address:</strong> <span th:text="${salesDetails.address}">Address</span></p>
+
+            <div th:if="${uploadDtoList != null && !uploadDtoList.isEmpty()}">
+                <div>
+                    <h2>대표 이미지</h2>
+                    <img th:src="@{/images/S/{file}(file=${uploadDtoList[0].storedFileName})}" alt="First Image">
+                </div>
+
+                <p class="card-text"><strong>Price:</strong> <span th:text="${salesDetails.price}">Price</span></p>
+                <p class="card-text"><strong>Quantity:</strong> <span th:text="${salesDetails.quantity}">Quantity</span></p>
+                <p class="card-text"><strong>Content:</strong> <span th:text="${salesDetails.content}">Content</span></p>
+
+                <h2>상세 이미지</h2>
+                <ul>
+                    <li th:each="uploadDto, iterStat : ${uploadDtoList}" th:if="${iterStat.index > 0}">
+                        <img th:src="@{/images/S/{file}(file=${uploadDto.storedFileName})}" alt="Image">
+                    </li>
+                </ul>
+            </div>
+            <!--            <p class="card-text"><strong>Create Date:</strong> <span th:text="${#dates.format(salesDetails.createDate, 'yyyy-MM-dd HH:mm:ss')}">Create Date</span></p>-->
+            <!--            <p class="card-text"><strong>Update Date:</strong> <span th:text="${#dates.format(salesDetails.updateDate, 'yyyy-MM-dd HH:mm:ss')}">Update Date</span></p>-->
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <h2>Reviews</h2>
+        <div th:if="${reviewList != null && !reviewList.isEmpty()}">
+            <div th:each="review : ${reviewList}">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${review.id}">Reviewer ID</h5>
+                        <h6 class="card-subtitle mb-2 text-muted" th:text="'평점 : ' + ${review.starRating}">Star Rating</h6>
+                        <p class="card-text" th:text="${review.content}">Review Content</p>
+                        <p class="card-text"><small class="text-muted" th:text="${#dates.format(review.reviewDate, 'yyyy-MM-dd HH:mm:ss')}">Review Date</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div th:if="${reviewList == null || reviewList.isEmpty()}">
+            <p>리뷰가 없습니다.</p>
+        </div>
+    </div>
+
+    <div>
+        <form action="/review/insertReview" method="post" enctype="multipart/form-data" id="insertForm">
+            <input type="hidden" id="goodsNo" name="goodsNo" th:value="${goodsNo}">
+
+            <label for="starRating">별점:</label>
+            <input type="number" id="starRating" name="starRating" required><br><br>
+
+            <input type="file" id="imageInput"/>
+            <div id="imgAddDiv">
+            </div>
+
+            <label for="content">리뷰:</label>
+            <textarea id="content" name="content" required></textarea><br><br>
+
+            <input type="submit" value="등록">
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

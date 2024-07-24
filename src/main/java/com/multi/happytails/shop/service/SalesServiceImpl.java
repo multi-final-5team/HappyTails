@@ -7,6 +7,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * packageName    : com.multi.happytails.shop.service
+ * fileName       : SalesServiceImpl.java
+ * author         : ShinHyeoncheol
+ * date           : 2024-07-24
+ * description    :
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2024-07-24        ShinHyeoncheol       최초 생성
+ */
 @Service
 public class SalesServiceImpl implements SalesService {
 
@@ -24,8 +35,15 @@ public class SalesServiceImpl implements SalesService {
     }
 
     @Override
-    public List<SalesGoodsDTO> salesList() {
-        return salesGoodsDAO.salesList();
+    public List<SalesGoodsDTO> salesList(int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        return salesGoodsDAO.salesList(offset, pageSize);
+    }
+
+    @Override
+    public List<SalesGoodsDTO> salesListBusiness(int page, int pageSize, String id) {
+        int offset = (page - 1) * pageSize;
+        return salesGoodsDAO.salesListBusiness(offset, pageSize, id);
     }
 
     @Override
@@ -36,5 +54,15 @@ public class SalesServiceImpl implements SalesService {
     @Override
     public SalesGoodsDTO selectSales(SalesGoodsDTO salesGoodsDTO) {
         return salesGoodsDAO.selectSales(salesGoodsDTO);
+    }
+
+    @Override
+    public int getSalesNo() {
+        return salesGoodsDAO.getSalesNo();
+    }
+
+    @Override
+    public int salesPageCount() {
+        return salesGoodsDAO.salesPageCount();
     }
 }

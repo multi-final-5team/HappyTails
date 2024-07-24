@@ -1,13 +1,12 @@
-package com.multi.happytails.shop.model.dao;
+package com.multi.happytails.shop.service;
 
 import com.multi.happytails.shop.model.dto.SalesCategoryDTO;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 /**
- * packageName    : com.multi.happytails.shop.model.dao
- * fileName       : SalesCategoryDAO.java
+ * packageName    : com.multi.happytails.shop.service
+ * fileName       : SalesCategoryService.java
  * author         : ShinHyeoncheol
  * date           : 2024-07-24
  * description    :
@@ -16,7 +15,6 @@ import java.util.List;
  * -----------------------------------------------------------
  * 2024-07-24        ShinHyeoncheol       최초 생성
  */
-@Mapper
-public interface SalesCategoryDAO {
+public interface SalesCategoryService {
     List<SalesCategoryDTO> categoryList();
 }
