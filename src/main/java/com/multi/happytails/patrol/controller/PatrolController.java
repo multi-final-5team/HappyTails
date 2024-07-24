@@ -5,6 +5,7 @@ package com.multi.happytails.patrol.controller;
 
 
 
+import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.patrol.model.dto.PatrolDTO;
 import com.multi.happytails.patrol.model.dto.PatrolImgDTO;
 import com.multi.happytails.patrol.service.PatrolService;
@@ -12,6 +13,7 @@ import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +34,8 @@ public class PatrolController {
     UploadService uploadService;
 
     @RequestMapping("patrol")
-    public void patrol(){
-
+    public void patrol(@AuthenticationPrincipal CustomUser customUser){
+        System.out.println("유저넘버" + customUser.getNo());
     }
 
     @RequestMapping("patrolinsert")
