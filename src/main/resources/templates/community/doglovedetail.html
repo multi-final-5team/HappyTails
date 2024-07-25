@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <meta charset="UTF-8">
+    <title>내 새꾸 자랑 상세 페이지</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .comment-form textarea {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .comment-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .comment-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body class="container mt-5">
+<menu th:replace="fragments/head :: menu"></menu>
+
+<h1 class="mb-4 text-center">내 새꾸 자랑 상세 페이지</h1>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h2 class="card-title" th:text="${doglove.title}"></h2>
+        <p class="card-text"><strong>작성자:</strong> <span th:text="${doglove.userId}"></span></p>
+        <p class="card-text"><strong>작성 시간:</strong> <span th:text="${#temporals.format(doglove.createTime, 'yyyy-MM-dd HH')}"></span></p>
+        <p class="card-text" th:text="${doglove.content}"></p>
+        <p class="card-text"><strong>추천 수:</strong> <span th:id="recommendCount" th:text="${doglove.recommendCount}"></span></p>
+    </div>
+
+
+
+<div class="mb-4">
+    <h4>댓글</h4>
+    <form th:action="@{/community/L/{foreignNo}/reply/add(foreignNo=${doglove.dogloveNo})}" method="post" class="comment-form">
+        <input type="hidden" name="communityCategoryCode" value="L" />
+        <input type="hidden" name="foreignNo" th:value="${doglove.dogloveNo}" />
+        <div class="mb-3">
+            <textarea class="form-control" name="content" required rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">댓글 작성</button>
+    </form>
+
+    <!-- 댓글 목록 -->
+    <ul class="reply-list mt-4">
+        <li th:each="reply : ${reply}">
+            <p><strong th:text="${reply.writerId}">작성자</strong>: <span th:text="${reply.content}">내용</span></p>
+        </li>
+    </ul>
+</div>
+
+<div class="d-flex justify-content-between">
+    <a href="/community/doglove" class="btn btn-secondary">목록으로 돌아가기</a>
+    <a href="/community/doglove/create" class="btn btn-primary">새 글 작성하기</a>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
