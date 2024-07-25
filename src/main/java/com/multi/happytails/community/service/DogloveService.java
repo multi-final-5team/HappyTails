@@ -2,12 +2,12 @@ package com.multi.happytails.community.service;
 
 import com.multi.happytails.community.model.dao.DogloveDAO;
 import com.multi.happytails.community.model.dto.DogloveDTO;
-import com.multi.happytails.help.model.dto.HelpCategoryDto;
-import com.multi.happytails.help.model.dto.InquiryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DogloveService {
@@ -17,13 +17,12 @@ public class DogloveService {
     @Autowired
     private DogloveDAO dogloveDAO;
 
+
+
     public DogloveService(DogloveDAO dogloveDAO) {
         this.dogloveDAO = dogloveDAO;
     }
 
-    public List<DogloveDTO> findAll() {
-        return dogloveDAO.findAll("date");
-    }
 
     public List<DogloveDTO> findAllSortedByDate() {
         return dogloveDAO.findAll("date");
@@ -43,6 +42,19 @@ public class DogloveService {
         return dogloveDAO.getCurrentDogloveNo();
     }
 
+    public List<DogloveDTO> findDogLovesWithPaging(String sort, int page, int size) {
+        int offset = page * size;
+        Map<String, Object> params = new HashMap<>();
+        params.put("sort", sort);
+        params.put("offset", offset);
+        params.put("limit", size);
+        return dogloveDAO.selectDogLovesWithPaging(params);
+    }
+
+    public int getTotalDogLoveCount() {
+        return dogloveDAO.getTotalDogLoveCount();
+    }
+
     public void incrementRecommendCount(Long dogloveNo) {
         dogloveDAO.incrementRecommendCount(dogloveNo);
     }
@@ -50,6 +62,9 @@ public class DogloveService {
     public void decrementRecommendCount(Long dogloveNo) {
         dogloveDAO.decrementRecommendCount(dogloveNo);
     }
+
+
+
 
 
 }

@@ -1,45 +1,63 @@
 package com.multi.happytails.community.reply.controller;
 
 import com.multi.happytails.community.reply.model.dto.ReplyDTO;
+import com.multi.happytails.community.reply.service.ReplyCode;
 import com.multi.happytails.community.reply.service.ReplyService;
-import com.multi.happytails.upload.model.dto.UploadDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@RestController
-@RequestMapping("/doglove/{dogloveNo}")
+import java.security.Principal;
+
+@Controller
+@RequestMapping("/community")
 public class ReplyController {
-
-    private static final String REPLY_CODE = "L";
-
 
     @Autowired
     private ReplyService replyService;
 
-    @PostMapping("/reply/add")
-    public String addReply(@PathVariable int RERLY_CODE, @RequestParam String categoryCode, @RequestBody ReplyDTO replyDTO) {
-        replyDTO.setCommunityReplyNo(RERLY_CODE);
+
+    @PostMapping("/{communityCategoryCode}/{foreignNo}/reply/add")
+    public String addReply(
+            @PathVariable int foreignNo,
+            @PathVariable String communityCategoryCode,
+            @RequestParam String content,
+            RedirectAttributes redirectAttributes,
+            Principal principal,
+            Model model) {
+
+        String writerId = principal.getName();
+        // String userId = (String) session.getAttribute("USER_ID");
+        ReplyDTO replyDTO = new ReplyDTO();
+        replyDTO.setCommunityCategoryCode(communityCategoryCode);
+        replyDTO.setForeignNo(foreignNo);
+        replyDTO.setContent(content);
+        replyDTO.setWriterId(writerId);
         replyService.addReply(replyDTO);
-        return "댓글이 추가되었습니다.";
+
+        model.addAttribute("message", "댓글이 성공적으로 추가되었습니다.");
+
+        return "redirect:/community/" + getRedirectUrl(communityCategoryCode) + "/" + foreignNo;
     }
 
-    @GetMapping("/reply/{replyNo}")
-    public ReplyDTO getReply(@PathVariable int replyNo) {
-        return replyService.getReplyById(replyNo);
-    }
 
-    @PutMapping("/reply/update")
-    public String updateReply(@PathVariable int RERLY_CODE, @RequestBody ReplyDTO replyDTO) {
-       // ReplyDTO replyDTO = new ReplyDTO();
-
-        replyDTO.setCommunityReplyNo(RERLY_CODE);
-        replyService.updateReply(replyDTO);
-        return "댓글이 수정되었습니다.";
-    }
-
-    @DeleteMapping("/reply/delete/{replyNo}")
-    public String deleteReply(@PathVariable int replyNo) {
-        replyService.deleteReply(replyNo);
-        return "댓글이 삭제되었습니다.";
+    private String getRedirectUrl(String communityCategoryCode) {
+        switch (ReplyCode.valueOf(communityCategoryCode)) {
+            case L:
+                return "doglove";
+            case C:
+                return "chatter";
+            case O:
+                return "owners";
+            case R:
+                return "reels";
+            default:
+                throw new IllegalArgumentException("Invalid community category code: " + communityCategoryCode);
+        }
     }
 }

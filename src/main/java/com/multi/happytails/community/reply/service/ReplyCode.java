@@ -1,14 +1,18 @@
 package com.multi.happytails.community.reply.service;
 
-import com.multi.happytails.community.reply.model.dao.ReplyDAO;
-import com.multi.happytails.community.reply.model.dto.ReplyDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+public enum ReplyCode {
+    L("내 새꾸 자랑"),
+    C("떠들개"),
+    O("집사 회의"),
+    R("릴스");
 
-import java.time.LocalDateTime;
+    private final String description;
 
-@Service
-public enum  ReplyCode {
+    ReplyCode(String description) {
+        this.description = description;
+    }
 
-
+    public String getDescription() {
+        return description;
+    }
 }
