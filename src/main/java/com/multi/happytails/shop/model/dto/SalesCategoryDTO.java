@@ -7,7 +7,7 @@ import lombok.*;
  * fileName       : SalesCategoryDTO.java
  * author         : ShinHyeoncheol
  * date           : 2024-07-24
- * description    :
+ * description    : 상품 카테고리 DTO
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------

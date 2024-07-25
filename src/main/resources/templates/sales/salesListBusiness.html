@@ -1,39 +1,60 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales List</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <style>
+        .table-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+    </style>
 </head>
-<body>
-<div class="container mt-5">
-    <h1 class="mb-4">Sales List</h1>
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>이미지</th>
-            <th>Category Code</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="salesGoods : ${salesGoodsList}">
+<body class="bg-light">
+<menu th:replace="fragments/head :: menu"></menu>
+<div class="container my-5">
+    <h1 id="sales-list" class="mb-4 text-center">상품 판매 목록 - 판매자</h1>
 
-            <td><a th:href="@{/sales/selectGoods(no=${salesGoods.no})}" th:text="${salesGoods.name}"></a></td>
-            <td th:text="${salesGoods.price}"></td>
-            <td><span>대표 이미지</span></td>
-            <td th:text="${salesGoods.categoryCode}"></td>
-            <td><a th:href="@{/sales/deleteGoods(no=${salesGoods.no})}"><span>삭제버튼</span></a></td>
-
-        </tr>
-        </tbody>
-    </table>
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>상품명</th>
+                        <th>가격</th>
+                        <th>이미지</th>
+                        <th>카테고리</th>
+                        <th>관리</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="salesGoods : ${salesGoodsList}">
+                        <td>
+                            <a th:href="@{/sales/selectGoods(no=${salesGoods.no})}"
+                               th:text="${salesGoods.name}"
+                               class="text-decoration-none">
+                            </a>
+                        </td>
+                        <td th:text="${salesGoods.price}"></td>
+                        <td>
+                            <span>대표 이미지</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary" th:text="${salesGoods.categoryCode}"></span>
+                        </td>
+                        <td>
+                            <a th:href="@{/sales/deleteGoods(no=${salesGoods.no})}"
+                               class="btn btn-danger btn-sm">
+                                삭제
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <a class="navbar-brand" href="/sales/insertform"> 판매 상품 등록</a>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
