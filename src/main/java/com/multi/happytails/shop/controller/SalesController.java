@@ -25,7 +25,7 @@ import java.util.List;
  * fileName       : SalesController.java
  * author         : ShinHyeoncheol
  * date           : 2024-07-24
- * description    :
+ * description    : 상품 판매 관리 컨트롤러
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
@@ -45,13 +45,30 @@ public class SalesController {
     @Autowired
     private ReviewService reviewService;
 
+    /**
+     * The Upload inquiry code.
+     */
     final String UPLOAD_INQUIRY_CODE = "S";
 
+    /**
+     * methodName : insertform
+     * author : Shin HyeonCheol
+     * description : "/insertform" URL 이동 메소드
+     */
     @RequestMapping("/insertform")
     public void insertform(){
 
     }
 
+    /**
+     * methodName : salesList
+     * author : Shin HyeonCheol
+     * description : 상품 목록 호출 메소드
+     *
+     * @param page  the page
+     * @param model the model
+     * @return the string
+     */
     @GetMapping("/salesList")
     public String salesList(@RequestParam(name = "page", defaultValue = "1") int page, Model model) {
         int pageSize = 10;
@@ -67,6 +84,16 @@ public class SalesController {
     }
     //List
 
+    /**
+     * methodName : salesListBusiness
+     * author : Shin HyeonCheol
+     * description : 상품 목록 호출 메소드 _ 사업자
+     *
+     * @param page      the page
+     * @param principal the principal
+     * @param model     the model
+     * @return the string
+     */
     @GetMapping("/salesListBusiness")
     public String salesListBusiness(@RequestParam(name = "page", defaultValue = "1") int page, Principal principal, Model model) {
         int pageSize = 10;
@@ -83,6 +110,15 @@ public class SalesController {
     }
     //List - Business
 
+    /**
+     * methodName : salesListAdmin
+     * author : Shin HyeonCheol
+     * description : 상품 목록 호출 메소드 _ 관리자
+     *
+     * @param page  the page
+     * @param model the model
+     * @return the string
+     */
     @GetMapping("/salesListAdmin")
     public String salesListAdmin(@RequestParam(name = "page", defaultValue = "1") int page, Model model) {
         int pageSize = 10;
@@ -98,6 +134,15 @@ public class SalesController {
     }
     //List - Admin
 
+    /**
+     * methodName : selectGoods
+     * author : Shin HyeonCheol
+     * description : 상품 상세 페이지 호출 메소드, 해당 상품 리뷰 목록 호출 메소드
+     *
+     * @param no    the no
+     * @param model the model
+     * @return the string
+     */
     @GetMapping("/selectGoods")
     public String selectGoods(@RequestParam("no") int no, Model model) {
 
@@ -117,6 +162,21 @@ public class SalesController {
     }
     //Read
 
+    /**
+     * methodName : insertGoods
+     * author : Shin HyeonCheol
+     * description : 상품 등록 메소드
+     *
+     * @param customUser   the custom user
+     * @param name         the name
+     * @param price        the price
+     * @param quantity     the quantity
+     * @param content      the content
+     * @param categoryCode the category code
+     * @param imageFile    the image file
+     * @param imageFiles   the image files
+     * @return the string
+     */
     @PostMapping("/insertGoods")
     public String insertGoods (@AuthenticationPrincipal CustomUser customUser,
                                @RequestParam("name") String name,
@@ -159,6 +219,20 @@ public class SalesController {
     }
     // Create
 
+    /**
+     * methodName : updateGoods
+     * author : Shin HyeonCheol
+     * description : 상품 수정 메소드
+     *
+     * @param customUser   the custom user
+     * @param name         the name
+     * @param price        the price
+     * @param quantity     the quantity
+     * @param content      the content
+     * @param categoryCode the category code
+     * @param no           the no
+     * @return the string
+     */
     @PostMapping("/updateGoods")
     public String updateGoods (@AuthenticationPrincipal CustomUser customUser,
                                @RequestParam("name") String name,
@@ -189,6 +263,14 @@ public class SalesController {
     }
     // Update
 
+    /**
+     * methodName : deleteGoods
+     * author : Shin HyeonCheol
+     * description : 상품 삭제 메소드
+     *
+     * @param no the no
+     * @return the string
+     */
     @GetMapping("/deleteGoods")
     public String deleteGoods (@RequestParam("no") int no){
 

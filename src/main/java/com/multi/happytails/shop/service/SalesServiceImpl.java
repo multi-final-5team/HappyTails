@@ -12,7 +12,7 @@ import java.util.List;
  * fileName       : SalesServiceImpl.java
  * author         : ShinHyeoncheol
  * date           : 2024-07-24
- * description    :
+ * description    : 상품 판매 관리 ServiceImpl
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------

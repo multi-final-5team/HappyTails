@@ -7,7 +7,7 @@ import lombok.*;
  * fileName       : DeliveryStatusDTO.java
  * author         : ShinHyeoncheol
  * date           : 2024-07-24
- * description    :
+ * description    : 배송 상태 DTO
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------

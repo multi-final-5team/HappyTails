@@ -10,7 +10,7 @@ import java.util.List;
  * fileName       : SalesCategoryDAO.java
  * author         : ShinHyeoncheol
  * date           : 2024-07-24
- * description    :
+ * description    : 상품 카테고리 DAO
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
@@ -18,5 +18,12 @@ import java.util.List;
  */
 @Mapper
 public interface SalesCategoryDAO {
+    /**
+     * methodName : categoryList
+     * author : Shin HyeonCheol
+     * description : 상품 카테고리 목록 호출 메소드
+     *
+     * @return the list
+     */
     List<SalesCategoryDTO> categoryList();
 }
