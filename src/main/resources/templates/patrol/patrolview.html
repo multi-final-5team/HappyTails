@@ -1,39 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+
     <title>Title</title>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 </head>
-<body>
+<body class="container mt-5">
+
+<menu th:replace="fragments/head :: menu"></menu>
+
+<h1 class="mb-4">순찰대 상세</h1>
 
 <form id="formId" method="post" enctype="multipart/form-data" >
 
-    <div id="image_container">
+    <div  class="mb-3" id="image_container">
         <!-- 이미지 들어가는곳 -->
     </div>
 
-    <input type="file" id="inputFile" name="inputFile"><br>
+    <input class="form-control" type="file" id="inputFile" name="inputFile"><br>
 
     <input type="hidden" id="patrolNo" name="patrolNo">
     <input type="hidden" id="userNo" name="userNo">
 
-    <label>강아지 이름</label><br>
-    <input type="text" id="name" name="name"><br>
+    <div class="mb-3">
+        <label class="form-label">강아지 이름</label><br>
+        <input class="form-control" type="text" id="name" name="name"><br>
+    </div>
 
-    <label>나이</label><br>
-    <input type="number" id="age" name="age"><br>
+    <div class="mb-3">
+        <label class="form-label">나이</label><br>
+        <input class="form-control" type="number" id="age" name="age"><br>
+    </div>
 
-    <label>품종</label><br>
-    <input type="text" id="breed" name="breed"><br>
+    <div class="mb-3">
+        <label class="form-label">품종</label><br>
+        <input class="form-control" type="text" id="breed" name="breed"><br>
+    </div>
 
-    <label>주소</label><br>
-    <input type="text" id="location" name="location"><br>
+    <div class="mb-3">
+        <label class="form-label">주소</label><br>
+        <input class="form-control" type="text" id="location" name="location"><br>
+    </div>
 
-    <button type="button" id="formUpdateSubmitBtn">수정</button>
+    <button class="btn btn-warning" type="button" id="formUpdateSubmitBtn">수정</button>
     <br>
-    <button type="button" id="formDeleteSubmitBtn">삭제</button>
+    <button class="btn btn-danger" type="button" id="formDeleteSubmitBtn">삭제</button>
 
 </form>
 

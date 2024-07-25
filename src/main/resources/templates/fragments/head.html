@@ -31,10 +31,10 @@
                             강아지 순찰대
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">순찰대 소개</a></li>
+                            <li><a class="dropdown-item" th:href="@{/patrol/patrol}">순찰대 소개</a></li>
                             <li><a class="dropdown-item" href="#">순찰 일지</a></li>
                             <li><a class="dropdown-item" href="#">명예 순찰대</a></li>
-                            <li><a class="dropdown-item" href="#">순찰대 등록</a></li>
+                            <li><a class="dropdown-item" th:href="@{/patrol/patrolinsert}">순찰대 등록</a></li>
                         </ul>
                     </li>
 
@@ -67,7 +67,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#">멍지도</a>
+                        <a class="nav-link" th:href="@{/map/map}">멍지도</a>
                     </li>
 
                     <li class="nav-item">

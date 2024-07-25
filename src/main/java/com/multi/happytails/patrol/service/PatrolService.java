@@ -1,5 +1,17 @@
 package com.multi.happytails.patrol.service;
 
+/**
+ * packageName    : com.multi.happytails.patrol.service
+ * fileName       : PatrolService
+ * author         : wss18
+ * date           : 2024-07-23
+ * 설명    : 순찰대 crud 서비스
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2024-07-24        wss18       최초 생성
+ */
+
 import com.multi.happytails.patrol.model.dao.PatrolDAO;
 import com.multi.happytails.patrol.model.dto.PatrolDTO;
 import org.springframework.beans.factory.annotation.Autowired;
