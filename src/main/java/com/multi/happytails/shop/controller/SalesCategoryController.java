@@ -15,7 +15,7 @@ import java.util.List;
  * fileName       : SalesCategoryController.java
  * author         : ShinHyeoncheol
  * date           : 2024-07-24
- * description    :
+ * description    : 카테고리 관리 컨트롤러
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
@@ -31,7 +31,7 @@ public class SalesCategoryController {
     /**
      * methodName : categoryList
      * author : Shin HyeonCheol
-     * description :
+     * description : 카테고리 리스트 호출 메소드
      *
      * @return the list
      */

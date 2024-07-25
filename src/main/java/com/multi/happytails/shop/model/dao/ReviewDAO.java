@@ -10,7 +10,7 @@ import java.util.List;
  * fileName       : ReviewDAO.java
  * author         : ShinHyeoncheol
  * date           : 2024-07-24
- * description    :
+ * description    : 리뷰 DAO
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
@@ -18,13 +18,47 @@ import java.util.List;
  */
 @Mapper
 public interface ReviewDAO {
+    /**
+     * methodName : insertReview
+     * author : Shin HyeonCheol
+     * description : 리뷰 작성 DAO
+     *
+     * @param reviewDTO the review dto
+     */
     void insertReview(ReviewDTO reviewDTO);
 
+    /**
+     * methodName : updateReview
+     * author : Shin HyeonCheol
+     * description : 리뷰 수정 DAO
+     *
+     * @param reviewDTO the review dto
+     */
     void updateReview(ReviewDTO reviewDTO);
 
+    /**
+     * methodName : deleteReview
+     * author : Shin HyeonCheol
+     * description : 리뷰 삭제 DAO
+     *
+     * @param reviewDTO the review dto
+     */
     void deleteReview(ReviewDTO reviewDTO);
 
+    /**
+     * methodName : reviewList
+     * author : Shin HyeonCheol
+     * description : 리뷰 목록 호출 DAO
+     *
+     * @param reviewDTO the review dto
+     * @return the list
+     */
     List<ReviewDTO> reviewList(ReviewDTO reviewDTO);
 
+    /**
+     * Gets review no.
+     *
+     * @return the review no
+     */
     int getReviewNo();
 }

@@ -18,7 +18,7 @@ import java.util.List;
  * fileName       : ReviewController.java
  * author         : ShinHyeoncheol
  * date           : 2024-07-24
- * description    :
+ * description    : Review Management Controller
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
@@ -34,6 +34,9 @@ public class ReviewController {
     @Autowired
     private UploadService uploadService;
 
+    /**
+     * The Upload inquiry code.
+     */
     final String UPLOAD_INQUIRY_CODE = "R";
 
 //    @PostMapping("/reviewList")
@@ -43,6 +46,18 @@ public class ReviewController {
 //    }
     // List
 
+    /**
+     * methodName : insertReview
+     * author : Shin HyeonCheol
+     * description : Write Review
+     *
+     * @param customUser the custom user
+     * @param goodsNo    the goods no
+     * @param starRating the star rating
+     * @param content    the content
+     * @param imageFiles the image files
+     * @return the string
+     */
     @PostMapping("/insertReview")
     public String insertReview(@AuthenticationPrincipal CustomUser customUser,
                                @RequestParam("goodsNo") int goodsNo,
@@ -69,15 +84,17 @@ public class ReviewController {
 
         return "redirect:/sales/salesList"; // adjust the redirect as necessary
     }
-    // Create
 
-    /*<id column="REVIEW_NO" property="no" />
-        <result column="ID" property="id" />
-        <result column="GOODS_NO" property="goodsNo" />
-        <result column="STAR_RATING" property="starRating" />
-        <result column="CONTENT" property="content" />
-        <result column="REVIEW_DATE" property="reviewDate" />*/
 
+    /**
+     * methodName : updateReview
+     * author : Shin HyeonCheol
+     * description : Modify Review
+     *
+     * @param customUser the custom user
+     * @param reviewDTO  the review dto
+     * @return the string
+     */
     @PostMapping("/updateReview")
     public String updateReview(@AuthenticationPrincipal CustomUser customUser, @RequestBody ReviewDTO reviewDTO) {
         String userId = customUser.getId();
@@ -87,6 +104,16 @@ public class ReviewController {
     }
     // Update
 
+    /**
+     * methodName : deleteReview
+     * author : Shin HyeonCheol
+     * description : delete Review
+     *
+     * @param reviewNo   the review no
+     * @param goodsNo    the goods no
+     * @param customUser the custom user
+     * @return the string
+     */
     @GetMapping("/deleteReview")
     public String deleteReview(@RequestParam("reviewNo") int reviewNo,
                                @RequestParam("goodsNo") int goodsNo,
