@@ -6,7 +6,7 @@ function getHelpCategoryTag() {
         success: function (result) {
             for (var i = 0; i < result.length; i++) {
                 let htmlStr = `
-                            <button class='categoryBtns' value='` + result[i].helpCategoryCode + `'>` + result[i].categoryName + `</button>
+                            <button type="button" class="btn btn-outline-primary categoryBtns"value='` + result[i].helpCategoryCode + `'>` + result[i].categoryName + `</button>
                         `;
                 $('#categoryTag').append(htmlStr);
             }
