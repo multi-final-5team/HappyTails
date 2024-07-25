@@ -1,79 +1,109 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
 
     <meta charset="UTF-8">
     <title>고객센터</title>
-  
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="/js/help/function.js"></script>
-    <script>
-        $(document).ready(function() {
+</head>
+<body>
+<menu th:replace="fragments/head :: menu"></menu>
+    <main>
+        <div class="container">
+            <figure class="text-center">
+                <h2>고객센터</h2>
+            </figure>
+            <figure class="text-left">
+                <h3>자주묻는 질문</h3>
+            </figure>
+            <div class="btn-group" id="categoryTag">
+            </div>
+            <table class="table table-hover">
+                <tbody id="questionTbody">
+
+                </tbody>
+            </table>
+            <!-- 로그인 한 일반 유저만 접근 가능 (후 if문 추가)-->
+                <button type="button" id="inquiryWriteGo" class="btn-lg">문의 하기</button>
+                <button type="button" id="inquiryListGo" class="btn-lg">이전 내 문의 보기</button>
+            <!-- 로그인 한 일반 유저만 접근 가능 -->
+        </div>
+    </main>
+
+<!-- 스크립트 부분 -->
+<script src="/js/help/function.js"></script>
+<script>
+    $(document).ready(function() {
+        console.log('실행');
         // 자주묻는질문 list
-            getQuestionList();
+        getQuestionList();
         //
 
         // 카테고리 불러오기 Start
-            getHelpCategoryTag(); // /js/help/function.js
+        $.ajax({
+            type: "GET",
+            url: "/help/getCategory",
+            dataType: "json",
+            success: function (result) {
+                for (var i = 0; i < result.length; i++) {
+                    let htmlStr = `
+                            <button type="button" class="btn btn-outline-primary categoryBtns"value='` + result[i].helpCategoryCode + `'>` + result[i].categoryName + `</button>
+                        `;
+                    $('#categoryTag').append(htmlStr);
+                }
+            }
+        });
         // 카테고리 불러오기 End
         // 자주 묻는 질문 List function Start
-            function getQuestionList(categoryCode) {
-                $('#questionTable').html('');
-                $.ajax({
-                    type : "GET",
-                    url : "/help/question/list",
-                    dataType : "json",
-                    data : {categoryCode : categoryCode},
-                    success : function(result) {
-                        for (var i = 0 ; i < result.length; i++) {
-                            let htmlStr = `
+        function getQuestionList(categoryCode) {
+            $('#questionTbody').html('');
+            $.ajax({
+                type : "GET",
+                url : "/help/question/list",
+                dataType : "json",
+                data : {categoryCode : categoryCode},
+                success : function(result) {
+                    for (var i = 0 ; i < result.length; i++) {
+                        let htmlStr = `
                                 <tr>
-                                    <td class="questionTds" style="border-style: double;" data-answer="` + result[i].answerContent + `">Q.` + result[i].questionContent + `</td>
+                                    <td class="questionTds" data-answer="` + result[i].answerContent + `">Q.` + result[i].questionContent + `</td>
                                 </tr>
                             `;
-                            $('#questionTable').append(htmlStr);
-                        }
+                        $('#questionTbody').append(htmlStr);
                     }
-                });
-            }
+                }
+            });
+        }
         // 자주 묻는 질문 List function End
 
         // categoryButton 클릭 시 리스트 변경 Start
-            $(document).on('click', '.categoryBtns', function() {
-                let btnValue = $(this).val();
-                getQuestionList(btnValue);
-            });
+        $(document).on('click', '.categoryBtns', function() {
+            let btnValue = $(this).val();
+            getQuestionList(btnValue);
+        });
         // categoryButton 클릭 시 리스트 변경 End
         // question 리스트 클릭 시 상세 내용 보기 Start
-            $(document).on('click', '.questionTds', function() {
-                $('.answerTd').remove('');
-                let answer = $(this).data('answer');
-                $(this).append('<td class="answerTd">'+answer+'</td>');
-            });
+        $(document).on('click', '.questionTds', function() {
+            $('.answerTable').remove('');
+            let answer = $(this).data('answer');
+            let htmlStr = `
+                <td colspan="1" class="answerTable">
+                   <table class="table mb-0 ">
+                     <td>`+answer+`</td>
+                   </table>
+                </td>
+            `;
+            $(this).append(htmlStr);
+        });
         // question 리스트 클릭 시 상세 내용 보기 End
         // Button Page 이동 Start
-            $('#inquiryWriteGo').click(function(){
-                location.href = '/help/inquiry/write';
-            });
-            $('#inquiryListGo').click(function(){
-                location.href = '/help/inquiry/list';
-            });
-        // Button Page 이동 End
+        $('#inquiryWriteGo').click(function(){
+            location.href = '/help/inquiry/write';
         });
-    </script>
-</head>
-<body>
-    <h1>고객센터</h1>
-
-    <h3>자주 묻는 질문</h3>
-    <div id="categoryTag"></div>
-    <table id="questionTable">
-
-    </table>
-    <!-- 로그인 한 일반 유저만 접근 가능 (후 if문 추가)-->
-        <button id="inquiryWriteGo">문의 하기</button>
-        <button id="inquiryListGo">이전 내 문의 보기</button>
-    <!-- 로그인 한 일반 유저만 접근 가능 -->
+        $('#inquiryListGo').click(function(){
+            location.href = '/help/inquiry/list';
+        });
+        // Button Page 이동 End
+    });
+</script>
 </body>
 </html>

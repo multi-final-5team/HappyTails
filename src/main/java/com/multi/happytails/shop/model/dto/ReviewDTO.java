@@ -9,7 +9,7 @@ import java.sql.Timestamp;
  * fileName       : ReviewDTO.java
  * author         : ShinHyeoncheol
  * date           : 2024-07-24
- * description    :
+ * description    : 리뷰 DTO
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------

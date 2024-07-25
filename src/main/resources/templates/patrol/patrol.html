@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+
     <title>Title</title>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 </head>
-<body>
-<h1>순찰대 목록</h1>
+<body class="container mt-5">
 
-<button id="goPatrolInsertBtn">생성</button>
+<menu th:replace="fragments/head :: menu"></menu>
 
-<div class="patroldiv" id="patroldiv">
+<h1 class="mb-4">순찰대 목록</h1>
+
+<button class="btn btn-primary" id="goPatrolInsertBtn">생성</button>
+
+<div id="patroldiv">
 
 </div>
 
@@ -41,7 +43,7 @@
 
                     $('<div>').prop({
                         id: 'patrol' + index,
-                        className: 'patrol'
+                        className: 'card'
                         }).attr("onclick", "gopatrol(" + data[index].patrolNo + ")")
                     );
 
@@ -51,20 +53,28 @@
                             className: 'patrol'
                         })
                     );
+
                     $('#divimg' + index).append(
-                        '<img src="/images/Z/' + img + '">'
+                        '<img class="card-img-top" src="/images/Z/' + img + '">'
                     );
 
                     $('#' + 'patrol' + index).append(
-                        '<b>' + data[index].name + '</b><br>'
+                        $('<div>').prop({
+                            id: 'divbody' + index,
+                            className: 'card-body'
+                        })
                     );
 
-                    $('#' + 'patrol' + index).append(
-                        '<sub>' + data[index].age + '</sub><br>'
+                    $('#' + 'divbody' + index).append(
+                        '<b class="card-text">' + data[index].name + '</b><br>'
                     );
 
-                    $('#' + 'patrol' + index).append(
-                        '<sub>' + data[index].breed + '</sub>'
+                    $('#' + 'divbody' + index).append(
+                        '<sub class="card-text">' + data[index].age + '</sub><br>'
+                    );
+
+                    $('#' + 'divbody' + index).append(
+                        '<sub class="card-text">' + data[index].breed + '</sub>'
                     );
             }
         },

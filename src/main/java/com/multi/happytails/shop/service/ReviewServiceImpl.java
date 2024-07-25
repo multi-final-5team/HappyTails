@@ -12,7 +12,7 @@ import java.util.List;
  * fileName       : ReviewServiceImpl.java
  * author         : ShinHyeoncheol
  * date           : 2024-07-24
- * description    :
+ * description    : 리뷰 ServiceImpl
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------

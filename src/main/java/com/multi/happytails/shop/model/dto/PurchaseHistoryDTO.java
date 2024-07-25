@@ -9,7 +9,7 @@ import java.sql.Timestamp;
  * fileName       : PurchaseHistoryDTO.java
  * author         : ShinHyeoncheol
  * date           : 2024-07-24
- * description    :
+ * description    : 구매 내역 조회 DTO
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------

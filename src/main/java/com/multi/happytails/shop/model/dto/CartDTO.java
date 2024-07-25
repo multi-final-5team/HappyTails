@@ -7,7 +7,7 @@ import lombok.*;
  * fileName       : CartDTO.java
  * author         : ShinHyeoncheol
  * date           : 2024-07-24
- * description    :
+ * description    : 장바구니 DTO
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------

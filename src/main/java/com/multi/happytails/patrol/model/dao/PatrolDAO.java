@@ -1,5 +1,17 @@
 package com.multi.happytails.patrol.model.dao;
 
+/**
+ * packageName    : com.multi.happytails.patrol.model.dao
+ * fileName       : PatrolDAO
+ * author         : wss18
+ * date           : 2024-07-22
+ * 설명    : 순찰대 crud DAO
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2024-07-22        wss18       최초 생성
+ */
+
 import com.multi.happytails.patrol.model.dto.PatrolDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
