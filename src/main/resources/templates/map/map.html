@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head">
 
-    <title>중심좌표 변경 이벤트 등록하기</title>
+    <title>장소찾기</title>
 
 </head>
 
@@ -10,6 +10,7 @@
 
 <menu th:replace="fragments/head :: menu"></menu>
 
+<main>
 <h1 class="mb-4">멍지도</h1>
 
 
@@ -38,21 +39,15 @@
 
 </div>
 
+</main>
+
 <!-- Kakao Map API -->
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a76def1c0c0dd8e389a263fe93ef2974"></script>
 
 <script>
     setLocation();
 
-    $(document).ready(function(){
-
-        homelat = $('#hidden_lat').val(); //위도
-        homelng = $('#hidden_lng').val(); //경도
-
-        alert("위도, 경도" + homelat + homelng);
-
-
-        var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
         mapOption = {
             center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
             level: 3 // 지도의 확대 레벨
@@ -66,17 +61,7 @@
         // 지도 타입 컨트롤을 지도에 표시합니다
         map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
 
-
-        // 이동할 위도 경도 위치를 생성합니다
-        var moveLatLon = new kakao.maps.LatLng(homelat, homelng);
-
-        // 지도 중심을 이동 시킵니다
-        map.panTo(moveLatLon);
-
-        // 지도 레벨 설정
-        map.setLevel(10);
-
-
+    $(document).ready(function(){
 
         $("#btnserch").click(function(){
 
@@ -132,26 +117,36 @@
             }); // $.ajax()
         alert("the request is sent")
 
-        }); // click()
+        }); // btnserch.click()
 
+        homelat = $('#hidden_lat').val(); //위도
+        homelng = $('#hidden_lng').val(); //경도
 
+        // 이동할 위도 경도 위치를 생성합니다
+        var moveLatLon = new kakao.maps.LatLng(homelat, homelng);
+
+        // 지도 중심을 이동 시킵니다
+        map.panTo(moveLatLon);
+
+        // 지도 레벨 설정
+        map.setLevel(10);
 
     });
 
     function setLocation() {
-    navigator.geolocation.getCurrentPosition(function (position){
+        navigator.geolocation.getCurrentPosition(function (position){
 
-        lat = position.coords.latitude; // 위도
-        lng = position.coords.longitude; // 경도
+            lat = position.coords.latitude; // 위도
+            lng = position.coords.longitude; // 경도
 
-        $('#hidden_lat').val(lat);
-        $('#hidden_lng').val(lng);
-    }, function (){
-        Swal.fire({
-            icon: 'question',
-            html: '위치 정보를 가져올 수 없습니다.<br>위치 정보 허용을 해주세요.',
-        })
-    });
+            $('#hidden_lat').val(lat);
+            $('#hidden_lng').val(lng);
+        }, function (){
+            Swal.fire({
+                icon: 'question',
+                html: '위치 정보를 가져올 수 없습니다.<br>위치 정보 허용을 해주세요.',
+            })
+        });
     }
 </script>
 </body>
