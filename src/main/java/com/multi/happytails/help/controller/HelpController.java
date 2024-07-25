@@ -57,9 +57,12 @@ public class HelpController {
         // login User
             inquiryDto.setWriterId(principal.getName());
         // login User
+
+        long inquiryNo = helpService.inquiryInsert(inquiryDto);
+
         if (imageFiles != null && !imageFiles.isEmpty()) {
             UploadDto uploadDto = new UploadDto();
-            uploadDto.setForeignNo(helpService.inquiryInsert(inquiryDto));
+            uploadDto.setForeignNo(inquiryNo);
             uploadDto.setCategoryCode(UPLOAD_INQUIRY_CODE);
 
             for (int i = 0; i < imageFiles.size(); i++) {
