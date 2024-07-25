@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -31,12 +32,12 @@ public class HelpService {
         return helpMapper.questionList(categoryCode);
     }
 
-    public int inquiryListCount(PageDto pageDto, String categoryCode) {
-        return helpMapper.inquiryListCount(pageDto, categoryCode);
+    public int inquiryListCount(PageDto pageDto, Map<String,Object> searchMap) {
+        return helpMapper.inquiryListCount(pageDto, searchMap);
     }
 
-    public List<InquiryDto> getInquiryList(PageDto pageDto, String categoryCode) {
-        System.out.println(helpMapper.getInquiryList(pageDto, categoryCode) + "flfl");
-        return helpMapper.getInquiryList(pageDto, categoryCode);
+    public List<InquiryDto> getInquiryList(PageDto pageDto, Map<String,Object> searchMap) {
+        System.out.println(searchMap + "=-=-==");
+        return helpMapper.getInquiryList(pageDto, searchMap);
     }
 }

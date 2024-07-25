@@ -8,6 +8,7 @@ import com.multi.happytails.help.service.HelpService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -79,26 +80,26 @@ public class HelpController {
 
     @GetMapping("/inquiry/getList")
     @ResponseBody
-    public ResponseEntity<?> getInquiryList(PageDto pageDto
-            , @RequestParam(value="nowPage", required=false)String nowPage
-            , @RequestParam(value="categoryCode", required=false)String categoryCode) {
+    public ResponseEntity<?> getInquiryList(PageDto pageDto,
+        @RequestParam Map<String, Object> params) {
         System.out.println(pageDto);
-        System.out.println(nowPage);
-        System.out.println(categoryCode);
-        List<InquiryDto> list = null;
+        System.out.println(params);
+        String nowPage = (String) params.get("nowPage");
 
-        int total = helpService.inquiryListCount(pageDto, categoryCode);
+        List<InquiryDto> list = null;
 
         if (nowPage == null) {
             nowPage = "1";
-        } else if (nowPage == null) {
-            nowPage = "1";
         }
+
+        int total = helpService.inquiryListCount(pageDto, params);
+
+
         pageDto = new PageDto(total, Integer.parseInt(nowPage),10 ,pageDto.getKeyword(),pageDto.getSearchValue());
 
         Map<String, Object> response = new HashMap<>();
         response.put("paging", pageDto);
-        response.put("viewAll", helpService.getInquiryList(pageDto, categoryCode));
+        response.put("viewAll", helpService.getInquiryList(pageDto, params));
 
         return ResponseEntity.ok(response);
 

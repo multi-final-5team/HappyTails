@@ -19,13 +19,13 @@
                 <div class="col">
                     <label for="category" class="form-label">카테고리</label>
                     <select class="form-select" id="category">
-                        <option selected>전체</option>
+                        <option selected value="" >전체</option>
                     </select>
                 </div>
                 <div class="col">
                     <label for="result" class="form-label">결과</label>
                     <select class="form-select" id="result">
-                        <option selected>전체</option>
+                        <option value="" selected>전체</option>
                         <option value="N">대기</option>
                         <option value="S">열람</option>
                         <option value="Y">완료</option>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="col">
                     <br>
-                    <button type="button" class="btn btn-primary">검색</button>
+                    <button type="button" class="btn btn-primary" id="searchBtn">검색</button>
                 </div>
             </div>
             <div>
@@ -57,7 +57,7 @@
 <script src="/js/help/page.js"></script>
 <script>
     $(document).ready(function() {
-        getList();
+        getList(1);
         // 카테고리 불러오기 Start
         $.ajax({
             type : "GET",
@@ -76,17 +76,29 @@
 
     });
     // list 불러오기 Start
-    function getList(nowPage,categoryCode) {
+    function getList(nowPage,searchMap) {
         $('#tableDiv').html('');
 
-        let searchSel = 'title';
-        let keyword = $('#keyword').val();
+        // 입력 필드와 셀렉트박스에서 값을 가져옴
+        let titleValue = $('#title').val();
+        let categoryValue = $('#category').val();
+        let resultValue = $('#result').val();
+
+        // 맵과 유사한 구조로 데이터를 생성
+        let dataMap = {
+            title: titleValue,
+            category: categoryValue,
+            result: resultValue,
+            nowPage: nowPage
+        };
+
+        // 쿼리 문자열 생성
+        let queryString = $.param(dataMap);
 
         $.ajax({
             type : "GET",
-            url : "/help/inquiry/getList",
+            url : "/help/inquiry/getList?"+queryString,
             dataType : "json",
-            data : {'searchValue' : searchSel, 'keyword' : keyword, 'nowPage' : nowPage, 'categoryCode' : categoryCode},
             success : function(result) {
                 console.log(result);
                 let template = '';
@@ -129,6 +141,12 @@
         });
     }
     // list 불러오기 End
+    // 검색 click 이벤트 Start
+        $("#searchBtn").click(function(){
+            getList(1);
+        });
+    // 검색 click 이벤트 End
+
 </script>
 </body>
 </html>
