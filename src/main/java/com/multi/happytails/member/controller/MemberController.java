@@ -244,7 +244,6 @@ public class MemberController {
     }
 
 
-
 //    @PostMapping("/delete")
 //    public ResponseEntity<String> deleteAccount() {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
