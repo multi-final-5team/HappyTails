@@ -16,6 +16,14 @@
             border-bottom: 1px solid #eee;
             padding: 10px 0;
         }
+        .btn-blue {
+            background-color: #007bff;
+            color: white;
+            float: right;
+        }
+        .comment-form-container {
+            text-align: right;
+        }
     </style>
 </head>
 <body class="container mt-5">
@@ -27,36 +35,52 @@
     <div class="card-body">
         <h2 class="card-title" th:text="${doglove.title}"></h2>
         <p class="card-text"><strong>작성자:</strong> <span th:text="${doglove.userId}"></span></p>
-        <p class="card-text"><strong>작성 시간:</strong> <span th:text="${#temporals.format(doglove.createTime, 'yyyy-MM-dd HH')}"></span></p>
+        <p class="card-text"><strong>작성 시간:</strong> <span th:text="${#temporals.format(doglove.createTime, 'yyyy-MM-dd')}"></span></p>
         <p class="card-text" th:text="${doglove.content}"></p>
         <p class="card-text"><strong>추천 수:</strong> <span th:id="recommendCount" th:text="${doglove.recommendCount}"></span></p>
     </div>
-</div>
+    <div th:each="uploadDto : ${imageFiles}" class="col-md-4 mb-3">
+        <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" class="img-fluid">
 
+    </div>
 
-<div class="mb-4">
-    <h4>댓글</h4>
+    <div class="mb-4">
+        <form th:action="@{/community/L/{foreignNo}/reply/add(foreignNo=${doglove.dogloveNo})}" method="post" class="comment-form">
+            <input type="hidden" name="communityCategoryCode" value="L" />
+            <input type="hidden" name="foreignNo" th:value="${doglove.dogloveNo}" />
+            <div style="margin-bottom: 10px;">
+                <textarea name="content" required rows="3" style="width: 100%; padding: 10px;"></textarea>
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+                <button type="submit" style="background-color: #007bff; color: white; border: none; padding: 10px 20px; cursor: pointer;">댓글 생성</button>
+            </div>
+        </form>
+    </div>
     <form th:action="@{/community/L/{foreignNo}/reply/add(foreignNo=${doglove.dogloveNo})}" method="post" class="comment-form">
-        <input type="hidden" name="communityCategoryCode" value="L" />
-        <input type="hidden" name="foreignNo" th:value="${doglove.dogloveNo}" />
-        <div class="mb-3">
-            <textarea class="form-control" name="content" required rows="3"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">댓글 작성</button>
-    </form>
 
     <!-- 댓글 목록 -->
-    <ul class="reply-list mt-4">
-        <li th:each="reply : ${reply}">
-            <p><strong th:text="${reply.writerId}">작성자</strong>: <span th:text="${reply.content}">내용</span></p>
+    <ul class="reply-list mt-4" style="list-style-type: none; padding: 0;">
+        <li th:each="reply : ${reply}" style="margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <p style="margin: 0;">
+                    <strong th:text="${reply.writerId}">작성자</strong>:
+                    <span th:text="${reply.content}">내용</span>
+                </p>
+                <!-- 현재 로그인한 사용자와 댓글 작성자가 같을 경우에만 삭제 버튼 표시 -->
+                <form th:if="${#authentication.name == reply.writerId}"
+                      th:action="@{/community/L/{foreignNo}/reply/delete(foreignNo=${doglove.dogloveNo})}" method="post" style="margin: 0;">
+                    <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}" />
+                    <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;">삭제</button>
+                </form>
+            </div>
         </li>
     </ul>
-</div>
 
-<div class="d-flex justify-content-between">
-    <a href="/community/doglove" class="btn btn-secondary">목록으로 돌아가기</a>
-    <a href="/community/doglove/create" class="btn btn-primary">새 글 작성하기</a>
-</div>
 
+    <div class="d-flex justify-content-between">
+        <a href="/community/doglove" class="btn btn-secondary">목록으로 돌아가기</a>
+        <a href="/community/doglove/create" class="btn btn-primary">새 글 작성하기</a>
+    </div>
+</div>
 </body>
 </html>
