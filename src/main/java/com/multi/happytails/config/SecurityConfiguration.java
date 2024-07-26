@@ -47,9 +47,11 @@ public class SecurityConfiguration {
                 .csrf((auth) -> auth.disable()
                 )
                 .authorizeHttpRequests((auth) -> auth
-//                        .requestMatchers("").permitAll()
+                        .requestMatchers("/member/login").not().fullyAuthenticated()
+                        .requestMatchers("/", "/member/signup", "/error/**").permitAll()
 //                        .anyRequest().authenticated()
                         .anyRequest().permitAll()
+
                 );
         http
                 .formLogin(form -> form
@@ -58,6 +60,7 @@ public class SecurityConfiguration {
                         .passwordParameter("password")
                         .defaultSuccessUrl("/member/mypage", true)
                         .failureForwardUrl("/error/login")
+//                        .permitAll()
                 ).headers(headers -> headers
                         .frameOptions().sameOrigin());
         http
