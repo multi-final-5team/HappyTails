@@ -11,10 +11,8 @@ public interface ReplyDAO {
     void insertReply(ReplyDTO replyDTO);
     ReplyDTO selectReplyById(int replyNo);
     void updateReply(ReplyDTO replyDTO);
-    void deleteReply(int replyNo);
+    void deleteReply(int communityReplyNo);
 
     List<ReplyDTO> selectReplyByForeignNo(String communityCategoryCode, int foreignNo);
 
-
-    //List<ReplyDTO> selectReplyByForeignNo(int foreignNo);
 }

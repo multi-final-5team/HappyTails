@@ -24,11 +24,13 @@ import com.multi.happytails.upload.service.UploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,12 +95,16 @@ public class PatrolController {
      * @return string
      */
     @PostMapping("makepatrol")
-    public String makepatrol(PatrolDTO patrolDTO , @RequestParam(value = "imageFiles") List<MultipartFile> imageFiles, @AuthenticationPrincipal CustomUser customUser){
+    public String makepatrol(PatrolDTO patrolDTO , @RequestParam(value = "imageFiles") List<MultipartFile> imageFiles, Principal principal , @AuthenticationPrincipal(errorOnInvalidType=true) CustomUser customUser
+    ){
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
 
         patrolDTO.setUserNo((int)customUser.getNo());
 
         System.out.println("patrolDTO >>>> " + patrolDTO);
+
+        System.out.println("유저넘버 >>>> " + (int)customUser.getNo());
 
 
         patrolService.patrolInsert(patrolDTO);
@@ -129,7 +135,8 @@ public class PatrolController {
      */
     @GetMapping(value="findAllPatrol", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public PatrolImgDTO findAllPatrol(Model model){
+    public PatrolImgDTO findAllPatrol(Model model , @AuthenticationPrincipal CustomUser customUser){
+        System.out.println("유저넘버 >>>> " + (int)customUser.getNo());
 
         List<UploadDto> uploadDtos = new ArrayList<>();
 

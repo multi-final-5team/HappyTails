@@ -33,7 +33,6 @@ import java.util.List;
 @RequestMapping("/community")
 public class DogloveController {
 
-
     @Autowired
     private DogloveService dogloveService;
 
@@ -58,18 +57,6 @@ public class DogloveController {
      * 게시판 카테고리 코드(내 새꾸 자랑)
      */
     final String categoryCode = "DOGLOVE_CODE";
-
-    /**
-     * methodName : list
-     * author : Nayoung Yeo
-     * description : 게시판 목록을 보여줌(임시)
-     *
-     * @return string
-     */
-    @GetMapping
-    public String list() {
-        return "community/list";
-    }
 
     /**
      *
@@ -121,16 +108,27 @@ public class DogloveController {
     @GetMapping("/doglove/{dogloveNo}")
     public String dogloveDetail(@PathVariable("dogloveNo") Long dogloveNo, Model model) {
         DogloveDTO doglove = dogloveService.findById(dogloveNo);
+        //댓글 조회
         List<ReplyDTO> reply = replyService.getReplyByForeignNo(replyCategoryCode, Math.toIntExact(dogloveNo));
+        List<UploadDto> uploadDtoList = uploadService.uploadSelect(IMAGE_CODE, dogloveNo);
 
-        System.out.println(uploadService.uploadSelect(IMAGE_CODE, dogloveNo));
+        UploadDto uploadDto = UploadDto.builder().categoryCode(categoryCode).foreignNo(dogloveNo).build();
+
+        uploadDto.setCategoryCode(IMAGE_CODE);
+        uploadDto.setForeignNo(dogloveNo);
+
+
+        // 조회된 데이터가 있을 경우
         if (doglove != null) {
             model.addAttribute("doglove", doglove);
             model.addAttribute("reply", reply);
+            model.addAttribute("imageFiles", uploadDtoList);
+            model.addAttribute("uploadDto", uploadDto);
             return "community/dogloveDetail";
         } else {
             return "redirect:/community/doglove";
         }
+
     }
 
     /*
@@ -155,13 +153,13 @@ public class DogloveController {
     @PostMapping("/doglove")
     public String savePost(@ModelAttribute DogloveDTO dogloveDTO,
                            @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles,
-                           HttpSession session, Principal principal) {
-
-        String userId = principal.getName();
-        // String userId = (String) session.getAttribute("USER_ID");
-        if (userId == null) {
+                           HttpSession session, Principal principal, Model model ) {
+        if (principal == null) {
+            model.addAttribute("message", "로그인 후 이용해주세요");
             return "redirect:/member/login";
         }
+
+        String userId = principal.getName();
         dogloveDTO.setUserId(userId);
 
         //게시판 카테고리 코드

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+
+    <title>Title</title>
+
+</head>
+<body class="container mt-5">
+
+<menu th:replace="fragments/head :: menu"></menu>
+
+<main>
+
+    <h1 class="mb-4">순찰경로 생성</h1>
+
+    <label>경로</label>
+
+    <input type="hidden" id="hidden_lat" value="">
+    <input type="hidden" id="hidden_lng" value="">
+
+    <div id="map" style="width:500px;height:350px;"></div>
+
+    <button class="btn btn-primary" id="btnstart">시작</button>
+    <button class="btn btn-danger" id="btnend">종료</button>
+    <button class="btn btn-info" id="btnclear">지우기</button>
+
+    <button class="btn btn-success" id="btnmake">생성</button>
+
+
+
+
+</main>
+
+<!-- Kakao Map API -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a76def1c0c0dd8e389a263fe93ef2974"></script>
+
+<script>
+
+    setLocation();
+
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        mapOption = {
+            center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+            level: 3 // 지도의 확대 레벨
+        };
+
+        var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+        // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
+        var mapTypeControl = new kakao.maps.MapTypeControl();
+
+        // 지도 타입 컨트롤을 지도에 표시합니다
+        map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+
+    $(document).ready(function(){
+        mapMove();
+
+
+
+    }); // ready()
+
+
+    //지도 이동
+    function mapMove() {
+        homelat = $('#hidden_lat').val(); //위도
+        homelng = $('#hidden_lng').val(); //경도
+
+        // 이동할 위도 경도 위치를 생성합니다
+        var moveLatLon = new kakao.maps.LatLng(homelat, homelng);
+
+        // 지도 중심을 이동 시킵니다
+        map.panTo(moveLatLon);
+
+        // 지도 레벨 설정
+        map.setLevel(5);
+    }
+
+
+    //현재 위치 찾기
+    function setLocation() {
+        navigator.geolocation.getCurrentPosition(function (position){
+
+            lat = position.coords.latitude; // 위도
+            lng = position.coords.longitude; // 경도
+
+            $('#hidden_lat').val(lat);
+            $('#hidden_lng').val(lng);
+        }, function (){
+            Swal.fire({
+                icon: 'question',
+                html: '위치 정보를 가져올 수 없습니다.<br>위치 정보 허용을 해주세요.',
+            })
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -7,6 +7,72 @@
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
     <main>
+        <div class="container">
+            <figure class="text-center">
+                <h2>고객센터</h2>
+            </figure>
+            <figure class="text-left">
+                <h3>1:1 문의 상세보기</h3>
+            </figure>
+                <dl class="row">
+                    <dt class="col-sm-3">제목</dt>
+                    <dd class="col-sm-9"><th:block th:text="${inquiryDto.title}"></th:block></dd>
+
+                    <dt class="col-sm-3">카테고리</dt>
+                    <dd class="col-sm-9">
+                        <p><th:block th:text="${inquiryDto.categoryName}"></th:block></p>
+                    </dd>
+
+                    <dt class="col-sm-3">내용</dt>
+                    <dd class=" col-sm-9 row">
+                        <pre><th:block th:text="${inquiryDto.content}"></th:block></pre>
+                    </dd>
+                    <th:block th:if="${uploadDtos != null}">
+                        <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
+                            <dd class="text-center">
+                                <img th:src="@{/images/I/{file}(file=${uploadDto.storedFileName})}" alt="..." width="600px" height="500px">
+                            </dd>
+                        </th:block>
+                    </th:block>
+                </dl>
+            <!-- 관리자만 보이게 -->
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">결과 작성</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="imageInput" class="form-label"이미지 첨부</label>
+                <input class="form-control" type="file" id="imageInput">
+            </div>
+            <div id="imgAddDiv">
+
+            </div>
+            <div>
+                <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
+            </div>
+            <!-- 관리자만 보이게 -->
+        </div>
     </main>
+<script>
+    $(document).ready(function() {
+        // 이미지 road Start
+        let imageFiles = [];
+        $('#imageInput').on('change', function(event) {
+            console.log('실행');
+            var file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#imgAddDiv').append('<img src="' + e.target.result + '" alt="Selected Image" width="100px" height="100px">');
+                }
+                imageFiles.push(file);
+                reader.readAsDataURL(file);
+            } else {
+                alert('이미지 파일을 선택해주세요');
+            }
+        });
+        // 이미지 road End
+    });
+</script>
 </body>
 </html>

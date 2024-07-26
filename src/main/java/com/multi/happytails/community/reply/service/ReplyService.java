@@ -24,6 +24,16 @@ public class ReplyService {
     public List<ReplyDTO> getReplyByForeignNo(String communityCategoryCode, int foreignNo) {
         return replyDAO.selectReplyByForeignNo(communityCategoryCode, foreignNo);
     }
+
+    public void deleteReply(int communityReplyNo) {
+        replyDAO.deleteReply(communityReplyNo);
+    }
+
+    public boolean isReplyWriter(int communityReplyNo, String writerId) {
+        ReplyDTO reply = replyDAO.selectReplyById(communityReplyNo);
+        return reply != null && reply.getWriterId().equals(writerId);
+    }
+
 }
 
 

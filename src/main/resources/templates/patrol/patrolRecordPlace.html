@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+
+    <title>Title</title>
+
+</head>
+<body class="container mt-5">
+
+<menu th:replace="fragments/head :: menu"></menu>
+
+<main>
+
+    <h1 class="mb-4">순찰경로 조회</h1>
+
+
+    <input class="form-control" type="text" id="searchinput">
+    <button class="btn btn-info" id="btnserch">검색</button>
+    <button class="btn btn-primary" id="goPatrolRecordPlaceInsert">생성</button>
+
+    <div id="patroldiv">
+
+    </div>
+
+</main>
+
+
+<script>
+    $(document).ready(function(){
+
+        $('#goPatrolRecordPlaceInsert').click(function(){
+            location.href = "/patrolRecordPlace/patrolRecordPlaceInsert";
+        });
+
+    }); // ready()
+</script>
+
+</body>
+</html>

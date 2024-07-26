@@ -13,6 +13,7 @@ import java.util.Date;
 public class InquiryDto {
     private long inquiryNo;
     private String helpCategoryCode;
+    private String categoryName;
     private String writerId;
     private String title;
     private String content;
