@@ -1,23 +1,21 @@
-package com.multi.happytails.shop.model.dao;
+package com.multi.happytails.shop.service;
 
 import com.multi.happytails.shop.model.dto.CartDTO;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 /**
- * packageName    : com.multi.happytails.shop.model.dao
- * fileName       : CartDAO.java
+ * packageName    : com.multi.happytails.shop.service
+ * fileName       : CartService
  * author         : ShinHyeoncheol
- * date           : 2024-07-24
+ * date           : 2024-07-26
  * description    :
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
- * 2024-07-24        ShinHyeoncheol       최초 생성
+ * 2024-07-26        ShinHyeoncheol       최초 생성
  */
-@Mapper
-public interface CartDAO {
+public interface CartService {
     void insertCart(CartDTO cartDTO);
 
     List<CartDTO> cartList(String id);

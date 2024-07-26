@@ -33,7 +33,7 @@
     <delete id="deleteReview">
         DELETE FROM TB_REVIEW
         WHERE
-        REVIEW_NO = #{no} AND ID = #{id} AND GOODS_NO = #{goodsNo}
+        REVIEW_NO = #{no}
     </delete>
 
     <select id="reviewList" parameterType="com.multi.happytails.shop.model.dto.ReviewDTO" resultMap="ReviewResultMap">
