@@ -36,6 +36,10 @@ public class MybatisConfig {
 
         Resource[] res = new PathMatchingResourcePatternResolver().getResources("classpath:mappers/**/*.xml");
 
+        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        configuration.setMapUnderscoreToCamelCase(true);
+        seb.setConfiguration(configuration);
+
         seb.setMapperLocations(res);
 
         seb.setDataSource(datasource);

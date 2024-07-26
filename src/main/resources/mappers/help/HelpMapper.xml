@@ -39,11 +39,16 @@
         SELECT COUNT(*) AS CNT
         FROM TB_INQUIRY
         <where>
-            <if test="pageDto.searchValue == 'title' and pageDto.keyword != null">
-                AND TITLE LIKE CONCAT('%', #{pageDto.keyword}, '%')
-            </if>
-            <if test="categoryCode != null">
-                AND HELP_CATEGORY_CODE = #{categoryCode}
+            <if test="searchMap != null">
+                <if test="searchMap.title != '' and searchMap.title != null">
+                    AND TITLE LIKE CONCAT('%', #{searchMap.title}, '%')
+                </if>
+                <if test="searchMap.category != '' and searchMap.category != null">
+                    AND HELP_CATEGORY_CODE LIKE CONCAT('%', #{searchMap.category}, '%')
+                </if>
+                <if test="searchMap.result != '' and searchMap.result != null">
+                    AND RESULT LIKE CONCAT('%', #{searchMap.result}, '%')
+                </if>
             </if>
         </where>
     </select>
@@ -56,16 +61,25 @@
         SELECT *
         FROM TB_INQUIRY
         <where>
-            <if test="pageDto.searchValue == 'title' and pageDto.keyword != null">
-                AND TITLE LIKE CONCAT('%', #{pageDto.keyword}, '%')
-            </if>
-            <if test="categoryCode != null">
-                AND HELP_CATEGORY_CODE = #{categoryCode}
+            <if test="searchMap != null">
+                <if test="searchMap.title != '' and searchMap.title != null">
+                    AND TITLE LIKE CONCAT('%', #{searchMap.title}, '%')
+                </if>
+                <if test="searchMap.category != '' and searchMap.category != null">
+                    AND HELP_CATEGORY_CODE LIKE CONCAT('%', #{searchMap.category}, '%')
+                </if>
+                <if test="searchMap.result != '' and searchMap.result != null">
+                    AND RESULT LIKE CONCAT('%', #{searchMap.result}, '%')
+                </if>
             </if>
         </where>
         ) AS A
         LEFT JOIN TB_HELP_CATEGORY AS HC ON A.HELP_CATEGORY_CODE = HC.HELP_CATEGORY_CODE
         ) AS SubQuery
         WHERE RNUM BETWEEN  #{pageDto.start} AND #{pageDto.end}
+    </select>
+
+    <select id="inquiryDetail">
+        SELECT I.*, C.CATEGORY_NAME FROM TB_INQUIRY I left join tb_help_category C on C.HELP_CATEGORY_CODE = I.HELP_CATEGORY_CODE WHERE INQUIRY_NO = #{inquiryNo}
     </select>
 </mapper>

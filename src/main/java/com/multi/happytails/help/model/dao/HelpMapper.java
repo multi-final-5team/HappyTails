@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface HelpMapper {
@@ -17,7 +18,9 @@ public interface HelpMapper {
 
     public List<QuestionDto> questionList(String categoryCode);
 
-    public int inquiryListCount(@Param("pageDto")PageDto pageDto, @Param("categoryCode")String categoryCode);
+    public int inquiryListCount(@Param("pageDto")PageDto pageDto, @Param("searchMap") Map<String,Object> searchMap);
 
-    public List<InquiryDto> getInquiryList(@Param("pageDto")PageDto pageDto, @Param("categoryCode")String categoryCode);
+    public List<InquiryDto> getInquiryList(@Param("pageDto")PageDto pageDto, @Param("searchMap")Map<String,Object> searchMap);
+
+    public InquiryDto inquiryDetail(@Param("inquiryNo") long inquiryNo);
 }
