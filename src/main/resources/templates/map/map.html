@@ -11,6 +11,7 @@
 <menu th:replace="fragments/head :: menu"></menu>
 
 <main>
+
 <h1 class="mb-4">멍지도</h1>
 
 
@@ -32,8 +33,10 @@
 </select>
 
 <button class="btn btn-info" id="btnserch">검색</button>
+<div id="placenumdiv"></div>
 <input type="hidden" id="hidden_lat" value="">
 <input type="hidden" id="hidden_lng" value="">
+<input type="hidden" id="urlend" value="">
 
 <div class="placediv" id="placediv">
 
@@ -65,15 +68,45 @@
 
         $("#btnserch").click(function(){
 
-            $('#placediv').empty();
-
             radius = $("#radius option:selected").val();
             serchplace = $("#serchplace option:selected").val();
 
             sendlng = $('#hidden_lng').val();
             sendlat = $('#hidden_lat').val();
 
-            var sendurl = 'https://dapi.kakao.com/v2/local/search/keyword.json?page=1&size=15&sort=distance&query='+ serchplace +'&x='+ sendlng +'&y=' + sendlat + '&radius=' + radius;
+            var urlstart = 'https://dapi.kakao.com/v2/local/search/keyword.json?page=';
+
+            var urlend = '&size=15&sort=distance&query='+ serchplace +'&x='+ sendlng +'&y=' + sendlat + '&radius=' + radius;
+
+            $('#urlend').val(urlend);
+
+            var page = 1;
+
+            var sendurl = urlstart + page + urlend;
+
+            $('#placenumdiv').empty();
+
+            makePlaceDiv(1 , sendurl);
+
+        }); // btnserch.click()
+
+        homelat = $('#hidden_lat').val(); //위도
+        homelng = $('#hidden_lng').val(); //경도
+
+        // 이동할 위도 경도 위치를 생성합니다
+        var moveLatLon = new kakao.maps.LatLng(homelat, homelng);
+
+        // 지도 중심을 이동 시킵니다
+        map.panTo(moveLatLon);
+
+        // 지도 레벨 설정
+        map.setLevel(10);
+
+    });
+
+    // placediv 를 ajax 조회한 후 변경
+    function makePlaceDiv(page ,sendurl){
+        $('#placediv').empty();
 
             $.ajax({
                 type:'get',
@@ -84,6 +117,10 @@
 
 
                 var placelist = data.documents;
+
+                var pagecount = data.meta.pageable_count;
+
+                makePageDiv(page ,pagecount);
 
                 for(let index in placelist){
 
@@ -112,27 +149,60 @@
                     );
                 }
 
-            },
-            error   : function(){ alert("error") } // 에러가 발생했을 때, 호출될 함수
+
+
+                },
+                error   : function(){ alert("error") } // 에러가 발생했을 때, 호출될 함수
             }); // $.ajax()
-        alert("the request is sent")
+    } // makePlaceDiv()
 
-        }); // btnserch.click()
+    // 페이지 숫자 만들기
+    function makePageDiv(page ,endpage) {
+        if(page < 6){
+            for(i = 1;i <= 3; i++){ //페이지 시작
+                if (page != i){
+                    $('#placenumdiv').append(
+                    '<a href="#" onclick="changePage(' + i + ' , ' + endpage + ');"> ' + i + ' </a>'
+                    );
+                }
+                else{
+                    $('#placenumdiv').append(
+                        '<b> ' + i + ' </b>'
+                    );
+                }
+            }
+        }
+        else if(page > endpage- 5){ //페이지 끝
+            for(i = endpage - 8;i <= endpage; i++){
+                if (page != i){
+                    $('#placenumdiv').append(
+                    '<a href="#" onclick="changePage(' + i + ' , ' + endpage + ');"> ' + i + ' </a>'
+                    );
+                }
+                else{
+                    $('#placenumdiv').append(
+                        '<b> ' + i + ' </b>'
+                    );
+                }
+            }
+        }
+        else{ //페이지 중간
+            for(i = page - 4;i <= page + 4; i++){
+                if (page != i){
+                    $('#placenumdiv').append(
+                    '<a href="#" onclick="changePage(' + i + ' , ' + endpage + ');"> ' + i + ' </a>'
+                    );
+                }
+                else{
+                    $('#placenumdiv').append(
+                        '<b> ' + i + ' </b>'
+                    );
+                }
+            }
+        }
+    } // makePageDiv()
 
-        homelat = $('#hidden_lat').val(); //위도
-        homelng = $('#hidden_lng').val(); //경도
-
-        // 이동할 위도 경도 위치를 생성합니다
-        var moveLatLon = new kakao.maps.LatLng(homelat, homelng);
-
-        // 지도 중심을 이동 시킵니다
-        map.panTo(moveLatLon);
-
-        // 지도 레벨 설정
-        map.setLevel(10);
-
-    });
-
+    //현재 위치 찾기
     function setLocation() {
         navigator.geolocation.getCurrentPosition(function (position){
 
@@ -147,6 +217,18 @@
                 html: '위치 정보를 가져올 수 없습니다.<br>위치 정보 허용을 해주세요.',
             })
         });
+    }
+
+    // 페이지 이동 처리
+    function changePage(page ,endpage) {
+        urlstart = 'https://dapi.kakao.com/v2/local/search/keyword.json?page=';
+        urlend = $('#urlend').val();
+
+        sendurl = urlstart + page + urlend;
+
+        $('#placenumdiv').empty();
+
+        makePlaceDiv(page ,sendurl);
     }
 </script>
 </body>
