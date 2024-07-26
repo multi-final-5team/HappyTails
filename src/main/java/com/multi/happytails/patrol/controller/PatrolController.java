@@ -24,6 +24,7 @@ import com.multi.happytails.upload.service.UploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -94,8 +95,9 @@ public class PatrolController {
      * @return string
      */
     @PostMapping("makepatrol")
-    public String makepatrol(PatrolDTO patrolDTO , @RequestParam(value = "imageFiles") List<MultipartFile> imageFiles, Principal principal , @AuthenticationPrincipal CustomUser customUser
+    public String makepatrol(PatrolDTO patrolDTO , @RequestParam(value = "imageFiles") List<MultipartFile> imageFiles, Principal principal , @AuthenticationPrincipal(errorOnInvalidType=true) CustomUser customUser
     ){
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
 
         patrolDTO.setUserNo((int)customUser.getNo());
