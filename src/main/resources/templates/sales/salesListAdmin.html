@@ -37,7 +37,11 @@
                         </td>
                         <td th:text="${salesGoods.price}"></td>
                         <td>
-                            <span>대표 이미지</span>
+                            <div class="row">
+                                <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}" class="col-md-4 mb-3">
+                                    <img th:src="@{/images/S/{file}(file=${salesGoodsMap[salesGoods.no][0].storedFileName})}" alt="대표 이미지" class="img-fluid">
+                                </div>
+                            </div>
                         </td>
                         <td>
                             <span class="badge bg-secondary" th:text="${salesGoods.categoryCode}"></span>

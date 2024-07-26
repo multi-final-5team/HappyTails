@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -51,7 +52,7 @@ public class ReviewController {
      * author : Shin HyeonCheol
      * description : Write Review
      *
-     * @param customUser the custom user
+     * @param principal  the principal
      * @param goodsNo    the goods no
      * @param starRating the star rating
      * @param content    the content
@@ -59,12 +60,12 @@ public class ReviewController {
      * @return the string
      */
     @PostMapping("/insertReview")
-    public String insertReview(@AuthenticationPrincipal CustomUser customUser,
+    public String insertReview(Principal principal,
                                @RequestParam("goodsNo") int goodsNo,
                                @RequestParam("starRating") int starRating,
                                @RequestParam("content") String content,
                                @RequestParam("imageFiles")List<MultipartFile> imageFiles) {
-        String Id = customUser.getId();
+        String Id = principal.getName();
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setId(Id);
         reviewDTO.setGoodsNo(goodsNo);
@@ -109,22 +110,16 @@ public class ReviewController {
      * author : Shin HyeonCheol
      * description : delete Review
      *
-     * @param reviewNo   the review no
-     * @param goodsNo    the goods no
-     * @param customUser the custom user
+     * @param no   the review no
      * @return the string
      */
     @GetMapping("/deleteReview")
-    public String deleteReview(@RequestParam("reviewNo") int reviewNo,
-                               @RequestParam("goodsNo") int goodsNo,
-                               @AuthenticationPrincipal CustomUser customUser
-                                ) {
+    public String deleteReview(@RequestParam("reviewNo") int no) {
         ReviewDTO reviewDTO = new ReviewDTO();
-        String Id = customUser.getId();
-        reviewDTO.setId(Id);
-        reviewDTO.setNo(reviewNo);
-        reviewDTO.setGoodsNo(goodsNo);
-        List<UploadDto> uploadDtos= uploadService.uploadSelect(UPLOAD_INQUIRY_CODE,reviewNo); // 리스트로 가져오니까
+        reviewDTO.setNo(no);
+        System.out.println("dd" + no);
+        System.out.println("dd" + reviewDTO);
+        List<UploadDto> uploadDtos= uploadService.uploadSelect(UPLOAD_INQUIRY_CODE,no); // 리스트로 가져오니까
         // for문으로 써서
 
         for(int i = 0; i < uploadDtos.size(); i++) {

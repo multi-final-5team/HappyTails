@@ -11,7 +11,16 @@
         <result column="PURCHASE_QUANTITY" property="purchaseQuantity" />
     </resultMap>
 
-    <select id="findMemberById" resultMap="cartResultMap">
+    <select id="insertCart" parameterType="com.multi.happytails.shop.model.dto.CartDTO">
+        INSERT INTO TB_CART (
+        ID, GOODS_NO, PURCHASE_QUANTITY
+        ) VALUES (
+        #{id}, #{goodsNo}, #{purchaseQuantity}
+        )
     </select>
 
+    <select id="cartList" resultMap="cartResultMap">
+        SELECT * FROM TB_CART
+        WHERE ID = #{id};
+    </select>
 </mapper>

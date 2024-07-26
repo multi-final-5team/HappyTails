@@ -11,6 +11,7 @@
 </head>
 <body class="bg-light">
 <menu th:replace="fragments/head :: menu"></menu>
+<main>
 <div class="container my-5">
     <h1 class="mb-4 text-center">판매 상품 목록</h1>
     <div class="card shadow">
@@ -34,7 +35,11 @@
                         </td>
                         <td th:text="${#numbers.formatCurrency(salesGoods.price)}"></td>
                         <td>
-                            <span>상품이미지</span>
+                            <div class="row">
+                                <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}" class="col-md-4 mb-3">
+                                    <img th:src="@{/images/S/{file}(file=${salesGoodsMap[salesGoods.no][0].storedFileName})}" alt="대표 이미지" class="img-fluid">
+                                </div>
+                            </div>
                         </td>
                         <td>
                                 <span th:text="${salesGoods.categoryCode}"
@@ -44,8 +49,32 @@
                     </tbody>
                 </table>
             </div>
+<!--            <div class="d-flex justify-content-center">-->
+<!--                <nav aria-label="Page navigation">-->
+<!--                    <ul class="pagination">-->
+<!--                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
+<!--                            <a class="page-link" th:href="@{/salesList(page=${currentPage - 1})}" aria-label="Previous">-->
+<!--                                <span aria-hidden="true">&laquo;</span>-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">-->
+<!--                            <a class="page-link" th:href="@{/salesList(page=${i})}" th:text="${i}"></a>-->
+<!--                        </li>-->
+<!--                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
+<!--                            <a class="page-link" th:href="@{/salesList(page=${currentPage + 1})}" aria-label="Next">-->
+<!--                                <span aria-hidden="true">&raquo;</span>-->
+<!--                            </a>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                </nav>-->
+<!--            </div>-->
         </div>
     </div>
 </div>
+</main>
+<footer>
+
+</footer>
 </body>
+<footer th:replace="fragments/head :: footer"></footer>
 </html>
