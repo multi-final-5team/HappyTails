@@ -40,4 +40,9 @@ public class HelpService {
         System.out.println(searchMap + "=-=-==");
         return helpMapper.getInquiryList(pageDto, searchMap);
     }
+
+    public InquiryDto inquiryDetail(long inquiryNo) {
+
+        return helpMapper.inquiryDetail(inquiryNo);
+    }
 }

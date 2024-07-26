@@ -120,6 +120,9 @@
                     } else if (result.viewAll[i].result == 'Y') {
                         resultStr = '완료';
                         resultStateClass = "bg-success";
+                    } else if (result.viewAll[i].result == 'N') {
+                        resultStr = '대기';
+                        resultStateClass = "bg-secondary";
                     }
                     template += `
                             <tbody>

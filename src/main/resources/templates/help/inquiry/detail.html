@@ -7,6 +7,41 @@
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
     <main>
+        <div class="container">
+            <figure class="text-center">
+                <h2>고객센터</h2>
+            </figure>
+            <figure class="text-left">
+                <h3>1:1 문의 상세보기</h3>
+            </figure>
+                <dl class="row">
+                    <dt class="col-sm-3">제목</dt>
+                    <dd class="col-sm-9"><th:block th:text="${inquiryDto.title}"></th:block></dd>
+
+                    <dt class="col-sm-3">카테고리</dt>
+                    <dd class="col-sm-9">
+                        <p><th:block th:text="${inquiryDto.categoryName}"></th:block></p>
+                    </dd>
+
+                    <dt class="col-sm-3">내용</dt>
+                    <dd class=" col-sm-9 row">
+                        <pre><th:block th:text="${inquiryDto.content}"></th:block></pre>
+                    </dd>
+                    <th:block th:if="uploadDtos != null">
+                        <dt class="col-sm-12">이미지<br><br></dt>
+                        <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
+                            <dd class="text-center">
+                                <img th:src="@{/images/I/{file}(file=${uploadDto.storedFileName})}" alt="..." width="600px" height="500px">
+                            </dd>
+                        </th:block>
+                    </th:block>
+                </dl>
+        </div>
     </main>
+<script>
+    $(document).ready(function() {
+
+    });
+</script>
 </body>
 </html>

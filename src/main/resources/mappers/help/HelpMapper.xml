@@ -78,4 +78,8 @@
         ) AS SubQuery
         WHERE RNUM BETWEEN  #{pageDto.start} AND #{pageDto.end}
     </select>
+
+    <select id="inquiryDetail">
+        SELECT I.*, C.CATEGORY_NAME FROM TB_INQUIRY I left join tb_help_category C on C.HELP_CATEGORY_CODE = I.HELP_CATEGORY_CODE WHERE INQUIRY_NO = #{inquiryNo}
+    </select>
 </mapper>

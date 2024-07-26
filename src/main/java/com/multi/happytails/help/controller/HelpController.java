@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,8 +38,17 @@ public class HelpController {
 
     @GetMapping("/inquiry/write")
     public void inquiryWriteForm() {}
+
     @GetMapping("/inquiry/detail")
-    public void inquiryDetail() {}
+    public void inquiryDetail(@RequestParam("inquiryNo") long inquiryNo
+                            , Model model) {
+
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_INQUIRY_CODE, inquiryNo);
+
+        model.addAttribute("uploadDtos", uploadDtos);
+        model.addAttribute("inquiryDto", helpService.inquiryDetail(inquiryNo));
+    }
+
     @GetMapping("/inquiry/list")
     public void inquiryList() {}
     @GetMapping("/main")
@@ -53,7 +63,7 @@ public class HelpController {
     @PostMapping("/inquiry/write")
     @ResponseBody
     public String inquiryWrite(@ModelAttribute InquiryDto inquiryDto, @RequestParam(value = "imageFiles") @Nullable List<MultipartFile> imageFiles, Principal principal) {
-
+        System.out.println(inquiryDto.getContent());
         // login User
             inquiryDto.setWriterId(principal.getName());
         // login User
