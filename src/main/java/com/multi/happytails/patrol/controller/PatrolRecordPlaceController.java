@@ -1,8 +1,15 @@
 package com.multi.happytails.patrol.controller;
 
+import com.multi.happytails.patrol.model.dto.PlacePointDTO;
+import com.multi.happytails.patrol.model.dto.PlacePoointListDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * packageName    : com.multi.happytails.patrol.controller
@@ -23,13 +30,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PatrolRecordPlaceController {
 
     @RequestMapping("patrolRecordPlace")
-    public void patrolRecordPlace(){
-
+    public String patrolRecordPlace(){
+        return "/patrol/patrolRecordPlace";
     }
 
     @RequestMapping("patrolRecordPlaceInsert")
-    public void patrolRecordPlaceInsert(){
+    public String  patrolRecordPlaceInsert(){
+        return "/patrol/patrolRecordPlaceInsert";
+    }
 
+    @PostMapping("placeInsert")
+    public void  placeInsert(@RequestParam(value = "poointList",required = false) PlacePoointListDTO placePoointListDTO){
+        System.out.println(placePoointListDTO);
     }
 
 }
