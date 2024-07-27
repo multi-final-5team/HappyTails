@@ -136,7 +136,6 @@ public class PatrolController {
     @GetMapping(value="findAllPatrol", produces = "application/json; charset=UTF-8")
     @ResponseBody
     public PatrolImgDTO findAllPatrol(Model model , @AuthenticationPrincipal CustomUser customUser){
-        System.out.println("유저넘버 >>>> " + (int)customUser.getNo());
 
         List<UploadDto> uploadDtos = new ArrayList<>();
 
