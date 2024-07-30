@@ -1,9 +1,6 @@
 package com.multi.happytails.help.controller;
 
-import com.multi.happytails.help.model.dto.HelpCategoryDto;
-import com.multi.happytails.help.model.dto.InquiryDto;
-import com.multi.happytails.help.model.dto.PageDto;
-import com.multi.happytails.help.model.dto.QuestionDto;
+import com.multi.happytails.help.model.dto.*;
 import com.multi.happytails.help.service.HelpService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
@@ -34,6 +31,7 @@ public class HelpController {
     UploadService uploadService;
 
     final String UPLOAD_INQUIRY_CODE = "I";
+    final String UPLOAD_ADMIN_INQUIRY_CODE = "IA";
 
     @GetMapping("/inquiry/write")
     public void inquiryWriteForm() {}
@@ -43,11 +41,20 @@ public class HelpController {
                             , Model model) {
 
         List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_INQUIRY_CODE, inquiryNo);
+        InquiryResultDto inquiryResultDto = helpService.inquiryResultDetail(inquiryNo);
+        InquiryDto inquiryDto = helpService.inquiryDetail(inquiryNo);
+        System.out.println(inquiryResultDto + "리리");
+        if (inquiryResultDto != null) {
+            List<UploadDto> resultUploadDtos = uploadService.uploadSelect(UPLOAD_ADMIN_INQUIRY_CODE, inquiryResultDto.getInquiryResultNo());
+            model.addAttribute("resultUploadDtos", resultUploadDtos);
+        }
+        if (inquiryDto.getResult() == 'N') {
+            helpService.inquiryResultChange(InquiryDto.builder().inquiryNo(inquiryNo).result('S').build());
+        }
 
-        helpService.inquiryResultChange(InquiryDto.builder().inquiryNo(inquiryNo).result('S').build());
-
+        model.addAttribute("inquiryResultDto", inquiryResultDto);
         model.addAttribute("uploadDtos", uploadDtos);
-        model.addAttribute("inquiryDto", helpService.inquiryDetail(inquiryNo));
+        model.addAttribute("inquiryDto", inquiryDto);
     }
 
     @GetMapping("/inquiry/list")

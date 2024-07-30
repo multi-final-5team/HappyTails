@@ -28,4 +28,6 @@ public interface HelpMapper {
     long getCurrentInquiryResultNo();
 
     int inquiryResultChange(InquiryDto inquiryDto);
+
+    InquiryResultDto inquiryResultDetail(long inquiryNo);
 }

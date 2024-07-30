@@ -51,4 +51,8 @@ public class HelpService {
     public int inquiryResultChange(InquiryDto inquiryDto) {
         return helpMapper.inquiryResultChange(inquiryDto);
     }
+
+    public InquiryResultDto inquiryResultDetail(long inquiryNo) {
+        return helpMapper.inquiryResultDetail(inquiryNo);
+    }
 }

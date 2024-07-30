@@ -36,39 +36,40 @@
                     </th:block>
                 </dl>
             <!-- 관리자만 보이게 && (결과가 Y면 보이지 않게) -->
-            <div class="mb-3">
-                <label for="content" class="form-label">결과 작성</label>
-                <textarea class="form-control" id="content" rows="3"></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="imageInput" class="form-label">이미지 첨부</label>
-                <input class="form-control" type="file" id="imageInput">
-            </div>
-            <div id="imgAddDiv">
+            <th:block th:if="${inquiryDto.result} != 'Y'">
+                <div class="mb-3">
+                    <label for="content" class="form-label">결과 작성</label>
+                    <textarea class="form-control" id="content" rows="3"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="imageInput" class="form-label">이미지 첨부</label>
+                    <input class="form-control" type="file" id="imageInput">
+                </div>
+                <div id="imgAddDiv">
 
-            </div>
-            <div>
-                <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
+                </div>
+                <div>
+                    <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
 
-            </div>
+                </div>
+            </th:block>
             <!-- 관리자만 보이게 -->
-            <!-- 결과가 (Y면 보이게) -->
-<!--            <hr>-->
-<!--            <dl>-->
-<!--                <dt class="col-sm-3">답변</dt>-->
-<!--                <dd class=" col-sm-9 row">-->
-<!--                    <pre><th:block th:text="${inquiryDto.content}"></th:block></pre>-->
-<!--                </dd>-->
-<!--            </dl>-->
-<!--            <th:block th:if="${uploadDtos != null}">-->
-<!--                <th:block th:each="uploadDto, iterStat : ${uploadDtos}">-->
-<!--                    <dd class="text-center">-->
-<!--                        <img th:src="@{/images/I/{file}(file=${uploadDto.storedFileName})}" alt="..." width="600px" height="500px">-->
-<!--                    </dd>-->
-<!--                </th:block>-->
-<!--            </th:block>-->
-
-            <!-- 작성이 되면 보이게 -->
+            <th:block th:if="${inquiryDto.result} == 'Y'">
+                <hr>
+                <dl class="row">
+                    <dt class="col-sm-3">답변</dt>
+                    <dd class=" col-sm-9 row">
+                        <pre><th:block th:text="${inquiryResultDto.content}"></th:block></pre>
+                    </dd>
+                </dl>
+                <th:block th:if="${resultUploadDtos != null}">
+                    <th:block th:each="uploadDto, iterStat : ${resultUploadDtos}">
+                        <dd class="text-center">
+                            <img th:src="@{/images/IA/{file}(file=${uploadDto.storedFileName})}" alt="..." width="600px" height="500px">
+                        </dd>
+                    </th:block>
+                </th:block>
+            </th:block>
         </div>
     </main>
 <script>
@@ -114,6 +115,7 @@
                 data : formData,
                 success : function(result) {
                     alert(result);
+                    location.reload();
                 }
             });
         });

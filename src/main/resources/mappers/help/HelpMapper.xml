@@ -99,4 +99,8 @@
             RESULT = #{result}
         WHERE INQUIRY_NO = #{inquiryNo}
     </update>
+
+    <select id="inquiryResultDetail">
+        SELECT * FROM TB_INQUIRY_RESULT WHERE INQUIRY_NO = #{inquiryNo}
+    </select>
 </mapper>
