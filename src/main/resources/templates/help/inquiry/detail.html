@@ -35,10 +35,10 @@
                         </th:block>
                     </th:block>
                 </dl>
-            <!-- 관리자만 보이게 && 작성이 되면 보이지 않게 -->
+            <!-- 관리자만 보이게 && (결과가 Y면 보이지 않게) -->
             <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">결과 작성</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <label for="content" class="form-label">결과 작성</label>
+                <textarea class="form-control" id="content" rows="3"></textarea>
             </div>
             <div class="mb-3">
                 <label for="imageInput" class="form-label">이미지 첨부</label>
@@ -46,27 +46,27 @@
             </div>
             <div id="imgAddDiv">
 
-            </div>.
+            </div>
             <div>
                 <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
 
             </div>
             <!-- 관리자만 보이게 -->
-            <!-- 작성이 되면 보이게 -->
-            <hr>
-            <dl>
-                <dt class="col-sm-3">답변</dt>
-                <dd class=" col-sm-9 row">
-                    <pre><th:block th:text="${inquiryDto.content}"></th:block></pre>
-                </dd>
-            </dl>
-            <th:block th:if="${uploadDtos != null}">
-                <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
-                    <dd class="text-center">
-                        <img th:src="@{/images/I/{file}(file=${uploadDto.storedFileName})}" alt="..." width="600px" height="500px">
-                    </dd>
-                </th:block>
-            </th:block>
+            <!-- 결과가 (Y면 보이게) -->
+<!--            <hr>-->
+<!--            <dl>-->
+<!--                <dt class="col-sm-3">답변</dt>-->
+<!--                <dd class=" col-sm-9 row">-->
+<!--                    <pre><th:block th:text="${inquiryDto.content}"></th:block></pre>-->
+<!--                </dd>-->
+<!--            </dl>-->
+<!--            <th:block th:if="${uploadDtos != null}">-->
+<!--                <th:block th:each="uploadDto, iterStat : ${uploadDtos}">-->
+<!--                    <dd class="text-center">-->
+<!--                        <img th:src="@{/images/I/{file}(file=${uploadDto.storedFileName})}" alt="..." width="600px" height="500px">-->
+<!--                    </dd>-->
+<!--                </th:block>-->
+<!--            </th:block>-->
 
             <!-- 작성이 되면 보이게 -->
         </div>
@@ -90,6 +90,34 @@
             }
         });
         // 이미지 road End
+        // 결과 작성 버튼 Start
+        $('#createBtn').click(function(){
+
+            var params = new URLSearchParams(location.search);
+            var inquiryNo = params.get('inquiryNo');
+
+            let content = $('#content').val();
+
+            let formData = new FormData();
+            formData.append('content',content);
+            formData.append('inquiryNo',inquiryNo);
+
+            for (let i = 0; i < imageFiles.length;i++) {
+                formData.append('imageFiles',imageFiles[i]);
+            }
+
+            $.ajax({
+                url : "/admin/inquiry/resultWrite",
+                processData : false,
+                contentType : false,
+                type : 'POST',
+                data : formData,
+                success : function(result) {
+                    alert(result);
+                }
+            });
+        });
+        // 결과 작성 버튼 End
     });
 </script>
 </body>

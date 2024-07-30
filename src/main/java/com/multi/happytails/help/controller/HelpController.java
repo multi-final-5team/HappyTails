@@ -31,7 +31,6 @@ public class HelpController {
     HelpService helpService;
 
     @Autowired
-
     UploadService uploadService;
 
     final String UPLOAD_INQUIRY_CODE = "I";
@@ -44,6 +43,8 @@ public class HelpController {
                             , Model model) {
 
         List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_INQUIRY_CODE, inquiryNo);
+
+        helpService.inquiryResultChange(InquiryDto.builder().inquiryNo(inquiryNo).result('S').build());
 
         model.addAttribute("uploadDtos", uploadDtos);
         model.addAttribute("inquiryDto", helpService.inquiryDetail(inquiryNo));

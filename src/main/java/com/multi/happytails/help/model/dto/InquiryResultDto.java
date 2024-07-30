@@ -8,6 +8,8 @@ import java.util.Date;
 @Setter
 @ToString
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class InquiryResultDto {
     private long inquiryResultNo;
     private long inquiryNo;
