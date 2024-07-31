@@ -143,4 +143,8 @@
         ) AS SubQuery
         WHERE RNUM BETWEEN  #{pageDto.start} AND #{pageDto.end}
     </select>
+
+    <delete id="inquiryDelete">
+        DELETE FROM TB_INQUIRY WHERE INQUIRY_NO = #{inquiryNo}
+    </delete>
 </mapper>

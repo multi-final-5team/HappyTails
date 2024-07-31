@@ -170,4 +170,19 @@ public class HelpController {
 
     }
 
+    @PostMapping("/inquiry/delete")
+    @ResponseBody
+    public String inquiryDelete(@RequestParam("inquiryNo") long inquiryNo) {
+
+        helpService.inquiryDelete(inquiryNo);
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_INQUIRY_CODE, inquiryNo);
+        if (uploadDtos != null && !uploadDtos.isEmpty()) {
+            for (UploadDto uploadDto : uploadDtos) {
+                uploadService.uploadDelete(uploadDto.getImageNo());
+            }
+        }
+
+        return "삭제 되었습니다.";
+    }
+
 }
