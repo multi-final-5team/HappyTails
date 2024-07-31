@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+
+    <title>Title</title>
+
+</head>
+
+<body class="container mt-5">
+
+<menu th:replace="fragments/head :: menu"></menu>
+
+<main>
+
+<h1 class="mb-4">순찰일지</h1>
+
+<button class="btn btn-primary" id="goPatrolRecordInsertBtn">생성</button>
+
+<div id="patrolRecordDiv">
+
+</div>
+
+</main>
+
+
+<script>
+
+
+    $(document).ready(function(){
+
+        $.ajax({
+        type:'get',
+        url: "/patrolRecord/findAllPatrolRecord",
+        success : function(data){
+
+            for(let index in data){
+
+                $('#patrolRecordDiv').append(
+
+                    $('<div>').prop({
+                        id: 'precord' + index,
+                        className: 'card'
+                        }).attr("onclick", "gopatrolRecord(" + data[index].precordNo + ")")
+                    );
+
+                    $('#' + 'precord' + index).append(
+                        $('<div>').prop({
+                            id: 'divbody' + index,
+                            className: 'card-body'
+                        })
+                    );
+
+                    $('#' + 'divbody' + index).append(
+                        '<b class="card-text">글제목: ' + data[index].title + '</b><br>'
+                    );
+
+                    $('#' + 'divbody' + index).append(
+                        '<sub class="card-text">글쓴이: ' + data[index].userNo + '</sub><br>'
+                    );
+
+                    $('#' + 'divbody' + index).append(
+                        '<sub class="card-text">조회수: ' + data[index].viewcount + '</sub>'
+                    );
+            }
+        },
+        error: function (xhr){
+            console.log(xhr);
+        }
+        }); // $.ajax()
+
+        $('#goPatrolRecordInsertBtn').click(function(){
+            location.href = "/patrolRecord/patrolRecordInsert";
+        });
+    });
+
+    function gopatrolRecord(precordNo) {
+        location.href = "/patrolRecord/patrolRecordView?precordNo="+precordNo;
+    }
+</script>
+
+</body>
+</html>

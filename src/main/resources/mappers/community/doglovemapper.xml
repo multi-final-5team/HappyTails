@@ -26,47 +26,16 @@
         </choose>
     </select>
 
-<!--    <select id="findAll" parameterType="map" resultType="com.multi.happytails.community.model.dto.DogloveDTO">
-        SELECT
-        DOGLOVE_NO AS dogloveNo,
-        USER_ID AS userId,
-        TITLE AS title,
-        CONTENT AS content,
-        CATEGORY_CODE AS categoryCode,
-        CREATETIME AS createTime,
-        UPDATETIME AS updateTime,
-        RECOMMEND_COUNT AS recommendCount
-        FROM TB_DOGLOVE
-        <choose>
-            <when test="sort == 'recommendCount'">
-                ORDER BY RECOMMEND_COUNT DESC
-            </when>
-            <otherwise>
-                ORDER BY CREATETIME DESC
-            </otherwise>
-        </choose>
-        LIMIT #{limit} OFFSET #{offset}
-    </select>-->
 
-
-
-    <select id="getTotalDogLoveCount" resultType="int">
-        SELECT COUNT(*) FROM TB_DOGLOVE
-    </select>
-
-
-    <select id="findById" parameterType="long" resultType="com.multi.happytails.community.model.dto.DogloveDTO">
-        SELECT
-        DOGLOVE_NO AS dogloveNo,
-        USER_ID AS userId,
-        TITLE AS title,
-        CONTENT AS content,
-        CATEGORY_CODE AS categoryCode,
-        CREATETIME AS createTime,
-        UPDATETIME AS updateTime,
-        RECOMMEND_COUNT AS recommendCount
-        FROM TB_DOGLOVE
+    <update id="dgRecommendCount">
+        UPDATE TB_DOGLOVE
+        SET RECOMMEND_COUNT = COALESCE(RECOMMEND_COUNT, 0) + 1
         WHERE DOGLOVE_NO = #{dogloveNo}
+    </update>
+
+
+    <select id="findById" resultType="com.multi.happytails.community.model.dto.DogloveDTO">
+        SELECT * FROM TB_DOGLOVE WHERE DOGLOVE_NO = #{dogloveNo}
     </select>
 
     <insert id="dogloveInsert" parameterType="com.multi.happytails.community.model.dto.DogloveDTO">
@@ -93,9 +62,7 @@
         UPDATE TB_DOGLOVE SET
         TITLE = #{title},
         CONTENT = #{content},
-        CATEGORY_CODE = #{categoryCode},
-        UPDATETIME = #{updateTime},
-        RECOMMEND_COUNT = #{recommendCount}
+        UPDATETIME = #{updateTime}
         WHERE DOGLOVE_NO = #{dogloveNo}
     </update>
 
@@ -110,19 +77,9 @@
         LIMIT 1
     </select>
 
-    <!-- 추천 수 증가 -->
-    <update id="incrementRecommendCount">
-        UPDATE TB_DOGLOVE
-        SET RECOMMEND_COUNT = RECOMMEND_COUNT + 1
-        WHERE DOGLOVE_NO = #{dogloveNo}
-    </update>
-
-    <!-- 추천 수 감소 -->
-    <update id="decrementRecommendCount">
-        UPDATE TB_DOGLOVE
-        SET RECOMMEND_COUNT = RECOMMEND_COUNT - 1
-        WHERE DOGLOVE_NO = #{dogloveNo}
-    </update>
-
+    <select id="search" parameterType="String" resultType="com.multi.happytails.community.model.dto.DogloveDTO">
+        SELECT * FROM TB_DOGLOVE
+        WHERE TITLE LIKE CONCAT('%', #{keyword}, '%')
+    </select>
 
 </mapper>

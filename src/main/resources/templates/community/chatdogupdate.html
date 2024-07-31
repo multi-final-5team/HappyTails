@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <meta charset="UTF-8">
+    <title>게시글 수정</title>
+    <style>
+        .img-preview {
+            width: 150px; /* 원하는 너비로 설정 */
+            height: 150px; /* 원하는 높이로 설정 */
+            object-fit: cover; /* 이미지 비율을 유지하며 크기에 맞게 조정 */
+        }
+    </style>
+</head>
+<body class="container mt-5">
+<menu th:replace="fragments/head :: menu"></menu>
+
+<h1 class="mb-4 text-center">떠들개 게시글 수정</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form id="updateForm" th:action="@{/community/chatdog/update/{chatdogNo}(chatdogNo=${chatdog.chatdogNo})}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="chatdogNo" th:value="${chatdog.chatdogNo}"/>
+            <div class="mb-3">
+                <label for="title" class="form-label">제목:</label>
+                <input type="text" id="title" name="title" class="form-control" th:value="${chatdog.title}" required>
+            </div>
+            <div class="mb-3">
+                <label for="content" class="form-label">내용:</label>
+                <textarea id="content" name="content" class="form-control" rows="5" required th:text="${chatdog.content}"></textarea>
+            </div>
+            <div>
+                <label for="imageInput">이미지:</label>
+                <input type="file" id="imageInput" name="imageFiles" multiple>
+            </div>
+            <div id="imgAddDiv" class="row g-2">
+                <!-- 기존 이미지 미리보기 -->
+                <div th:each="uploadDto : ${imageFiles}" class="col-3 mb-2">
+                    <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" alt="Existing Image" class="img-thumbnail">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">수정</button>
+        </form>
+    </div>
+</div>
+
+<a href="/community/chatdog" class="btn btn-secondary mt-3">목록으로 돌아가기</a>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        let imageFiles = [];
+        $('#imageInput').on('change', function(event) {
+            $('#imgAddDiv').empty(); // 이전 이미지 미리보기 지우기
+            imageFiles = Array.from(event.target.files); // 선택한 이미지 파일을 배열로 저장
+
+            imageFiles.forEach(file => {
+                if (file && file.type.startsWith('image/')) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#imgAddDiv').append(
+                            `<div class="col-3 mb-2">
+                                <img src="${e.target.result}" alt="Selected Image" class="img-thumbnail">
+                            </div>`
+                        );
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('이미지 파일만 선택해주세요');
+                }
+            });
+        });
+
+        // 폼 서브밋
+        $('#updateForm').submit(function(event) {
+            event.preventDefault();
+
+            let title = $('#title').val();
+            let content = $('#content').val();
+            let chatdogNo = $('input[name="chatdogNo"]').val();
+            let formData = new FormData();
+            formData.append('chatdogNo', chatdogNo);
+            formData.append('title', title);
+            formData.append('content', content);
+
+            imageFiles.forEach(file => {
+                formData.append('imageFiles', file);
+            });
+
+            $.ajax({
+                url: $(this).attr('action'), // 폼의 action 속성에서 URL 가져오기
+                processData: false,
+                contentType: false,
+                type: 'POST',
+                data: formData,
+                success: function(data) {
+                    location.href = '/community/chatdog';
+                }
+            });
+        });
+    });
+</script>
+</html>

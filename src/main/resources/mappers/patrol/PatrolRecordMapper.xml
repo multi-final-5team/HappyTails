@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.multi.happytails.patrol.model.dao.PatrolRecordDAO">
+
+    <select id="findAllPatrolRecord">
+        SELECT precord_no AS precordNo, user_no AS userNo, title, content, viewcount
+        FROM tb_precord;
+    </select>
+
+    <select id="findOnePatrolRecordByPrecordNo">
+        SELECT precord_no AS precordNo, user_no AS userNo, title, content, viewcount
+        FROM tb_precord
+        WHERE precord_no = #{precordNo}
+    </select>
+
+    <insert id="patrolRecordInsert">
+        INSERT INTO tb_precord
+        ( user_no , title, content, viewcount)
+        VALUES(#{userNo}, #{title}, #{content}, #{viewcount});
+    </insert>
+
+    <select id="findOnePatrolRecord">
+        SELECT precord_no AS precordNo
+        FROM tb_precord
+        WHERE user_no = #{userNo}
+        ORDER BY precord_no DESC
+        LIMIT 1
+    </select>
+
+    <update id="patrolRecordUpdate">
+        UPDATE tb_precord
+        SET user_no= #{userNo}, title= #{title}, content= #{content}
+        WHERE precord_no= #{precordNo};
+    </update>
+
+
+    <delete id="patrolRecordDelete">
+        DELETE FROM tb_precord
+        WHERE precord_no= #{precordNo};
+    </delete>
+
+
+
+
+    <select id="findOnePatrolByPatrolNo">
+        SELECT patrol_no AS patrolNo, user_no AS userNo, name, age, breed, location
+        FROM tb_patrol
+        WHERE patrol_no = #{patrolNo};
+    </select>
+
+    <update id="patrolUpdate">
+        UPDATE tb_patrol
+        SET  name=#{name}, age=#{age}, breed=#{breed}, location=#{location}
+        WHERE patrol_no=#{patrolNo};
+    </update>
+
+    <delete id="patrolDelete">
+        DELETE FROM tb_patrol
+        WHERE patrol_no=#{patrolNo};
+    </delete>
+
+
+
+</mapper>

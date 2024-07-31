@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -31,7 +28,6 @@ public class ReplyController {
             Model model) {
 
         String writerId = principal.getName();
-        // String userId = (String) session.getAttribute("USER_ID");
         ReplyDTO replyDTO = new ReplyDTO();
         replyDTO.setCommunityCategoryCode(communityCategoryCode);
         replyDTO.setForeignNo(foreignNo);
@@ -39,33 +35,59 @@ public class ReplyController {
         replyDTO.setWriterId(writerId);
         replyService.addReply(replyDTO);
 
-        model.addAttribute("message", "댓글이 성공적으로 추가되었습니다.");
-
         return "redirect:/community/" + getRedirectUrl(communityCategoryCode) + "/" + foreignNo;
     }
 
-    @PostMapping("/community/{communityCategoryCode}/{foreignNo}/reply/delete")
+
+    @PostMapping("/{communityCategoryCode}/{foreignNo}/reply/delete/{communityReplyNo}")
     public String deleteReply(@PathVariable String communityCategoryCode,
                               @PathVariable int foreignNo,
-                              @RequestParam int replyNo,
+                              @PathVariable int communityReplyNo,
                               Principal principal) {
-        String writerId = principal.getName();
-        ReplyDTO replyDTO = new ReplyDTO();
-        replyDTO.setCommunityCategoryCode(communityCategoryCode);
-        replyDTO.setForeignNo(foreignNo);
 
+        String writerId;
         if (principal instanceof UserDetails) {
             writerId = ((UserDetails) principal).getUsername();
         } else {
-            writerId = principal.toString();
+            writerId = principal.getName();
         }
 
-        if (replyService.isReplyWriter(replyNo, writerId)) {
-            replyService.deleteReply(replyNo);
-        } else {
+        if (replyService.replyWriter(communityReplyNo, writerId)) {
+            replyService.deleteReply(communityReplyNo);
         }
+
         return "redirect:/community/" + getRedirectUrl(communityCategoryCode) + "/" + foreignNo;
     }
+
+    // 댓글 수정 처리
+    @PostMapping("/{communityCategoryCode}/{foreignNo}/reply/update/{communityReplyNo}")
+    public String updateReply(
+            @PathVariable String communityCategoryCode,
+            @PathVariable Long foreignNo,
+            @PathVariable int communityReplyNo,
+            @RequestParam String content) {
+
+
+        replyService.updateReply(communityReplyNo, content);
+        return "redirect:/community/" + getRedirectUrl(communityCategoryCode) + "/" + foreignNo;
+    }
+
+
+
+    @GetMapping("/{communityCategoryCode}/{foreignNo}/reply/update/{communityReplyNo}")
+    public String getUpdate(
+            @PathVariable String communityCategoryCode,
+            @PathVariable Long foreignNo,
+            @PathVariable int communityReplyNo,
+            Model model) {
+
+        ReplyDTO reply = replyService.getReplyById(communityReplyNo);
+        model.addAttribute("reply", reply);
+        model.addAttribute("foreignNo", foreignNo);
+        model.addAttribute("communityCategoryCode", communityCategoryCode);
+        return "community/replyupdate";
+    }
+
 
 
 
@@ -74,9 +96,9 @@ public class ReplyController {
             case L:
                 return "doglove";
             case C:
-                return "chatter";
+                return "chatdog";
             case O:
-                return "owners";
+                return "conference";
             case R:
                 return "reels";
             default:

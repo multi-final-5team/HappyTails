@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <meta charset="UTF-8">
+    <title>집사 회의 게시글 작성</title>
+    <style>
+        .img-preview {
+            width: 150px; /* 원하는 너비로 설정 */
+            height: 150px; /* 원하는 높이로 설정 */
+            object-fit: cover; /* 이미지 비율을 유지하며 크기에 맞게 조정 */
+        }
+    </style>
+</head>
+<body class="container mt-5">
+<menu th:replace="fragments/head :: menu"></menu>
+
+<h1 class="mb-4 text-center">집사 회의 게시글 작성</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form id="submitForm" action="/community/conference" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="title" class="form-label">제목:</label>
+                <input type="text" id="title" name="title" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="content" class="form-label">내용:</label>
+                <textarea id="content" name="content" class="form-control" rows="5" required></textarea>
+            </div>
+            <div>
+                <label for="imageInput">이미지:</label>
+                <input type="file" id="imageInput" multiple>
+            </div>
+            <div id="imgAddDiv" class="row g-2">
+                <!-- 이미지 미리보기 -->
+            </div>
+            <button type="submit" class="btn btn-primary" onsubmit="return confirm('저장 하시겠습니까?');">저장</button>
+        </form>
+    </div>
+</div>
+
+<a href="/community/conference" class="btn btn-secondary mt-3">목록으로 돌아가기</a>
+
+</body>
+<script>
+    $(document).ready(function() {
+        let imageFiles = [];
+        $('#imageInput').on('change', function(event) {
+            $('#imgAddDiv').empty(); // 이전 이미지 미리보기 지우기
+            imageFiles = Array.from(event.target.files); // 선택한 이미지 파일을 배열로 저장
+
+            imageFiles.forEach(file => {
+                if (file && file.type.startsWith('image/')) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#imgAddDiv').append(
+                            `<div class="col-3 mb-2">
+                                <img src="${e.target.result}" alt="Selected Image" class="img-thumbnail">
+                            </div>`
+                        );
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('이미지 파일만 선택해주세요');
+                }
+            });
+        });
+
+        // 폼 서브밋
+        $('#submitForm').submit(function(event) {
+            event.preventDefault();
+
+            let title = $('#title').val();
+            let content = $('#content').val();
+            let formData = new FormData();
+            formData.append('title', title);
+            formData.append('content', content);
+
+            imageFiles.forEach(file => {
+                formData.append('imageFiles', file);
+            });
+
+            $.ajax({
+                url: "/community/conference",
+                processData: false,
+                contentType: false,
+                type: 'POST',
+                data: formData,
+                success: function(data) {
+                    location.href = '/community/conference';
+                }
+            });
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.multi.happytails.community.model.dao.ChatDogDAO">
+
+    <select id="findAll" parameterType="String" resultType="com.multi.happytails.community.model.dto.ChatDogDTO">
+        SELECT
+        CHAT_DOG_NO AS chatdogNo,
+        USER_ID AS userId,
+        TITLE AS title,
+        CONTENT AS content,
+        CATEGORY_CODE AS categoryCode,
+        CREATETIME AS createTime,
+        UPDATETIME AS updateTime,
+        RECOMMEND_COUNT AS recommendCount
+        FROM TB_CHAT_DOG
+        <choose>
+            <when test="parameter == 'recommendCount'">
+                ORDER BY RECOMMEND_COUNT DESC
+            </when>
+            <otherwise>
+                ORDER BY CREATETIME DESC
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <update id="cdcommendCount">
+        UPDATE TB_CHAT_DOG
+        SET RECOMMEND_COUNT = COALESCE(RECOMMEND_COUNT, 0) + 1
+        WHERE CHAT_DOG_NO = #{chatdogNo}
+    </update>
+
+
+    <select id="findById" resultType="com.multi.happytails.community.model.dto.ChatDogDTO">
+        SELECT * FROM TB_CHAT_DOG WHERE CHAT_DOG_NO = #{chatdogNo}
+    </select>
+
+    <insert id="insert" parameterType="com.multi.happytails.community.model.dto.ChatDogDTO">
+        INSERT INTO TB_CHAT_DOG (
+        USER_ID,
+        TITLE,
+        CONTENT,
+        CREATETIME,
+        UPDATETIME,
+        RECOMMEND_COUNT,
+        CATEGORY_CODE
+        ) VALUES (
+        #{userId},
+        #{title},
+        #{content},
+        #{createTime},
+        #{updateTime},
+        #{recommendCount},
+        #{categoryCode}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.multi.happytails.community.model.dto.ChatDogDTO">
+        UPDATE TB_CHAT_DOG SET
+        TITLE = #{title},
+        CONTENT = #{content},
+        UPDATETIME = #{updateTime}
+        WHERE CHAT_DOG_NO = #{chatdogNo}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM TB_CHAT_DOG WHERE CHAT_DOG_NO = #{chatdogNo}
+    </delete>
+
+    <select id="getCurrentChatDogNo">
+        SELECT CHAT_DOG_NO
+        FROM TB_CHAT_DOG
+        ORDER BY CHAT_DOG_NO DESC
+        LIMIT 1
+    </select>
+
+    <select id="search" parameterType="String" resultType="com.multi.happytails.community.model.dto.ChatDogDTO">
+        SELECT * FROM TB_CHAT_DOG
+        WHERE TITLE LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+</mapper>

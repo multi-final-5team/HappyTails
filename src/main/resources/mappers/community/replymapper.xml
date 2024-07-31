@@ -18,18 +18,28 @@
     <!-- 댓글 수정 -->
     <update id="updateReply" parameterType="com.multi.happytails.community.reply.model.dto.ReplyDTO">
         UPDATE TB_COMMUNITY_REPLY
-        SET COMMUNITY_CATEGORY_CODE = #{communityCategoryCode},
-        FOREIGN_NO = #{foreignNo},
-        WRITER_ID = #{writerId},
-        CONTENT = #{content},
-        UPDATED_DATE = #{updatedDate}
+        SET CONTENT = #{content}
         WHERE COMMUNITY_REPLY_NO = #{communityReplyNo}
     </update>
 
     <!-- 댓글 삭제 -->
     <delete id="deleteReply" parameterType="int">
         DELETE FROM TB_COMMUNITY_REPLY
-        WHERE COMMUNITY_REPLY_NO = #{communityReplyNo}
+        WHERE COMMUNITY_REPLY_NO  = #{communityReplyNo}
     </delete>
+
+    <!-- 게시글 삭제하면 모든 댓글 삭제 -->
+    <delete id="replyDeleteAll" parameterType="map">
+        DELETE FROM TB_COMMUNITY_REPLY
+        WHERE COMMUNITY_CATEGORY_CODE = #{communityCategoryCode}
+        AND FOREIGN_NO = #{foreignNo}
+    </delete>
+
+    <select id="selectReplyById" parameterType="int" resultType="com.multi.happytails.community.reply.model.dto.ReplyDTO">
+        SELECT *
+        FROM TB_COMMUNITY_REPLY
+        WHERE COMMUNITY_REPLY_NO = #{communityReplyNo}
+    </select>
+
 
 </mapper>

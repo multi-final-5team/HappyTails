@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.multi.happytails.community.model.dao.ConferenceDAO">
+
+    <select id="findAll" parameterType="String" resultType="com.multi.happytails.community.model.dto.ConferenceDTO">
+        SELECT
+        CONFERENCE_NO AS conferenceNo,
+        USER_ID AS userId,
+        TITLE AS title,
+        CONTENT AS content,
+        CATEGORY_CODE AS categoryCode,
+        CREATETIME AS createTime,
+        UPDATETIME AS updateTime,
+        RECOMMEND_COUNT AS recommendCount
+        FROM TB_CONFERENCE
+        <choose>
+            <when test="parameter == 'recommendCount'">
+                ORDER BY RECOMMEND_COUNT DESC
+            </when>
+            <otherwise>
+                ORDER BY CREATETIME DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <update id="cfcommendCount">
+        UPDATE TB_CONFERENCE
+        SET RECOMMEND_COUNT = COALESCE(RECOMMEND_COUNT, 0) + 1
+        WHERE CONFERENCE_NO = #{conferenceNo}
+    </update>
+
+    <select id="findById" resultType="com.multi.happytails.community.model.dto.ConferenceDTO">
+        SELECT * FROM TB_CONFERENCE WHERE CONFERENCE_NO = #{conferenceNo}
+    </select>
+
+    <insert id="insert" parameterType="com.multi.happytails.community.model.dto.ConferenceDTO">
+        INSERT INTO TB_CONFERENCE (
+        USER_ID,
+        TITLE,
+        CONTENT,
+        CREATETIME,
+        UPDATETIME,
+        RECOMMEND_COUNT,
+        CATEGORY_CODE
+        ) VALUES (
+        #{userId},
+        #{title},
+        #{content},
+        #{createTime},
+        #{updateTime},
+        #{recommendCount},
+        #{categoryCode}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.multi.happytails.community.model.dto.ConferenceDTO">
+        UPDATE TB_CONFERENCE SET
+        TITLE = #{title},
+        CONTENT = #{content},
+        UPDATETIME = #{updateTime}
+        WHERE CONFERENCE_NO = #{conferenceNo}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM TB_CONFERENCE WHERE CONFERENCE_NO = #{conferenceNo}
+    </delete>
+
+    <select id="getCurrenConferenceNo">
+        SELECT CONFERENCE_NO
+        FROM TB_CONFERENCE
+        ORDER BY CONFERENCE_NO DESC
+        LIMIT 1
+    </select>
+
+    <select id="search" parameterType="String" resultType="com.multi.happytails.community.model.dto.ConferenceDTO">
+        SELECT * FROM TB_CONFERENCE
+        WHERE TITLE LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+</mapper>

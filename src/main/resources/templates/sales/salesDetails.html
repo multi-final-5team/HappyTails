@@ -31,15 +31,25 @@
         <div class="card-body">
             <h2 class="card-title" th:text="${salesDetails.name}">상품명</h2>
             <h6 class="card-subtitle mb-2 text-muted" th:text="'카테고리: ' + ${salesDetails.categoryCode}">카테고리 코드</h6>
-            <p class="card-text"><strong>ID:</strong> <span th:text="${salesDetails.id}">ID</span></p>
+            <p class="card-text"><strong>판매자:</strong> <span th:text="${salesDetails.id}">ID</span></p>
             <p class="card-text"><strong>주소:</strong> <span th:text="${salesDetails.address}">주소</span></p>
+
+            <form action="/cart/insertCart" method="post">
+                <input type="hidden" id="goodsNo1" name="goodsNo" th:value="${goodsNo}">
+                <div>
+                    <label for="purchaseQuantity">수량 </label>
+                    <input type="number" id="purchaseQuantity" name="purchaseQuantity" required>
+                </div>
+                <div>
+                    <button type="submit">장바구니 추가</button>
+                </div>
+            </form>
 
             <div th:if="${uploadDtoList != null && !uploadDtoList.isEmpty()}" class="mb-4">
                 <h3>대표 이미지</h3>
                 <img th:src="@{/images/S/{file}(file=${uploadDtoList[0].storedFileName})}" alt="대표 이미지" class="img-fluid mb-3">
 
-                <p class="card-text"><strong>가격:</strong> <span th:text="${salesDetails.price}">가격</span></p>
-                <p class="card-text"><strong>수량:</strong> <span th:text="${salesDetails.quantity}">수량</span></p>
+                <p class="card-text"><strong>가격:</strong> <span th:text="${#numbers.formatCurrency(salesDetails.price)}">가격</span></p>
                 <p class="card-text"><strong>상세 설명:</strong> <span th:text="${salesDetails.content}">상세 설명</span></p>
 
                 <h3>상세 이미지</h3>
@@ -61,7 +71,9 @@
                     <h6 class="card-subtitle mb-2 text-muted" th:text="'평점 : ' + ${review.starRating}">별점</h6>
                     <div class="row">
                         <div th:each="image : ${reviewMap[review.no]}" class="col-md-4 mb-3">
-                            <img th:src="@{/images/R/{file}(file=${image.storedFileName})}" alt="리뷰 이미지" class="img-fluid">
+
+                            <img th:src="@{/images/R/{file}(file=${image.storedFileName})}" alt="리뷰 이미지" class="img-review">
+
                         </div>
                     </div>
                     <p class="card-text" th:text="${review.content}">리뷰 내용</p>

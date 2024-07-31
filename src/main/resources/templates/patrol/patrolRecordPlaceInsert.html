@@ -35,6 +35,8 @@
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a76def1c0c0dd8e389a263fe93ef2974"></script>
 
 <script>
+    var interval;
+    var tracepoint = [];
 
     setLocation();
 
@@ -56,7 +58,34 @@
     $(document).ready(function(){
         mapMove();
 
+        $('#btnstart').click(function(){
+            console.log("Interval 시작");
+            traceLocation();
+        });
 
+        $('#btnend').click(function(){
+            console.log("Interval 종료");
+            traceStop();
+        });
+
+        $('#btnmake').click(function(){
+            console.log(tracepoint);
+            if(tracepoint.length != 0){
+                $.ajax({
+	                url: "/patrolRecordPlace/placeInsert",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(tracepoint),
+                    dataType: "json",
+                    success: function(data){
+                        console.log("ajax 성공");
+                    },
+                    error: function(){
+    	                alert("통신실패")
+                    },
+                })
+            }
+        });
 
     }); // ready()
 
@@ -93,6 +122,37 @@
             })
         });
     }
+
+    function traceLocation() {
+        if(interval != null){
+            interval = null;
+        }
+        interval = setInterval(function() {
+            console.log("Interval");
+            setLocation();
+
+
+            pointlat = $('#hidden_lat').val();
+            pointlng = $('#hidden_lng').val();
+
+            console.log("위치 : " + pointlat + "/" + pointlng);
+
+            var PlacePointDTO = {
+                latitude: pointlat,
+                longitude: pointlng
+            };
+
+            tracepoint.push(PlacePointDTO);
+
+        }, 1000);
+    }
+
+    function traceStop(){
+        clearInterval(interval);
+        interval = null;
+    }
+
+
 </script>
 
 </body>

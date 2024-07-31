@@ -2,6 +2,7 @@ package com.multi.happytails.community.reply.model.dao;
 
 import com.multi.happytails.community.reply.model.dto.ReplyDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -9,10 +10,17 @@ import java.util.List;
 public interface ReplyDAO {
 
     void insertReply(ReplyDTO replyDTO);
-    ReplyDTO selectReplyById(int replyNo);
     void updateReply(ReplyDTO replyDTO);
     void deleteReply(int communityReplyNo);
 
     List<ReplyDTO> selectReplyByForeignNo(String communityCategoryCode, int foreignNo);
+
+    void replyDeleteAll(String communityCategoryCode, Long foreignNo);
+
+    ReplyDTO selectReplyById(int communityReplyNo);
+
+    void updateReply(@Param("communityReplyNo") int communityReplyNo, @Param("content") String content);
+
+
 
 }

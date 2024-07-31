@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,94 +18,68 @@
 </head>
 <body>
 <menu th:fragment="menu">
-    <div class="container my-5">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">로고자리 > 메인으로 이동</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                강아지 순찰대
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" th:href="@{/patrol/patrol}">순찰대 소개</a></li>
-                                <li><a class="dropdown-item" href="#">순찰 일지</a></li>
-                                <li><a class="dropdown-item" href="#">명예 순찰대</a></li>
-                                <li><a class="dropdown-item" th:href="@{/patrol/patrolinsert}">순찰대 등록</a></li>
-                            </ul>
-                        </li>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">로고자리 > 메인으로 이동</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            강아지 순찰대
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" th:href="@{/patrol/patrol}">순찰대 소개</a></li>
+                            <li><a class="dropdown-item" th:href="@{/patrolRecord/patrolRecord}">순찰 일지</a></li>
+                            <li><a class="dropdown-item" th:href="@{/patrolRecordPlace/patrolRecordPlace}">명예 순찰대</a></li>
+                            <li><a class="dropdown-item" th:href="@{/patrol/patrolinsert}">순찰대 등록</a></li>
+                        </ul>
+                    </li>
 
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="community" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                집사마당
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="/community/doglove">내 새꾸 자랑</a></li>
-                                <li><a class="dropdown-item" href="/community/chatdog">떠들개</a></li>
-                                <li><a class="dropdown-item" href="/community/conference">집사 회의</a></li>
-                                <li><a class="dropdown-item" href="#">SNS 공유</a></li>
-                                <li><a class="dropdown-item" href="#">찾아주개</a></li>
-                            </ul>
-                        </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="community" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            집사마당
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/community/doglove">내 새꾸 자랑</a></li>
+                            <li><a class="dropdown-item" href="#">떠들개</a></li>
+                            <li><a class="dropdown-item" href="#">집사 회의</a></li>
+                            <li><a class="dropdown-item" href="#">SNS 공유</a></li>
+                            <li><a class="dropdown-item" href="#">찾아주개</a></li>
+                        </ul>
+                    </li>
 
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="dog-community" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            댕댕이마당
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="#">견생네컷</a></li>
+                            <li><a class="dropdown-item" href="#">DBTI</a></li>
+                            <li><a class="dropdown-item" href="#">댕댕이 민증</a></li>
+                        </ul>
+                    </li>
 
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="dog-community" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                댕댕이마당
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">견생네컷</a></li>
-                                <li><a class="dropdown-item" href="#">DBTI</a></li>
-                                <li><a class="dropdown-item" href="#">댕댕이 민증</a></li>
-                            </ul>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/sales/salesList">멍샵</a>
+                    </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/sales/salesList">멍샵</a>
-                        </li>
-                      
-                        <li class="nav-item">
-                            <a class="nav-link" th:href="@{/map/map}">멍지도</a>
-                        </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/map/map}">멍지도</a>
+                    </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="/help/main">고객센터</a>
-                        </li>
-                    </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/help/main">고객센터</a>
+                    </li>
 
-                    <!-- 로그인 상태에 따른 메뉴 -->
-                    <ul class="navbar-nav">
-                        <!-- 로그인하지 않은 경우 -->
-                        <li class="nav-item" sec:authorize="!isAuthenticated()">
-                            <a class="nav-link" href="/member/login">로그인</a>
-                        </li>
-                        <!-- 로그인한 경우 -->
-                        <li class="nav-item" sec:authorize="isAuthenticated()">
-                            <a class="nav-link" href="/member/logout">로그아웃</a>
-                        </li>
-                        <li class="nav-item" sec:authorize="isAuthenticated()">
-                            <a class="nav-link" href="/member/mypage">마이페이지</a>
-                        </li>
-                        <li class="nav-item" sec:authorize="isAuthenticated()">
-                            <a class="nav-link" href="/cart">장바구니</a>
-                        </li>
-
-                        <!--관리자와 일반 사용자의 권한에 따른 추가적인 메뉴 구분이 필요하다면,
-                        sec:authorize="hasRole('ROLE_ADMIN')"와 같은 방식으로 추가 구현-->
-
-                    </ul>
-                </div>
+                </ul>
+                <button>로그인</button>
+                <a class="nav-link" href="/cart/cartList">장바구니</a>
             </div>
-        </nav>
-    </div>
+        </div>
+    </nav>
 </menu>
-
-<footer th:fragment="footer">
-    <p>footer 입니다.</p>
-</footer>
 </body>
 </html>
