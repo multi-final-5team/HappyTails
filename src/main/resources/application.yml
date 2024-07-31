@@ -35,3 +35,7 @@ logging:
       sqlonly: OFF     #SQL만 로그로 남긴다.
       sqltiming: INFO    #SQL과 소요시간을 표기한다.
       connection : OFF  # 커넥션 확인가능
+
+kakao:
+  api:
+    key: 00f8ce605055d2ddbe1b0ee7359a0e6f

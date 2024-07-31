@@ -59,4 +59,6 @@ public interface MemberDAO {
      */
     void insertMember(MemberDTO member);
 
+    void updateMember(MemberDTO member);
+
     }

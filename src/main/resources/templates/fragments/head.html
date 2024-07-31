@@ -73,32 +73,33 @@
                             <a class="nav-link" th:href="@{/map/map}">멍지도</a>
                         </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="/help/main">고객센터</a>
-                    </li>
-                </ul>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/help/main">고객센터</a>
+                        </li>
+                    </ul>
 
-                <!-- 로그인 상태에 따른 메뉴 -->
-                <ul class="navbar-nav">
-                    <!-- 로그인하지 않은 경우 -->
-                    <li class="nav-item" sec:authorize="!isAuthenticated()">
-                        <a class="nav-link" href="/member/login">로그인</a>
-                    </li>
-                    <!-- 로그인한 경우 -->
-                    <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" href="/member/logout">로그아웃</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" href="/member/mypage">마이페이지</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" href="/cart/cartList">장바구니</a>
-                    </li>
+                    <!-- 로그인 상태에 따른 메뉴 -->
+                    <ul class="navbar-nav">
+                        <!-- 로그인하지 않은 경우 -->
+                        <li class="nav-item" sec:authorize="!isAuthenticated()">
+                            <a class="nav-link" href="/member/login">로그인</a>
+                        </li>
+                        <!-- 로그인한 경우 -->
+                        <li class="nav-item" sec:authorize="isAuthenticated()">
+                            <a class="nav-link" href="/member/logout">로그아웃</a>
+                        </li>
+                        <li class="nav-item" sec:authorize="isAuthenticated()">
+                            <a class="nav-link" href="/member/mypage">마이페이지</a>
+                        </li>
+                        <li class="nav-item" sec:authorize="isAuthenticated()">
+                            <a class="nav-link" href="/cart">장바구니</a>
+                        </li>
 
-                    <!--관리자와 일반 사용자의 권한에 따른 추가적인 메뉴 구분이 필요하다면,
-                    sec:authorize="hasRole('ROLE_ADMIN')"와 같은 방식으로 추가 구현-->
+                        <!--관리자와 일반 사용자의 권한에 따른 추가적인 메뉴 구분이 필요하다면,
+                        sec:authorize="hasRole('ROLE_ADMIN')"와 같은 방식으로 추가 구현-->
 
-                </ul>  
+                    </ul>
+                </div>
             </div>
         </nav>
     </div>

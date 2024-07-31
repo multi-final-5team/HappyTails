@@ -31,6 +31,9 @@
                 <a href="/member/findUserIdForm" class="btn btn-secondary">아이디 찾기</a>
                 <a href="/member/findUserPwdForm" class="btn btn-secondary">비밀번호 변경</a>
                 <a href="/member/signup" class="btn btn-secondary">회원가입</a>
+                <a id="kakao-login-btn" href="/member/kakaoLogin">
+                    <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="auto" />
+                </a>
             </div>
         </div>
     </div>
@@ -47,14 +50,15 @@ name="username">&lt;!&ndash; 시큐리티에서는 반드시 username(소문자)
     로그인 버튼 클릭 시 입력된 내용을 제출
 -->
 
-    <script>
-        $(function(){
-            $("input[name=username]").focus(); // 아이디 입력 필드에 초기 포커스
+<script>
+    $(function(){
+        $("input[name=username]").focus(); // 아이디 입력 필드에 초기 포커스
 
-            $("input[type=submit]").click(function(){
-                $("#loginForm").submit(); // 로그인 버튼 클릭 시 폼 제출
-            });
-        })
-    </script>
+        $("input[type=submit]").click(function(){
+            $("#loginForm").submit(); // 로그인 버튼 클릭 시 폼 제출
+        });
+    })
+</script>
+
 </body>
 </html>

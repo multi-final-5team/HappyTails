@@ -8,6 +8,7 @@
         <id column="USER_NO" property="no" />
         <result column="USER_ID" property="id" />
         <result column="USER_PASSWORD" property="pwd" />
+        <result column="USER_EMAIL" property="email" />
         <result column="USER_NAME" property="name" />
         <result column="USER_NICKNAME" property="nickname" />
         <result column="USER_AGE" property="age" />
@@ -25,6 +26,7 @@
         USER_NO,
         USER_ID,
         USER_PASSWORD,
+        USER_EMAIL,
         USER_NAME,
         USER_NICKNAME,
         USER_AGE,
@@ -43,6 +45,7 @@
             USER_NO,
             USER_ID,
             USER_PASSWORD,
+            USER_EMAIL,
             USER_NAME,
             USER_NICKNAME,
             USER_AGE,
@@ -64,6 +67,7 @@
         INSERT INTO TB_USERS (
             USER_ID,
             USER_PASSWORD,
+            USER_EMAIL,
             USER_NAME,
             USER_NICKNAME,
             USER_AGE,
@@ -72,6 +76,7 @@
         ) VALUES (
              #{id},
              #{pwd},
+             #{email},
              #{name},
              #{nickname},
              #{age},
@@ -79,5 +84,15 @@
              #{tel}
         )
     </insert>
+
+    <update id="updateMember">
+        UPDATE TB_USERS
+        SET
+            USER_NAME = #{name},
+            USER_AGE = #{age},
+            USER_GENDER = #{gender},
+            USER_TEL = #{tel}
+        WHERE USER_ID = #{id}
+    </update>
 
 </mapper>
