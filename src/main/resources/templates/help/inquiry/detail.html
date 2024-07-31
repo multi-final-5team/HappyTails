@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
     <title>문의</title>
@@ -35,22 +36,40 @@
                         </th:block>
                     </th:block>
                 </dl>
-            <!-- 관리자만 보이게 -->
-            <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">결과 작성</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="imageInput" class="form-label"이미지 첨부</label>
-                <input class="form-control" type="file" id="imageInput">
-            </div>
-            <div id="imgAddDiv">
+            <!-- 관리자만 보이게-->
+            <th:block sec:authorize="hasRole('ROLE_ADMIN')" th:if="${inquiryDto.result} != 'Y'">
+                <div class="mb-3">
+                    <label for="content" class="form-label">결과 작성</label>
+                    <textarea class="form-control" id="content" rows="3"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="imageInput" class="form-label">이미지 첨부</label>
+                    <input class="form-control" type="file" id="imageInput">
+                </div>
+                <div id="imgAddDiv">
 
-            </div>
-            <div>
-                <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
-            </div>
+                </div>
+                <div>
+                    <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
+                </div>
+            </th:block>
             <!-- 관리자만 보이게 -->
+            <th:block th:if="${inquiryDto.result} == 'Y'">
+                <hr>
+                <dl class="row">
+                    <dt class="col-sm-3">답변</dt>
+                    <dd class=" col-sm-9 row">
+                        <pre><th:block th:text="${inquiryResultDto.content}"></th:block></pre>
+                    </dd>
+                </dl>
+                <th:block th:if="${resultUploadDtos != null}">
+                    <th:block th:each="uploadDto, iterStat : ${resultUploadDtos}">
+                        <dd class="text-center">
+                            <img th:src="@{/images/IA/{file}(file=${uploadDto.storedFileName})}" alt="..." width="600px" height="500px">
+                        </dd>
+                    </th:block>
+                </th:block>
+            </th:block>
         </div>
     </main>
 <script>
@@ -72,6 +91,35 @@
             }
         });
         // 이미지 road End
+        // 결과 작성 버튼 Start
+        $('#createBtn').click(function(){
+
+            var params = new URLSearchParams(location.search);
+            var inquiryNo = params.get('inquiryNo');
+
+            let content = $('#content').val();
+
+            let formData = new FormData();
+            formData.append('content',content);
+            formData.append('inquiryNo',inquiryNo);
+
+            for (let i = 0; i < imageFiles.length;i++) {
+                formData.append('imageFiles',imageFiles[i]);
+            }
+
+            $.ajax({
+                url : "/admin/inquiry/resultWrite",
+                processData : false,
+                contentType : false,
+                type : 'POST',
+                data : formData,
+                success : function(result) {
+                    alert(result);
+                    location.reload();
+                }
+            });
+        });
+        // 결과 작성 버튼 End
     });
 </script>
 </body>
