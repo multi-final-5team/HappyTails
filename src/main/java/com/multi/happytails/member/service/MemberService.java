@@ -96,4 +96,17 @@ public class MemberService {
 //    public void deleteMember(MemberDTO memberDTO){
 //
 //    }
+
+    public void updateMemberInfo(String userId, MemberDTO updatedInfo) {
+        MemberDTO existingMember = memberDAO.findMemberById(userId);
+        if (existingMember != null) {
+            // null이 아닌 필드만 업데이트
+            if (updatedInfo.getName() != null) existingMember.setName(updatedInfo.getName());
+            if (updatedInfo.getAge() != 0) existingMember.setAge(updatedInfo.getAge());
+            if (updatedInfo.getGender() != null) existingMember.setGender(updatedInfo.getGender());
+            if (updatedInfo.getTel() != null) existingMember.setTel(updatedInfo.getTel());
+
+            memberDAO.updateMember(existingMember);
+        }
+    }
 }

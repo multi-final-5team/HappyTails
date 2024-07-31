@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -59,6 +60,34 @@ public class MemberController {
         return "redirect:/member/login";
     }
 
+    @GetMapping("/kakaoLogin")
+    public String kakaoLoginPage() {
+        return "member/kakaoLogin";
+    }
+
+    @PostMapping("/kakaoLogin")
+    @ResponseBody
+    public ResponseEntity<?> kakaoLogin(@RequestBody Map<String, String> kakaoData) {
+        String id = kakaoData.get("id");
+        String nickname = kakaoData.get("nickname");
+
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO.setId("kakao_" + id);
+        memberDTO.setNickname(nickname);
+        memberDTO.setPwd("1234"); // 카카오 로그인은 비밀번호가 없으므로 임시 비밀번호 설정
+
+        // 회원이 존재하는지 확인
+        MemberDTO existingMember = memberService.findMemberById(memberDTO.getId());
+
+        if (existingMember == null) {
+            // 새 회원 등록
+            memberService.insertMember(memberDTO);
+        }
+
+        // 로그인 처리 (여기서는 간단히 성공 메시지만 반환)
+        return ResponseEntity.ok().body("{\"message\": \"Login successful\"}");
+    }
+
     /**
      * methodName : getCurrentUser
      * author : Eunsoo Lee
@@ -70,6 +99,10 @@ public class MemberController {
     @GetMapping("/getCurrentUser")
     @ResponseBody
     public ResponseEntity<MemberDTO> getCurrentUser(@AuthenticationPrincipal CustomUser customUser) {
+        if (customUser == null) { // null 체크 추가
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         MemberDTO member = memberService.findMemberById(customUser.getId());
         return ResponseEntity.ok(member);
     }
@@ -251,4 +284,26 @@ public class MemberController {
 //        memberService.deleteMember(customUser.getId());
 //        return ResponseEntity.ok("Account deleted successfully.");
 //    }
+
+    @GetMapping("/updateForm")
+    public String showUpdateForm(@AuthenticationPrincipal CustomUser customUser, Model model) {
+        if (customUser == null) {
+            return "redirect:/member/login";
+        }
+        MemberDTO member = memberService.findMemberById(customUser.getId());
+        model.addAttribute("member", member);
+        return "member/updateForm";
+    }
+
+    @PostMapping("/memberinfo")
+    public ResponseEntity<?> updateMemberInfo(@AuthenticationPrincipal CustomUser customUser, @RequestBody MemberDTO updatedInfo) {
+        if (customUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        memberService.updateMemberInfo(customUser.getId(), updatedInfo);
+        return ResponseEntity.ok().build();
+    }
+
+
 }
