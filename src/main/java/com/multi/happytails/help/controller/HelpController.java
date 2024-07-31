@@ -113,8 +113,9 @@ public class HelpController {
 
     @GetMapping("/inquiry/getList")
     @ResponseBody
-    public ResponseEntity<?> getInquiryList(PageDto pageDto,
-        @RequestParam Map<String, Object> params) {
+    public ResponseEntity<?> getInquiryList(PageDto pageDto
+        ,@RequestParam Map<String, Object> params
+        ,@AuthenticationPrincipal CustomUser customUser) {
         System.out.println(pageDto);
         System.out.println(params);
         String nowPage = (String) params.get("nowPage");
@@ -123,6 +124,11 @@ public class HelpController {
 
         if (nowPage == null) {
             nowPage = "1";
+        }
+
+        System.out.println(customUser.getId());
+        if (!customUser.getRole().equals("ROLE_ADMIN")) {
+            params.put("writer", customUser.getId());
         }
 
         int total = helpService.inquiryListCount(pageDto, params);

@@ -44,6 +44,9 @@
                 <if test="searchMap.result != '' and searchMap.result != null">
                     AND RESULT LIKE CONCAT('%', #{searchMap.result}, '%')
                 </if>
+                <if test="searchMap.writer != '' and searchMap.writer != null">
+                    AND WRITER_ID LIKE CONCAT('%', #{searchMap.writer}, '%')
+                </if>
             </if>
         </where>
     </select>
@@ -65,6 +68,9 @@
                 </if>
                 <if test="searchMap.result != '' and searchMap.result != null">
                     AND RESULT LIKE CONCAT('%', #{searchMap.result}, '%')
+                </if>
+                <if test="searchMap.writer != '' and searchMap.writer != null">
+                    AND WRITER_ID LIKE CONCAT('%', #{searchMap.writer}, '%')
                 </if>
             </if>
         </where>
