@@ -3,11 +3,11 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.multi.happytails.community.model.dao.DogloveDAO">
+<mapper namespace="com.multi.happytails.community.model.dao.ConferenceDAO">
 
-    <select id="findAll" parameterType="String" resultType="com.multi.happytails.community.model.dto.DogloveDTO">
+    <select id="findAll" parameterType="String" resultType="com.multi.happytails.community.model.dto.ConferenceDTO">
         SELECT
-        DOGLOVE_NO AS dogloveNo,
+        CONFERENCE_NO AS conferenceNo,
         USER_ID AS userId,
         TITLE AS title,
         CONTENT AS content,
@@ -15,7 +15,7 @@
         CREATETIME AS createTime,
         UPDATETIME AS updateTime,
         RECOMMEND_COUNT AS recommendCount
-        FROM TB_DOGLOVE
+        FROM TB_CONFERENCE
         <choose>
             <when test="parameter == 'recommendCount'">
                 ORDER BY RECOMMEND_COUNT DESC
@@ -26,20 +26,18 @@
         </choose>
     </select>
 
-
-    <update id="dgRecommendCount">
-        UPDATE TB_DOGLOVE
+    <update id="cfcommendCount">
+        UPDATE TB_CONFERENCE
         SET RECOMMEND_COUNT = COALESCE(RECOMMEND_COUNT, 0) + 1
-        WHERE DOGLOVE_NO = #{dogloveNo}
+        WHERE CONFERENCE_NO = #{conferenceNo}
     </update>
 
-
-    <select id="findById" resultType="com.multi.happytails.community.model.dto.DogloveDTO">
-        SELECT * FROM TB_DOGLOVE WHERE DOGLOVE_NO = #{dogloveNo}
+    <select id="findById" resultType="com.multi.happytails.community.model.dto.ConferenceDTO">
+        SELECT * FROM TB_CONFERENCE WHERE CONFERENCE_NO = #{conferenceNo}
     </select>
 
-    <insert id="dogloveInsert" parameterType="com.multi.happytails.community.model.dto.DogloveDTO">
-        INSERT INTO TB_DOGLOVE (
+    <insert id="insert" parameterType="com.multi.happytails.community.model.dto.ConferenceDTO">
+        INSERT INTO TB_CONFERENCE (
         USER_ID,
         TITLE,
         CONTENT,
@@ -58,27 +56,27 @@
         )
     </insert>
 
-    <update id="update" parameterType="com.multi.happytails.community.model.dto.DogloveDTO">
-        UPDATE TB_DOGLOVE SET
+    <update id="update" parameterType="com.multi.happytails.community.model.dto.ConferenceDTO">
+        UPDATE TB_CONFERENCE SET
         TITLE = #{title},
         CONTENT = #{content},
         UPDATETIME = #{updateTime}
-        WHERE DOGLOVE_NO = #{dogloveNo}
+        WHERE CONFERENCE_NO = #{conferenceNo}
     </update>
 
     <delete id="delete" parameterType="long">
-        DELETE FROM TB_DOGLOVE WHERE DOGLOVE_NO = #{dogloveNo}
+        DELETE FROM TB_CONFERENCE WHERE CONFERENCE_NO = #{conferenceNo}
     </delete>
 
-    <select id="getCurrentDogloveNo">
-        SELECT DOGLOVE_NO
-        FROM TB_DOGLOVE
-        ORDER BY DOGLOVE_NO DESC
+    <select id="getCurrenConferenceNo">
+        SELECT CONFERENCE_NO
+        FROM TB_CONFERENCE
+        ORDER BY CONFERENCE_NO DESC
         LIMIT 1
     </select>
 
-    <select id="search" parameterType="String" resultType="com.multi.happytails.community.model.dto.DogloveDTO">
-        SELECT * FROM TB_DOGLOVE
+    <select id="search" parameterType="String" resultType="com.multi.happytails.community.model.dto.ConferenceDTO">
+        SELECT * FROM TB_CONFERENCE
         WHERE TITLE LIKE CONCAT('%', #{keyword}, '%')
     </select>
 

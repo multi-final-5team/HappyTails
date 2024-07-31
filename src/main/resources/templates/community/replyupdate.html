@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <meta charset="UTF-8">
+    <title>댓글 목록</title>
+    <style>
+        .comment-form textarea {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .btn-blue {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="container mt-5">
+<menu th:replace="fragments/head :: menu"></menu>
+
+<h1 class="mb-4 text-center">댓글 목록</h1>
+
+<h1>댓글 수정</h1>
+<form th:action="@{/community/L/{foreignNo}/reply/update/{communityReplyNo}(communityCategoryCode=${communityCategoryCode}, foreignNo=${foreignNo}, communityReplyNo=${reply.communityReplyNo})}" method="post">
+    <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}"/>
+    <textarea name="content" rows="4" cols="50" th:text="${reply.content}" required></textarea>
+    <button type="submit">수정 완료</button>
+</form>
+</body>
+</html>

@@ -2,12 +2,11 @@ package com.multi.happytails.community.service;
 
 import com.multi.happytails.community.model.dao.DogloveDAO;
 import com.multi.happytails.community.model.dto.DogloveDTO;
+import com.multi.happytails.community.reply.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class DogloveService {
@@ -15,14 +14,15 @@ public class DogloveService {
     private static final String CATEGORY_CODE = "DOGLOVE_CODE";
 
     @Autowired
+    private ReplyService replyService;
+
+
+    @Autowired
     private DogloveDAO dogloveDAO;
-
-
 
     public DogloveService(DogloveDAO dogloveDAO) {
         this.dogloveDAO = dogloveDAO;
     }
-
 
     public List<DogloveDTO> findAllSortedByDate() {
         return dogloveDAO.findAll("date");
@@ -42,29 +42,22 @@ public class DogloveService {
         return dogloveDAO.getCurrentDogloveNo();
     }
 
-    public List<DogloveDTO> findDogLovesWithPaging(String sort, int page, int size) {
-        int offset = page * size;
-        Map<String, Object> params = new HashMap<>();
-        params.put("sort", sort);
-        params.put("offset", offset);
-        params.put("limit", size);
-        return dogloveDAO.selectDogLovesWithPaging(params);
+    public void dgRecommendCount(Long dogloveNo, String userId) {
+        dogloveDAO.dgRecommendCount(dogloveNo);
     }
 
-    public int getTotalDogLoveCount() {
-        return dogloveDAO.getTotalDogLoveCount();
+    public List<DogloveDTO>search(String keyword) {
+        return dogloveDAO.search(keyword);
     }
 
-    public void incrementRecommendCount(Long dogloveNo) {
-        dogloveDAO.incrementRecommendCount(dogloveNo);
-    }
-    // 게시글 추천 수 감소
-    public void decrementRecommendCount(Long dogloveNo) {
-        dogloveDAO.decrementRecommendCount(dogloveNo);
+    public void delete(Long dogloveNo) {
+        dogloveDAO.delete(dogloveNo);
     }
 
 
-
-
+    public void update(DogloveDTO doglove) {
+        Long dogloveNo = doglove.getDogloveNo();
+        dogloveDAO.update(doglove);
+    }
 
 }

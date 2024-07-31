@@ -10,17 +10,15 @@
             object-fit: cover; /* 이미지 비율을 유지하며 크기에 맞게 조정 */
         }
     </style>
-
 </head>
 <body class="container mt-5">
 <menu th:replace="fragments/head :: menu"></menu>
 
-
-<h1 class="mb-4 text-center">내 새꾸 자랑 게시글 작성</h1>
+<h1 class="mb-4 text-center">떠들개 게시글 작성</h1>
 
 <div class="card">
     <div class="card-body">
-        <form id="submitForm" action="/community/doglove" method="post" enctype="multipart/form-data">
+        <form id="submitForm" action="/community/chatdog" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="title" class="form-label">제목:</label>
                 <input type="text" id="title" name="title" class="form-control" required>
@@ -36,12 +34,12 @@
             <div id="imgAddDiv" class="row g-2">
                 <!-- 이미지 미리보기 -->
             </div>
-            <button type="submit" class="btn btn-primary"  onsubmit="return confirm('저장 하시겠습니까?');">저장</button>
+            <button type="submit" class="btn btn-primary" onsubmit="return confirm('저장 하시겠습니까?');">저장</button>
         </form>
     </div>
 </div>
 
-<a href="/community/doglove" class="btn btn-secondary mt-3">목록으로 돌아가기</a>
+<a href="/community/chatdog" class="btn btn-secondary mt-3">목록으로 돌아가기</a>
 
 </body>
 <script>
@@ -83,13 +81,13 @@
             });
 
             $.ajax({
-                url: "/community/doglove",
+                url: "/community/chatdog",
                 processData: false,
                 contentType: false,
                 type: 'POST',
                 data: formData,
                 success: function(data) {
-                    location.href = '/community/doglove';
+                    location.href = '/community/chatdog';
                 }
             });
         });
