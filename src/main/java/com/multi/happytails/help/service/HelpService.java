@@ -29,6 +29,16 @@ public class HelpService {
         return helpMapper.questionList(categoryCode);
     }
 
+    public int questionListCount(PageDto pageDto, Map<String,Object> searchMap) {
+        return helpMapper.questionListCount(pageDto, searchMap);
+    }
+
+    public List<QuestionDto> getQuestionList(PageDto pageDto, Map<String,Object> searchMap) {
+        System.out.println(searchMap + "=-=-==");
+        return helpMapper.getQuestionList(pageDto, searchMap);
+    }
+
+
     public int inquiryListCount(PageDto pageDto, Map<String,Object> searchMap) {
         return helpMapper.inquiryListCount(pageDto, searchMap);
     }

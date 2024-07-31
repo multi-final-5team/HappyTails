@@ -24,14 +24,9 @@
         SELECT *
         FROM tb_question
         <where>
-            <choose>
-                <when test="categoryCode != null">
-                    AND HELP_CATEGORY_CODE = #{categoryCode}
-                </when>
-                <otherwise>
-                    AND HELP_CATEGORY_CODE = 'HEL-001'
-                </otherwise>
-            </choose>
+            <if test="categoryCode != null">
+                AND HELP_CATEGORY_CODE = #{categoryCode}
+            </if>
         </where>
     </select>
 
@@ -102,5 +97,44 @@
 
     <select id="inquiryResultDetail">
         SELECT * FROM TB_INQUIRY_RESULT WHERE INQUIRY_NO = #{inquiryNo}
+    </select>
+
+    <select id="questionListCount">
+        SELECT COUNT(*) AS CNT
+        FROM TB_QUESTION
+        <where>
+            <if test="searchMap != null">
+                <if test="searchMap.title != '' and searchMap.title != null">
+                    AND TITLE LIKE CONCAT('%', #{searchMap.title}, '%')
+                </if>
+                <if test="searchMap.category != '' and searchMap.category != null">
+                    AND HELP_CATEGORY_CODE LIKE CONCAT('%', #{searchMap.category}, '%')
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <select id="getQuestionList">
+        SELECT * FROM (
+        SELECT
+        ROW_NUMBER() OVER (ORDER BY QUESTION_NO DESC) AS RNUM,
+        A.*
+        FROM (
+        SELECT *
+        FROM TB_QUESTION
+        <where>
+            <if test="searchMap != null">
+                <if test="searchMap.title != '' and searchMap.title != null">
+                    AND TITLE LIKE CONCAT('%', #{searchMap.title}, '%')
+                </if>
+                <if test="searchMap.category != '' and searchMap.category != null">
+                    AND HELP_CATEGORY_CODE LIKE CONCAT('%', #{searchMap.category}, '%')
+                </if>
+            </if>
+        </where>
+        ) AS A
+        LEFT JOIN TB_HELP_CATEGORY AS HC ON A.HELP_CATEGORY_CODE = HC.HELP_CATEGORY_CODE
+        ) AS SubQuery
+        WHERE RNUM BETWEEN  #{pageDto.start} AND #{pageDto.end}
     </select>
 </mapper>

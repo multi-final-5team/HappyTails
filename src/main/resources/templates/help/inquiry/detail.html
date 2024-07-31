@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
     <title>문의</title>
@@ -35,8 +36,8 @@
                         </th:block>
                     </th:block>
                 </dl>
-            <!-- 관리자만 보이게 && (결과가 Y면 보이지 않게) -->
-            <th:block th:if="${inquiryDto.result} != 'Y'">
+            <!-- 관리자만 보이게-->
+            <th:block sec:authorize="hasRole('ROLE_ADMIN')" th:if="${inquiryDto.result} != 'Y'">
                 <div class="mb-3">
                     <label for="content" class="form-label">결과 작성</label>
                     <textarea class="form-control" id="content" rows="3"></textarea>
@@ -50,7 +51,6 @@
                 </div>
                 <div>
                     <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
-
                 </div>
             </th:block>
             <!-- 관리자만 보이게 -->

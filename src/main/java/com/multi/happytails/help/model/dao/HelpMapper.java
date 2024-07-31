@@ -30,4 +30,8 @@ public interface HelpMapper {
     int inquiryResultChange(InquiryDto inquiryDto);
 
     InquiryResultDto inquiryResultDetail(long inquiryNo);
+
+    int questionListCount(@Param("pageDto")PageDto pageDto, @Param("searchMap")Map<String, Object> searchMap);
+
+    List<QuestionDto> getQuestionList(@Param("pageDto")PageDto pageDto, @Param("searchMap")Map<String, Object> searchMap);
 }

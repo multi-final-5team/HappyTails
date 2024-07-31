@@ -6,13 +6,11 @@ import com.multi.happytails.help.service.HelpService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import jakarta.annotation.Nullable;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
 import java.util.List;
 
 /**
@@ -60,4 +58,11 @@ public class HelpAdminController {
 
         return "문의 작성이 완료 되었습니다.";
     }
+
+    @GetMapping("/help/helpManage")
+    public String inquiryAdminList() {
+
+        return "/help/admin/helpManage";
+    }
+
 }
