@@ -19,6 +19,11 @@
         <input type="hidden" id="nickname" name="nickname" th:value="${member.nickname}">
 
         <div class="mb-3">
+          <label for="email" class="form-label">이메일</label>
+          <input type="email" class="form-control" id="email" name="email" th:value="${member.email}">
+        </div>
+
+        <div class="mb-3">
           <label for="name" class="form-label">이름</label>
           <input type="text" class="form-control" id="name" name="name" th:value="${member.name}">
         </div>
