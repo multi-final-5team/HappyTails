@@ -1,9 +1,7 @@
 package com.multi.happytails.shop.controller;
 
-import com.multi.happytails.shop.service.PurchaseService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * packageName    : com.multi.happytails.shop.controller
@@ -16,10 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * -----------------------------------------------------------
  * 2024-07-24        ShinHyeoncheol       최초 생성
  */
-@Controller
-@RequestMapping("/sales")
+//P2Z4cX3LE4GpectU2WJb9FBwVS3imAnxydy9eqvblMmZLW3KeBqFusZGL9QyGDb3FWNqvQsMovYrWQok
+@RestController
+@RequestMapping("/purchase")
 public class PurchaseController {
 
-    @Autowired
-    private PurchaseService purchaseService;
 }

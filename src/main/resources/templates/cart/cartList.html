@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <style>
+        .table-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body class="bg-light">
+<menu th:replace="fragments/head :: menu"></menu>
+<main>
+    <div class="container my-5">
+        <h1 class="mb-4 text-center">판매 상품 목록</h1>
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>상품명</th>
+                            <th>가격</th>
+                            <th>수량</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="cartList : ${cartList}">
+                            <td>
+                                <a th:href="@{/sales/selectGoods(no=${cartList.goodsNo})}"
+                                   th:text="${cartList.goodsName}"
+                                   class="text-decoration-none"></a>
+                            </td>
+                            <td th:text="${#numbers.formatCurrency(cartList.price)}" class="price"></td>
+                            <td th:text="${cartList.purchaseQuantity}" class="purchaseQuantity"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <h6>예상 결제 금액</h6>
+        <span th:text="${totalPrice}"></span>
+        <a href="/" class="btn btn-primary w-100 mb-3">결제하기</a>
+    </div>
+
+</main>
+
+
+</body>
+<footer th:replace="fragments/head :: footer"></footer>
+</html>

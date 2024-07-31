@@ -71,6 +71,13 @@
         </div>
     </div>
 </div>
+
+    <div class="search-form">
+        <form th:action="@{/sales/search}" method="get">
+            <input type="text" name="keyword" placeholder="Search products..." class="search-input" required>
+            <button type="submit" class="search-button btn btn-primary">Search</button>
+        </form>
+    </div>
 </main>
 <footer>
 

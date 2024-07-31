@@ -170,7 +170,7 @@ public class SalesController {
      * @return the string
      */
     @GetMapping("/selectGoods")
-    public String selectGoods(@RequestParam("no") int no,Principal principal , Model model) {
+    public String selectGoods(@RequestParam("no") int no, Principal principal , Model model) {
 
         SalesGoodsDTO salesGoodsDTO = new SalesGoodsDTO();
         salesGoodsDTO.setNo(no);
