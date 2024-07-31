@@ -12,4 +12,5 @@ package com.multi.happytails.shop.service;
  * 2024-07-24        ShinHyeoncheol       최초 생성
  */
 public interface PurchaseService {
+
 }

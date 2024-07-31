@@ -39,6 +39,7 @@
     <select id="reviewList" parameterType="com.multi.happytails.shop.model.dto.ReviewDTO" resultMap="ReviewResultMap">
         SELECT * FROM TB_REVIEW
         WHERE GOODS_NO = #{goodsNo}
+        ORDER BY REVIEW_NO DESC
     </select>
 
 

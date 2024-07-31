@@ -24,4 +24,11 @@ public class CartDTO {
     private String id;
     private int goodsNo;
     private int purchaseQuantity;
+
+    private int price;
+    private String goodsName;
+
+    public int totalPrice() {
+        return this.price * this.purchaseQuantity;
+    }
 }

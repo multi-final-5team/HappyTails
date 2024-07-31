@@ -44,16 +44,20 @@ public class CartController {
 
         cartService.insertCart(cartDTO);
 
-        return "redirect:/cart/cartList"; // adjust the redirect as necessary
+        return "/cart/cartList"; // adjust the redirect as necessary
     }
 
     @GetMapping("/cartList")
     public String cartList(Principal principal, Model model){
+        int totalPrice = 0;
         String id = principal.getName();
         List<CartDTO> cartList = cartService.cartList(id);
-
+        for(CartDTO cart : cartList) {
+            totalPrice += cart.totalPrice();
+        }
         model.addAttribute("cartList", cartList);
+        model.addAttribute("totalPrice", totalPrice);
 
-        return "redirect:/cart/cartList";
+        return "/cart/cartList";
     }
 }
