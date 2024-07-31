@@ -9,6 +9,9 @@
         <result column="ID" property="id" />
         <result column="GOODS_NO" property="goodsNo" />
         <result column="PURCHASE_QUANTITY" property="purchaseQuantity" />
+
+        <result column="GOODS_PRICE" property="price" />
+        <result column="GOODS_NAME" property="goodsName" />
     </resultMap>
 
     <select id="insertCart" parameterType="com.multi.happytails.shop.model.dto.CartDTO">
@@ -20,7 +23,9 @@
     </select>
 
     <select id="cartList" resultMap="cartResultMap">
-        SELECT * FROM TB_CART
-        WHERE ID = #{id};
+        SELECT c.NO, c.ID, c.GOODS_NO, c.PURCHASE_QUANTITY, g.GOODS_PRICE, g.GOODS_NAME
+        FROM TB_CART c
+        JOIN TB_SALES_GOODS g ON c.GOODS_NO = g.GOODS_NO
+        WHERE c.ID = #{id};
     </select>
 </mapper>

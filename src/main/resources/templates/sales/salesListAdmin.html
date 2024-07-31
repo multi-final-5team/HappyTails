@@ -35,7 +35,7 @@
                                class="text-decoration-none">
                             </a>
                         </td>
-                        <td th:text="${salesGoods.price}"></td>
+                        <td th:text="${#numbers.formatCurrency(salesGoods.price)}"></td>
                         <td>
                             <div class="row">
                                 <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}" class="col-md-4 mb-3">
