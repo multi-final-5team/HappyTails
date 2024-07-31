@@ -16,8 +16,6 @@ public class ReplyService {
 
     public void addReply(ReplyDTO replyDTO) {
         LocalDateTime now = LocalDateTime.now();
-        replyDTO.setCreatedDate(now);
-        replyDTO.setUpdatedDate(now);
         replyDAO.insertReply(replyDTO);
     }
 
@@ -29,11 +27,27 @@ public class ReplyService {
         replyDAO.deleteReply(communityReplyNo);
     }
 
-    public boolean isReplyWriter(int communityReplyNo, String writerId) {
+    // 게시글 삭제할 때 댓글도 전체 삭제
+    public void replyDeleteAll(String communityCategoryCode, long foreignNo) {
+        replyDAO.replyDeleteAll(communityCategoryCode, foreignNo);
+    }
+
+    public boolean replyWriter(int communityReplyNo, String writerId) {
         ReplyDTO reply = replyDAO.selectReplyById(communityReplyNo);
         return reply != null && reply.getWriterId().equals(writerId);
     }
 
+
+    public ReplyDTO getReplyById(int communityReplyNo) {
+        return replyDAO.selectReplyById(communityReplyNo);
+    }
+
+
+
+    public void updateReply(int communityReplyNo, String content) {
+
+        replyDAO.updateReply(communityReplyNo, content);
+    }
 }
 
 

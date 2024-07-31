@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
-    <title>내 새꾸 자랑 게시판 목록</title>
+    <title>집사 회의 게시판 목록</title>
     <style>
         .table thead th {
             text-align: center;
@@ -19,35 +19,31 @@
 <body class="container mt-5">
 <menu th:replace="fragments/head :: menu"></menu>
 
-<h1 class="mb-4 text-center">내 새꾸 자랑 게시판</h1>
+<h1 class="mb-4 text-center">집사 회의 게시판</h1>
 
-<!-- 추천순/최신순 / 새 글 작성  -->
+<!-- 추천순/최신순 / 새 글 작성 -->
 <div class="d-flex justify-content-between mb-3">
     <div>
-        <form action="/community/doglove" method="get" class="d-inline me-2">
+        <form action="/community/conference" method="get" class="d-inline me-2">
             <input type="hidden" name="sort" value="date"/>
             <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'date' ? '최신순(현재)' : '최신순'}"></button>
         </form>
-        <form action="/community/doglove" method="get" class="d-inline">
+        <form action="/community/conference" method="get" class="d-inline">
             <input type="hidden" name="sort" value="recommendCount"/>
             <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'recommendCount' ? '추천순(현재)' : '추천순'}"></button>
         </form>
     </div>
     <!-- 검색 폼 추가 -->
     <div class="mb-4">
-        <form action="/community/doglove/search" method="get" class="d-flex">
+        <form action="/community/conference/search" method="get" class="d-flex">
             <input type="text" name="keyword" class="form-control me-2" placeholder="제목을 입력하세요" aria-label="검색">
             <button type="submit" class="btn btn-outline-success">🔎</button>
         </form>
     </div>
     <div>
-        <a href="/community/doglove/create" class="btn btn-primary btn-sm me-2">새 글 작성하기</a>
-
+        <a href="/community/conference/create" class="btn btn-primary btn-sm me-2">새 글 작성하기</a>
     </div>
 </div>
-
-
-
 
 <!-- 게시글 목록 -->
 <table class="table table-hover">
@@ -62,15 +58,15 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="doglove : ${dogloves}">
-        <td th:text="${doglove.dogloveNo}" class="text-center"></td>
-        <td th:text="${doglove.userId}" class="text-center"></td>
+    <tr th:each="conference : ${conferences}">
+        <td th:text="${conference.conferenceNo}" class="text-center"></td>
+        <td th:text="${conference.userId}" class="text-center"></td>
         <td>
-            <a th:href="@{/community/doglove/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}" th:text="${doglove.title}"></a>
+            <a th:href="@{/community/conference/{conferenceNo}(conferenceNo=${conference.conferenceNo})}" th:text="${conference.title}"></a>
         </td>
-        <td th:text="${#strings.abbreviate(doglove.content, 30)}"></td>
-        <td th:text="${#temporals.format(doglove.createTime, 'yyyy-MM-dd')}" class="text-center"></td>
-        <td th:text="${doglove.recommendCount}" class="text-center"></td>
+        <td th:text="${#strings.abbreviate(conference.content, 30)}"></td>
+        <td th:text="${#temporals.format(conference.createTime, 'yyyy-MM-dd')}" class="text-center"></td>
+        <td th:text="${conference.recommendCount}" class="text-center"></td>
     </tr>
     </tbody>
 </table>
