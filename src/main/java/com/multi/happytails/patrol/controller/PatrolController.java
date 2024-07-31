@@ -95,10 +95,8 @@ public class PatrolController {
      * @return string
      */
     @PostMapping("makepatrol")
-    public String makepatrol(PatrolDTO patrolDTO , @RequestParam(value = "imageFiles") List<MultipartFile> imageFiles, Principal principal , @AuthenticationPrincipal(errorOnInvalidType=true) CustomUser customUser
+    public String makepatrol(PatrolDTO patrolDTO , @RequestParam(value = "imageFiles",required = false) List<MultipartFile> imageFiles, @AuthenticationPrincipal(errorOnInvalidType=true) CustomUser customUser
     ){
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
 
         patrolDTO.setUserNo((int)customUser.getNo());
 
@@ -112,15 +110,16 @@ public class PatrolController {
 
         System.out.println("target >>>> " + target);
 
-        UploadDto uploadDto = new UploadDto();
-        uploadDto.setForeignNo(target.getPatrolNo());
-        uploadDto.setCategoryCode("Z");
+        if (imageFiles != null) {
+            UploadDto uploadDto = new UploadDto();
+            uploadDto.setForeignNo(target.getPatrolNo());
+            uploadDto.setCategoryCode("Z");
 
-        for (int i = 0; i < imageFiles.size(); i++) {
-            uploadDto.setFile(imageFiles.get(i));
-            uploadService.uploadInsert(uploadDto);
+            for (int i = 0; i < imageFiles.size(); i++) {
+                uploadDto.setFile(imageFiles.get(i));
+                uploadService.uploadInsert(uploadDto);
+            }
         }
-
 
         return "patrol/patrol";
     }

@@ -2,11 +2,9 @@ package com.multi.happytails.patrol.model.dto;
 
 import lombok.Data;
 
-import java.util.List;
-
 /**
  * packageName    : com.multi.happytails.patrol.model.dto
- * fileName       : PlacePoointListDTO
+ * fileName       : PlacePointDTO
  * author         : wss18
  * date           : 2024-07-27
  * 설명    :
@@ -16,6 +14,9 @@ import java.util.List;
  * 2024-07-27        wss18       최초 생성
  */
 @Data
-public class PlacePoointListDTO {
-    private List<PlacePointDTO> poointList;
+public class PrecordPlaceHistoryDTO {
+    private int precordPlaceHistoryNo;
+    private int precordPlaceNo;
+    private double latitude;
+    private double longitude;
 }

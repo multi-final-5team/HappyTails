@@ -73,9 +73,10 @@
             if(tracepoint.length != 0){
                 $.ajax({
 	                url: "/patrolRecordPlace/placeInsert",
-                    type: "post",
-                    dataType: 'json',
-                    data: {"poointList" : tracepoint},
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(tracepoint),
+                    dataType: "json",
                     success: function(data){
                         console.log("ajax 성공");
                     },
@@ -123,6 +124,9 @@
     }
 
     function traceLocation() {
+        if(interval != null){
+            interval = null;
+        }
         interval = setInterval(function() {
             console.log("Interval");
             setLocation();
@@ -133,12 +137,12 @@
 
             console.log("위치 : " + pointlat + "/" + pointlng);
 
-            var point = {
+            var PlacePointDTO = {
                 latitude: pointlat,
                 longitude: pointlng
             };
 
-            tracepoint.push(point);
+            tracepoint.push(PlacePointDTO);
 
         }, 1000);
     }
