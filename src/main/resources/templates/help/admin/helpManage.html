@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <meta charset="UTF-8">
+    <title>자주묻는질문</title>
+</head>
+<body>
+<menu th:replace="fragments/head :: menu"></menu>
+<main>
+    <div class="container">
+        <figure class="text-center">
+            <h2>고객센터</h2>
+        </figure>
+        <figure class="text-left">
+            <h3>고객센터 관리</h3>
+        </figure>
+        <div class="row">
+            <div class="list-group flex-row col-3" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="getInquiryTab" data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">1:1문의</a>
+                <a class="list-group-item list-group-item-action" id="getQuestionTab" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">자주묻는질문</a>
+            </div>
+        </div>
+        <div class="row" id="inquiryListDiv">
+
+        </div>
+        <div class="row" id="questionListDiv">
+
+        </div>
+        <div>
+            <table class="table table-hover" id="tableDiv">
+            </table>
+        </div>
+        <div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination" id="pagination">
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div class="modal" id="writeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Modal body text goes here.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- 스크립트 -->
+<script src="/js/help/function.js"></script>
+<script src="/js/help/page.js"></script>
+<script>
+    let listSwitch = 0;
+
+    $(document).ready(function(){
+        getListDiv();
+
+       // 1:1문의 탭 클릭 Start
+       $("#getInquiryTab").click(function(){
+           listSwitch = 0;
+           getListDiv();
+       });
+       // 1:1문의 탭 클릭 End
+
+       // 자주묻는질문 탭 클릭 Start
+       $("#getQuestionTab").click(function(){
+           listSwitch = 1;
+           getListDiv();
+       });
+       // 자주묻는질문 탭 클릭 End
+        // 검색 click 이벤트 Start
+        $(".container").on("click","#searchBtn",function(){
+            getList(1);
+        });
+        // 검색 click 이벤트 End
+        // 글 클릭 시 페이지 이동 Start
+        $("#tableDiv").on("click",".listRow",function(){
+            if (listSwitch == 0) {
+                let inquiryNo = $(this).attr('data-inquiryno');
+                location.href='/help/inquiry/detail?inquiryNo='+inquiryNo;
+            }
+        });
+        // 글 클릭 시 페이지 이동 End
+    });
+
+    // 검색 폼 생성 Start
+    function getListDiv() {
+
+        htmlStr = `
+                <div class="col">
+                <label for="category" class="form-label">카테고리</label>
+                <select class="form-select" id="category">
+                    <option selected value="">전체</option>
+                </select>
+            </div>`;
+        if (listSwitch == 0) {
+            htmlStr += `
+                <div class="col">
+                    <label for="result" class="form-label">결과</label>
+                    <select class="form-select" id="result">
+                        <option value="" selected>전체</option>
+                        <option value="N">대기</option>
+                        <option value="S">열람</option>
+                        <option value="Y">완료</option>
+                    </select>
+                </div>`;
+        }
+        htmlStr += `
+            <div class="col">
+                <label for="title" class="form-label">제목</label>
+                <input type="text" id="title" class="form-control">
+            </div>
+            <div class="col">
+                <br>
+                <button type="button" class="btn btn-primary" id="searchBtn">검색</button>
+            </div>
+        `;
+
+        // 카테고리 불러오기 Start
+        $.ajax({
+            type : "GET",
+            url : "/help/getCategory",
+            dataType : "json",
+            success : function(result) {
+                for (var i = 0 ; i < result.length; i++) {
+                    let htmlStr = `
+                            <option value='`+result[i].helpCategoryCode+`'>`+result[i].categoryName+`</option>
+                        `;
+                    $('#category').append(htmlStr);
+                }
+            }
+        });
+        // 카테고리 불러오기 End
+
+        if (listSwitch == 0) {
+            $("#inquiryListDiv").html(htmlStr);
+            $("#questionListDiv").html('');
+        } else {
+            $("#questionListDiv").html(htmlStr);
+            $("#inquiryListDiv").html('');
+        }
+
+        getList(1);
+
+    }
+    // 검색 폼 생성 End
+
+    function getList(nowPage) {
+
+        $('#tableDiv').html('');
+
+        // 리스트 불러오기 Start
+        if (listSwitch == 0) {
+            // 입력 필드와 셀렉트박스에서 값을 가져옴
+            let titleValue = $('#title').val();
+            let categoryValue = $('#category').val();
+            let resultValue = $('#result').val();
+
+            // 맵과 유사한 구조로 데이터를 생성
+            let dataMap = {
+                title: titleValue,
+                category: categoryValue,
+                result: resultValue,
+                nowPage: nowPage
+            };
+
+            // 쿼리 문자열 생성
+            let queryString = $.param(dataMap);
+
+            $.ajax({
+                type: "GET",
+                url: "/help/inquiry/getList?" + queryString,
+                dataType: "json",
+                success: function (result) {
+                    console.log(result);
+                    let template = '';
+                    let resultStr = '대기';
+                    let resultStateClass = "bg-secondary";
+                    template = `
+                        <thead>
+                            <tr>
+                                <th scope="col">생성 날짜</th>
+                                <th scope="col">제목</th>
+                                <th scope="col">결과</th>
+                            </tr>
+                        </thead>
+                    `;
+                    for (var i = 0; i < result.viewAll.length; i++) {
+                        if (result.viewAll[i].result == 'S') {
+                            resultStr = '열람';
+                            resultStateClass = "bg-primary";
+                        } else if (result.viewAll[i].result == 'Y') {
+                            resultStr = '완료';
+                            resultStateClass = "bg-success";
+                        } else if (result.viewAll[i].result == 'N') {
+                            resultStr = '대기';
+                            resultStateClass = "bg-secondary";
+                        }
+                        template += `
+                            <tbody>
+                                <tr class="listRow" data-inquiryNo="` + result.viewAll[i].inquiryNo + `">
+                                    <td>` + dataFormat1(result.viewAll[i].createDate) + `</td>
+                                    <td>` + result.viewAll[i].title + `</td>
+                                    <td><span class="badge rounded-pill ` + resultStateClass + `">` + resultStr + `</span></td>
+                                </tr>
+                            </tbody>
+                        `;
+                    }
+                    getpaging(result);
+                    $('#tableDiv').append(template);
+                }
+            });
+        } else {
+            // 입력 필드와 셀렉트박스에서 값을 가져옴
+            let titleValue = $('#title').val();
+            let categoryValue = $('#category').val();
+
+            // 맵과 유사한 구조로 데이터를 생성
+            let dataMap = {
+                title: titleValue,
+                category: categoryValue,
+                nowPage: nowPage
+            };
+
+            // 쿼리 문자열 생성
+            let queryString = $.param(dataMap);
+
+            $.ajax({
+                type: "GET",
+                url: "/help/question/getList?" + queryString,
+                dataType: "json",
+                success: function (result) {
+                    console.log(result);
+                    let template = '';
+                    template = `
+                        <thead>
+                            <tr>
+                                <th scope="col">제목</th>
+                                <th scope="col">수정/삭제</th>
+                            </tr>
+                        </thead>
+                    `;
+                    for (var i = 0; i < result.viewAll.length; i++) {
+                        template += `
+                            <tbody>
+                                <tr class="listRow" data-inquiryNo="` + result.viewAll[i].questionNo + `">
+                                    <td>` + result.viewAll[i].questionContent + `</td>
+                                    <td><button type="button" class="btn btn-success">수정</button><button type="button" class="btn btn-danger">삭제</button></td>
+                                </tr>
+                            </tbody>
+                        `;
+                    }
+                    getpaging(result);
+                    $('#tableDiv').append(template);
+                    $('#questionListDiv').append(`
+                        <div>
+                            <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
+                        </div>
+                    `);
+                }
+            });
+        }
+    }
+    // 리스트 불러오기 End
+
+
+</script>
+</body>
+</html>

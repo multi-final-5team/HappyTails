@@ -1,10 +1,7 @@
 package com.multi.happytails.help.service;
 
 import com.multi.happytails.help.model.dao.HelpMapper;
-import com.multi.happytails.help.model.dto.HelpCategoryDto;
-import com.multi.happytails.help.model.dto.InquiryDto;
-import com.multi.happytails.help.model.dto.PageDto;
-import com.multi.happytails.help.model.dto.QuestionDto;
+import com.multi.happytails.help.model.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +29,16 @@ public class HelpService {
         return helpMapper.questionList(categoryCode);
     }
 
+    public int questionListCount(PageDto pageDto, Map<String,Object> searchMap) {
+        return helpMapper.questionListCount(pageDto, searchMap);
+    }
+
+    public List<QuestionDto> getQuestionList(PageDto pageDto, Map<String,Object> searchMap) {
+        System.out.println(searchMap + "=-=-==");
+        return helpMapper.getQuestionList(pageDto, searchMap);
+    }
+
+
     public int inquiryListCount(PageDto pageDto, Map<String,Object> searchMap) {
         return helpMapper.inquiryListCount(pageDto, searchMap);
     }
@@ -44,5 +51,18 @@ public class HelpService {
     public InquiryDto inquiryDetail(long inquiryNo) {
 
         return helpMapper.inquiryDetail(inquiryNo);
+    }
+
+    public long inquiryResultWrite(InquiryResultDto inquiryResultDto) {
+        helpMapper.inquiryResultWrite(inquiryResultDto);
+        return helpMapper.getCurrentInquiryResultNo();
+    }
+
+    public int inquiryResultChange(InquiryDto inquiryDto) {
+        return helpMapper.inquiryResultChange(inquiryDto);
+    }
+
+    public InquiryResultDto inquiryResultDetail(long inquiryNo) {
+        return helpMapper.inquiryResultDetail(inquiryNo);
     }
 }
