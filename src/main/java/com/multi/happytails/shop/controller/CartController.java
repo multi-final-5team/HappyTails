@@ -44,7 +44,7 @@ public class CartController {
 
         cartService.insertCart(cartDTO);
 
-        return "/cart/cartList"; // adjust the redirect as necessary
+        return "redirect:/cart/cartList"; // adjust the redirect as necessary
     }
 
     @GetMapping("/cartList")
