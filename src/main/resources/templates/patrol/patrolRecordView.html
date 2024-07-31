@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+
+    <title>Title</title>
+
+</head>
+<body class="container mt-5">
+
+<menu th:replace="fragments/head :: menu"></menu>
+
+<main>
+
+<h1 class="mb-4">순찰일지 수정</h1>
+
+<form  method="post" enctype="multipart/form-data" id="formId">
+
+    <input type="hidden" id="beforePrecordNo" name="beforePrecordNo">
+
+    <input type="hidden" id="precordNo" name="precordNo">
+    <input type="hidden" id="userNo" name="userNo">
+
+    <div class="mb-3">
+    <label class="form-label">제목</label><br>
+    <input class="form-control" type="text" id="title" name="title"><br>
+    </div>
+
+    <div class="mb-3">
+    <select id="precordPlace" name="precordPlace" class="datatable-selector">
+        <!-- ajax로 조회 -->
+    </select><br>
+    </div>
+
+    <div class="mb-3">
+    <label class="form-label">내용</label><br>
+    <input class="form-control" type="text" id="content" name="content"><br>
+    </div>
+
+    <div  class="mb-3" id="image_container">
+        <!-- 이미지 들어가는곳 -->
+    </div>
+
+    <input class="form-control" type="file" id="inputFile" name="inputFile"><br>
+
+    <button class="btn btn-warning" type="button" id="formUpdateSubmitBtn">수정</button>
+    <br>
+    <button class="btn btn-danger" type="button" id="formDeleteSubmitBtn">삭제</button>
+
+</form>
+
+</main>
+
+<script>
+    $(document).ready(function() {
+
+        var urlParams = new URL(location.href).searchParams;
+        var pnum = urlParams.get('precordNo');
+        $("#beforePrecordNo").val(pnum);
+
+
+        $.ajax({
+                url:"/patrolRecord/findNonSelectedPrecourdPlace",
+                success: function (data){
+                    const $precordPlace = $("#precordPlace");
+
+                    for(let index in data){
+                        if(data[index].precordNo != pnum){
+                            $precordPlace.append($("<option>").val(data[index].precordPlaceNo).text(data[index].precordPlaceNo + "번 기록"))
+                        }
+                        else{
+                            $precordPlace.append($("<option>").val(data[index].precordPlaceNo).text(data[index].precordPlaceNo + "번 기록").prop("selected", true))
+                        }
+                    }
+                },
+                error: function (xhr){
+                    console.log(xhr);
+                }
+        })
+
+        $('#formUpdateSubmitBtn').click(function(){
+
+            let formData = new FormData($("#formId")[0]);
+
+            $.ajax({
+                url : "/patrolRecord/patrolRecordUpdate",
+                processData : false,
+                contentType : false,
+                type : 'POST',
+                data : formData,
+                success : function(data) {
+                    location.replace("/patrolRecord/patrolRecord");
+                }
+            });
+        });
+        // 폼 업데이트 서브밋 End
+
+        $('#formDeleteSubmitBtn').click(function(){
+
+            let formData = new FormData($("#formId")[0]);
+
+            $.ajax({
+                url : "/patrolRecord/patrolRecordDelete",
+                processData : false,
+                contentType : false,
+                type : 'POST',
+                data : formData,
+                success : function(data) {
+                    location.replace("/patrolRecord/patrolRecord");
+                }
+            });
+        });
+        // 폼 삭제 서브밋 End
+    });
+</script>
+
+</body>
+</html>

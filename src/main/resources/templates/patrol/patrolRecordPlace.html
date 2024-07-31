@@ -19,7 +19,36 @@
     <button class="btn btn-primary" id="goPatrolRecordPlaceInsert">생성</button>
 
     <div id="patroldiv">
-
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    경로번호
+                </th>
+                <th>
+                    일지번호
+                </th>
+                <th>
+                    순찰대번호
+                </th>
+                <th>
+                    총거리
+                </th>
+                <th>
+                    삭제
+                </th>
+            </tr>
+            </thead>
+            <tbody id="placeTbody" class="table-group-divider">
+            <tr th:each="place : ${placeList}">
+                <td th:text="${place.precordPlaceNo}"></td>
+                <td th:text="${ place.precordNo }"></td>
+                <td th:text="${ place.patrolNo }"></td>
+                <td th:text="${ place.precordTotal }"></td>
+                <td><button th:onclick="placedelete([[${place}]])" class="btn btn-primary">삭제</button></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
 </main>
@@ -32,7 +61,40 @@
             location.href = "/patrolRecordPlace/patrolRecordPlaceInsert";
         });
 
+        findallplace();
+
     }); // ready()
+
+    function findallplace(){
+        $.ajax({
+            url:"/patrolRecordPlace/findAllPlace",
+            success: function (placeList){
+
+                $('#placeTbody').replaceWith(placeList);
+                console.log(placeList);
+
+                },
+                error: function (xhr){
+                    console.log(xhr);
+            }
+        })
+    }
+
+    function placedelete(place) {
+        $.ajax({
+            url:"/patrolRecordPlace/deletePlace",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(place),
+            dataType: "json",
+            success: function (data){
+                findallplace();
+            },
+            error: function (xhr){
+                console.log(xhr);
+            }
+        })
+    }
 </script>
 
 </body>
