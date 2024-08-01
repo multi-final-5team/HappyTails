@@ -73,4 +73,16 @@ public class HelpService {
     public int inquiryUpdate(InquiryDto inquiryDto) {
         return helpMapper.inquiryUpdate(inquiryDto);
     }
+
+    public int questionInsert(QuestionDto questionDto) {
+        return helpMapper.questionInsert(questionDto);
+    }
+
+    public int questionDelete(long questionNo) {
+        return helpMapper.questionDelete(questionNo);
+    }
+
+    public int questionUpdate(QuestionDto questionDto) {
+        return helpMapper.questionUpdate(questionDto);
+    }
 }

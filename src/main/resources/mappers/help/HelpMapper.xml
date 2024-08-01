@@ -155,4 +155,21 @@
           CONTENT = #{content}
         WHERE INQUIRY_NO = #{inquiryNo}
     </update>
+
+    <insert id="questionInsert">
+        INSERT INTO TB_QUESTION (HELP_CATEGORY_CODE, QUESTION_CONTENT, ANSWER_CONTENT)
+        VALUES (#{helpCategoryCode}, #{questionContent}, #{answerContent})
+    </insert>
+
+    <delete id="questionDelete">
+        DELETE FROM TB_QUESTION WHERE QUESTION_NO = #{questionNo}
+    </delete>
+
+    <update id="questionUpdate">
+        UPDATE TB_QUESTION SET
+            HELP_CATEGORY_CODE = #{helpCategoryCode},
+            QUESTION_CONTENT = #{questionContent},
+            ANSWER_CONTENT = #{answerContent}
+        WHERE QUESTION_NO = #{questionNo}
+    </update>
 </mapper>

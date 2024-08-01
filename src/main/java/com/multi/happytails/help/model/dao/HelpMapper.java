@@ -38,4 +38,10 @@ public interface HelpMapper {
     int inquiryDelete(long inquiryNo);
 
     int inquiryUpdate(InquiryDto inquiryDto);
+
+    int questionInsert(QuestionDto questionDto);
+
+    int questionDelete(long questionNo);
+
+    int questionUpdate(QuestionDto questionDto);
 }

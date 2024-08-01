@@ -20,11 +20,16 @@
                 <a class="list-group-item list-group-item-action" id="getQuestionTab" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">자주묻는질문</a>
             </div>
         </div>
+
         <div class="row" id="inquiryListDiv">
 
         </div>
+
         <div class="row" id="questionListDiv">
 
+        </div>
+        <div id="writeModalShowDiv">
+            <input type="button" class="btn btn-primary float-end" value="작성" data-bs-toggle="modal" data-bs-target="#writeModal"/>
         </div>
         <div>
             <table class="table table-hover" id="tableDiv">
@@ -39,31 +44,64 @@
 
     </div>
 
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <!-- 자주묻는질문 수정 Modal -->
+    <div class="modal fade" id="updateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Modal title</h5>
+                    <h5 class="modal-title">자주묻는질문 작성</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <input type="hidden" id="updateQuestionNo">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="writeCategory" class="form-label">카테고리</label>
+                        <select class="form-select form-select-sm category" id="updateCategory">
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="writeQuestion" class="form-label">질문</label>
+                        <input type="text" class="form-control" id="updateQuestion">
+                    </div>
+                    <div class="mb-3">
+                        <label for="writeAnswer" class="form-label">답변</label>
+                        <textarea class="form-control" id="updateAnswer" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="updateModalClose">닫기</button>
+                    <button type="button" class="btn btn-primary" id="questionUpdateBtn">저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 자주묻는질문 작성 Modal -->
+    <div class="modal fade" id="writeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">자주묻는질문 작성</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="writeCategory" class="form-label">카테고리</label>
-                        <select class="form-select form-select-sm category" id="writeCategory" name="helpCategoryCode">
+                        <select class="form-select form-select-sm category" id="writeCategory">
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="title" class="form-label">질문</label>
-                        <input type="text" class="form-control" name="title" id="title">
+                        <label for="writeQuestion" class="form-label">질문</label>
+                        <input type="text" class="form-control" id="writeQuestion">
                     </div>
                     <div class="mb-3">
-                        <label for="content" class="form-label">답변</label>
-                        <textarea class="form-control" name="content" id="content" rows="3"></textarea>
+                        <label for="writeAnswer" class="form-label">답변</label>
+                        <textarea class="form-control" id="writeAnswer" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-                    <button type="button" class="btn btn-primary">저장</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="writeModalClose">닫기</button>
+                    <button type="button" class="btn btn-primary" id="questionCreateBtn">저장</button>
                 </div>
             </div>
         </div>
@@ -77,6 +115,33 @@
 
     $(document).ready(function(){
         getListDiv();
+
+        // 자주묻는질문 작성 버튼 Click Start
+        $("#questionCreateBtn").click(function(){
+
+            let formData = new FormData();
+
+            formData.append("helpCategoryCode", $('#writeCategory').val());
+            formData.append("questionContent", $('#writeQuestion').val());
+            formData.append("answerContent", $('#writeAnswer').val());
+
+            $.ajax({
+                url : "/admin/question/write",
+                processData : false,
+                contentType : false,
+                type : 'POST',
+                data : formData,
+                success : function(result) {
+                    alert(result);
+                    $('#writeCategory').val('HEL-001');
+                    $('#writeQuestion').val('');
+                    $('#writeAnswer').val('');
+                    $('#writeModalClose').click();
+                    getList(1);
+                }
+            });
+        });
+        // 자주묻는질문 작성 버튼 Click End
 
        // 1:1문의 탭 클릭 Start
        $("#getInquiryTab").click(function(){
@@ -149,6 +214,7 @@
 
         // 카테고리 불러오기 Start
         $("#writeCategory").html('');
+        $("#updateCategory").html('');
         $.ajax({
             type : "GET",
             url : "/help/getCategory",
@@ -160,6 +226,7 @@
                         `;
                     $('#category').append(htmlStr);
                     $('#writeCategory').append(htmlStr);
+                    $('#updateCategory').append(htmlStr);
                 }
             }
         });
@@ -168,9 +235,11 @@
         if (listSwitch == 0) {
             $("#inquiryListDiv").html(htmlStr);
             $("#questionListDiv").html('');
+            $("#writeModalShowDiv").hide();
         } else {
             $("#questionListDiv").html(htmlStr);
             $("#inquiryListDiv").html('');
+            $("#writeModalShowDiv").show();
         }
 
         getList(1);
@@ -276,27 +345,85 @@
                     for (var i = 0; i < result.viewAll.length; i++) {
                         template += `
                             <tbody>
-                                <tr class="listRow" data-inquiryNo="` + result.viewAll[i].questionNo + `">
+                                <tr class="listRow" data-question-no="` + result.viewAll[i].questionNo + `" data-question="`+result.viewAll[i].questionContent+`" data-answer="`+result.viewAll[i].answerContent+`" data-category="`+result.viewAll[i].helpCategoryCode+`">
                                     <td>` + result.viewAll[i].questionContent + `</td>
-                                    <td><button type="button" class="btn btn-success">수정</button><button type="button" class="btn btn-danger">삭제</button></td>
+                                    <td><button type="button" class="btn btn-success questionUp" data-bs-toggle="modal" data-bs-target="#updateModal">수정</button><button type="button" class="btn btn-danger questionDel">삭제</button></td>
                                 </tr>
                             </tbody>
                         `;
                     }
                     getpaging(result);
                     $('#tableDiv').append(template);
-                    $('#questionListDiv').append(
-                        `<div>
-                            <input type="button" class="btn btn-primary float-end" value="작성" data-bs-toggle="modal" data-bs-target="#staticBackdrop"/>
-                         </div>`
-                    );
-
                 }
             });
         }
     }
     // 리스트 불러오기 End
 
+    // 자주묻는 질문 수정 modal On 버튼 Start
+    $('#tableDiv').on('click','.questionUp',function(){
+        let questionNo = $(this).closest('tr').data('questionNo');
+        let questionContent = $(this).closest('tr').data('question');
+        let answerContent = $(this).closest('tr').data('answer');
+        let helpCategoryCode = $(this).closest('tr').data('category');
+
+        $('#updateQuestionNo').val(questionNo);
+        $('#updateCategory').val(helpCategoryCode);
+        $('#updateQuestion').val(questionContent);
+        $('#updateAnswer').val(answerContent);
+    });
+    // 자주묻는 질문 수정 modal On 버튼 End
+
+    // 자주묻는 질문 수정 버튼 Start
+    $('#questionUpdateBtn').click(function(){
+
+        console.log('이게실행');
+
+        let formData = new FormData();
+
+        let questionNo = $('#updateQuestionNo').val();
+        let helpCategoryCode = $('#updateCategory').val();
+        let questionContent = $('#updateQuestion').val();
+        let answerContent = $('#updateAnswer').val();
+
+        formData.append('questionNo', questionNo);
+        formData.append('helpCategoryCode', helpCategoryCode);
+        formData.append('questionContent', questionContent);
+        formData.append('answerContent', answerContent);
+
+        $.ajax({
+            url: "/admin/question/update",
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (result) {
+                alert(result);
+                $('#updateModalClose').click();
+                getList(1);
+            }
+        });
+    });
+    // 자주묻는 질문 수정 버튼 End
+
+    // 자주묻는 질문 삭제 버튼 Start
+    $('#tableDiv').on('click','.questionDel',function(){
+
+       let questionNo = $(this).closest('tr').data('questionNo');
+
+        if (confirm("삭제 하시겠습니까?")) {
+            $.ajax({
+                url: "/admin/question/delete",
+                type: 'POST',
+                data: {"questionNo": questionNo},
+                success: function (result) {
+                    alert(result);
+                    getList(1);
+                }
+            });
+        }
+    });
+    // 자주묻는 질문 삭제 버튼 End
 
 </script>
 </body>
