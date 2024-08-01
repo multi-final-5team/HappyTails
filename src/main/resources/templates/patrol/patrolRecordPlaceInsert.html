@@ -77,11 +77,11 @@
                     contentType: "application/json; charset=utf-8",
                     data: JSON.stringify(tracepoint),
                     dataType: "json",
-                    success: function(data){
+                    success: function(){
                         console.log("ajax 성공");
                     },
-                    error: function(){
-    	                alert("통신실패")
+                    error: function(err){
+    	                console.log(err);
                     },
                 })
             }

@@ -55,7 +55,52 @@
 
         var urlParams = new URL(location.href).searchParams;
         var pnum = urlParams.get('precordNo');
-        $("#beforePrecordNo").val(pnum);
+
+        $('#precordNo').val(pnum);
+
+        $.ajax({
+            type:'get',
+            url: "/patrolRecord/findPrecordPlaceNoByPrecordNo",
+            data: {precordNo : pnum},
+            success : function(data){
+
+                $('#beforePrecordNo').val(data);
+
+                if(data != null){
+                    $("#precordPlace").append($("<option>").val(data).text(data + "번 기록 *").prop("selected", true));
+                }
+            },
+            error: function (xhr){
+                console.log(xhr);
+            }
+        }); // $.ajax()
+
+
+
+        $.ajax({
+            type:'get',
+            url: "/patrolRecord/findOnePatrolRecordByPrecordNo",
+            data: {precordNo : pnum},
+            success : function(dto){
+                var data = dto.precordDTO;
+                var imgs = dto.uploadDtos;
+
+                $('#userNo').val(data.userNo);
+                $('#title').val(data.title);
+                $('#content').val(data.content);
+
+                for(let indexImg in imgs){
+                    $('#image_container').append(
+                        '<img src="/images/Y/' + imgs[indexImg].storedFileName + '">'
+                );
+            }
+
+            },
+            error: function (xhr){
+                console.log(xhr);
+            }
+        }); // $.ajax()
+
 
 
         $.ajax({
@@ -64,18 +109,16 @@
                     const $precordPlace = $("#precordPlace");
 
                     for(let index in data){
-                        if(data[index].precordNo != pnum){
-                            $precordPlace.append($("<option>").val(data[index].precordPlaceNo).text(data[index].precordPlaceNo + "번 기록"))
-                        }
-                        else{
-                            $precordPlace.append($("<option>").val(data[index].precordPlaceNo).text(data[index].precordPlaceNo + "번 기록").prop("selected", true))
-                        }
+
+                        $precordPlace.append($("<option>").val(data[index].precordPlaceNo).text(data[index].precordPlaceNo + "번 기록"))
+
                     }
                 },
                 error: function (xhr){
                     console.log(xhr);
                 }
         })
+
 
         $('#formUpdateSubmitBtn').click(function(){
 

@@ -16,10 +16,7 @@ package com.multi.happytails.patrol.controller;
 
 
 import com.multi.happytails.authentication.model.dto.CustomUser;
-import com.multi.happytails.patrol.model.dto.PatrolDTO;
-import com.multi.happytails.patrol.model.dto.PatrolImgDTO;
-import com.multi.happytails.patrol.model.dto.PrecordDTO;
-import com.multi.happytails.patrol.model.dto.PrecordPlaceDTO;
+import com.multi.happytails.patrol.model.dto.*;
 import com.multi.happytails.patrol.service.PatrolPlaceService;
 import com.multi.happytails.patrol.service.PatrolRecordService;
 import com.multi.happytails.patrol.service.PatrolService;
@@ -118,8 +115,13 @@ public class PatrolRecordController {
     @PostMapping("patrolRecordUpdate")
     public String patrolUpdate(PrecordDTO PrecordDTO, @RequestParam("beforePrecordNo") int beforePrecordNo , @RequestParam("precordPlace") int precordPlace){
 
+        System.out.println("Update beforePrecordNo >> " + beforePrecordNo);
+        System.out.println("Update precordPlace >> " + precordPlace);
+
         if (beforePrecordNo != precordPlace){
             patrolPlaceService.updatePrecordNo(PrecordDTO.getPrecordNo(), precordPlace);
+
+            patrolPlaceService.updatePrecordNoNULL(beforePrecordNo);
         }
 
         patrolRecordService.patrolRecordUpdate(PrecordDTO);
@@ -132,10 +134,17 @@ public class PatrolRecordController {
     @PostMapping("patrolRecordDelete")
     public String patrolDelete(PrecordDTO PrecordDTO, @RequestParam("beforePrecordNo") int beforePrecordNo , @AuthenticationPrincipal CustomUser customUser){
 
-        //patrolPlaceService.updatePrecordNo(, beforePrecordNo);
+        patrolPlaceService.updatePrecordNoNULL(beforePrecordNo);
+
+        List<UploadDto> pageIngs = uploadService.uploadSelect("Y",PrecordDTO.getPrecordNo());
+
+        if (!pageIngs.isEmpty()) {
+            for(int i = 0; i < pageIngs.size(); i++) {
+                uploadService.uploadDelete(pageIngs.get(i).getImageNo());
+            }
+        }
 
         patrolRecordService.patrolRecordDelete(PrecordDTO);
-
 
         return "/patrol/patrolRecord";
     }
@@ -153,11 +162,22 @@ public class PatrolRecordController {
 
     @GetMapping(value="findOnePatrolRecordByPrecordNo", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public PrecordDTO findOnePatrolRecordByPrecordNo(@RequestParam(value = "precordNo") int precordNo){
+    public OnePatrolRecordImgDTO findOnePatrolRecordByPrecordNo(@RequestParam(value = "precordNo") int precordNo){
+        OnePatrolRecordImgDTO onePatrolRecordImgDTO = new OnePatrolRecordImgDTO();
 
         PrecordDTO precordDTO = patrolRecordService.findOnePatrolRecordByPrecordNo(precordNo);
 
-        return precordDTO;
+        onePatrolRecordImgDTO.setPrecordDTO(precordDTO);
+
+        patrolRecordService.patrolRecordViewcountUpdate(precordNo, precordDTO.getViewcount() + 1);
+
+        List<UploadDto> pageIngs = uploadService.uploadSelect("Y",precordNo);
+
+        if (!pageIngs.isEmpty()) {
+            onePatrolRecordImgDTO.setUploadDtos(pageIngs);
+        }
+
+        return onePatrolRecordImgDTO;
     }
 
     @GetMapping(value="findNonSelectedPrecourdPlace", produces = "application/json; charset=UTF-8")
@@ -168,5 +188,13 @@ public class PatrolRecordController {
         return patrolPlaceService.findNonSelectedPrecourdPlace(patrolNo);
     }
 
+
+    @GetMapping(value="findPrecordPlaceNoByPrecordNo", produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public int findPrecordPlaceNoByPrecordNo(@RequestParam(value = "precordNo") int precordNo) {
+        int precordPlaceNo = patrolPlaceService.findPrecordPlaceNoByPrecordNo(precordNo);
+
+        return precordPlaceNo;
+    }
 
 }

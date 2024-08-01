@@ -49,6 +49,12 @@
         WHERE precord_no IS NULL AND patrol_no = #{patrolNo};
     </select>
 
+    <select id="findPrecordPlaceNoByPrecordNo">
+        SELECT precord_place_no AS precordPlaceNo, precord_no AS precordNo, patrol_no AS patrolNo, precord_total AS precordTotal
+        FROM tb_precord_place
+        WHERE precord_no = #{precordNo};
+    </select>
+
     <delete id="precordPlaceHistoryDelete">
         DELETE FROM tb_precord_place_history
         WHERE precord_place_no= #{precordPlaceNo}
@@ -57,6 +63,12 @@
     <update id="updatePrecordNo">
         UPDATE tb_precord_place
         SET precord_no= #{precordNo}
+        WHERE precord_place_no= #{precordPlaceNo}
+    </update>
+
+    <update id="updatePrecordNoNULL">
+        UPDATE tb_precord_place
+        SET precord_no= NULL
         WHERE precord_place_no= #{precordPlaceNo}
     </update>
 
