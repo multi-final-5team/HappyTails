@@ -70,6 +70,15 @@ public class HelpController {
     public void inquiryList() {}
     @GetMapping("/main")
     public void helpMain() {}
+    @GetMapping("/inquiry/update")
+    public void inquiryUpdate(@RequestParam("inquiryNo") long inquiryNo
+                            , Model model){
+        InquiryDto inquiryDto = helpService.inquiryDetail(inquiryNo);
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_INQUIRY_CODE, inquiryNo);
+
+        model.addAttribute("uploadDtos", uploadDtos);
+        model.addAttribute("inquiryDto", inquiryDto);
+    }
 
     @GetMapping("/getCategory")
     @ResponseBody
@@ -113,8 +122,9 @@ public class HelpController {
 
     @GetMapping("/inquiry/getList")
     @ResponseBody
-    public ResponseEntity<?> getInquiryList(PageDto pageDto,
-        @RequestParam Map<String, Object> params) {
+    public ResponseEntity<?> getInquiryList(PageDto pageDto
+        ,@RequestParam Map<String, Object> params
+        ,@AuthenticationPrincipal CustomUser customUser) {
         System.out.println(pageDto);
         System.out.println(params);
         String nowPage = (String) params.get("nowPage");
@@ -123,6 +133,11 @@ public class HelpController {
 
         if (nowPage == null) {
             nowPage = "1";
+        }
+
+        System.out.println(customUser.getId());
+        if (!customUser.getRole().equals("ROLE_ADMIN")) {
+            params.put("writer", customUser.getId());
         }
 
         int total = helpService.inquiryListCount(pageDto, params);
@@ -163,5 +178,21 @@ public class HelpController {
         return ResponseEntity.ok(response);
 
     }
+
+    @PostMapping("/inquiry/delete")
+    @ResponseBody
+    public String inquiryDelete(@RequestParam("inquiryNo") long inquiryNo) {
+
+        helpService.inquiryDelete(inquiryNo);
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_INQUIRY_CODE, inquiryNo);
+        if (uploadDtos != null && !uploadDtos.isEmpty()) {
+            for (UploadDto uploadDto : uploadDtos) {
+                uploadService.uploadDelete(uploadDto.getImageNo());
+            }
+        }
+
+        return "삭제 되었습니다.";
+    }
+
 
 }

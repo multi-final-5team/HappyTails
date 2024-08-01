@@ -36,6 +36,12 @@
                         </th:block>
                     </th:block>
                 </dl>
+            <!-- 작성자만 보이게 -->
+            <div th:if="${inquiryDto.writerId} == ${#authentication.principal.username} and ${inquiryDto.result} == 'N'">
+                <input type="button" class="btn btn-danger float-end" id="deleteBtn" value="삭제">
+                <input type="button" class="btn btn-success float-end" id="updatePageBtn" value="수정">
+            </div>
+
             <!-- 관리자만 보이게-->
             <th:block sec:authorize="hasRole('ROLE_ADMIN')" th:if="${inquiryDto.result} != 'Y'">
                 <div class="mb-3">
@@ -73,7 +79,29 @@
         </div>
     </main>
 <script>
+    let params = new URLSearchParams(location.search);
+    let inquiryNo = params.get('inquiryNo');
     $(document).ready(function() {
+        // 삭제 버튼 Start
+        $('#deleteBtn').click(function(){
+            $.ajax({
+                url : "/help/inquiry/delete",
+                type : 'POST',
+                data : {"inquiryNo":inquiryNo},
+                success : function(result) {
+                    if (confirm("삭제 하시겠습니까?")) {
+                        alert(result);
+                        location.href="/help/inquiry/list";
+                    }
+                }
+            });
+        });
+        // 삭제 버튼 End
+        // 수정 버튼 Start
+        $('#updatePageBtn').click(function(){
+            location.href="/help/inquiry/update?inquiryNo=" + inquiryNo;
+        });
+        // 수정 버튼 End
         // 이미지 road Start
         let imageFiles = [];
         $('#imageInput').on('change', function(event) {
@@ -93,9 +121,6 @@
         // 이미지 road End
         // 결과 작성 버튼 Start
         $('#createBtn').click(function(){
-
-            var params = new URLSearchParams(location.search);
-            var inquiryNo = params.get('inquiryNo');
 
             let content = $('#content').val();
 
