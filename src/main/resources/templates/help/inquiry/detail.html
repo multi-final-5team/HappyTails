@@ -81,7 +81,6 @@
 <script>
     let params = new URLSearchParams(location.search);
     let inquiryNo = params.get('inquiryNo');
-
     $(document).ready(function() {
         // 삭제 버튼 Start
         $('#deleteBtn').click(function(){
@@ -98,6 +97,11 @@
             });
         });
         // 삭제 버튼 End
+        // 수정 버튼 Start
+        $('#updatePageBtn').click(function(){
+            location.href="/help/inquiry/update?inquiryNo=" + inquiryNo;
+        });
+        // 수정 버튼 End
         // 이미지 road Start
         let imageFiles = [];
         $('#imageInput').on('change', function(event) {

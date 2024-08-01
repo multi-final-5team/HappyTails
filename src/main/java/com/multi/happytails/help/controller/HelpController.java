@@ -70,6 +70,15 @@ public class HelpController {
     public void inquiryList() {}
     @GetMapping("/main")
     public void helpMain() {}
+    @GetMapping("/inquiry/update")
+    public void inquiryUpdate(@RequestParam("inquiryNo") long inquiryNo
+                            , Model model){
+        InquiryDto inquiryDto = helpService.inquiryDetail(inquiryNo);
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_INQUIRY_CODE, inquiryNo);
+
+        model.addAttribute("uploadDtos", uploadDtos);
+        model.addAttribute("inquiryDto", inquiryDto);
+    }
 
     @GetMapping("/getCategory")
     @ResponseBody
@@ -184,5 +193,6 @@ public class HelpController {
 
         return "삭제 되었습니다.";
     }
+
 
 }
