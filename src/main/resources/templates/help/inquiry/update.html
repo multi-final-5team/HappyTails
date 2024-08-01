@@ -3,7 +3,6 @@
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
     <title>문의</title>
-
 </head>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
@@ -18,7 +17,7 @@
             <form action="/help/inquiry/write" method="post" enctype="multipart/form-data" id="inquiryForm">
                 <div class="mb-3">
                     <label for="title" class="form-label">제목</label>
-                    <input type="text" class="form-control" name="title" id="title">
+                    <input type="text" class="form-control" name="title" id="title" th:value="${inquiryDto.title}">
                 </div>
                 <div class="mb-3">
                     <label for="category" class="form-label">카테고리</label>
@@ -28,14 +27,22 @@
 
                 <div class="mb-3">
                     <label for="content" class="form-label">내용</label>
-                    <textarea class="form-control" name="content" id="content" rows="3"></textarea>
+                    <textarea class="form-control" name="content" id="content" rows="3" th:text="${inquiryDto.content}"></textarea>
                 </div>
                 <div class="mb-3">
                     <label for="imageInput" class="form-label">이미지 첨부</label>
                     <input class="form-control" type="file" id="imageInput">
                 </div>
                 <div id="imgAddDiv">
-
+                    <th:block th:if="${uploadDtos != null}">
+                        <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
+                            <div>
+                            <img th:src="@{/images/I/{file}(file=${uploadDto.storedFileName})}" alt="..." width="100px" height="100px">
+                                <input type="button" value="삭제">
+                                <input type="button" value="수정">
+                            </div>
+                        </th:block>
+                    </th:block>
                 </div>
                 <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
             </form>
@@ -44,6 +51,9 @@
 
 <!-- 스크립트 -->
 <script>
+    let params = new URLSearchParams(location.search);
+    let inquiryNo = params.get('inquiryNo');
+
     $(document).ready(function() {
         // 카테고리 불러오기 Start
         $.ajax({
@@ -56,6 +66,7 @@
                             <option value='`+result[i].helpCategoryCode+`'>`+result[i].categoryName+`</option>
                         `;
                     $('#category').append(htmlStr);
+                    $('#category').val('[[${inquiryDto.helpCategoryCode}]]');
                 }
             }
         });
@@ -87,20 +98,21 @@
             formData.append('title',title);
             formData.append('content',content);
             formData.append('helpCategoryCode',category);
+            formData.append('inquiryNo',inquiryNo);
 
             for (let i = 0; i < imageFiles.length;i++) {
                 formData.append('imageFiles',imageFiles[i]);
             }
 
             $.ajax({
-                url : "/help/inquiry/write",
+                url : "/help/inquiry/update",
                 processData : false,
                 contentType : false,
                 type : 'POST',
                 data : formData,
                 success : function(result) {
                     alert(result);
-                    location.href="/help/main";
+                    location.href="/help/inquiry/detail?inquiryNo="+inquiryNo;
                 }
             });
         });

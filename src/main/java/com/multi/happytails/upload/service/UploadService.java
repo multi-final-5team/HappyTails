@@ -106,10 +106,9 @@ public class UploadService {
     }
 
     private void deleteFile(UploadDto uploadDto) {
-
         try {
             if (uploadDto.getStoredFileName() != null) {
-                Path filePath = Paths.get(projectPath + fileDir + uploadDto.getCategoryCode() + uploadDto.getStoredFileName());
+                Path filePath = Paths.get(projectPath + fileDir + uploadDto.getCategoryCode() + "/" + uploadDto.getStoredFileName());
                 System.out.println(filePath);
                 Files.deleteIfExists(filePath);
             }

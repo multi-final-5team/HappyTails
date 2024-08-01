@@ -7,11 +7,11 @@
 
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head">
+<head th:replace="~{fragments/head :: head}">
     <title>HappyTails</title>
 </head>
 <body>
-<menu th:replace="fragments/head :: menu"></menu>
+<menu th:replace="~{fragments/head :: menu}"></menu>
 <main class="container mt-5">
     <h1 class="text-center mb-5">HappyTails</h1>
     <div class="row justify-content-center">
@@ -31,9 +31,11 @@
                 <a href="/member/findUserIdForm" class="btn btn-secondary">아이디 찾기</a>
                 <a href="/member/findUserPwdForm" class="btn btn-secondary">비밀번호 변경</a>
                 <a href="/member/signup" class="btn btn-secondary">회원가입</a>
-                <a id="kakao-login-btn" href="/member/kakaoLogin">
-                    <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="auto" />
-                </a>
+                <div class="text-center mt-2">
+                    <a id="kakao-login-btn" href="/member/kakaoLogin">
+                        <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="auto" alt="" />
+                    </a>
+                </div>
             </div>
         </div>
     </div>

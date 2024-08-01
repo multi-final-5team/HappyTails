@@ -34,4 +34,6 @@ public interface HelpMapper {
     int questionListCount(@Param("pageDto")PageDto pageDto, @Param("searchMap")Map<String, Object> searchMap);
 
     List<QuestionDto> getQuestionList(@Param("pageDto")PageDto pageDto, @Param("searchMap")Map<String, Object> searchMap);
+
+    int inquiryDelete(long inquiryNo);
 }
