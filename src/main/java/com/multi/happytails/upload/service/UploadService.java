@@ -58,6 +58,7 @@ public class UploadService {
 
     public int uploadUpdate(long imageNo, MultipartFile multipartFile) {
         UploadDto uploadDto = uploadMapper.uploadSelect(imageNo);
+        deleteFile(uploadDto);
         uploadDto.setFile(multipartFile);
         createUploadImage(uploadDto);
         return uploadMapper.uploadUpdate(uploadDto);
