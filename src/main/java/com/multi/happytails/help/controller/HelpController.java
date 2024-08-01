@@ -194,5 +194,50 @@ public class HelpController {
         return "삭제 되었습니다.";
     }
 
+    @PostMapping("/inquiry/update")
+    @ResponseBody
+    public String inquiryUpdate(@ModelAttribute InquiryDto inquiryDto,
+                                @RequestParam(value = "imageFiles") @Nullable List<MultipartFile> imageFiles,
+                                @RequestParam(value = "imageUpdateFiles") @Nullable List<MultipartFile> imageUpdateFiles,
+                                @RequestParam(value = "imageDeleteImageNo") @Nullable List<Long> imageDeleteImageNo,
+                                @RequestParam(value = "imageUpdateImageNo") @Nullable List<Long> imageUpdateImageNo) {
+
+        System.out.println(inquiryDto);
+        System.out.println(imageUpdateFiles);
+        System.out.println(imageDeleteImageNo);
+        System.out.println(imageUpdateImageNo);
+        System.out.println(imageFiles);
+
+        int result = helpService.inquiryUpdate(inquiryDto);
+
+        if (result == 1) {
+
+            if (imageDeleteImageNo != null && !imageDeleteImageNo.isEmpty()) {
+                for (int i = 0; i < imageDeleteImageNo.size(); i++) {
+                    uploadService.uploadDelete(imageDeleteImageNo.get(i));
+                }
+            }
+
+            if (imageUpdateFiles != null && !imageUpdateFiles.isEmpty()) {
+                for (int i = 0; i < imageUpdateFiles.size(); i++) {
+                    System.out.println(imageUpdateImageNo.get(i) + imageUpdateFiles.get(i).getOriginalFilename() + "===-=-=-=-=-=-=");
+                    uploadService.uploadUpdate(imageUpdateImageNo.get(i), imageUpdateFiles.get(i));
+                }
+            }
+
+            if (imageFiles != null && !imageFiles.isEmpty()) {
+                UploadDto uploadDto = new UploadDto();
+                uploadDto.setForeignNo(inquiryDto.getInquiryNo());
+                uploadDto.setCategoryCode(UPLOAD_INQUIRY_CODE);
+
+                for (int i = 0; i < imageFiles.size(); i++) {
+                    uploadDto.setFile(imageFiles.get(i));
+                    uploadService.uploadInsert(uploadDto);
+                }
+            }
+        }
+
+        return "문의 작성이 완료 되었습니다.";
+    }
 
 }

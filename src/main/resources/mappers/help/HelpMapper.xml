@@ -147,4 +147,12 @@
     <delete id="inquiryDelete">
         DELETE FROM TB_INQUIRY WHERE INQUIRY_NO = #{inquiryNo}
     </delete>
+
+    <update id="inquiryUpdate">
+        UPDATE TB_INQUIRY SET
+          TITLE = #{title},
+          HELP_CATEGORY_CODE = #{helpCategoryCode},
+          CONTENT = #{content}
+        WHERE INQUIRY_NO = #{inquiryNo}
+    </update>
 </mapper>
