@@ -3,7 +3,6 @@ package com.multi.happytails.member.model.dto;
 import lombok.*;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 @Getter
 @Setter
@@ -27,14 +26,14 @@ public class MemberDTO {
     private char deleteAccountFlag;
     private String role;
 
-    private List<MemberDTO> memberRoleList;
-
-    public List<MemberDTO> getMemberRoleList() {
-        return memberRoleList;
-    }
-
-    public void setMemberRoleList(List<MemberDTO> memberRoleList) {
-        this.memberRoleList = memberRoleList;
-    }
+//    private List<MemberDTO> memberRoleList;
+//
+//    public List<MemberDTO> getMemberRoleList() {
+//        return memberRoleList;
+//    }
+//
+//    public void setMemberRoleList(List<MemberDTO> memberRoleList) {
+//        this.memberRoleList = memberRoleList;
+//    }
 
 }

@@ -97,14 +97,15 @@ public class MemberService {
 //
 //    }
 
-    public void updateMemberInfo(String userId, MemberDTO updatedInfo) {
+    public void updateMember(String userId, MemberDTO memberDTO) {
         MemberDTO existingMember = memberDAO.findMemberById(userId);
         if (existingMember != null) {
             // null이 아닌 필드만 업데이트
-            if (updatedInfo.getName() != null) existingMember.setName(updatedInfo.getName());
-            if (updatedInfo.getAge() != 0) existingMember.setAge(updatedInfo.getAge());
-            if (updatedInfo.getGender() != null) existingMember.setGender(updatedInfo.getGender());
-            if (updatedInfo.getTel() != null) existingMember.setTel(updatedInfo.getTel());
+            if (memberDTO.getEmail() != null) existingMember.setEmail(memberDTO.getEmail());
+            if (memberDTO.getName() != null) existingMember.setName(memberDTO.getName());
+            if (memberDTO.getAge() != 0) existingMember.setAge(memberDTO.getAge());
+            if (memberDTO.getGender() != null) existingMember.setGender(memberDTO.getGender());
+            if (memberDTO.getTel() != null) existingMember.setTel(memberDTO.getTel());
 
             memberDAO.updateMember(existingMember);
         }
