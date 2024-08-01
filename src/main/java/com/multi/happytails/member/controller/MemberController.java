@@ -295,6 +295,7 @@ public class MemberController {
         return "member/updateForm";
     }
 
+    /*
     @PostMapping("/memberinfo")
     public ResponseEntity<?> updateMemberInfo(@AuthenticationPrincipal CustomUser customUser, @RequestBody MemberDTO updatedInfo) {
         if (customUser == null) {
@@ -303,6 +304,30 @@ public class MemberController {
 
         memberService.updateMemberInfo(customUser.getId(), updatedInfo);
         return ResponseEntity.ok().build();
+    }
+     */
+
+    @GetMapping("/memberinfo")
+    public String showMemberInfo(Model model, @AuthenticationPrincipal CustomUser customUser) {
+        if (customUser != null) {
+            String userId = customUser.getUsername();
+            MemberDTO member = memberService.findMemberById(userId);
+            model.addAttribute("member", member);
+            return "member/memberinfo";
+        } else {
+            return "redirect:/login";
+        }
+    }
+
+    @PostMapping("/memberinfo")
+    public String updateMemberInfo(@ModelAttribute MemberDTO memberDTO, @AuthenticationPrincipal CustomUser customUser) {
+        if (customUser != null) {
+            String userId = customUser.getUsername();
+            memberService.updateMember(userId, memberDTO);
+            return "redirect:/member/mypage";
+        } else {
+            return "redirect:/login";
+        }
     }
 
 

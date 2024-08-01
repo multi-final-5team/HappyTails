@@ -7,11 +7,11 @@
 
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/head :: head">
+<head th:replace="~{fragments/head :: head}">
     <title>마이페이지</title>
 </head>
 <body>
-<menu th:replace="fragments/head :: menu"></menu>
+<menu th:replace="~{fragments/head :: menu}"></menu>
 <main class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4 mx-auto text-center">
@@ -48,9 +48,9 @@
         //     window.location.href = '/member/purchase';
         // });
 
-        // $('#member-info').click(function() {
-        //     window.location.href = '/member/memberinfo';
-        // });
+        $('#member-info').click(function() {
+            window.location.href = '/member/memberinfo';
+        });
 
         // $('#delete-account').click(function() {
         //     if(confirm('계정 삭제를 원하십니까?')) {

@@ -1,70 +1,68 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>회원정보 수정</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}">
+  <title>회원정보수정</title>
 </head>
 <body>
-<div class="container mt-5" role="main">
-  <h1 class="text-center mb-5">회원정보 수정</h1>
-
+<menu th:replace="~{fragments/head :: menu}"></menu>
+<main class="container mt-5">
+  <h1 class="text-center mb-5">회원정보수정</h1>
   <div class="row justify-content-center">
     <div class="col-md-6 col-lg-4 mx-auto">
-      <form th:action="@{/member/memberinfo}" method="post">
+      <form action="/member/memberinfo" method="post" enctype="multipart/form-data" id="updateForm">
         <!-- Hidden fields for id, pwd, and nickname -->
         <input type="hidden" id="id" name="id" th:value="${member.id}">
         <input type="hidden" id="pwd" name="pwd" th:value="${member.pwd}">
         <input type="hidden" id="nickname" name="nickname" th:value="${member.nickname}">
 
         <div class="mb-3">
+          <label for="file" class="form-label">프로필 이미지</label>
+          <input type="file" class="form-control" id="file" name="file">
+        </div>
+
+        <div class="mb-3">
           <label for="email" class="form-label">이메일</label>
-          <input type="email" class="form-control" id="email" name="email" th:value="${member.email}">
+          <input type="email" class="form-control" id="email" name="email" th:value="${member.email}" required>
         </div>
 
         <div class="mb-3">
           <label for="name" class="form-label">이름</label>
-          <input type="text" class="form-control" id="name" name="name" th:value="${member.name}">
+          <input type="text" class="form-control" id="name" name="name" th:value="${member.name}" required>
         </div>
 
         <div class="mb-3">
           <label for="age" class="form-label">나이</label>
-          <input type="number" class="form-control" id="age" name="age" th:value="${member.age}">
+          <input type="number" class="form-control" id="age" name="age" th:value="${member.age}" required>
         </div>
 
         <div class="mb-3">
-          <label class="form-label">성별</label>
-          <div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gender" id="male" value="M" th:checked="${member.gender == 'M'}">
-              <label class="form-check-label" for="male">남성</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gender" id="female" value="F" th:checked="${member.gender == 'F'}">
-              <label class="form-check-label" for="female">여성</label>
-            </div>
-          </div>
+          <label for="gender" class="form-label">성별</label>
+          <select class="form-select" id="gender" name="gender" required>
+            <option value="M" th:selected="${member.gender == 'M'}">남성</option>
+            <option value="F" th:selected="${member.gender == 'F'}">여성</option>
+          </select>
         </div>
 
         <div class="mb-3">
           <label for="tel" class="form-label">전화번호</label>
-          <input type="tel" class="form-control" id="tel" name="tel" th:value="${member.tel}">
+          <input type="text" class="form-control" id="tel" name="tel" th:value="${member.tel}" required>
         </div>
 
         <button type="submit" class="btn btn-primary w-100">회원정보 수정</button>
-
-        <div class="text-center mt-3">
-          <a href="/member/mypage" class="btn btn-secondary">취소</a>
-        </div>
       </form>
+      <div class="text-center mt-3">
+        <a href="/member/mypage" class="btn btn-secondary">취소</a>
+      </div>
     </div>
   </div>
-</div>
+</main>
 
-<!-- Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#updateForm').submit(function(e) {
+      // 여기에 필요한 유효성 검사 로직을 추가할 수 있습니다.
+    });
+  });
+</script>
 </body>
 </html>
