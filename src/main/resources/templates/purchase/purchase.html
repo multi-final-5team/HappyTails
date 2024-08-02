@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+</head>
+
+<body class="container mt-5">
+
+<menu th:replace="fragments/head :: menu"></menu>
+<h1>결제페이지</h1>
+<main>
+    <button onclick="requestPayment()">결제하기</button>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.portone.io/v2/browser-sdk.js"></script>
+<script type="text/javascript">
+    const data = {
+    storeId: 'store-a80ed714-8ae1-4d33-823e-e881b53a1d26',
+    channelKey : 'channel-key-85b12d54-5c6b-4292-90c0-2067a03e1c9e',
+    paymentId: 'test_paymentId4',
+    orderName : '반팔 티셔츠 XL',
+    totalAmount: 1,
+    currency: 'CURRENCY_KRW',
+    payMethod: 'CARD'
+    };
+
+    async function requestPayment() { // async 키워드 추가
+        const response = await PortOne.requestPayment(data);
+            // 결제가 제대로 완료되지 않은 경우 에러 코드가 존재합니다.
+        if (response.code != null) {
+            return alert(response.message);
+        }
+        const validation = await axios({
+            // 결제결과를 처리할 가맹점 백엔드 endpoint
+            url: "http://localhost:8095" + "/purchase/complete",
+            method: "POST",
+            data: {
+                txId: response.txId,
+                paymentId: response.paymentId,
+            },
+        });
+        // 결제검증 API의 응답을 구성한 대로 결제결과를 처리하세요!
+    }
+</script>
+
+</body>
+</html>

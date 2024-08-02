@@ -17,4 +17,9 @@ public class CustomErrorController {
     public void accessDenied(){
 
     }
+
+    @RequestMapping("/purchase-error")
+    public void purchaseError() {
+
+    }
 }
