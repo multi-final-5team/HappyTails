@@ -3,6 +3,7 @@ package com.multi.happytails.patrol.service;
 import com.multi.happytails.patrol.model.dao.PatrolRecordDAO;
 import com.multi.happytails.patrol.model.dto.PatrolDTO;
 import com.multi.happytails.patrol.model.dto.PrecordDTO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,5 +49,10 @@ public class PatrolRecordService {
     public int patrolRecordDelete(PrecordDTO precordDTO) {
 
         return patrolRecordDAO.patrolRecordDelete(precordDTO);
+    }
+
+    public int patrolRecordViewcountUpdate(@Param("precordNo") int precordNo, @Param("viewcount") int viewcount) {
+
+        return patrolRecordDAO.patrolRecordViewcountUpdate(precordNo, viewcount);
     }
 }

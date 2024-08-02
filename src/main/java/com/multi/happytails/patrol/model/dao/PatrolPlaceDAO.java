@@ -38,4 +38,8 @@ public interface PatrolPlaceDAO {
     int precordPlaceHistoryDelete(int precordPlaceNo);
 
     int updatePrecordNo(@Param("precordNo") int precordNo, @Param("precordPlaceNo") int precordPlaceNo);
+
+    int findPrecordPlaceNoByPrecordNo(int precordNo);
+
+    int updatePrecordNoNULL(int precordPlaceNo);
 }

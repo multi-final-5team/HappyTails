@@ -63,7 +63,12 @@
     type:'get',
     url: "/patrol/findOnePatrolByPatrolNo",
     data: {parolNo : pnum},
-    success : function(data){
+    success : function(dto){
+        data = dto.patrolDTO;
+        imgs = dto.uploadDtos;
+
+        console.log(data);
+        console.log(imgs);
 
         $('#patrolNo').val(data.patrolNo);
         $('#userNo').val(data.userNo);
@@ -71,6 +76,12 @@
         $('#age').val(data.age);
         $('#breed').val(data.breed);
         $('#location').val(data.location);
+
+        for(let indexImg in imgs){
+            $('#image_container').append(
+                '<img src="/images/Z/' + imgs[indexImg].storedFileName + '">'
+            );
+        }
 
     },
     error: function (xhr){
