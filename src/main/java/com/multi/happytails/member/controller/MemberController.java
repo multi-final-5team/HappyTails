@@ -69,12 +69,49 @@ public class MemberController {
     @ResponseBody
     public ResponseEntity<?> kakaoLogin(@RequestBody Map<String, String> kakaoData) {
         String id = kakaoData.get("id");
+        String email = kakaoData.get("email");
         String nickname = kakaoData.get("nickname");
+        String name = kakaoData.get("name");
+        String tel = kakaoData.get("tel");
+
+        // 선택 동의 항목
+        String profileImage = kakaoData.get("profile_image");
+        String gender = kakaoData.get("gender");
+        String birthday = kakaoData.get("birthday");
+        String birthyear = kakaoData.get("birthyear");
 
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setId("kakao_" + id);
+        memberDTO.setPwd(("1234")); // 임시 비밀번호 설정
+        memberDTO.setEmail(email);
+        memberDTO.setName(name);
         memberDTO.setNickname(nickname);
-        memberDTO.setPwd("1234"); // 카카오 로그인은 비밀번호가 없으므로 임시 비밀번호 설정
+        memberDTO.setGender(gender); // 선택 동의 항목
+        memberDTO.setTel(tel);
+
+        // 선택 동의 항목 설정
+        memberDTO.setProfileImage(profileImage);
+        memberDTO.setBirthday(birthday);
+        memberDTO.setBirthyear(birthyear);
+
+
+
+        // 전화번호(tel) 데이터 처리
+        if (tel != null) {
+            // 특수문자 제거
+            tel = tel.replaceAll("[^0-9]", "");
+            // 길이 제한 (예: 15자)
+            if (tel.length() > 30) {
+                tel = tel.substring(0, 30);
+            }
+        }
+
+        // 성별 변환
+        if ("male".equals(gender)) {
+            memberDTO.setGender("M");
+        } else if ("female".equals(gender)) {
+            memberDTO.setGender("F");
+        }
 
         // 회원이 존재하는지 확인
         MemberDTO existingMember = memberService.findMemberById(memberDTO.getId());
@@ -82,6 +119,9 @@ public class MemberController {
         if (existingMember == null) {
             // 새 회원 등록
             memberService.insertMember(memberDTO);
+        } else {
+            // 기존 회원 정보 업데이트
+            memberService.updateMember(memberDTO.getId(), memberDTO);
         }
 
         // 로그인 처리 (여기서는 간단히 성공 메시지만 반환)
@@ -161,14 +201,12 @@ public class MemberController {
     @ResponseBody
     public ResponseEntity<String> changePassword(@RequestBody Map<String, String> payload) {
         String id = payload.get("id");
-        String name = payload.get("name");
-        String tel = payload.get("tel");
+        String email = payload.get("email");
         String newPassword = payload.get("newPassword");
 
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setId(id);
-        memberDTO.setName(name);
-        memberDTO.setTel(tel);
+        memberDTO.setEmail(email);
 
         MemberDTO member = memberService.findUserByDetails(memberDTO);
         if (member != null) {
@@ -199,7 +237,6 @@ public class MemberController {
      * @param password 사용자 비밀번호
      * @param name 사용자 이름
      * @param nickname 사용자 닉네임
-     * @param age 사용자 나이
      * @param gender 사용자 성별
      * @param tel 사용자 전화번호
      * @return 로그인 페이지로의 리다이렉트를 포함한 ModelAndView
@@ -208,9 +245,9 @@ public class MemberController {
     public ModelAndView handleFileUpload(@RequestParam("file") MultipartFile file, // MultipartFile file은 프로필 이미지 파일을 받기
                                          @RequestParam("id") String id,
                                          @RequestParam("password") String password,
+                                         @RequestParam("email") String email,
                                          @RequestParam("name") String name,
                                          @RequestParam("nickname") String nickname,
-                                         @RequestParam("age") int age,
                                          @RequestParam("gender") String gender,
                                          @RequestParam("tel") String tel) {
 
@@ -219,9 +256,9 @@ public class MemberController {
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setId(id);
         memberDTO.setPwd(password);
+        memberDTO.setEmail(email);
         memberDTO.setName(name);
         memberDTO.setNickname(nickname);
-        memberDTO.setAge(age);
         memberDTO.setGender(gender);
         memberDTO.setTel(tel);
 

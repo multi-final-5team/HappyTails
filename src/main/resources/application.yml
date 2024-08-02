@@ -38,7 +38,7 @@ logging:
 
 kakao:
   api:
-    key: 00f8ce605055d2ddbe1b0ee7359a0e6f
+    key: a75d5e29e1e142cb35f3df8cefbf7a76
 
 portone:
   api:

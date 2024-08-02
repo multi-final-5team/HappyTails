@@ -1,7 +1,7 @@
 
 <!--
     이 페이지는 사용자가 비밀번호를 변경할 수 있는 폼을 제공하고,
-    사용자가 아이디, 이름, 전화번호, 새로운 비밀번호를 입력하여 해당 id의 비밀번호를 변경함
+    사용자가 아이디, 이메일, 새로운 비밀번호를 입력하여 해당 id의 비밀번호를 변경함
 -->
 
 <!DOCTYPE html>
@@ -21,12 +21,8 @@
                     <input type="text" class="form-control" id="id" name="id" required>
                 </div>
                 <div class="mb-3">
-                    <label for="name" class="form-label">이름</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
-                </div>
-                <div class="mb-3">
-                    <label for="tel" class="form-label">전화번호</label>
-                    <input type="text" class="form-control" id="tel" name="tel" required>
+                    <label for="email" class="form-label">이메일</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
                 </div>
                 <div class="mb-3">
                     <label for="newPassword" class="form-label">새 비밀번호</label>
@@ -57,8 +53,7 @@
                 url: '/member/changePassword',
                 data: JSON.stringify({
                     id: $('#id').val(),
-                    name: $('#name').val(),
-                    tel: $('#tel').val(),
+                    email: $("#email").val(),
                     newPassword: $('#newPassword').val()
                 }),
                 contentType: 'application/json',

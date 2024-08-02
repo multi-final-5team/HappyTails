@@ -17,7 +17,6 @@ public class MemberDTO {
     private String email;
     private String name;
     private String nickname;
-    private int age;
     private String gender;
     private String tel;
     private Timestamp signupDate;
@@ -25,6 +24,9 @@ public class MemberDTO {
 //    private String deleteAccount;
     private char deleteAccountFlag;
     private String role;
+    private String profileImage;
+    private String birthday;
+    private String birthyear;
 
 //    private List<MemberDTO> memberRoleList;
 //

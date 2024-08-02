@@ -21,8 +21,8 @@
                     <input type="text" class="form-control" id="name" name="name" required>
                 </div>
                 <div class="mb-3">
-                    <label for="tel" class="form-label">전화번호</label>
-                    <input type="text" class="form-control" id="tel" name="tel" required>
+                    <label for="email" class="form-label">이메일</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">아이디 찾기</button>
             </form>
@@ -48,7 +48,7 @@
                 url: "/member/findUserId",
                 data: JSON.stringify({
                     name: $("#name").val(), //input[name=name]
-                    tel: $("#tel").val() //input[name=tel]
+                    email: $("#email").val() //input[name=email]
                 }),
                 contentType: "application/json",
                 success: function(response) {
