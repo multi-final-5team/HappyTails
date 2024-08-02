@@ -14,9 +14,206 @@
         <figure class="text-left">
             <h3>찾아주개 작성</h3>
         </figure>
+        <form action="/help/inquiry/write" method="post" enctype="multipart/form-data" id="inquiryForm">
+            <div class="mb-3">
+                <label for="title" class="form-label">제목</label>
+                <input type="text" class="form-control" name="title" id="title">
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">카테고리</label>
+                <select class="form-select form-select-sm category" id="category">
+                    <option value="F">잃어버린강아지</option>
+                    <option value="M">유기의심공유</option>
+                </select>
+            </div>
 
+            <div class="mb-3">
+                <label for="content" class="form-label">내용</label>
+                <textarea class="form-control" name="content" id="content" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="imageInput" class="form-label">이미지 첨부</label>
+                <input class="form-control" type="file" id="imageInput">
+            </div>
+            <div id="imgAddDiv">
+
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                    <h2>장소</h2>
+                    <div class="col">
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control mb-2" id="zipp_code_id" name="zipp_code" maxlength="10" placeholder="우편번호" style="width: 50%; display: inline;" hidden="hidden">
+                            <input type="button" id="zipp_btn" class="btn btn-primary" onclick="execDaumPostcode()" value="지도 위치 이동"><br><br>
+                            <input type="button" class="btn btn-primary" id="myMapMove" value="지도 내 위치로 이동"><br>
+                            <input type="text" class="form-control mb-2" name="user_add1" id="UserAdd1" maxlength="40" placeholder="기본 주소를 입력하세요" hidden="hidden" required>
+                            <input type="text" class="form-control" name="user_add2" id="UserAdd2" maxlength="40" placeholder="상세 주소를 입력하세요" hidden="hidden">
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <div id="map" style="width:800px;height:500px;"></div>
+            </div>
+
+            <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
+
+        </form>
     </div>
 </main>
 <!-- 스크립트 -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3410cbe0e56cd0dca8e1c3bc13dec0a4&libraries=services"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script>
+    var addr = '';
+    var geocoder = '';
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        mapOption = {
+            center: new kakao.maps.LatLng(37.566826, 126.9786567), // 지도의 중심좌표
+            level: 1 // 지도의 확대 레벨
+        };
+
+    // 지도를 생성합니다
+    var map = new kakao.maps.Map(mapContainer, mapOption);
+
+    // 주소-좌표 변환 객체를 생성합니다
+    var geocoder = new kakao.maps.services.Geocoder();
+
+    var marker = new kakao.maps.Marker(), // 클릭한 위치를 표시할 마커입니다
+        infowindow = new kakao.maps.InfoWindow({zindex:1}); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
+
+    // 지도를 클릭했을 때 클릭 위치 좌표에 대한 주소정보를 표시하도록 이벤트를 등록합니다
+    kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+        searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
+            if (status === kakao.maps.services.Status.OK) {
+                var detailAddr = !!result[0].road_address ? '<div>' +result[0].road_address.address_name + '</div>' : '<div>'+ result[0].address.address_name + '</div>';
+
+                var content = '<div class="bAddr">' +
+                    detailAddr +
+                    '</div>';
+
+                // 마커를 클릭한 위치에 표시합니다
+                marker.setPosition(mouseEvent.latLng);
+                marker.setMap(map);
+
+                // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
+                infowindow.setContent(content);
+                infowindow.open(map, marker);
+            }
+        });
+    });
+
+    function searchDetailAddrFromCoords(coords, callback) {
+        // 좌표로 법정동 상세 주소 정보를 요청합니다
+        geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
+    }
+
+    // 주소-좌표 변환 객체를 생성합니다
+    geocoder = new kakao.maps.services.Geocoder();
+
+    function mapMove(geocoder, addr) {
+        // 주소로 좌표를 검색합니다
+        geocoder.addressSearch(addr, function(result, status) {
+
+            // 정상적으로 검색이 완료됐으면
+            if (status === kakao.maps.services.Status.OK) {
+
+                var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+                // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+                map.setCenter(coords);
+            }
+        });
+    }
+
+    function execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 팝업을 통한 검색 결과 항목 클릭 시 실행
+                addr = ''; // 주소_결과값이 없을 경우 공백
+                var extraAddr = ''; // 참고항목
+
+                //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                if (data.userSelectedType === 'R') { // 도로명 주소를 선택
+                    addr = data.roadAddress;
+                } else { // 지번 주소를 선택
+                    addr = data.jibunAddress;
+                }
+
+                if(data.userSelectedType === 'R'){
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraAddr += data.bname;
+                    }
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    if(extraAddr !== ''){
+                        extraAddr = ' (' + extraAddr + ')';
+                    }
+                } else {
+                    document.getElementById("UserAdd1").value = '';
+                }
+
+                // 선택된 우편번호와 주소 정보를 input 박스에 넣는다.
+                document.getElementById('zipp_code_id').value = data.zonecode;
+                document.getElementById("UserAdd1").value = addr;
+                document.getElementById("UserAdd1").value += extraAddr;
+                document.getElementById("UserAdd2").focus(); // 우편번호 + 주소 입력이 완료되었음으로 상세주소로 포커스 이동
+
+                mapMove(geocoder,addr);
+            }
+        }).open();
+    }
+
+    $('#UserAdd2').keyup(function(event) {
+        $("#infoMap").html($('#UserAdd2').val());
+    });
+
+    function showError(error) {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                alert("사용자가 Geolocation 요청을 거부했습니다.");
+                break;
+            case error.POSITION_UNAVAILABLE:
+                alert("위치 정보를 사용할 수 없습니다.");
+                break;
+            case error.TIMEOUT:
+                alert("위치 정보를 가져오는 데 시간이 초과되었습니다.");
+                break;
+            case error.UNKNOWN_ERROR:
+                alert("알 수 없는 오류가 발생했습니다.");
+                break;
+        }
+    }
+
+    function showPosition(position) {
+        var latitude = position.coords.latitude;
+        var longitude = position.coords.longitude;
+        console.log("위도: " + latitude + "<br>경도: " + longitude);
+        var moveLatLon = new kakao.maps.LatLng(latitude,longitude);
+        map.setCenter(moveLatLon);
+        fetch('/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({latitude: latitude, longitude: longitude})
+        }).then(response => response.text())
+            .then(data => data);
+    }
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+
+    $('#myMapMove').click(function(){
+        getLocation();
+    });
+
+</script>
 </body>
 </html>
