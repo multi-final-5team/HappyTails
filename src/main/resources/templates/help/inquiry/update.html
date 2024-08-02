@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <meta charset="UTF-8">
+    <title>문의</title>
+</head>
+<body>
+<menu th:replace="fragments/head :: menu"></menu>
+    <main>
+        <div class="container">
+            <figure class="text-center">
+                <h2>고객센터</h2>
+            </figure>
+            <figure class="text-left">
+                <h3>1:1 문의 작성</h3>
+            </figure>
+            <form action="/help/inquiry/write" method="post" enctype="multipart/form-data" id="inquiryForm">
+                <div class="mb-3">
+                    <label for="title" class="form-label">제목</label>
+                    <input type="text" class="form-control" name="title" id="title" th:value="${inquiryDto.title}">
+                </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label">카테고리</label>
+                    <select class="form-select form-select-sm category" id="category" name="helpCategoryCode">
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="content" class="form-label">내용</label>
+                    <textarea class="form-control" name="content" id="content" rows="3" th:text="${inquiryDto.content}"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="imageInput" class="form-label">이미지 첨부</label>
+                    <input class="form-control" type="file" id="imageInput">
+                </div>
+                <div id="imgAddDiv">
+                    <th:block th:if="${uploadDtos != null}">
+                        <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
+                            <div class="imgDiv">
+                                <img th:src="@{/images/I/{file}(file=${uploadDto.storedFileName})}" alt="..." width="100px" height="100px">
+                                <input type="button" class="btn btn-danger imgDeleteBtn" th:data-image-no="${uploadDto.imageNo}" value="삭제">
+                                <input type="button" class="btn btn-success imgUpdateBtn" th:data-image-no="${uploadDto.imageNo}" value="수정">
+                            </div>
+                        </th:block>
+                    </th:block>
+                </div>
+                <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
+                <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
+            </form>
+        </div>
+    </main>
+
+<!-- 스크립트 -->
+<script>
+    let params = new URLSearchParams(location.search);
+    let inquiryNo = params.get('inquiryNo');
+
+    $(document).ready(function() {
+
+        // 카테고리 불러오기 Start
+        $.ajax({
+            type : "GET",
+            url : "/help/getCategory",
+            dataType : "json",
+            success : function(result) {
+                for (var i = 0 ; i < result.length; i++) {
+                    let htmlStr = `
+                            <option value='`+result[i].helpCategoryCode+`'>`+result[i].categoryName+`</option>
+                        `;
+                    $('#category').append(htmlStr);
+                    $('#category').val('[[${inquiryDto.helpCategoryCode}]]');
+                }
+            }
+        });
+        // 카테고리 불러오기 End
+
+        // 이미지 배열 변수 Start
+        let imageDeleteImageNos = [];
+        let imageUpdateImageNos = [];
+        let imageUpdateFiles = [];
+        let imageFiles = [];
+        // 이미지 배열 변수 End
+
+        // 이미지 road Start
+        $('#imageInput').on('change', function(event) {
+            var file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#imgAddDiv').append('<img src="' + e.target.result + '" alt="Selected Image" width="100px" height="100px">');
+                }
+                imageFiles.push(file);
+                reader.readAsDataURL(file);
+            } else {
+                alert('이미지 파일을 선택해주세요');
+            }
+        });
+        // 이미지 road End
+
+        // 폼 서브밋 Start
+        $('#createBtn').click(function(){
+            let title = $('#title').val();
+            let content = $('#content').val();
+            let category = $('#category').val();
+
+            let formData = new FormData();
+            formData.append('title',title);
+            formData.append('content',content);
+            formData.append('helpCategoryCode',category);
+            formData.append('inquiryNo',inquiryNo);
+
+            for (let i = 0; i < imageDeleteImageNos.length;i++) {
+                formData.append('imageDeleteImageNo',imageDeleteImageNos[i]);
+            }
+
+            for (let i = 0; i < imageFiles.length;i++) {
+                formData.append('imageFiles',imageFiles[i]);
+            }
+
+            for (let i = 0; i < imageUpdateFiles.length;i++) {
+                formData.append('imageUpdateImageNo',imageUpdateImageNos[i]);
+                formData.append('imageUpdateFiles',imageUpdateFiles[i]);
+            }
+
+            $.ajax({
+                url : "/help/inquiry/update",
+                processData : false,
+                contentType : false,
+                type : 'POST',
+                data : formData,
+                success : function(result) {
+                    alert(result);
+                    location.href="/help/inquiry/detail?inquiryNo="+inquiryNo;
+                }
+            });
+        });
+        // 폼 서브밋 End
+
+        // 이미지 삭제버튼 클릭 Start
+        $(".imgDiv").on("click",".imgDeleteBtn",function(){
+            imageDeleteImageNos.push($(this).data("imageNo"));
+            $(this).parent().remove();
+        });
+        // 이미지 삭제버튼 클릭 End
+
+        // imgDiv, img, imageNo를 저장할 변수 선언
+        let currentImgDiv;
+        let currentImg;
+        let currentImageNo;
+
+        // 업데이트 이미지 업로드
+        $('#imageUpdate').on('change', function(event) {
+            var file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    currentImg.attr("src", e.target.result);
+                }
+                reader.readAsDataURL(file);
+                imageUpdateFiles.push(file);
+                imageUpdateImageNos.push(currentImageNo);
+                currentImgDiv.find('input').remove();
+            } else {
+                alert('이미지 파일을 선택해주세요');
+            }
+        });
+
+        // 이미지 수정 버튼 클릭 시 데이터 받아오기, updatefile 열기
+        $(".imgUpdateBtn").click(function() {
+            currentImageNo = $(this).data("imageNo");
+            currentImgDiv = $(this).parent();
+            currentImg = $(this).parent().find('img');
+            $('#imageUpdate').click(); // 파일 선택 창을 엽니다.
+        });
+
+    });
+
+</script>
+</body>
+</html>

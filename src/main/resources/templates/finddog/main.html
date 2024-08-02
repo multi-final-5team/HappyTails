@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <meta charset="UTF-8">
+    <title>찾아주개</title>
+</head>
+<body>
+<menu th:replace="fragments/head :: menu"></menu>
+<main>
+    <div class="container">
+        <figure class="text-center">
+            <h2>찾아주개</h2>
+        </figure>
+        <figure class="text-left">
+            <h3>찾아주개 리스트</h3>
+        </figure>
+        <div class="row">
+            <div class="list-group flex-row col-3" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#list-find" role="tab" aria-controls="list-find">잃어버린 강아지</a>
+                <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#list-misgiving" role="tab" aria-controls="list-misgiving">유기 의심 공유</a>
+            </div>
+        </div>
+        <div class="col-9 mt-3 tab-content">
+            <div class="tab-pane fade show active" id="list-find">
+                <div class="row">
+                <th:block th:each="i : ${#numbers.sequence(0, 8)}">
+                    <div class="col-md-4 mb-4 d-flex align-items-stretch">
+                        <div class="card" style="width: 100%;">
+                            <img src="/image/5d8e3b39-155d-4a1d-abd7-0a4caaa36d5b.jpg" class="card-img-top" alt="..." width="300" height="200">
+                            <div class="card-body">
+                                <h5 class="card-title">제목 입니다.</h5>
+                                <p class="card-text">장소: 서울특별시 머머동</p>
+                            </div>
+                        </div>
+                    </div>
+                </th:block>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="list-misgiving">
+                <div class="row">
+                    <th:block th:each="i : ${#numbers.sequence(0, 8)}">
+                        <div class="col-md-4 mb-4 d-flex align-items-stretch">
+                            <div class="card" style="width: 100%;">
+                                <img src="/image/5d8e3b39-155d-4a1d-abd7-0a4caaa36d5b.jpg" class="card-img-top" alt="..." width="300" height="200">
+                                <div class="card-body">
+                                    <h5 class="card-title">제목 입니다.</h5>
+                                    <p class="card-text">장소: 서울특별시 머머동</p>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+            <div>
+                <input type="button" class="btn btn-primary float-end" value="글쓰기" id="writePageBtn"/>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- 스크립트 -->
+<script>
+    $(document).ready(function(){
+
+        // 글쓰기 페이지 이동 버튼 Start
+        $("#writePageBtn").click(function(){
+           location.href="/finddog/write";
+        });
+        // 글쓰기 페이지 이동 버튼 End
+
+
+
+    });
+</script>
+</body>
+</html>

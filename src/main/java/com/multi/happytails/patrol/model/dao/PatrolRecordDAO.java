@@ -22,4 +22,6 @@ public interface PatrolRecordDAO {
     int patrolRecordUpdate(PrecordDTO precordDTO);
 
     int patrolRecordDelete(PrecordDTO precordDTO);
+
+    int patrolRecordViewcountUpdate(@Param("precordNo") int precordNo, @Param("viewcount") int viewcount);
 }

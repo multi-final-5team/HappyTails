@@ -6,14 +6,12 @@ import com.multi.happytails.shop.service.ReviewService;
 import com.multi.happytails.shop.service.SalesService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
+import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
@@ -57,8 +55,30 @@ public class SalesController {
      * description : "/insertform" URL 이동 메소드
      */
     @RequestMapping("/insertform")
-    public void insertform(){
+    public void insertForm(){
 
+    }
+
+    /**
+     * methodName : updateForm
+     * author : Shin HyeonCheol
+     * description :
+     *
+     * @param goodsNo the goods no
+     * @param model   the model
+     */
+    @GetMapping("/updateform")
+    public void updateForm(@RequestParam("no") int goodsNo
+            , Model model){
+        SalesGoodsDTO salesGoodsDTO = new SalesGoodsDTO();
+        salesGoodsDTO.setNo(goodsNo);
+        SalesGoodsDTO salesDetails = salesService.selectSales(salesGoodsDTO);
+
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_INQUIRY_CODE, goodsNo);
+        System.out.println("uploadDtos >>>>>>>>>>>>" + uploadDtos);
+        System.out.println("salesDetails >>>>>>>>>>>" + salesDetails);
+        model.addAttribute("uploadDtos", uploadDtos);
+        model.addAttribute("salesDetails", salesDetails);
     }
 
     /**
@@ -261,43 +281,66 @@ public class SalesController {
      * author : Shin HyeonCheol
      * description : 상품 수정 메소드
      *
-     * @param principal    the principal
-     * @param name         the name
-     * @param price        the price
-     * @param quantity     the quantity
-     * @param content      the content
-     * @param categoryCode the category code
-     * @param no           the no
+     * @param principal          the principal
+     * @param salesGoodsDTO      the sales goods dto
+     * @param imageFiles         the image files
+     * @param imageUpdateFiles   the image update files
+     * @param imageDeleteImageNo the image delete image no
+     * @param imageUpdateImageNo the image update image no
      * @return the string
      */
     @PostMapping("/updateGoods")
     public String updateGoods (Principal principal,
-                               @RequestParam("name") String name,
-                               @RequestParam("price") int price,
-                               @RequestParam("quantity") int quantity,
-                               @RequestParam("content") String content,
-                               @RequestParam("categoryCode") String categoryCode,
-                               @RequestParam("no") int no
+                               @ModelAttribute SalesGoodsDTO salesGoodsDTO,
+                               @RequestParam(value = "imageFiles") @Nullable List<MultipartFile> imageFiles,
+                               @RequestParam(value = "imageUpdateFiles") @Nullable List<MultipartFile> imageUpdateFiles,
+                               @RequestParam(value = "imageDeleteImageNo") @Nullable List<Long> imageDeleteImageNo,
+                               @RequestParam(value = "imageUpdateImageNo") @Nullable List<Long> imageUpdateImageNo
                                 ) {
 
-        SalesGoodsDTO salesGoodsDTO = new SalesGoodsDTO();
+        System.out.println(">>>>>>>>>>>>>>>>>" + salesGoodsDTO);
+        System.out.println(">>>>>>>>>>>>>>>>>" + imageFiles);
+        System.out.println(">>>>>>>>>>>>>>>>>" + imageDeleteImageNo);
+        System.out.println(">>>>>>>>>>>>>>>>>" + imageUpdateImageNo);
+        System.out.println(">>>>>>>>>>>>>>>>>" + imageUpdateFiles);
+
         String Id = principal.getName();
         System.out.println("custom get id = " + Id);
         salesGoodsDTO.setId(Id);
         //address = 사업자 주소 추가 해야함
-        salesGoodsDTO.setName(name);
-        salesGoodsDTO.setPrice(price);
-        salesGoodsDTO.setQuantity(quantity);
-        //이미지 저장 = 추가 해야함
-        salesGoodsDTO.setContent(content);
-        salesGoodsDTO.setCategoryCode(categoryCode);
-        //no = no 추가 해야함
-        System.out.println("salesGoodsDTO = " + salesGoodsDTO);
 
-        salesService.updateSales(salesGoodsDTO);
+        int result = salesService.updateSales(salesGoodsDTO);
 
-        return "redirect:/sales/salesList";
+        if (result == 1) {
+
+            if (imageDeleteImageNo != null && !imageDeleteImageNo.isEmpty()) {
+                for (int i = 0; i < imageDeleteImageNo.size(); i++) {
+                    uploadService.uploadDelete(imageDeleteImageNo.get(i));
+                }
+            }
+
+            if (imageUpdateFiles != null && !imageUpdateFiles.isEmpty()) {
+                for (int i = 0; i < imageUpdateFiles.size(); i++) {
+                    System.out.println(imageUpdateImageNo.get(i) + imageUpdateFiles.get(i).getOriginalFilename() + "===-=-=-=-=-=-=");
+                    uploadService.uploadUpdate(imageUpdateImageNo.get(i), imageUpdateFiles.get(i));
+                }
+            }
+
+            if (imageFiles != null && !imageFiles.isEmpty()) {
+                UploadDto uploadDto = new UploadDto();
+                uploadDto.setForeignNo(salesGoodsDTO.getNo());
+                uploadDto.setCategoryCode(UPLOAD_INQUIRY_CODE);
+
+                for (int i = 0; i < imageFiles.size(); i++) {
+                    uploadDto.setFile(imageFiles.get(i));
+                    uploadService.uploadInsert(uploadDto);
+                }
+            }
+        }
+
+        return "/sales/salesList";
     }
+
     // Update
 
     /**

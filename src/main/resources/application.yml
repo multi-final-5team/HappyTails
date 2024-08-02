@@ -39,3 +39,9 @@ logging:
 kakao:
   api:
     key: a75d5e29e1e142cb35f3df8cefbf7a76
+
+portone:
+  api:
+    key: P2Z4cX3LE4GpectU2WJb9FBwVS3imAnxydy9eqvblMmZLW3KeBqFusZGL9QyGDb3FWNqvQsMovYrWQok
+    secret: 자신의_포트원_API_시크릿
+  cid: 자신의_포트원_상점_식별자

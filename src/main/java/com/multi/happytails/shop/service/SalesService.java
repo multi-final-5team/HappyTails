@@ -32,8 +32,9 @@ public interface SalesService {
      * description : 상품 판매 수정 Service
      *
      * @param salesGoodsDTO the sales goods dto
+     * @return
      */
-    void updateSales(SalesGoodsDTO salesGoodsDTO);
+    int updateSales(SalesGoodsDTO salesGoodsDTO);
 
     /**
      * methodName : salesList

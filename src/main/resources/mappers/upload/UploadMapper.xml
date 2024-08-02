@@ -19,7 +19,10 @@
     </delete>
 
     <update id="uploadUpdate">
-        UPDATE TB_UPLOAD_IMAGE SET STORED_IMAGE_NAME = #{stored_image_name} WHERE IMAGE_NO = #{imageNo}
+        UPDATE TB_UPLOAD_IMAGE SET
+           STORED_IMAGE_NAME = #{storedFileName},
+           IMAGE_NAME = #{imageName}
+        WHERE IMAGE_NO = #{imageNo}
     </update>
 
     <select id="uploadSelect">

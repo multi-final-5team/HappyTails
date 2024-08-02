@@ -16,6 +16,7 @@ package com.multi.happytails.patrol.controller;
 
 
 import com.multi.happytails.authentication.model.dto.CustomUser;
+import com.multi.happytails.patrol.model.dto.OnePatrolImgDTO;
 import com.multi.happytails.patrol.model.dto.PatrolDTO;
 import com.multi.happytails.patrol.model.dto.PatrolImgDTO;
 import com.multi.happytails.patrol.service.PatrolService;
@@ -176,11 +177,22 @@ public class PatrolController {
      */
     @GetMapping(value="findOnePatrolByPatrolNo", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public PatrolDTO findOnePatrolByPatrolNo(@RequestParam(value = "parolNo") int parolNo){
+    public OnePatrolImgDTO findOnePatrolByPatrolNo(@RequestParam(value = "parolNo") int parolNo){
+
+        OnePatrolImgDTO onePatrolImgDTO = new OnePatrolImgDTO();
 
         PatrolDTO patrolDTO = patrolService.findOnePatrolByPatrolNo(parolNo);
+        onePatrolImgDTO.setPatrolDTO(patrolDTO);
 
-        return patrolDTO;
+        List<UploadDto> pageIngs = uploadService.uploadSelect("Z",parolNo);
+
+        if (!pageIngs.isEmpty()) {
+           onePatrolImgDTO.setUploadDtos(pageIngs);
+        }
+
+        System.out.println(onePatrolImgDTO);
+
+        return onePatrolImgDTO;
     }
 
     /**
@@ -217,6 +229,14 @@ public class PatrolController {
     public String patrolDelete(PatrolDTO patrolDTO, @AuthenticationPrincipal CustomUser customUser){
 
         patrolDTO.setUserNo((int)customUser.getNo());
+
+        List<UploadDto> pageIngs = uploadService.uploadSelect("Z",patrolDTO.getPatrolNo());
+
+        if (!pageIngs.isEmpty()) {
+            for(int i = 0; i < pageIngs.size(); i++) {
+                uploadService.uploadDelete(pageIngs.get(i).getImageNo());
+            }
+        }
 
         int result = patrolService.patrolDelete(patrolDTO.getPatrolNo());
 

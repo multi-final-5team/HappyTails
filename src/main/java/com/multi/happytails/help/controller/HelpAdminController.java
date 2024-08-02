@@ -2,6 +2,7 @@ package com.multi.happytails.help.controller;
 
 import com.multi.happytails.help.model.dto.InquiryDto;
 import com.multi.happytails.help.model.dto.InquiryResultDto;
+import com.multi.happytails.help.model.dto.QuestionDto;
 import com.multi.happytails.help.service.HelpService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
@@ -39,7 +40,6 @@ public class HelpAdminController {
     @ResponseBody
     public String inquiryWrite(@ModelAttribute InquiryResultDto inquiryResultDto
             , @RequestParam(value = "imageFiles") @Nullable List<MultipartFile> imageFiles) {
-        System.out.println(inquiryResultDto);
 
         long inquiryResultNo = helpService.inquiryResultWrite(inquiryResultDto);
 
@@ -61,8 +61,34 @@ public class HelpAdminController {
 
     @GetMapping("/help/helpManage")
     public String inquiryAdminList() {
-
         return "/help/admin/helpManage";
+    }
+
+    @PostMapping("/question/write")
+    @ResponseBody
+    public String questionWrite(@ModelAttribute QuestionDto questionDto) {
+
+        helpService.questionInsert(questionDto);
+
+        return "자주묻는질문 작성이 완료 되었습니다.";
+    }
+
+    @PostMapping("/question/delete")
+    @ResponseBody
+    public String questionDelete(@RequestParam("questionNo") long questionNo) {
+
+        helpService.questionDelete(questionNo);
+
+        return "자주묻는질문 삭제가 완료 되었습니다.";
+    }
+
+    @PostMapping("/question/update")
+    @ResponseBody
+    public String questionUpdate(@ModelAttribute QuestionDto questionDto) {
+
+        helpService.questionUpdate(questionDto);
+
+        return "자주묻는질문 수정이 완료 되었습니다.";
     }
 
 }

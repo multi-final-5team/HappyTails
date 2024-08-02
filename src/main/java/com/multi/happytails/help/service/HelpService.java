@@ -65,4 +65,24 @@ public class HelpService {
     public InquiryResultDto inquiryResultDetail(long inquiryNo) {
         return helpMapper.inquiryResultDetail(inquiryNo);
     }
+
+    public int inquiryDelete(long inquiryNo) {
+        return helpMapper.inquiryDelete(inquiryNo);
+    }
+
+    public int inquiryUpdate(InquiryDto inquiryDto) {
+        return helpMapper.inquiryUpdate(inquiryDto);
+    }
+
+    public int questionInsert(QuestionDto questionDto) {
+        return helpMapper.questionInsert(questionDto);
+    }
+
+    public int questionDelete(long questionNo) {
+        return helpMapper.questionDelete(questionNo);
+    }
+
+    public int questionUpdate(QuestionDto questionDto) {
+        return helpMapper.questionUpdate(questionDto);
+    }
 }

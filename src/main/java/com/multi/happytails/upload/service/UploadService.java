@@ -58,6 +58,7 @@ public class UploadService {
 
     public int uploadUpdate(long imageNo, MultipartFile multipartFile) {
         UploadDto uploadDto = uploadMapper.uploadSelect(imageNo);
+        deleteFile(uploadDto);
         uploadDto.setFile(multipartFile);
         createUploadImage(uploadDto);
         return uploadMapper.uploadUpdate(uploadDto);
@@ -106,10 +107,9 @@ public class UploadService {
     }
 
     private void deleteFile(UploadDto uploadDto) {
-
         try {
             if (uploadDto.getStoredFileName() != null) {
-                Path filePath = Paths.get(projectPath + fileDir + uploadDto.getCategoryCode() + uploadDto.getStoredFileName());
+                Path filePath = Paths.get(projectPath + fileDir + uploadDto.getCategoryCode() + "/" + uploadDto.getStoredFileName());
                 System.out.println(filePath);
                 Files.deleteIfExists(filePath);
             }

@@ -70,6 +70,15 @@ public class HelpController {
     public void inquiryList() {}
     @GetMapping("/main")
     public void helpMain() {}
+    @GetMapping("/inquiry/update")
+    public void inquiryUpdate(@RequestParam("inquiryNo") long inquiryNo
+                            , Model model){
+        InquiryDto inquiryDto = helpService.inquiryDetail(inquiryNo);
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_INQUIRY_CODE, inquiryNo);
+
+        model.addAttribute("uploadDtos", uploadDtos);
+        model.addAttribute("inquiryDto", inquiryDto);
+    }
 
     @GetMapping("/getCategory")
     @ResponseBody
@@ -113,8 +122,9 @@ public class HelpController {
 
     @GetMapping("/inquiry/getList")
     @ResponseBody
-    public ResponseEntity<?> getInquiryList(PageDto pageDto,
-        @RequestParam Map<String, Object> params) {
+    public ResponseEntity<?> getInquiryList(PageDto pageDto
+        ,@RequestParam Map<String, Object> params
+        ,@AuthenticationPrincipal CustomUser customUser) {
         System.out.println(pageDto);
         System.out.println(params);
         String nowPage = (String) params.get("nowPage");
@@ -123,6 +133,11 @@ public class HelpController {
 
         if (nowPage == null) {
             nowPage = "1";
+        }
+
+        System.out.println(customUser.getId());
+        if (!customUser.getRole().equals("ROLE_ADMIN")) {
+            params.put("writer", customUser.getId());
         }
 
         int total = helpService.inquiryListCount(pageDto, params);
@@ -162,6 +177,60 @@ public class HelpController {
 
         return ResponseEntity.ok(response);
 
+    }
+
+    @PostMapping("/inquiry/delete")
+    @ResponseBody
+    public String inquiryDelete(@RequestParam("inquiryNo") long inquiryNo) {
+
+        helpService.inquiryDelete(inquiryNo);
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_INQUIRY_CODE, inquiryNo);
+        if (uploadDtos != null && !uploadDtos.isEmpty()) {
+            for (UploadDto uploadDto : uploadDtos) {
+                uploadService.uploadDelete(uploadDto.getImageNo());
+            }
+        }
+
+        return "삭제 되었습니다.";
+    }
+
+    @PostMapping("/inquiry/update")
+    @ResponseBody
+    public String inquiryUpdate(@ModelAttribute InquiryDto inquiryDto,
+                                @RequestParam(value = "imageFiles") @Nullable List<MultipartFile> imageFiles,
+                                @RequestParam(value = "imageUpdateFiles") @Nullable List<MultipartFile> imageUpdateFiles,
+                                @RequestParam(value = "imageDeleteImageNo") @Nullable List<Long> imageDeleteImageNo,
+                                @RequestParam(value = "imageUpdateImageNo") @Nullable List<Long> imageUpdateImageNo) {
+
+        int result = helpService.inquiryUpdate(inquiryDto);
+
+        if (result == 1) {
+
+            if (imageDeleteImageNo != null && !imageDeleteImageNo.isEmpty()) {
+                for (int i = 0; i < imageDeleteImageNo.size(); i++) {
+                    uploadService.uploadDelete(imageDeleteImageNo.get(i));
+                }
+            }
+
+            if (imageUpdateFiles != null && !imageUpdateFiles.isEmpty()) {
+                for (int i = 0; i < imageUpdateFiles.size(); i++) {
+                    uploadService.uploadUpdate(imageUpdateImageNo.get(i), imageUpdateFiles.get(i));
+                }
+            }
+
+            if (imageFiles != null && !imageFiles.isEmpty()) {
+                UploadDto uploadDto = new UploadDto();
+                uploadDto.setForeignNo(inquiryDto.getInquiryNo());
+                uploadDto.setCategoryCode(UPLOAD_INQUIRY_CODE);
+
+                for (int i = 0; i < imageFiles.size(); i++) {
+                    uploadDto.setFile(imageFiles.get(i));
+                    uploadService.uploadInsert(uploadDto);
+                }
+            }
+        }
+
+        return "문의 작성이 완료 되었습니다.";
     }
 
 }

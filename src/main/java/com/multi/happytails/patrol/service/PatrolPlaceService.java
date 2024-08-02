@@ -68,4 +68,14 @@ public class PatrolPlaceService {
 
         return patrolPlaceDAO.updatePrecordNo(precordNo,precordPlaceNo);
     }
+
+    public int updatePrecordNoNULL(int precordPlaceNo){
+
+        return patrolPlaceDAO.updatePrecordNoNULL(precordPlaceNo);
+    }
+
+    public int findPrecordPlaceNoByPrecordNo(int precordNo){
+
+        return patrolPlaceDAO.findPrecordPlaceNoByPrecordNo(precordNo);
+    }
 }
