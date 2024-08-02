@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>강아지 등록증</h1>
+</body>
+<script>
+
+    var xhr = new XMLHttpRequest();
+    var url = 'http://apis.data.go.kr/1543061/animalInfoSrvc/animalInfo'; /*URL*/
+    var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'WO6eYkS2IohC2ttnnnk4oJVRUweEG%2F9Pvi9HokXptwYM1PokLcexnxHVoThQZk%2FAl2mAfd1WltIinmxbGpmodQ%3D%3D'; /*Service Key*/
+    queryParams += '&' + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent('410160011209818'); /**/
+    queryParams += '&' + encodeURIComponent('owner_nm') + '=' + encodeURIComponent('김가림'); /**/
+    queryParams += '&' + encodeURIComponent('_type') + '=' + encodeURIComponent(' '); /**/
+    xhr.open('GET', url + queryParams);
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            alert('Status: '+this.status+'nHeaders: '+JSON.stringify(this.getAllResponseHeaders())+'nBody: '+this.responseText);
+        }
+    };
+
+    xhr.send('');
+</script>
+</html>
