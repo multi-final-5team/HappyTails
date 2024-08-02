@@ -202,12 +202,6 @@ public class HelpController {
                                 @RequestParam(value = "imageDeleteImageNo") @Nullable List<Long> imageDeleteImageNo,
                                 @RequestParam(value = "imageUpdateImageNo") @Nullable List<Long> imageUpdateImageNo) {
 
-        System.out.println(inquiryDto);
-        System.out.println(imageUpdateFiles);
-        System.out.println(imageDeleteImageNo);
-        System.out.println(imageUpdateImageNo);
-        System.out.println(imageFiles);
-
         int result = helpService.inquiryUpdate(inquiryDto);
 
         if (result == 1) {
@@ -220,7 +214,6 @@ public class HelpController {
 
             if (imageUpdateFiles != null && !imageUpdateFiles.isEmpty()) {
                 for (int i = 0; i < imageUpdateFiles.size(); i++) {
-                    System.out.println(imageUpdateImageNo.get(i) + imageUpdateFiles.get(i).getOriginalFilename() + "===-=-=-=-=-=-=");
                     uploadService.uploadUpdate(imageUpdateImageNo.get(i), imageUpdateFiles.get(i));
                 }
             }
