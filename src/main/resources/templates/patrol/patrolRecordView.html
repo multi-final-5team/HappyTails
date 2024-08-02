@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/head :: head">
 
     <title>Title</title>
@@ -48,16 +49,32 @@
 
 </form>
 
+    <div class="bg-light p-4 rounded" sec:authorize="isAuthenticated()">
+        <form class="" id="replyForm" method="post" action="/patrolRecord/reply/repleyInsert">
+            <input type="hidden" id="replyPrecordNo" name="replyPrecordNo">
+            <textarea class="" id="replyContent" name="replyContent" style="resize:none;" rows="4" cols="70"></textarea><br>
+            <button type="submit">댓글작성</button>
+        </form>
+    </div>
+
+    <div class="" id="allReplyDiv">
+
+    </div>
+
 </main>
 
 <script>
+    var replyShowFlag;
+
     $(document).ready(function() {
 
         var urlParams = new URL(location.href).searchParams;
         var pnum = urlParams.get('precordNo');
 
         $('#precordNo').val(pnum);
+        $('#replyPrecordNo').val(pnum);
 
+        //선택한 순찰기록 조회
         $.ajax({
             type:'get',
             url: "/patrolRecord/findPrecordPlaceNoByPrecordNo",
@@ -76,7 +93,7 @@
         }); // $.ajax()
 
 
-
+        //이미지 조회 , 내용 조회
         $.ajax({
             type:'get',
             url: "/patrolRecord/findOnePatrolRecordByPrecordNo",
@@ -102,7 +119,7 @@
         }); // $.ajax()
 
 
-
+        //순찰기록 조회
         $.ajax({
                 url:"/patrolRecord/findNonSelectedPrecourdPlace",
                 success: function (data){
@@ -118,6 +135,55 @@
                     console.log(xhr);
                 }
         })
+
+        //댓글 조회
+        $.ajax({
+        type:'get',
+        data: {precordNo : pnum},
+        url: "/patrolRecord/reply/findRepleyAllByPrecordNo",
+        success : function(data){
+
+            for(let index in data){
+
+                $('#allReplyDiv').append(
+
+                    $('<div>').prop({
+                        id: 'precordReply' + index,
+                        className: 'card'
+                        }).attr("onclick", "showReply(" + JSON.stringify(data[index]) + "," +  index +")")
+                    );
+
+                    $('#' + 'precordReply' + index).append(
+                        $('<div>').prop({
+                            id: 'divbody' + index,
+                            className: 'card-body'
+                        })
+                    );
+
+                    $('#' + 'divbody' + index).append(
+                        '<b class="card-text">작성자: ' + data[index].userNo + '</b><br>'
+                    );
+
+                    $('#' + 'divbody' + index).append(
+                        '<sub class="card-text">내용: ' + data[index].content + '</sub><br>'
+                    );
+
+                    $('#' + 'divbody' + index).append(
+                        '<sub class="card-text">작성시간: ' + data[index].createtime + '</sub>'
+                    );
+
+                    $('#' + 'divbody' + index).append(
+                        $('<div>').prop({
+                            id: 'replyChange' + index,
+                            className: 'replyShowDiv'
+                        })
+                    );
+            }
+        },
+        error: function (xhr){
+            console.log(xhr);
+        }
+        }); // $.ajax()
 
 
         $('#formUpdateSubmitBtn').click(function(){
@@ -154,6 +220,30 @@
         });
         // 폼 삭제 서브밋 End
     });
+
+    function showReply(replyDTO , index) {
+        if(replyShowFlag != index){
+            $('.replyShowDiv').empty();
+
+            var replyTargetNum = $('#precordNo').val();
+
+            var replyChangeForm = $('<form></form>');
+
+            replyChangeForm.attr("name","replyChangeForm");
+            replyChangeForm.attr("method","post");
+
+            replyChangeForm.append('<input type="hidden" id="replyNo" name="replyNo" value="' + replyDTO.precordReplyNo +'">');
+            replyChangeForm.append('<input type="hidden" id="replyPrecordNo" name="replyPrecordNo" value="' + replyTargetNum + '">');
+
+            replyChangeForm.append('<textarea class="" id="replyContent" name="replyContent" style="resize:none;" rows="4" cols="70">' + replyDTO.content + '</textarea><br>');
+            replyChangeForm.append('<button type="submit" formaction="/patrolRecord/reply/repleyUpdate" class="btn btn-primary">수정</button>');
+            replyChangeForm.append('<button type="submit" formaction="/patrolRecord/reply/repleyDelete" class="btn btn-primary">삭제</button>');
+
+            replyChangeForm.appendTo('#replyChange' + index);
+
+            replyShowFlag = index;
+        }
+    }
 </script>
 
 </body>
