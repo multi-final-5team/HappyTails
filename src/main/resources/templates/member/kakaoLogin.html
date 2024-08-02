@@ -5,7 +5,7 @@
     <title>카카오 로그인</title>
     <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
     <script>
-        Kakao.init('00f8ce605055d2ddbe1b0ee7359a0e6f');
+        Kakao.init('a75d5e29e1e142cb35f3df8cefbf7a76');
         console.log(Kakao.isInitialized());
 
         function kakaoLogin() {
@@ -37,7 +37,14 @@
                 },
                 body: JSON.stringify({
                     id: kakaoData.id,
+                    email: kakaoData.kakao_account.email,
+                    name: kakaoData.kakao_account.name,
                     nickname: kakaoData.properties.nickname,
+                    gender: kakaoData.kakao_account.gender,
+                    tel: kakaoData.kakao_account.phone_number,
+                    profile_image: kakaoData.properties.profile_image,
+                    birthday: kakaoData.kakao_account.birthday,
+                    birthyear: kakaoData.kakao_account.birthyear
                 }),
             })
                 .then(response => response.json())

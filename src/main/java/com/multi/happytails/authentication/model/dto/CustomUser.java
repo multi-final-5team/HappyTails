@@ -41,7 +41,6 @@ public class CustomUser extends User {
         this.pwd = member.getPwd();
         this.name = member.getName();
         this.nickname = member.getNickname();
-        this.age = member.getAge();
         this.gender = member.getGender();
         this.tel = member.getTel();
         this.singupDate = member.getSignupDate();
