@@ -3,61 +3,55 @@
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
     <title>내 새꾸 자랑 상세 페이지</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu&display=swap" rel="stylesheet">
     <style>
-        .comment-form textarea {
-            width: 100%;
-            margin-bottom: 10px;
+        body {
+            font-family: 'Gaegu', cursive;
+            background-color: #FFF5EE;
+            background-image: url('paw-pattern.png');
         }
-        .comment-list {
-            list-style-type: none;
-            padding-left: 0;
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+        .btn {
+            border-radius: 20px;
+            font-size: 1.1em;
         }
         .comment-item {
-            border-bottom: 1px solid #eee;
-            padding: 10px 0;
+            background-color: #F0F8FF;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            padding: 15px;
         }
         .btn-blue {
-            background-color: #007bff;
+            background-color: #4169E1;
             color: white;
-            float: right;
-        }
-        .comment-form-container {
-            text-align: right;
-        }
-        .button-container {
-            text-align: right;
-            margin-top: 10px;
-        }
-        .button-container form {
-            display: inline-block;
-            margin-left: 10px;
         }
         .btn-green {
-            background-color: #28a745; /* 초록색 */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
+            background-color: #98FB98;
+            color: #333;
         }
     </style>
 </head>
 <body class="container mt-5">
 <menu th:replace="fragments/head :: menu"></menu>
 
-<h1 class="mb-4 text-center">내 새꾸 자랑 상세 페이지</h1>
+<h1 class="mb-4 text-center">🐾 내 새꾸 자랑 상세 페이지 🐾</h1>
 
 <div class="card mb-4">
     <div class="card-body">
-        <h2 class="card-title"> <strong>제목 : </strong> <span th:text="${doglove.title}"></span></h2>
-        <p class="card-text"><strong>작성자 : </strong> <span th:text="${doglove.userId}"></span></p>
-        <p class="card-text"><strong>작성일 : </strong> <span th:text="${#temporals.format(doglove.createTime, 'yyyy-MM-dd')}"></span></p>
+        <h2 class="card-title">🐶 <strong>제목 : </strong> <span th:text="${doglove.title}"></span></h2>
+        <p class="card-text">📝 <strong>작성자 : </strong> <span th:text="${doglove.userId}"></span></p>
+        <p class="card-text">🗓️ <strong>작성일 : </strong> <span th:text="${#temporals.format(doglove.createTime, 'yyyy-MM-dd')}"></span></p>
         <p class="card-text" th:text="${doglove.content}"></p>
-        <p class="card-text"><strong>추천 수:</strong> <span th:id="recommendCount" th:text="${doglove.recommendCount}"></span></p>
+        <p class="card-text">❤️ <strong>추천 수:</strong> <span th:id="recommendCount" th:text="${doglove.recommendCount}"></span></p>
     </div>
 
     <div class="row">
         <div th:each="uploadDto : ${imageFiles}" class="col-md-4 mb-3">
-            <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" class="img-fluid" alt="Image">
+            <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" class="img-fluid rounded" alt="강아지 이미지">
         </div>
     </div>
 
@@ -66,68 +60,58 @@
             <input type="hidden" name="communityCategoryCode" value="L" />
             <input type="hidden" name="foreignNo" th:value="${doglove.dogloveNo}" />
             <div style="margin-bottom: 10px;">
-                <textarea name="content" required rows="3" class="form-control"></textarea>
+                <textarea name="content" required rows="3" class="form-control" placeholder="귀여운 댓글을 남겨주세요! 🐾"></textarea>
             </div>
             <div style="display: flex; justify-content: flex-end;">
-                <button type="submit" style="background-color: #007bff; color: white; border: none; padding: 10px 20px; cursor: pointer;">댓글 생성</button>
+                <button type="submit" class="btn btn-blue">🐾 댓글 남기기</button>
             </div>
         </form>
     </div>
 
-    <form th:action="@{/community/doglove/dogloveRecommend}" method="post" onsubmit="return confirm('추천 하시겠습니까?');">
+    <form th:action="@{/community/doglove/dogloveRecommend}" method="post" onsubmit="return confirm('이 귀여운 게시글을 추천하시겠어요?');">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-        <button type="submit" class="btn-green">추천</button>
+        <button type="submit" class="btn btn-green">❤️ 추천하기</button>
         <input type="hidden" name="dogloveNo" th:value="${doglove.dogloveNo}"/>
     </form>
 
-
-    <h3 class="mt-4">댓글 목록</h3>
+    <h3 class="mt-4">🐾 댓글 목록</h3>
     <ul class="reply-list mt-4" style="list-style-type: none; padding: 0;">
-        <li th:each="reply : ${reply}" style="margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        <li th:each="reply : ${reply}" class="comment-item">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <p style="margin: 0;">
                     <strong th:text="${reply.writerId}">작성자</strong>:
                     <span th:text="${reply.content}">내용</span>
                 </p>
-                <!-- 현재 로그인한 사용자와 댓글 작성자가 같을 경우에만 수정 및 삭제 버튼 표시 -->
                 <div th:if="${#authentication.name == reply.writerId}">
-                    <!-- 댓글 수정 페이지로 이동하는 버튼 -->
                     <a th:href="@{/community/L/{foreignNo}/reply/update/{communityReplyNo}(foreignNo=${doglove.dogloveNo}, communityReplyNo=${reply.communityReplyNo})}"
-                       style="background-color: #007bff; color: white; border: none; padding: 5px 10px; cursor: pointer; text-decoration: none;">댓글 수정</a>
-
-                    <!-- 댓글 삭제 폼 -->
+                       class="btn btn-sm btn-blue">✏️ 수정</a>
                     <form th:action="@{/community/L/{foreignNo}/reply/delete/{communityReplyNo}(foreignNo=${doglove.dogloveNo}, communityReplyNo=${reply.communityReplyNo})}"
                           method="post"
                           class="comment-form"
                           style="display: inline-block;"
-                          onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
+                          onsubmit="return confirm('정말로 이 귀여운 댓글을 삭제하시겠어요?');">
                         <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}"/>
-                        <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer;">댓글 삭제</button>
+                        <button type="submit" class="btn btn-sm btn-danger">🗑️ 삭제</button>
                     </form>
                 </div>
             </div>
         </li>
     </ul>
 
-
-    <!-- 게시글 삭제 버튼 표시 -->
-    <div class="button-container" th:if="${#authentication.name == doglove.userId}">
-        <form th:action="@{/community/doglove/delete}" method="post" onsubmit="return confirm('게시글을 삭제하시겠습니까?');">
-            <input type="hidden" name="dogloveNo" th:value="${doglove.dogloveNo}">
-            <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 10px 20px; cursor: pointer;">게시글 삭제</button>
-        </form>
-    </div>
-
-    <!-- 게시글 수정 버튼 표시 -->
-    <div class="button-container" th:if="${#authentication.name == doglove.userId}">
-        <a th:href="@{/community/doglove/update/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}"
-           style="background-color: #17a2b8; color: white; padding: 10px 20px; cursor: pointer; text-decoration: none;">게시글 수정</a>
-    </div>
-
-    <div class="d-flex justify-content-between">
-        <a href="/community/doglove" class="btn btn-secondary">목록으로 돌아가기</a>
-        <a href="/community/doglove/create" class="btn btn-primary">새 글 작성하기</a>
-
+    <div class="d-flex justify-content-between mt-4">
+        <a href="/community/doglove" class="btn btn-secondary">🏠 목록으로</a>
+        <div>
+            <div th:if="${#authentication.name == doglove.userId}" class="d-inline-block me-2">
+                <a th:href="@{/community/doglove/update/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}"
+                   class="btn btn-info">✏️ 게시글 수정</a>
+                <form th:action="@{/community/doglove/delete}" method="post" class="d-inline-block"
+                      onsubmit="return confirm('정말로 이 귀여운 게시글을 삭제하시겠어요?');">
+                    <input type="hidden" name="dogloveNo" th:value="${doglove.dogloveNo}">
+                    <button type="submit" class="btn btn-danger">🗑️ 게시글 삭제</button>
+                </form>
+            </div>
+            <a href="/community/doglove/create" class="btn btn-primary">✍️ 새 글 작성</a>
+        </div>
     </div>
 
 </div>

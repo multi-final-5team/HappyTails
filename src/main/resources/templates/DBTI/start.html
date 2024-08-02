@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dog Form</title>
+    <style>
+        .question {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<h1>우리 강아지 정보를 입력해주세요</h1>
+
+<div id="startSection">
+    <button type="button" onclick="startQuestionnaire()">시작하기</button>
+</div>
+
+<form id="dogForm" action="/DBTI/dog/saveDog" method="post" onsubmit="return validateFinalForm()">
+    <div id="Q1" class="question">
+        <h2>강아지 이름을 알려주세요</h2>
+        <label for="dogName">강아지 이름:</label>
+        <input type="text" id="dogName" name="dogName" required>
+        <button type="button" onclick="nextQuestion('Q2')">다음</button>
+    </div>
+
+    <div id="Q2" class="question">
+        <h2>강아지 품종을 입력해주세요</h2>
+        <label for="dogBreed">강아지 품종:</label>
+        <select id="dogBreed" name="dogBreed" required>
+            <option value="">-- 선택해주세요 --</option>
+            <option value="말티즈">말티즈</option>
+            <option value="치와와">치와와</option>
+            <option value="웰시 코기">웰시 코기</option>
+            <option value="푸들">푸들</option>
+            <option value="시바견">시바견</option>
+            <option value="진돗개">진돗개</option>
+            <option value="포메라니안">포메라니안</option>
+            <option value="말티푸">말티푸</option>
+            <option value="믹스견">믹스견</option>
+            <option value="그 외">그 외</option>
+        </select>
+        <button type="button" onclick="nextQuestion('Q3')">다음</button>
+    </div>
+
+    <div id="Q3" class="question">
+        <h2>강아지의 생년월일을 알려주세요</h2>
+        <label for="dogBirthdate">생년월일:</label>
+        <input type="date" id="dogBirthdate" name="dogBirthdate" required>
+        <button type="button" onclick="nextQuestion('Q4')">다음</button>
+    </div>
+
+    <div id="Q4" class="question">
+        <h2>강아지의 성별을 알려주세요</h2>
+        <label>성별:</label>
+        <input type="radio" id="male" name="dogGender" value="남아" required>
+        <label for="male">남아</label>
+        <input type="radio" id="female" name="dogGender" value="여아" required>
+        <label for="female">여아</label>
+        <button type="submit">제출</button>
+    </div>
+</form>
+
+<script>
+    function startQuestionnaire() {
+        document.getElementById('startSection').style.display = 'none';
+        document.getElementById('Q1').style.display = 'block';
+    }
+    function nextQuestion(nextQuestionId) {
+        let currentQuestion = document.querySelector('.question:not([style*="display: none"])');
+        if (currentQuestion) {
+            currentQuestion.style.display = 'none';
+        }
+        // 다음 질문을 표시
+        let nextQuestion = document.getElementById(nextQuestionId);
+        if (nextQuestion) {
+            nextQuestion.style.display = 'block';
+        }
+    }
+    function validateFinalForm() {
+        let genderInputs = document.getElementsByName('dogGender');
+        let isGenderSelected = false;
+        for (let input of genderInputs) {
+            if (input.checked) {
+                isGenderSelected = true;
+                break;
+            }
+        }
+        if (!isGenderSelected) {
+            alert('성별을 선택해주세요.');
+            return false;
+        }
+        return true;
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('startSection').style.display = 'block';
+    });
+</script>
+</body>
+</html>
