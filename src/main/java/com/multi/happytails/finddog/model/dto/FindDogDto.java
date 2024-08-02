@@ -32,4 +32,5 @@ public class FindDogDto {
     private char state;
     private String breed;
     private Date createDate;
+    private char category;
 }
