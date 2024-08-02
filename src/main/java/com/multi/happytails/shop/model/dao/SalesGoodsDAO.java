@@ -36,7 +36,7 @@ public interface SalesGoodsDAO {
      *
      * @param salesGoodsDTO the sales goods dto
      */
-    void updateSales(SalesGoodsDTO salesGoodsDTO);
+    int updateSales(SalesGoodsDTO salesGoodsDTO);
 
     /**
      * methodName : salesList

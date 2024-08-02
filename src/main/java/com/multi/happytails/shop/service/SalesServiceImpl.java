@@ -30,8 +30,8 @@ public class SalesServiceImpl implements SalesService {
     }
 
     @Override
-    public void updateSales(SalesGoodsDTO salesGoodsDTO) {
-        salesGoodsDAO.updateSales(salesGoodsDTO);
+    public int updateSales(SalesGoodsDTO salesGoodsDTO) {
+        return salesGoodsDAO.updateSales(salesGoodsDTO);
     }
 
     @Override
