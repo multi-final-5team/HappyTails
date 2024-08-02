@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.multi.happytails.DBTI.model.dao.DBTISaveDAO">
+
+    <insert id="insertDog" parameterType="com.multi.happytails.DBTI.model.dto.DBTISaveDTO">
+        INSERT INTO TB_DBTI_save (name, breed, birthdate, gender)
+        VALUES (#{name}, #{breed}, #{birthdate}, #{gender})
+    </insert>
+
+</mapper>

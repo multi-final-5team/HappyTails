@@ -3,77 +3,72 @@
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
     <title>내 새꾸 자랑 게시판 목록</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu&display=swap" rel="stylesheet">
     <style>
-        .table thead th {
-            text-align: center;
-            background-color: #f8f9fa;
+        body {
+            font-family: 'Gaegu', cursive;
+            background-color: #FFF5EE;
+            background-image: url('paw-pattern.png');
         }
-        .table tbody td {
-            vertical-align: middle;
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            background-color: white;
         }
-        .table tbody td:nth-child(3) {
-            text-align: left;
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .btn {
+            border-radius: 20px;
         }
     </style>
 </head>
 <body class="container mt-5">
 <menu th:replace="fragments/head :: menu"></menu>
 
-<h1 class="mb-4 text-center">내 새꾸 자랑 게시판</h1>
+<h1 class="mb-4 text-center">🐾 내 새꾸 자랑 게시판 🐾</h1>
+<h3 class="mb-4 text-center">우리 아이의 사랑스러운 순간들을 자랑하시개! 🐶</h3>
 
 <!-- 추천순/최신순 / 새 글 작성  -->
 <div class="d-flex justify-content-between mb-3">
     <div>
         <form action="/community/doglove" method="get" class="d-inline me-2">
             <input type="hidden" name="sort" value="date"/>
-            <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'date' ? '최신순(현재)' : '최신순'}"></button>
+            <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'date' ? '🐶 최신순(현재)' : '🐶 최신순'}"></button>
         </form>
         <form action="/community/doglove" method="get" class="d-inline">
             <input type="hidden" name="sort" value="recommendCount"/>
-            <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'recommendCount' ? '추천순(현재)' : '추천순'}"></button>
+            <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'recommendCount' ? '❤️ 추천순(현재)' : '❤️ 추천순'}"></button>
         </form>
     </div>
     <!-- 검색 폼 추가 -->
     <div class="mb-4">
         <form action="/community/doglove/search" method="get" class="d-flex">
             <input type="text" name="keyword" class="form-control me-2" placeholder="제목을 입력하세요" aria-label="검색">
-            <button type="submit" class="btn btn-outline-success">🔎</button>
+            <button type="submit" class="btn btn-outline-success">🔍</button>
         </form>
     </div>
     <div>
-        <a href="/community/doglove/create" class="btn btn-primary btn-sm me-2">새 글 작성하기</a>
-
+        <a href="/community/doglove/create" class="btn btn-primary btn-sm me-2">🦴 새 글 작성하기</a>
     </div>
 </div>
 
-
-
-
-<!-- 게시글 목록 -->
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th style="width: 10%;">No</th>
-        <th style="width: 10%;">작성자</th>
-        <th style="width: 15%;">제목</th>
-        <th style="width: 20%;">내용</th>
-        <th style="width: 13%;">작성 시간</th>
-        <th style="width: 8%;">추천 수</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="doglove : ${dogloves}">
-        <td th:text="${doglove.dogloveNo}" class="text-center"></td>
-        <td th:text="${doglove.userId}" class="text-center"></td>
-        <td>
-            <a th:href="@{/community/doglove/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}" th:text="${doglove.title}"></a>
-        </td>
-        <td th:text="${#strings.abbreviate(doglove.content, 30)}"></td>
-        <td th:text="${#temporals.format(doglove.createTime, 'yyyy-MM-dd')}" class="text-center"></td>
-        <td th:text="${doglove.recommendCount}" class="text-center"></td>
-    </tr>
-    </tbody>
-</table>
+<!-- 게시글 목록 (카드 형식) -->
+<div class="row">
+    <div class="col-md-4 mb-4" th:each="doglove : ${dogloves}">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${doglove.title}"></h5>
+                <h6 class="card-subtitle mb-2 text-muted" th:text="${doglove.userId}"></h6>
+                <p class="card-text" th:text="${#strings.abbreviate(doglove.content, 50)}"></p>
+                <p class="card-text"><small class="text-muted" th:text="${#temporals.format(doglove.createTime, 'yyyy-MM-dd')}"></small></p>
+                <a th:href="@{/community/doglove/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}" class="btn btn-sm btn-outline-primary">자세히 보기</a>
+                <span class="badge bg-primary float-end" th:text="${doglove.recommendCount + ' ❤️'}"></span>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
