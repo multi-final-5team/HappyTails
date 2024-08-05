@@ -50,7 +50,8 @@
         </form>
     </div>
     <div>
-        <a href="/community/doglove/create" class="btn btn-primary btn-sm me-2">🦴 새 글 작성하기</a>
+        <a href="/community/doglove/create" onclick="return checkLogin()" class="btn btn-primary btn-sm me-2">🦴 새 글 작성하기</a>
+
     </div>
 </div>
 
@@ -59,6 +60,11 @@
     <div class="col-md-4 mb-4" th:each="doglove : ${dogloves}">
         <div class="card">
             <div class="card-body">
+                <div class="row">
+                    <div th:each="uploadDto : ${imageFiles}" class="col-md-4 mb-3">
+                        <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" class="img-fluid rounded" alt="이미지">
+                    </div>
+                </div>
                 <h5 class="card-title" th:text="${doglove.title}"></h5>
                 <h6 class="card-subtitle mb-2 text-muted" th:text="${doglove.userId}"></h6>
                 <p class="card-text" th:text="${#strings.abbreviate(doglove.content, 50)}"></p>
@@ -69,6 +75,8 @@
         </div>
     </div>
 </div>
+<script>
 
+</script>
 </body>
 </html>

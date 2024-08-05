@@ -55,9 +55,8 @@ public class DogloveService {
     }
 
 
-    public void update(DogloveDTO doglove) {
-        Long dogloveNo = doglove.getDogloveNo();
-        dogloveDAO.update(doglove);
+    public int update(DogloveDTO dogloveDTO) {
+        return dogloveDAO.update(dogloveDTO);
     }
 
 }

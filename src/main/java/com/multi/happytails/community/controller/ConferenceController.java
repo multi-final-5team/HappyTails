@@ -55,9 +55,7 @@ public class ConferenceController {
 
     @GetMapping("/{conferenceNo}")
     public String conferenceDetail(@PathVariable("conferenceNo") Long conferenceNo,
-                                   Model model,
-                                   RedirectAttributes redirectAttributes,
-                                   Principal principal) {
+                                   Model model) {
 
         ConferenceDTO conference = conferenceService.findById(conferenceNo);
         // 댓글 조회
@@ -79,7 +77,10 @@ public class ConferenceController {
     }
 
     @GetMapping("/create")
-    public String conferenceCreate() {
+    public String conferenceCreat(Principal principal) {
+        if (principal == null) {
+            return "redirect:/member/login";
+        }
         return "community/conferencecreate";
     }
 
@@ -87,9 +88,7 @@ public class ConferenceController {
     public String save(@ModelAttribute ConferenceDTO conferenceDTO,
                        @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles,
                        Principal principal) {
-        if (principal == null) {
-            return "redirect:/member/login";
-        }
+
         String userId = principal.getName();
         conferenceDTO.setUserId(userId);
 
@@ -128,10 +127,13 @@ public class ConferenceController {
 
         replyService.replyDeleteAll("C", conferenceNo);
 
-        UploadDto uploadDto = new UploadDto();
-        uploadDto.setCategoryCode(IMAGE_CODE);
-        // uploadService.uploadDelete(uploadDto);
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(IMAGE_CODE, conferenceNo);
 
+        if (uploadDtos != null && !uploadDtos.isEmpty()) {
+            for (UploadDto uploadDto : uploadDtos) {
+                uploadService.uploadDelete(uploadDto.getImageNo());
+            }
+        }
         return "redirect:/community/conference";
     }
 
