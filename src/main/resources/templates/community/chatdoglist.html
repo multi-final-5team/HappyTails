@@ -4,15 +4,21 @@
     <meta charset="UTF-8">
     <title>떠들개 게시판 목록</title>
     <style>
-        .table thead th {
-            text-align: center;
-            background-color: #f8f9fa;
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #FFF5EE;
         }
-        .table tbody td {
-            vertical-align: middle;
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            background-color: white;
         }
-        .table tbody td:nth-child(3) {
-            text-align: left;
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .btn {
+            border-radius: 20px;
         }
     </style>
 </head>
@@ -45,32 +51,23 @@
     </div>
 </div>
 
-<!-- 게시글 목록 -->
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th style="width: 10%;">No</th>
-        <th style="width: 10%;">작성자</th>
-        <th style="width: 15%;">제목</th>
-        <th style="width: 20%;">내용</th>
-        <th style="width: 13%;">작성 시간</th>
-        <th style="width: 8%;">추천 수</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="chatdog : ${chatdog}">
-        <td th:text="${chatdog.chatdogNo}" class="text-center"></td>
-        <td th:text="${chatdog.userId}" class="text-center"></td>
-        <td>
-            <a th:href="@{/community/chatdog/{chatdogNo}(chatdogNo=${chatdog.chatdogNo})}" th:text="${chatdog.title}"></a>
-        </td>
-        </td>
-        <td th:text="${#strings.abbreviate(chatdog.content, 30)}"></td>
-        <td th:text="${#temporals.format(chatdog.createTime, 'yyyy-MM-dd')}" class="text-center"></td>
-        <td th:text="${chatdog.recommendCount}" class="text-center"></td>
-    </tr>
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-md-4 mb-4" th:each="chatdog : ${chatdog}">
+        <div class="card">
+            <div class="card-body">
+                <div th:if="${chatdogImages != null and chatdogImages.get(chatdog.chatdogNo) != null and !chatdogImages.get(chatdog.chatdogNo).empty}" class="mb-3">
+                    <img th:src="@{/images/C/{file}(file=${chatdogImages.get(chatdog.chatdogNo)[0].storedFileName})}" class="img-fluid rounded" alt="대표 이미지">
+                </div>
+                <h5 class="card-title" th:text="${chatdog.title}"></h5>
+                <h6 class="card-subtitle mb-2 text-muted" th:text="${chatdog.userId}"></h6>
+                <p class="card-text" th:text="${#strings.abbreviate(chatdog.content, 50)}"></p>
+                <p class="card-text"><small class="text-muted" th:text="${#temporals.format(chatdog.createTime, 'yyyy-MM-dd')}"></small></p>
+                <a th:href="@{/community/chatdog/{chatdogNo}(chatdogNo=${chatdog.chatdogNo})}" class="btn btn-sm btn-outline-primary">자세히 보기</a>
+                <span class="badge bg-primary float-end" th:text="${chatdog.recommendCount + ' ❤️'}"></span>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

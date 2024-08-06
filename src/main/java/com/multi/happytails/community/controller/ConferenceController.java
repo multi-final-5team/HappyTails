@@ -16,7 +16,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/community/conference")
@@ -47,9 +49,19 @@ public class ConferenceController {
         } else {
             conferences = conferenceService.findAllSortedByDate();
         }
+
+        Map<Long, List<UploadDto>> conferenceImages = new HashMap<>();
+        for (ConferenceDTO conference : conferences) {
+            List<UploadDto> imageFiles = uploadService.uploadSelect(IMAGE_CODE, conference.getConferenceNo());
+            conferenceImages.put(conference.getConferenceNo(), imageFiles);
+        }
+
+
         model.addAttribute("keyword", keyword);
-        model.addAttribute("conferences", conferences);
+        model.addAttribute("conference", conferences);
+        model.addAttribute("conferenceImages", conferenceImages);
         model.addAttribute("sort", sort);
+
         return "community/conferencelist";
     }
 

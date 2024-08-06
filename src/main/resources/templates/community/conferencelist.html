@@ -70,6 +70,22 @@
     </tr>
     </tbody>
 </table>
-
+<div class="row">
+    <div class="col-md-4 mb-4" th:each="conference : ${conference}">
+        <div class="card">
+            <div class="card-body">
+                <div th:if="${conferenceImages != null and conferenceImages.get(conference.conferenceNo) != null and !conferenceImages.get(conference.conferenceNo).empty}" class="mb-3">
+                    <img th:src="@{/images/O/{file}(file=${conferenceImages.get(conference.conferenceNo)[0].storedFileName})}" class="img-fluid rounded" alt="대표 이미지">
+                </div>
+                <h5 class="card-title" th:text="${conference.title}"></h5>
+                <h6 class="card-subtitle mb-2 text-muted" th:text="${conference.userId}"></h6>
+                <p class="card-text" th:text="${#strings.abbreviate(conference.content, 50)}"></p>
+                <p class="card-text"><small class="text-muted" th:text="${#temporals.format(conference.createTime, 'yyyy-MM-dd')}"></small></p>
+                <a th:href="@{/community/conference/{conferenceNo}(conferenceNo=${conference.conferenceNo})}" class="btn btn-sm btn-outline-primary">자세히 보기</a>
+                <span class="badge bg-primary float-end" th:text="${conference.recommendCount + ' ❤️'}"></span>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

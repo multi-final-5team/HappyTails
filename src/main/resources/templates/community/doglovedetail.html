@@ -33,6 +33,10 @@
             background-color: #98FB98;
             color: #333;
         }
+                /* 이미지 숨기기 */
+        .hidden-img {
+            display: none;
+        }
     </style>
 </head>
 <body class="container mt-5">
@@ -51,7 +55,7 @@
 
     <div class="row">
         <div th:each="uploadDto : ${imageFiles}" class="col-md-4 mb-3">
-            <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" class="img-fluid rounded" alt="이미지">
+            <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" class="img-fluid rounded">
         </div>
     </div>
 
@@ -60,7 +64,7 @@
             <input type="hidden" name="communityCategoryCode" value="L" />
             <input type="hidden" name="foreignNo" th:value="${doglove.dogloveNo}" />
             <div style="margin-bottom: 10px;">
-                <textarea name="content" required rows="3" class="form-control" placeholder="귀여운 댓글을 남겨주세요! 🐾"></textarea>
+                <textarea name="content" required rows="3" class="form-control" placeholder="댓글을 남겨주시개"></textarea>
             </div>
             <div style="display: flex; justify-content: flex-end;">
                 <button type="submit" class="btn btn-blue">🐾 댓글 남기기</button>
@@ -68,7 +72,7 @@
         </form>
     </div>
 
-    <form th:action="@{/community/doglove/dogloveRecommend}" method="post" onsubmit="return confirm('이 귀여운 게시글을 추천하시겠어요?');">
+    <form th:action="@{/community/doglove/dogloveRecommend}" method="post" onsubmit="return confirm('이 게시글 추천하시겠어요?');">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
         <button type="submit" class="btn btn-green">❤️ 추천하기</button>
         <input type="hidden" name="dogloveNo" th:value="${doglove.dogloveNo}"/>
@@ -110,7 +114,7 @@
                     <button type="submit" class="btn btn-danger">🗑️ 게시글 삭제</button>
                 </form>
             </div>
-            <a href="/community/doglove/create" class="btn btn-primary">✍️ 새 글 작성</a>
+            <a href="/community/doglove/create" class="btn btn-primary">✍새 글 작성</a>
         </div>
     </div>
 
