@@ -7,7 +7,7 @@
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
-    <div class="container">
+    <dd class="container">
         <figure class="text-center">
             <h2>찾아주개</h2>
         </figure>
@@ -15,8 +15,180 @@
             <h3>찾아주개 상세보기</h3>
         </figure>
 
-    </div>
+        <dl class="row">
+            <dt class="col-sm-3">제목</dt>
+            <dd class="col-sm-9"><th:block th:text="${findDogDto.title}"></th:block></dd>
+            <dt class="col-sm-3">작성자</dt>
+            <dd class="col-sm-9"><th:block th:text="${findDogDto.writerId}"></th:block></dd>
+            <dt class="col-sm-3">장소</dt>
+            <dd class=" col-sm-9">
+                <pre><th:block th:text="${findDogDto.area}"></th:block></pre>
+            </dd>
+            <dt class="col-sm-3">카테고리</dt>
+            <dd class="col-sm-9">
+                <th:block th:if="${findDogDto.category} == 'M'">
+                    <p>유기의심공유</p>
+                </th:block>
+                <th:block th:if="${findDogDto.category} == 'F'">
+                    <p>잃어버린강아지 찾기</p>
+                </th:block>
+            </dd>
+
+            <dt class="col-sm-3">내용</dt>
+            <dd class=" col-sm-9 row">
+                <pre><th:block th:text="${findDogDto.content}"></th:block></pre>
+            </dd>
+
+            <th:block th:if="${uploadDtos != null}">
+                <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
+                    <dd class="text-center">
+                        <img th:src="@{/images/F/{file}(file=${uploadDto.storedFileName})}" alt="..." width="600px" height="500px">
+                    </dd>
+                </th:block>
+            </th:block>
+
+            <dt class="col-sm-3">위치</dt>
+            <div id="map" style="width:800px;height:500px;"></div>
+        </dl>
+        <!-- 작성자만 보이게 -->
+        <div th:if="${findDogDto.writerId} == ${#authentication.principal.username}">
+            <input type="button" class="btn btn-danger float-end" id="deleteBtn" value="삭제">
+            <input type="button" class="btn btn-success float-end" id="updatePageBtn" value="수정">
+        </div>
+        <br>
+        <div class="mb-3">
+            <label for="content" class="form-label">댓글</label>
+            <textarea class="form-control" id="content" rows="3"></textarea>
+        </div>
+        <div>
+            <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
+        </div>
+        <div>
+            <table class="table table-hover" id="tableDiv">
+            </table>
+        </div>
+
 </main>
 <!-- 스크립트 -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3410cbe0e56cd0dca8e1c3bc13dec0a4&libraries=services"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="/js/help/function.js"></script>
+<script>
+
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+    mapOption = {
+        center: new kakao.maps.LatLng([[${findDogDto.latitude}]], [[${findDogDto.longitude}]]), // 지도의 중심좌표
+        level: 1 // 지도의 확대 레벨
+    };
+
+    var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+    // 마커가 표시될 위치입니다
+    var markerPosition  = new kakao.maps.LatLng([[${findDogDto.latitude}]], [[${findDogDto.longitude}]]);
+
+    // 마커를 생성합니다
+    var marker = new kakao.maps.Marker({
+        position: markerPosition
+    });
+
+    // 마커가 지도 위에 표시되도록 설정합니다
+    marker.setMap(map);
+
+    $(document).ready(function(){
+        getReplyList();
+
+        let params = new URLSearchParams(location.search);
+        let findDogNo = params.get('findDogNo');
+
+        // 삭제 버튼 Start
+        $('#deleteBtn').click(function(){
+            if (confirm("삭제 하시겠습니까?")) {
+                $.ajax({
+                    url: "/finddog/delete",
+                    type: 'POST',
+                    data: {"findDogNo": findDogNo},
+                    success: function (result) {
+                        alert(result);
+                        location.href = "/finddog/main";
+                    }
+                });
+            }
+        });
+        // 삭제 버튼 End
+
+        // 수정 버튼 Start
+        $('#updatePageBtn').click(function(){
+            location.href='/finddog/update?findDogNo='+findDogNo;
+        });
+        // 수정 버튼 End
+
+        // 댓글 작성 버튼 Start
+        $('#createBtn').click(function(){
+            let content = $('#content').val();
+
+            let formData = new FormData();
+
+            formData.append('content',content);
+            formData.append('findDogNo',findDogNo);
+
+            $.ajax({
+                url : "/finddog/replyWrite",
+                processData : false,
+                contentType : false,
+                type : 'POST',
+                data : formData,
+                success : function(result) {
+                    alert(result);
+                    $('#content').val('');
+                    getReplyList();
+                }
+            });
+        });
+        // 댓글 작성 버튼 End
+
+    });
+
+    // 댓글 리스트 불러오기 Start
+
+        function getReplyList() {
+            let params = new URLSearchParams(location.search);
+            let findDogNo = params.get('findDogNo');
+
+            $('#tableDiv').html('');
+
+            $.ajax({
+            type : "GET",
+            url : "/finddog/getReplyList?findDogNo="+findDogNo,
+            dataType : "json",
+            success : function(result) {
+                console.log(result);
+                let template = '';
+                template = `
+                        <thead>
+                            <tr>
+                                <th scope="col">생성 날짜</th>
+                                <th scope="col">작성자</th>
+                                <th scope="col">내용</th>
+                            </tr>
+                        </thead>
+                    `;
+                for(let i = 0; i < result.length; i++) {
+                    template += `
+                            <tbody>
+                                <tr class="listRow">
+                                    <td>`+dataFormat1(result[i].createDate)+`</td>
+                                    <td>`+result[i].writerId+`</td>
+                                    <td>`+result[i].content+`</td>
+                                </tr>
+                            </tbody>
+                        `;
+                    }
+                $('#tableDiv').append(template);
+            }
+            });
+        }
+    // 댓글 리스트 불러오기 End
+
+</script>
 </body>
 </html>
