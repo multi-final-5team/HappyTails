@@ -16,7 +16,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/community/chatdog")
@@ -44,15 +46,24 @@ public class ChatDogController {
             @RequestParam(value = "keyword", required = false) String keyword,
             Model model) {
 
-        List<ChatDogDTO> chatdog;
+        List<ChatDogDTO> chatdogs;
         if ("recommendCount".equals(sort)) {
-            chatdog = chatDogService.findAllSortedByRecommendation();
+            chatdogs = chatDogService.findAllSortedByRecommendation();
         } else {
-            chatdog = chatDogService.findAllSortedByDate();
+            chatdogs = chatDogService.findAllSortedByDate();
         }
+
+        Map<Long, List<UploadDto>> chatdogImages = new HashMap<>();
+        for (ChatDogDTO chatdog : chatdogs) {
+            List<UploadDto> imageFiles = uploadService.uploadSelect(IMAGE_CODE, chatdog.getChatdogNo());
+            chatdogImages.put(chatdog.getChatdogNo(), imageFiles);
+        }
+
         model.addAttribute("keyword", keyword);
-        model.addAttribute("chatdog", chatdog);
+        model.addAttribute("chatdog", chatdogs);
+        model.addAttribute("chatdogImages", chatdogImages);
         model.addAttribute("sort", sort);
+
         return "community/chatdoglist";
     }
 

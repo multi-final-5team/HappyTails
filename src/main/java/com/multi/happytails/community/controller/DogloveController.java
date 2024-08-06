@@ -16,7 +16,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * packageName    : com.multi.happytails.community.controller
@@ -60,16 +62,6 @@ public class DogloveController {
     final String categoryCode = "DOGLOVE_CODE";
 
     /**
-     * Controller 메서드에 데이터 제공
-     *
-     * @param dogloveService the doglove service
-     */
-    public DogloveController(DogloveService dogloveService) {
-        this.dogloveService = dogloveService;
-
-    }
-
-    /**
      * methodName : doglovelist
      * author : Nayoung Yeo
      * description : 게시판 목록을 보여주며 (작성자, 제목, 내용, 날짜, 추천순) 추천순과 최신순 정렬
@@ -92,12 +84,17 @@ public class DogloveController {
             dogloves = dogloveService.findAllSortedByDate();
         }
 
+        Map<Long, List<UploadDto>> dogloveImages = new HashMap<>();
+        for (DogloveDTO doglove : dogloves) {
+            List<UploadDto> imageFiles = uploadService.uploadSelect(IMAGE_CODE, doglove.getDogloveNo());
+            dogloveImages.put(doglove.getDogloveNo(), imageFiles);
+        }
         model.addAttribute("keyword", keyword);
         model.addAttribute("dogloves", dogloves);
+        model.addAttribute("dogloveImages", dogloveImages);
         model.addAttribute("sort", sort);
 
         return "community/doglovelist";
-
     }
 
     /**

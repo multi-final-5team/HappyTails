@@ -2,13 +2,22 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
-    <title>게시글 수정</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 새꾸 자랑 게시글 수정</title>
     <style>
         .img-thumbnail {
             width: 100px;
             height: 100px;
             object-fit: cover;
         }
+        .img-container:empty {
+            display: none;
+        }
+        .background-image {
+        height: 100px;  /* 또는 원하는 높이 */
+         background-size: cover;
+        background-position: center;
+}
     </style>
 </head>
 <body class="container mt-5">
@@ -32,18 +41,20 @@
                 <label for="imageInput" class="form-label">새 이미지 추가</label>
                 <input type="file" id="imageInput" name="imageFiles" multiple class="form-control">
             </div>
-            <div id="imgAddDiv" class="row g-2">
-                <th:block th:if="${not #lists.isEmpty(uploadDtos)}">
-                    <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
-                        <div class="imgDiv col-md-3 mb-3">
-                            <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" class="img-thumbnail w-100">
-                            <div class="mt-2">
-                                <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" th:data-image-no="${uploadDto.imageNo}" value="삭제">
-                                <input type="button" class="btn btn-success btn-sm imgUpdateBtn" th:data-image-no="${uploadDto.imageNo}" value="수정">
+            <div class="img-container">
+                <div id="imgAddDiv" class="row g-2">
+                    <th:block th:if="${not #lists.isEmpty(uploadDtos)}">
+                        <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
+                            <div class="imgDiv col-md-3 mb-3">
+                                <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" class="img-thumbnail w-100">
+                                <div class="mt-2">
+                                    <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" th:data-image-no="${uploadDto.imageNo}" value="삭제">
+                                    <input type="button" class="btn btn-success btn-sm imgUpdateBtn" th:data-image-no="${uploadDto.imageNo}" value="수정">
+                                </div>
                             </div>
-                        </div>
+                        </th:block>
                     </th:block>
-                </th:block>
+                </div>
             </div>
             <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
             <button type="submit" class="btn btn-primary" id="createBtn" onclick="return confirm('수정 하시겠습니까?');">수정</button>
@@ -52,19 +63,15 @@
 </div>
 
 <a href="/community/doglove" class="btn btn-secondary mt-3">목록으로 돌아가기</a>
-
 <script>
     let dogloveNo = [[${doglove.dogloveNo}]];
 
     $(document).ready(function() {
-        // 이미지 배열 변수 Start
-        let imageDeleteImageNos = [];
-        let imageUpdateImageNos = [];
+        let imageDeleteImageNo = [];
+        let imageUpdateImageNo = [];
         let imageUpdateFiles = [];
         let imageFiles = [];
-        // 이미지 배열 변수 End
 
-        // 이미지 로드 Start
         $('#imageInput').on('change', function(event) {
             let files = event.target.files;
 
@@ -73,14 +80,26 @@
                 if (file && file.type.startsWith('image/')) {
                     let reader = new FileReader();
                     reader.onload = function(e) {
-                        $('#imgAddDiv').append(`
+                        let newImageDiv = $(`
                         <div class="imgDiv col-md-3 mb-3">
-                            <img src="${e.target.result}" alt="Selected Image" class="img-thumbnail w-100">
+                            <img src="${e.target.result}" class="img-thumbnail w-100">
                             <div class="mt-2">
                                 <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" value="삭제">
                             </div>
                         </div>
-                         `);
+                        `);
+                        $('#imgAddDiv').append(newImageDiv);
+
+                        newImageDiv.find('.imgDeleteBtn').on('click', function() {
+                            let index = imageFiles.indexOf(file);
+                            if (index > -1) {
+                                imageFiles.splice(index, 1);
+                            }
+                            newImageDiv.remove();
+                            if ($('#imgAddDiv').children().length === 0) {
+                                $('.img-container').hide();
+                            }
+                        });
                     }
                     imageFiles.push(file);
                     reader.readAsDataURL(file);
@@ -88,17 +107,16 @@
                     alert('이미지 파일을 선택해주세요');
                 }
             }
+            $(this).val('');
+            $('.img-container').show();
         });
-        // 이미지 로드 End
 
-        // 폼 서브밋 Start
         $('#updateForm').on('submit', function(e) {
             e.preventDefault();
             let formData = new FormData(this);
 
-
-            imageDeleteImageNos.forEach(imageNo => {
-                formData.append('imageDeleteImageNos', imageNo);
+            imageDeleteImageNo.forEach(imageNo => {
+                formData.append('imageDeleteImageNo', imageNo);
             });
 
             imageFiles.forEach(file => {
@@ -106,7 +124,7 @@
             });
 
             imageUpdateFiles.forEach((file, index) => {
-                formData.append('imageUpdateImageNos', imageUpdateImageNos[index]);
+                formData.append('imageUpdateImageNo', imageUpdateImageNo[index]);
                 formData.append('imageUpdateFiles', file);
             });
 
@@ -117,30 +135,33 @@
                 type: 'POST',
                 data: formData,
                 success: function(result) {
-                    alert(result);
+                    console.log(result);
                     location.href = "/community/doglove";
                 },
                 error: function(xhr, status, error) {
                     alert("게시글 수정에 실패했습니다. 다시 시도해주세요.");
-                    console.error(xhr.responseText); // 오류 내용 로깅
+                    console.error(xhr.responseText);
                 }
             });
         });
-        // 폼 서브밋 End
 
-        // 이미지 삭제버튼 클릭 Start
         $(document).on("click", ".imgDeleteBtn", function() {
             let imageNo = $(this).data("image-no");
-            if (imageNo) {
-                imageDeleteImageNos.push(imageNo);
-            }
-            $(this).closest('.imgDiv').remove();
-        });
-        // 이미지 삭제버튼 클릭 End
+            let imgDiv = $(this).closest('.imgDiv');
 
-        // 이미지 수정 버튼 클릭 Start
+            if (imageNo) {
+                imageDeleteImageNo.push(imageNo);
+            }
+
+            imgDiv.remove();
+
+            if ($('#imgAddDiv').children().length === 0) {
+                $('.img-container').hide();
+            }
+        });
+
         $(document).on("click", ".imgUpdateBtn", function() {
-            let imageNo = $(this).data("image-no"); // data-image-no로 변경
+            let imageNo = $(this).data("image-no");
             let imgDiv = $(this).closest('.imgDiv');
             let fileInput = $('<input type="file" style="display: none;">');
 
@@ -152,8 +173,15 @@
                         imgDiv.find('img').attr("src", e.target.result);
                     }
                     reader.readAsDataURL(file);
+
+                    let existingIndex = imageUpdateImageNo.indexOf(imageNo);
+                    if (existingIndex !== -1) {
+                        imageUpdateFiles.splice(existingIndex, 1);
+                        imageUpdateImageNo.splice(existingIndex, 1);
+                    }
+
                     imageUpdateFiles.push(file);
-                    imageUpdateImageNos.push(imageNo);
+                    imageUpdateImageNo.push(imageNo);
                 } else {
                     alert('이미지 파일을 선택해주세요');
                 }
@@ -161,7 +189,11 @@
 
             fileInput.click();
         });
-        // 이미지 수정 버튼 클릭 End
+
+        // 초기 이미지 컨테이너 상태 설정
+        if ($('#imgAddDiv').children().length === 0) {
+            $('.img-container').hide();
+        }
     });
 </script>
 </body>
