@@ -14,9 +14,214 @@
         <figure class="text-left">
             <h3>찾아주개 관리</h3>
         </figure>
-
+        <div class="row">
+            <div class="list-group flex-row col-3" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#list-find" role="tab" aria-controls="list-find" id="tab1">잃어버린 강아지</a>
+                <a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#list-misgiving" role="tab" aria-controls="list-misgiving" id="tab2">유기 의심 공유</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="state" class="form-label">상태</label>
+                <select class="form-select" id="state">
+                    <option value="" selected>전체</option>
+                    <option value="N">미해결</option>
+                    <option value="Y">해결</option>
+                </select>
+            </div>
+            <div class="col">
+                <label for="area" class="form-label">장소</label>
+                <input type="text" id="area" class="form-control">
+            </div>
+            <div class="col">
+                <label for="title" class="form-label">제목</label>
+                <input type="text" id="title" class="form-control">
+            </div>
+            <div class="col">
+                <br>
+                <button type="button" class="btn btn-primary" id="searchBtn">검색</button>
+            </div>
+        </div>
+        <div class="col-9 mt-3 tab-content">
+            <div class="tab-pane fade show active" id="list-find">
+                <h3>잃어버린강아지 리스트</h3>
+                <div class="row" id="findListDiv">
+                    <th:block th:each="i : ${#numbers.sequence(0, 8)}">
+                        <div class="col-md-4 mb-4 d-flex align-items-stretch">
+                            <div class="card" style="width: 100%;">
+                                <img src="/image/5d8e3b39-155d-4a1d-abd7-0a4caaa36d5b.jpg" class="card-img-top" alt="..." width="300" height="200">
+                                <div class="card-body">
+                                    <h5 class="card-title">제목 입니다.</h5>
+                                    <p class="card-text">장소: 서울특별시 머머동</p>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="list-misgiving">
+                <h3>유기의심공유 리스트</h3>
+                <div class="row" id="misgivingListDiv">
+                </div>
+            </div>
+            <div>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination" id="pagination">
+                    </ul>
+                </nav>
+            </div>
+            <div>
+                <input type="button" class="btn btn-primary float-end" value="글쓰기" id="writePageBtn"/>
+            </div>
+        </div>
     </div>
 </main>
 <!-- 스크립트 -->
+<script src="/js/help/function.js"></script>
+<script src="/js/help/page.js"></script>
+<script>
+
+    let listSwtich = 0;
+
+    $(document).ready(function(){
+
+        getList(1);
+
+        // 글쓰기 페이지 이동 버튼 Start
+        $("#writePageBtn").click(function(){
+           location.href="/finddog/write";
+        });
+        // 글쓰기 페이지 이동 버튼 End
+
+        // 잃어버린 강아지 탭 클릭 시 Start
+        $('#tab1').click(function(){
+            listSwtich = 0;
+            $('#state').val('');
+            $('#title').val('');
+            $('#area').val('');
+            getList(1);
+        });
+        // 잃어버린 강아지 탭 클릭 시 End
+
+        // 유기의심공유 탭 클릭 시 Start
+        $('#tab2').click(function(){
+            listSwtich = 1;
+            $('#state').val('');
+            $('#title').val('');
+            $('#area').val('');
+            getList(1);
+        });
+        // 유기의심공유 탭 클릭 시 End
+    });
+
+    // list 불러오기 Start
+    function getList(nowPage,searchMap) {
+        $('#misgivingListDiv').html('');
+        $('#findListDiv').html('');
+
+        // 입력 필드와 셀렉트박스에서 값을 가져옴
+        let titleValue = $('#title').val();
+        let categoryValue = 'F';
+
+        if (listSwtich == 0) {
+            categoryValue = 'F';
+        } else {
+            categoryValue = 'M';
+        }
+
+        let stateValue = $('#state').val();
+        let areaValue = $('#area').val();
+
+        // 맵과 유사한 구조로 데이터를 생성
+        let dataMap = {
+            title: titleValue,
+            category: categoryValue,
+            state: stateValue,
+            area: areaValue,
+            nowPage: nowPage
+        };
+
+        // 쿼리 문자열 생성
+        let queryString = $.param(dataMap);
+
+        $.ajax({
+            type : "GET",
+            url : "/finddog/getList?"+queryString,
+            dataType : "json",
+            success : function(result) {
+                console.log(result);
+                let template = '';
+                let stateStr = '미해결';
+                let stateClass = "bg-secondary";
+                for (var i = 0; i < result.viewAll.length; i++) {
+                    if (result.viewAll[i].result == 'Y') {
+                        stateStr = '완료';
+                        stateClass = "bg-success";
+                    }
+                    template += `
+                        <div class="col-md-4 mb-4 d-flex align-items-stretch listRow" data-find-dog-no="`+result.viewAll[i].findDogNo+`">
+                            <div class="card" style="width: 100%;">
+                                <img src="/images/F/`+result.imageMap[result.viewAll[i].findDogNo]+`" class="card-img-top" alt="이미지가 없습니다." width="300" height="200">
+                                <div class="card-body">
+                                    <h5 class="card-title">`+result.viewAll[i].title+`</h5>
+                                    <p class="card-text">장소: `+result.viewAll[i].area+`</p>
+                                    <p><span class="badge rounded-pill `+stateClass+`">`+stateStr+`</span></p>
+                                    <p><input class="btn btn-danger deleteBtn" type="button" value="삭제"></p>
+                                </div>
+                            </div>
+                        </div>
+                        `;
+                }
+                getpaging(result);
+                if (listSwtich == 0) {
+                    $('#findListDiv').append(template);
+                } else {
+                    $('#misgivingListDiv').append(template);
+                }
+            }
+        });
+    }
+    // list 불러오기 End
+    // 검색 click 이벤트 Start
+        $("#searchBtn").click(function(){
+            getList(1);
+        });
+    // 검색 click 이벤트 End
+
+    // 글 삭제 Start
+    $("#findListDiv").on("click",".deleteBtn",function(){
+        let findDogNo = $(this).closest('.listRow').attr('data-find-dog-no');
+        if (confirm("삭제 하시겠습니까?")) {
+                $.ajax({
+                    url: "/finddog/delete",
+                    type: 'POST',
+                    data: {"findDogNo": findDogNo},
+                    success: function (result) {
+                        alert(result);
+                        location.href = "/admin/finddog/manager";
+                    }
+                });
+            }
+    });
+    // 글 삭제 End
+
+    // 글 삭제 Start
+    $("#misgivingListDiv").on("click",".deleteBtn",function(){
+        let findDogNo = $(this).closest('.listRow').attr('data-find-dog-no');
+        if (confirm("삭제 하시겠습니까?")) {
+                $.ajax({
+                    url: "/finddog/delete",
+                    type: 'POST',
+                    data: {"findDogNo": findDogNo},
+                    success: function (result) {
+                        alert(result);
+                        location.href = "/admin/finddog/manager";
+                    }
+                });
+            }
+    });
+    // 글 삭제 End
+
+</script>
 </body>
 </html>
