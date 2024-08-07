@@ -22,4 +22,6 @@ public interface DogNumDAO {
 
     void insert(DogNumDTO dogNumDTO);
 
+    DogNumDTO getDogInfoByDognum(String dognum);
+
 }

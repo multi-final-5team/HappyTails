@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>댕댕이 신분증</title>
+    <style>
+        .id-card {
+            width: 320px;
+            height: 180px;
+            border: 2px solid #000;
+            border-radius: 8px;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            position: relative;
+            background: #fff;
+            margin: 20px auto;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .photo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #ddd;
+            position: absolute;
+            top: 40px;
+            left: 20px;
+            text-align: center;
+            line-height: 80px;
+            font-size: 24px;
+            color: #555;
+        }
+        .info {
+            margin-left: 120px;
+            padding: 20px;
+        }
+        .info h1 {
+            font-size: 18px;
+            margin: 0;
+            color: #000;
+        }
+        .info p {
+            font-size: 12px;
+            margin: 5px 0;
+            color: #333;
+        }
+        .button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="id-card" id="idCard">
+    <div class="header">신분증</div>
+    <div class="photo">사진</div>
+    <div class="info">
+        <h1>홍길동</h1>
+        <p>생년월일: 1990-01-01</p>
+        <p>주소: 서울시 강남구</p>
+        <p>직업: 개발자</p>
+    </div>
+</div>
+<button class="button" onclick="downloadImage()">저장하기</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+    function downloadImage() {
+        html2canvas(document.getElementById('idCard')).then(canvas => {
+            let img = canvas.toDataURL('image/png');
+            let link = document.createElement('a');
+            link.href = img;
+            link.download = 'doggy-id-card.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }).catch(err => {
+            console.error('Error capturing the image:', err);
+        });
+    }
+</script>
+</body>
+</html>

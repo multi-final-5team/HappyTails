@@ -55,6 +55,7 @@
     <div class="col-md-4 mb-4" th:each="chatdog : ${chatdog}">
         <div class="card">
             <div class="card-body">
+                <p class="card-text"><small class="text-muted">게시글 번호: <span class="badge bg-secondary" th:text="${chatdog.chatdogNo}"></span></small></p>
                 <div th:if="${chatdogImages != null and chatdogImages.get(chatdog.chatdogNo) != null and !chatdogImages.get(chatdog.chatdogNo).empty}" class="mb-3">
                     <img th:src="@{/images/C/{file}(file=${chatdogImages.get(chatdog.chatdogNo)[0].storedFileName})}" class="img-fluid rounded" alt="대표 이미지">
                 </div>

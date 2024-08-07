@@ -4,6 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+
 /**
  * packageName    : com.multi.happytails.dogNum
  * fileName       : DogNumPageController
@@ -20,7 +22,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class DogNumPageController {
 
     @GetMapping("/dogNumForm")
-    public String showForm() {
+    public String showForm(Principal principal) {
+        if (principal == null) {
+            return "redirect:/member/login";
+        }
+
         return "dogNum/dogNumForm";
     }
 }

@@ -60,6 +60,7 @@
     <div class="col-md-4 mb-4" th:each="doglove : ${dogloves}">
         <div class="card">
             <div class="card-body">
+                <p class="card-text"><small class="text-muted">게시글 번호: <span class="badge bg-secondary" th:text="${doglove.dogloveNo}"></span></small></p>
                 <div th:if="${dogloveImages != null and dogloveImages.get(doglove.dogloveNo) != null and !dogloveImages.get(doglove.dogloveNo).empty}" class="mb-3">
                     <img th:src="@{/images/L/{file}(file=${dogloveImages.get(doglove.dogloveNo)[0].storedFileName})}" class="img-fluid rounded" alt="대표 이미지">
                 </div>
@@ -69,6 +70,10 @@
                 <p class="card-text"><small class="text-muted" th:text="${#temporals.format(doglove.createTime, 'yyyy-MM-dd')}"></small></p>
                 <a th:href="@{/community/doglove/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}" class="btn btn-sm btn-outline-primary">자세히 보기</a>
                 <span class="badge bg-primary float-end" th:text="${doglove.recommendCount + ' ❤️'}"></span>
+                <div th:if="${#authentication.name == 'admin'}" class="mt-2">
+
+                    <a th:href="@{/doglove/delete/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}" class="btn btn-sm btn-danger">삭제</a>
+                </div>
             </div>
         </div>
     </div>

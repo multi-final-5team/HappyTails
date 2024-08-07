@@ -14,10 +14,10 @@
             display: none;
         }
         .background-image {
-        height: 100px;  /* 또는 원하는 높이 */
-         background-size: cover;
-        background-position: center;
-}
+            height: 100px;
+            background-size: cover;
+            background-position: center;
+        }
     </style>
 </head>
 <body class="container mt-5">
@@ -41,11 +41,11 @@
                 <label for="imageInput" class="form-label">새 이미지 추가</label>
                 <input type="file" id="imageInput" name="imageFiles" multiple class="form-control">
             </div>
-            <div class="img-container">
+            <div id="imgContainer" class="img-container">
                 <div id="imgAddDiv" class="row g-2">
                     <th:block th:if="${not #lists.isEmpty(uploadDtos)}">
                         <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
-                            <div class="imgDiv col-md-3 mb-3">
+                            <div class="imgDiv col-md-3 mb-3" th:id="'imgDiv' + ${uploadDto.imageNo}">
                                 <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" class="img-thumbnail w-100">
                                 <div class="mt-2">
                                     <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" th:data-image-no="${uploadDto.imageNo}" value="삭제">
@@ -72,6 +72,15 @@
         let imageUpdateFiles = [];
         let imageFiles = [];
 
+        function logImageState() {
+            console.log('Current state:');
+            console.log('imageDeleteImageNo:', imageDeleteImageNo);
+            console.log('imageUpdateImageNo:', imageUpdateImageNo);
+            console.log('imageUpdateFiles:', imageUpdateFiles);
+            console.log('imageFiles:', imageFiles);
+            console.log('Total images:', $('#imgAddDiv').children().length);
+        }
+
         $('#imageInput').on('change', function(event) {
             let files = event.target.files;
 
@@ -96,9 +105,9 @@
                                 imageFiles.splice(index, 1);
                             }
                             newImageDiv.remove();
-                            if ($('#imgAddDiv').children().length === 0) {
-                                $('.img-container').hide();
-                            }
+                            updateImgContainerVisibility();
+                            console.log('New image removed');
+                            logImageState();
                         });
                     }
                     imageFiles.push(file);
@@ -108,7 +117,9 @@
                 }
             }
             $(this).val('');
-            $('.img-container').show();
+            updateImgContainerVisibility();
+            console.log('New images added');
+            logImageState();
         });
 
         $('#updateForm').on('submit', function(e) {
@@ -128,6 +139,9 @@
                 formData.append('imageUpdateFiles', file);
             });
 
+            console.log('Submitting form');
+            logImageState();
+
             $.ajax({
                 url: `/community/doglove/update/${dogloveNo}`,
                 processData: false,
@@ -135,6 +149,7 @@
                 type: 'POST',
                 data: formData,
                 success: function(result) {
+                    console.log('Update successful');
                     console.log(result);
                     location.href = "/community/doglove";
                 },
@@ -154,10 +169,9 @@
             }
 
             imgDiv.remove();
-
-            if ($('#imgAddDiv').children().length === 0) {
-                $('.img-container').hide();
-            }
+            updateImgContainerVisibility();
+            console.log('Image deleted, imageNo:', imageNo);
+            logImageState();
         });
 
         $(document).on("click", ".imgUpdateBtn", function() {
@@ -182,6 +196,8 @@
 
                     imageUpdateFiles.push(file);
                     imageUpdateImageNo.push(imageNo);
+                    console.log('Image updated, imageNo:', imageNo);
+                    logImageState();
                 } else {
                     alert('이미지 파일을 선택해주세요');
                 }
@@ -190,10 +206,31 @@
             fileInput.click();
         });
 
-        // 초기 이미지 컨테이너 상태 설정
-        if ($('#imgAddDiv').children().length === 0) {
-            $('.img-container').hide();
+        function updateImgContainerVisibility() {
+            if ($('#imgAddDiv').children().length === 0) {
+                $('#imgContainer').hide();
+            } else {
+                $('#imgContainer').show();
+            }
         }
+
+        // 이미지 로드 실패 처리 (수정된 부분)
+        $('img').on('error', function() {
+            console.log('Image failed to load:', $(this).attr('src'));
+            let imgDiv = $(this).closest('.imgDiv');
+            let imageNo = imgDiv.find('.imgDeleteBtn').data('image-no');
+            if (imageNo) {
+                imageDeleteImageNo.push(imageNo);
+            }
+            imgDiv.remove();
+            updateImgContainerVisibility();
+            logImageState();
+        });
+
+        // 초기 이미지 컨테이너 상태 설정
+        updateImgContainerVisibility();
+        console.log('Initial state');
+        logImageState();
     });
 </script>
 </body>

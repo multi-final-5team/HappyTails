@@ -36,6 +36,8 @@
         <p><strong>중성화 여부:</strong> <span id="neuterYn"></span></p>
         <img id="dogImage">
         <button onclick="saveDogNum()">저장</button>
+        <button id="createCertificateBtn" onclick="createCertificate()" disabled>신분증 만들기</button>
+
     </div>
 </div>
 <script>
@@ -117,9 +119,13 @@ function saveDogNum() {
         body: formData
     })
     .then(response => response.text())
-    .then(message => alert(message))
+    .then(message => {
+        alert(message);
+        document.getElementById('createCertificateBtn').disabled = false; // 버튼 활성화
+    })
     .catch(error => alert('저장 실패: ' + error));
 }
+
     document.getElementById('imageInput').addEventListener('change', function(event) {
         var files = event.target.files;
         var imgPreview = document.getElementById('imgPreview');

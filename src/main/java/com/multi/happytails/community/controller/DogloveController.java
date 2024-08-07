@@ -238,14 +238,6 @@ public class DogloveController {
 
         String userId = principal.getName();
 
-
-        System.out.println("User ID: " + userId);
-        System.out.println("Updating Doglove No: " + dogloveNo);
-        System.out.println("Title: " + title);
-        System.out.println("Content: " + content);
-
-
-        System.out.println("Updating doglove DTO: " + dogloveDTO);
         // 기존 게시글 조회
         DogloveDTO doglove = dogloveService.findById(dogloveNo);
         if (doglove == null || !doglove.getUserId().equals(userId)) {
@@ -257,7 +249,6 @@ public class DogloveController {
             // 이미지 삭제
             if (imageDeleteImageNo != null && !imageDeleteImageNo.isEmpty()) {
                 for (Long imageNo : imageDeleteImageNo) {
-                    System.out.println("Deleting image No: " + imageNo);
                     uploadService.uploadDelete(imageNo);
                 }
             }
@@ -268,8 +259,6 @@ public class DogloveController {
                     if (i < imageUpdateImageNo.size()) {
                         Long imageNo = imageUpdateImageNo.get(i);
                         MultipartFile file = imageUpdateFiles.get(i);
-                        System.out.println("Updating image No: " + imageNo + " with file: " + file.getOriginalFilename() + " (size: " + file.getSize() + ")");
-
                         uploadService.uploadUpdate(imageNo, file);
                     }
                 }
@@ -282,8 +271,6 @@ public class DogloveController {
                 uploadDto.setCategoryCode(IMAGE_CODE);
 
                 for (MultipartFile file : imageFiles) {
-                    System.out.println("Uploading new image file: " + file.getOriginalFilename() + " (size: " + file.getSize() + ")");
-
                     uploadDto.setFile(file);
                     uploadService.uploadInsert(uploadDto);
                 }

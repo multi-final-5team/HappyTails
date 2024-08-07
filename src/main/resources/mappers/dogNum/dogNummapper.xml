@@ -16,4 +16,11 @@
         ORDER BY DOGNUM_NO DESC
         LIMIT 1
     </select>
+
+    <select id="getDogInfoByDognum" parameterType="String" resultType="com.multi.happytails.dogNum.dto.DogNumDTO">
+        SELECT *
+        FROM TB_DOGNUM
+        WHERE DOGNUM = #{dognum}
+    </select>
+
 </mapper>

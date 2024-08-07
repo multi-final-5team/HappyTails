@@ -29,4 +29,12 @@ public class DogNumService {
         dogNumDAO.insert(dogNumDTO);
         return dogNumDAO.getCurrentDogNumNo();
     }
+
+    public DogNumDTO getDogInfoByDognum(String dognum) {
+        return dogNumDAO.getDogInfoByDognum(dognum);
+
+    }
+
+    public void saveDogNum(DogNumDTO dogNumDTO) {
+    }
 }

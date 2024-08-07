@@ -52,8 +52,8 @@ public class ConferenceService {
     }
 
 
-    public void update(ConferenceDTO conference) {
-        Long conferenceNo = conference.getConferenceNo();
-        conferenceDAO.update(conference);
+    public int update(ConferenceDTO conferenceDTO) {
+        return conferenceDAO.update(conferenceDTO);
+
     }
 }

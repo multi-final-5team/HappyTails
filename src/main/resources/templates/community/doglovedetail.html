@@ -33,8 +33,11 @@
             background-color: #98FB98;
             color: #333;
         }
-                /* 이미지 숨기기 */
         .hidden-img {
+            display: none;
+        }
+        /* 깨진 이미지 아이콘 숨기기 */
+        img[src=""], img:not([src]) {
             display: none;
         }
     </style>
@@ -119,5 +122,22 @@
     </div>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var images = document.getElementsByTagName('img');
+        for (var i = 0; i < images.length; i++) {
+            images[i].onerror = function() {
+                // 이미지 요소의 부모 요소(div)를 찾아 제거
+                var parentDiv = this.closest('.col-md-4');
+                if (parentDiv) {
+                    parentDiv.remove();
+                } else {
+                    this.style.display = 'none';
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>
