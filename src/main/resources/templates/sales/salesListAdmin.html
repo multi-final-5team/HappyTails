@@ -1,64 +1,40 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head">
-    <style>
-        .table-img {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-        }
-    </style>
 </head>
 <body class="bg-light">
 <menu th:replace="fragments/head :: menu"></menu>
-<div class="container my-5">
-    <h1 id="sales-list" class="mb-4 text-center">상품 판매 목록 - 관리자</h1>
-
-    <div class="card shadow">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-dark">
-                    <tr>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Image</th>
-                        <th>Category Code</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="salesGoods : ${salesGoodsList}">
-                        <td>
-                            <a th:href="@{/sales/selectGoods(no=${salesGoods.no})}"
-                               th:text="${salesGoods.name}"
-                               class="text-decoration-none">
-                            </a>
-                        </td>
-                        <td th:text="${#numbers.formatCurrency(salesGoods.price)}"></td>
-                        <td>
-                            <div class="row">
-                                <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}" class="col-md-4 mb-3">
-                                    <img th:src="@{/images/S/{file}(file=${salesGoodsMap[salesGoods.no][0].storedFileName})}" alt="대표 이미지" class="img-fluid">
+<main>
+    <div class="container">
+        <figure class="text-center">
+            <h2>상품 판매 목록 - 관리자</h2>
+        </figure>
+        <div class="col-9 mt-3 tab-content">
+            <div class="tab-pane fade show active" id="list-find">
+                <div class="row">
+                    <th:block th:each="salesGoods : ${salesGoodsList}">
+                        <div class="col-md-4 mb-4 d-flex align-items-stretch">
+                            <div class="card" style="width: 100%;">
+                                <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}" class="card-body">
+                                    <img th:src="@{/images/S/{file}(file=${salesGoodsMap[salesGoods.no][0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="300" height="200">
                                 </div>
+                                    <a th:href="@{/sales/selectGoods(no=${salesGoods.no})}"
+                                       th:text="${salesGoods.name}"
+                                       class="text-decoration-none"></a>
+                                    <p class="card-text" th:text="${#numbers.formatCurrency(salesGoods.price)}"></p>
+                                    <span class="badge bg-secondary" th:text="${salesGoods.categoryCode}"></span>
+                                    <a th:href="@{/sales/deleteGoods(no=${salesGoods.no})}" class="btn btn-danger btn-sm mt-3">삭제</a>
                             </div>
-                        </td>
-                        <td>
-                            <span class="badge bg-secondary" th:text="${salesGoods.categoryCode}"></span>
-                        </td>
-                        <td>
-                            <a th:href="@{/sales/deleteGoods(no=${salesGoods.no})}"
-                               class="btn btn-danger btn-sm">
-                                삭제
-                            </a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                        </div>
+                    </th:block>
+                </div>
             </div>
         </div>
+        <div class="text-center">
+            <a class="btn btn-primary mt-3" href="/sales/insertform">판매 상품 등록</a>
+        </div>
     </div>
-    <a class="navbar-brand" href="/sales/insertform"> 판매 상품 등록</a>
-</div>
+</main>
+<footer th:replace="fragments/head :: footer"></footer>
 </body>
 </html>

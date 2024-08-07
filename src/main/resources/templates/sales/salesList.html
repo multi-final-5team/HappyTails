@@ -1,76 +1,36 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head">
-    <style>
-        .table-img {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-        }
-    </style>
+
 </head>
 <body class="bg-light">
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
-<div class="container my-5">
-    <h1 class="mb-4 text-center">판매 상품 목록</h1>
-    <div class="card shadow">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-dark">
-                    <tr>
-                        <th>상품명</th>
-                        <th>가격</th>
-                        <th>이미지</th>
-                        <th>카테고리</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="salesGoods : ${salesGoodsList}">
-                        <td>
-                            <a th:href="@{/sales/selectGoods(no=${salesGoods.no})}"
-                               th:text="${salesGoods.name}"
-                               class="text-decoration-none"></a>
-                        </td>
-                        <td th:text="${#numbers.formatCurrency(salesGoods.price)}"></td>
-                        <td>
-                            <div class="row">
-                                <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}" class="col-md-4 mb-3">
-                                    <img th:src="@{/images/S/{file}(file=${salesGoodsMap[salesGoods.no][0].storedFileName})}" alt="대표 이미지" class="img-fluid">
+    <div class="container">
+        <figure class="text-center">
+            <h2>판매 상품 목록</h2>
+        </figure>
+        <div class="col-9 mt-3 tab-content">
+            <div class="tab-pane fade show active" id="list-find">
+                <div class="row">
+                    <th:block th:each="salesGoods : ${salesGoodsList}">
+                        <div class="col-md-4 mb-4 d-flex align-items-stretch">
+                            <div class="card" style="width: 100%;">
+                                <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}" class="card-body">
+                                    <img th:src="@{/images/S/{file}(file=${salesGoodsMap[salesGoods.no][0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="300" height="200">
                                 </div>
+                                    <a th:href="@{/sales/selectGoods(no=${salesGoods.no})}"
+                                       th:text="${salesGoods.name}"
+                                       class="text-decoration-none"></a>
+                                    <p th:text="${#numbers.formatCurrency(salesGoods.price)}"></p>
+                                <span class="badge bg-secondary" th:text="${salesGoods.categoryCode}"></span>
                             </div>
-                        </td>
-                        <td>
-                                <span th:text="${salesGoods.categoryCode}"
-                                class="badge bg-secondary"></span>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                        </div>
+                    </th:block>
+                </div>
             </div>
-<!--            <div class="d-flex justify-content-center">-->
-<!--                <nav aria-label="Page navigation">-->
-<!--                    <ul class="pagination">-->
-<!--                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
-<!--                            <a class="page-link" th:href="@{/salesList(page=${currentPage - 1})}" aria-label="Previous">-->
-<!--                                <span aria-hidden="true">&laquo;</span>-->
-<!--                            </a>-->
-<!--                        </li>-->
-<!--                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">-->
-<!--                            <a class="page-link" th:href="@{/salesList(page=${i})}" th:text="${i}"></a>-->
-<!--                        </li>-->
-<!--                        <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
-<!--                            <a class="page-link" th:href="@{/salesList(page=${currentPage + 1})}" aria-label="Next">-->
-<!--                                <span aria-hidden="true">&raquo;</span>-->
-<!--                            </a>-->
-<!--                        </li>-->
-<!--                    </ul>-->
-<!--                </nav>-->
-<!--            </div>-->
         </div>
     </div>
-</div>
 </main>
 <footer>
 

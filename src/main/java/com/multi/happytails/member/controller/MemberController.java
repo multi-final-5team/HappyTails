@@ -1,33 +1,35 @@
 package com.multi.happytails.member.controller;
 
 import com.multi.happytails.authentication.model.dto.CustomUser;
+import com.multi.happytails.authentication.model.service.AuthenticationService;
 import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.member.service.MemberService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-
-/**
- * packageName    : com.multi.happytails.member.controller
- * fileName       : MemberController
- * author         : EUN SOO
- * date           : 2024-07-24
- * description    : 회원, 명예의 전당, SNS 공유 관련 기능 처리
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 2024-07-24        EUN SOO       최초 생성
- */
 
 @Controller
 @RequestMapping("/member")
@@ -39,22 +41,14 @@ public class MemberController {
     @Autowired
     private UploadService uploadService;
 
-    /**
-     * methodName : login
-     * author : Eunsoo Lee
-     * description : 로그인 페이지 표시
-     */
+    @Autowired
+    private AuthenticationService authenticationService;
+
+
     @RequestMapping("/login")
     public void login() {
     }
 
-    /**
-     * methodName : logout
-     * author : Eunsoo Lee
-     * description : 로그아웃 수행 및 로그인 페이지로 redirect
-     *
-     * @return 로그인 페이지로 이동
-     */
     @RequestMapping("/logout")
     public String logout() {
         return "redirect:/member/login";
@@ -67,18 +61,13 @@ public class MemberController {
 
     @PostMapping("/kakaoLogin")
     @ResponseBody
-    public ResponseEntity<?> kakaoLogin(@RequestBody Map<String, String> kakaoData) {
+    public ResponseEntity<?> kakaoLogin(@RequestBody Map<String, String> kakaoData, HttpServletRequest request) {
         String id = kakaoData.get("id");
         String email = kakaoData.get("email");
-        String nickname = kakaoData.get("nickname");
         String name = kakaoData.get("name");
-        String tel = kakaoData.get("tel");
-
-        // 선택 동의 항목
-        String profileImage = kakaoData.get("profile_image");
+        String nickname = kakaoData.get("nickname");
         String gender = kakaoData.get("gender");
-        String birthday = kakaoData.get("birthday");
-        String birthyear = kakaoData.get("birthyear");
+        String tel = kakaoData.get("tel");
 
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setId("kakao_" + id);
@@ -88,13 +77,7 @@ public class MemberController {
         memberDTO.setNickname(nickname);
         memberDTO.setGender(gender); // 선택 동의 항목
         memberDTO.setTel(tel);
-
-        // 선택 동의 항목 설정
-        memberDTO.setProfileImage(profileImage);
-        memberDTO.setBirthday(birthday);
-        memberDTO.setBirthyear(birthyear);
-
-
+        memberDTO.setRole("ROLE_MEMBER");
 
         // 전화번호(tel) 데이터 처리
         if (tel != null) {
@@ -114,28 +97,52 @@ public class MemberController {
         }
 
         // 회원이 존재하는지 확인
-        MemberDTO existingMember = memberService.findMemberById(memberDTO.getId());
+        MemberDTO member = memberService.findMemberById(memberDTO.getId());
 
-        if (existingMember == null) {
+        System.out.println(member + "________________00");
+        if (member == null) {
             // 새 회원 등록
             memberService.insertMember(memberDTO);
+            member = memberService.findMemberById(memberDTO.getId());
         } else {
             // 기존 회원 정보 업데이트
             memberService.updateMember(memberDTO.getId(), memberDTO);
+            member = memberService.findMemberById(memberDTO.getId());
         }
 
-        // 로그인 처리 (여기서는 간단히 성공 메시지만 반환)
-        return ResponseEntity.ok().body("{\"message\": \"Login successful\"}");
+        MemberDTO customUserInfo = new MemberDTO();
+        customUserInfo = memberService.findMemberById(member.getId());
+        System.out.println(customUserInfo + "=customUserInfo");
+        System.out.println(member.getId() + "=getId");
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        // role 변수를 이용해 권한을 추가합니다.
+        if (customUserInfo.getRole() != null) {
+            authorities.add(new SimpleGrantedAuthority(customUserInfo.getRole()));
+        }
+
+        CustomUser customUser = (CustomUser) authenticationService.loadUserByUsername(member.getId());
+
+
+        // Spring Security 인증 처리
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(customUser, null, authorities);
+        SecurityContextHolder.getContext().setAuthentication(token);
+
+        // 세션 생성
+        HttpSession session = request.getSession(true);
+        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                SecurityContextHolder.getContext());
+
+        // 인증 확인
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            return ResponseEntity.ok().body("{\"redirect\": \"/main/main\"}");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"error\": \"Authentication failed\"}");
+        }
     }
 
-    /**
-     * methodName : getCurrentUser
-     * author : Eunsoo Lee
-     * description : 현재 로그인한 사용자의 정보를 조회
-     *
-     * @param customUser 현재 로그인된 사용자 객체
-     * @return 현재 사용자의 MemberDTO 객체를 포함한 ResponseEntity
-     */
     @GetMapping("/getCurrentUser")
     @ResponseBody
     public ResponseEntity<MemberDTO> getCurrentUser(@AuthenticationPrincipal CustomUser customUser) {
@@ -147,26 +154,11 @@ public class MemberController {
         return ResponseEntity.ok(member);
     }
 
-    /**
-     * methodName : findUserIdForm
-     * author : Eunsoo Lee
-     * description : 아이디 찾기 페이지 표시
-     *
-     * @return findUserId.html의 페이지 경로로 이동
-     */
     @GetMapping("/findUserIdForm")
     public String findUserIdForm() {
         return "member/findUserId";
     }
 
-    /**
-     * methodName : findUserId
-     * author : Eunsoo Lee
-     * description : 아이디 찾기 기능
-     *
-     * @param memberDTO 사용자의 입력 정보를 담은 MemberDTO 객체
-     * @return 찾은 id 또는 not found 오류 메세지
-     */
     @PostMapping("/findUserId")
     public ResponseEntity<?> findUserId(@RequestBody MemberDTO memberDTO) {
         MemberDTO member = memberService.findUserByDetails(memberDTO);
@@ -177,26 +169,11 @@ public class MemberController {
         }
     }
 
-    /**
-     * methodName : findUserPwdForm
-     * author : Eunsoo Lee
-     * description : 비밀번호 찾기 페이지 표시
-     *
-     * @return findUserPwd.html의 페이지 경로로 이동
-     */
     @GetMapping("/findUserPwdForm")
     public String findUserPwdForm() {
         return "member/findUserPwd";
     }
 
-    /**
-     * methodName : changePassword
-     * author : Eunsoo Lee
-     * description : 비밀번호 변경 기능
-     *
-     * @param payload 사용자의 정보(id, name, tel, newPassword)를 포함한 Map
-     * @return 비밀번호 변경 성공 여부에 대한 Response
-     */
     @PostMapping("/changePassword")
     @ResponseBody
     public ResponseEntity<String> changePassword(@RequestBody Map<String, String> payload) {
@@ -217,30 +194,11 @@ public class MemberController {
         }
     }
 
-    /**
-     * methodName : signup
-     * author : Eunsoo Lee
-     * description : 회원가입 페이지 표시
-     */
     @GetMapping("/signup")
     public void signup() {
 
     }
 
-    /**
-     * methodName : handleFileUpload
-     * author : Eunsoo Lee
-     * description : 회원가입 정보와 프로필 이미지 처리 및 저장
-     *
-     * @param file 업로드된 프로필 이미지 파일
-     * @param id 사용자 아이디
-     * @param password 사용자 비밀번호
-     * @param name 사용자 이름
-     * @param nickname 사용자 닉네임
-     * @param gender 사용자 성별
-     * @param tel 사용자 전화번호
-     * @return 로그인 페이지로의 리다이렉트를 포함한 ModelAndView
-     */
     @PostMapping("/signup")
     public ModelAndView handleFileUpload(@RequestParam("file") MultipartFile file, // MultipartFile file은 프로필 이미지 파일을 받기
                                          @RequestParam("id") String id,
@@ -261,6 +219,8 @@ public class MemberController {
         memberDTO.setNickname(nickname);
         memberDTO.setGender(gender);
         memberDTO.setTel(tel);
+        memberDTO.setRole("ROLE_MEMBER");
+
 
         System.out.println(memberDTO);
 
@@ -283,14 +243,6 @@ public class MemberController {
 
     }
 
-    /**
-     * methodName : checkIdDuplicate
-     * author : Eunsoo Lee
-     * description : 아이디 중복 확인 기능
-     *
-     * @param id 파라미터 요청으로 dto에서 id 가져옴
-     * @return 아이디 중복 여부에 대한 메시지
-     */
     @PostMapping("/checkIdDuplicate")
     @ResponseBody
     public ResponseEntity<String> checkIdDuplicate(@RequestParam("id") String id) {
@@ -303,57 +255,32 @@ public class MemberController {
         }
     }
 
-    /**
-     * methodName : mypage
-     * author : Eunsoo Lee
-     * description : 마이페이지 표시
-     */
     @GetMapping("/mypage")
-    public void mypage(){
-
-    }
-
-
-//    @PostMapping("/delete")
-//    public ResponseEntity<String> deleteAccount() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        CustomUser customUser = (CustomUser) authentication.getPrincipal();
-//        memberService.deleteMember(customUser.getId());
-//        return ResponseEntity.ok("Account deleted successfully.");
-//    }
-
-    @GetMapping("/updateForm")
-    public String showUpdateForm(@AuthenticationPrincipal CustomUser customUser, Model model) {
+    public String myPage(Model model, @AuthenticationPrincipal CustomUser customUser, Principal principal) {
+        System.out.println(principal.getName() + "=================88");
+        System.out.println(customUser + "====================99");
         if (customUser == null) {
             return "redirect:/member/login";
         }
+
         MemberDTO member = memberService.findMemberById(customUser.getId());
+        List<UploadDto> profileImages = uploadService.uploadSelect("P", member.getNo());
+
         model.addAttribute("member", member);
-        return "member/updateForm";
-    }
+        model.addAttribute("profileImage", profileImages.isEmpty() ? null : profileImages.get(0));
 
-    /*
-    @PostMapping("/memberinfo")
-    public ResponseEntity<?> updateMemberInfo(@AuthenticationPrincipal CustomUser customUser, @RequestBody MemberDTO updatedInfo) {
-        if (customUser == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
-        memberService.updateMemberInfo(customUser.getId(), updatedInfo);
-        return ResponseEntity.ok().build();
+        return "member/mypage";
     }
-     */
 
     @GetMapping("/memberinfo")
     public String showMemberInfo(Model model, @AuthenticationPrincipal CustomUser customUser) {
-        if (customUser != null) {
-            String userId = customUser.getUsername();
-            MemberDTO member = memberService.findMemberById(userId);
-            model.addAttribute("member", member);
-            return "member/memberinfo";
-        } else {
-            return "redirect:/login";
+        if (customUser == null) {
+            return "redirect:/member/login";
         }
+        String userId = customUser.getUsername();
+        MemberDTO member = memberService.findMemberById(userId);
+        model.addAttribute("member", member);
+        return "member/memberinfo";
     }
 
     @PostMapping("/memberinfo")
@@ -367,5 +294,16 @@ public class MemberController {
         }
     }
 
+    @PostMapping("/deleteMemberAccount")
+    public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal CustomUser customUser, HttpServletRequest request, HttpServletResponse response) {
+        if (customUser != null) {
+            memberService.deleteMember(customUser.getUsername());
 
+            // 완전한 로그아웃 처리
+            new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+
+            return ResponseEntity.ok().body("계정이 성공적으로 삭제되었습니다.");
+        }
+        return ResponseEntity.badRequest().body("계정 삭제에 실패했습니다.");
+    }
 }

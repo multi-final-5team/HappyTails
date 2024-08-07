@@ -22,7 +22,8 @@
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">이메일</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <input type="email" class="form-control" id="email" name="email" required placeholder="example@domain.com">
+                    <div id="emailError" class="text-danger"></div>
                 </div>
                 <div class="mb-3">
                     <label for="newPassword" class="form-label">새 비밀번호</label>
@@ -48,12 +49,30 @@
     $(document).ready(function() {
         $('#findUserPwdForm').submit(function(event) {
             event.preventDefault();
+
+            // 이메일 유효성 검사
+            var email = $('#email').val();
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                $('#emailError').text('올바른 이메일 형식이 아닙니다.');
+                return;
+            } else {
+                $('#emailError').text('');
+            }
+
+            // 비밀번호 유효성 검사
+            var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,13}$/;
+            if (!passwordRegex.test(newPassword)) {
+                alert('비밀번호는 4~13자의 영문자와 숫자 조합이어야 합니다.');
+                return;
+            }
+
             $.ajax({
                 type: 'POST',
                 url: '/member/changePassword',
                 data: JSON.stringify({
                     id: $('#id').val(),
-                    email: $("#email").val(),
+                    email: email,
                     newPassword: $('#newPassword').val()
                 }),
                 contentType: 'application/json',
