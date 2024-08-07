@@ -124,7 +124,6 @@ public class MemberController {
 
         CustomUser customUser = (CustomUser) authenticationService.loadUserByUsername(member.getId());
 
-
         // Spring Security 인증 처리
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(customUser, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(token);
