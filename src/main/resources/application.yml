@@ -5,6 +5,10 @@ spring:
     username: happytails
     password: 1234
 
+  iamport:
+    api-key: "8823427741880022"
+    api-secret: "a2JYpyYXr3kLHaKOtrQj816byiBP6GzhduJx3FwWrLYpMPQsjXBheQQTH4EHOfnlDKvTZjsqjvu6lEMp"
+
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -40,8 +44,4 @@ kakao:
   api:
     key: a75d5e29e1e142cb35f3df8cefbf7a76
 
-portone:
-  api:
-    key: P2Z4cX3LE4GpectU2WJb9FBwVS3imAnxydy9eqvblMmZLW3KeBqFusZGL9QyGDb3FWNqvQsMovYrWQok
-    secret: 자신의_포트원_API_시크릿
-  cid: 자신의_포트원_상점_식별자
+

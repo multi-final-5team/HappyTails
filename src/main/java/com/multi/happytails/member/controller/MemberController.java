@@ -221,6 +221,7 @@ public class MemberController {
         memberDTO.setTel(tel);
         memberDTO.setRole("ROLE_MEMBER");
 
+
         System.out.println(memberDTO);
 
 //            // 회원 정보를 db에 저장
