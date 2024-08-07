@@ -60,7 +60,7 @@ public class SecurityConfiguration {
                         .logoutSuccessUrl("/")
                 )
                 .exceptionHandling(exception -> exception.accessDeniedPage("/error/denied"));
-
+        
         return http.build();
     }
 }

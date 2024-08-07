@@ -28,7 +28,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -123,22 +122,17 @@ public class MemberController {
             authorities.add(new SimpleGrantedAuthority(customUserInfo.getRole()));
         }
 
-        System.out.println(authorities + "===role===");
-
-        authenticationService.loadUserByUsername(member.getId());
+        CustomUser customUser = (CustomUser) authenticationService.loadUserByUsername(member.getId());
 
 
         // Spring Security 인증 처리
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                member.getId(), member.getPwd(), Arrays.asList(new SimpleGrantedAuthority(member.getRole())));
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(customUser, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(token);
-        System.out.println(member + "________________11");
 
         // 세션 생성
         HttpSession session = request.getSession(true);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                 SecurityContextHolder.getContext());
-        System.out.println(member + "________________22");
 
         // 인증 확인
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
