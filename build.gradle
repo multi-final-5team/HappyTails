@@ -23,6 +23,11 @@ repositories {
 	mavenCentral()
 }
 
+repositories {
+	mavenCentral()
+	maven { url 'https://jitpack.io' }
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -38,6 +43,14 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation group: 'org.bgee.log4jdbc-log4j2', name: 'log4jdbc-log4j2-jdbc4.1', version: '1.16'
+
+	implementation 'com.github.iamport:iamport-rest-client-java:0.2.14' //payment
+	implementation 'org.springframework.session:spring-session-data-redis' // redis 세션 관리
+	implementation 'net.nurigo:sdk:4.3.0' // coolsms
+
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
+
 
 
 }

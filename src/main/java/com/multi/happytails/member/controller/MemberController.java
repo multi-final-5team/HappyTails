@@ -262,6 +262,7 @@ public class MemberController {
         memberDTO.setGender(gender);
         memberDTO.setTel(tel);
 
+
         System.out.println(memberDTO);
 
 //            // 회원 정보를 db에 저장
