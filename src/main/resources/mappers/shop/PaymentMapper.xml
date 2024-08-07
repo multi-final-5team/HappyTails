@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.multi.happytails.shop.model.dao.PaymentDAO">
+
+    <resultMap id="PaymentpageResultMap"
+               type="com.multi.happytails.shop.model.dto.PaymentpageDTO">
+        <result column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="productname" property="productname"/>
+        <result column="productinfo" property="productinfo"/>
+        <result column="date_created" property="date_created"/>
+        <result column="productprice" property="productprice"/>
+        <result column="im_port_id" property="imPortId"/>
+    </resultMap>
+
+    <resultMap id="OrderlistResultMap"
+               type="com.multi.happytails.shop.model.dto.OrderlistDTO">
+        <result column="username" property="username"/>
+        <result column="productname" property="productname"/>
+        <result column="productinfo" property="productinfo"/>
+        <result column="date_created" property="date_created"/>
+        <result column="purchaseprice" property="purchaseprice"/>
+        <result column="im_port_id" property="imPortId"/>
+    </resultMap>
+
+    <resultMap id="memberResultMap" type="com.multi.happytails.member.model.dto.MemberDTO">
+        <id column="USER_NO" property="no" />
+        <result column="USER_ID" property="id" />
+        <result column="USER_PASSWORD" property="pwd" />
+        <result column="USER_EMAIL" property="email" />
+        <result column="USER_NAME" property="name" />
+        <result column="USER_NICKNAME" property="nickname" />
+        <result column="USER_GENDER" property="gender" />
+        <result column="USER_TEL" property="tel" />
+        <result column="USER_SIGNUP_DATE" property="signupDate" />
+        <result column="USER_DELETE_ACCOUNT_DATE" property="deleteDate" />
+        <!--        <result column="USER_DELETE_ACCOUNT" property="deleteAccount" />-->
+        <result column="USER_DELETE_ACCOUNT_FLAG" property="deleteAccountFlag" />
+        <result column="USER_ROLE" property="role" />
+        <result column="USER_PROFILE_IMAGE" property="profileImage" />
+        <result column="USER_BIRTHDAY" property="birthday" />
+        <result column="USER_BIRTHYEAR" property="birthyear" />
+    </resultMap>
+
+    <select id="selectpaymentpage" resultMap="PaymentpageResultMap">
+        SELECT * FROM paymentpage
+        WHERE username = #{username}
+    </select>
+
+    <insert id="insertPayment" parameterType="com.multi.happytails.shop.model.dto.PaymentDTO">
+        INSERT INTO payment (
+        payment_no,
+        username,
+        productname,
+        productinfo,
+        productprice,
+        purchaseprice,
+        date_created,
+        im_port_id
+        ) VALUES (
+        null,
+        #{username},
+        #{productname},
+        #{productinfo},
+        #{productprice},
+        #{purchaseprice},
+        NOW(),  <!-- 현재 시간을 자동으로 삽입 -->
+        #{imPortId}
+        )
+    </insert>
+
+    <select id="selectOrders" resultMap="OrderlistResultMap">
+        SELECT * FROM payment
+        WHERE refund = 'N'
+        AND username = #{id}
+        ORDER BY date_created DESC
+    </select>
+
+    <update id="updateRefundStatus" parameterType="com.multi.happytails.shop.model.dto.OrderlistDTO">
+        UPDATE payment
+        SET refund = 'Y',
+        refund_date = NOW()
+        WHERE im_port_id = #{imPortId}
+    </update>
+
+</mapper>
