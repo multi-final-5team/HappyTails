@@ -34,11 +34,11 @@ public class SecurityConfiguration {
                 .csrf((auth) -> auth.disable())
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/member/login").not().fullyAuthenticated()
-                        .requestMatchers("/member/**").permitAll()
+                        .requestMatchers("/member/mypage").authenticated()
+                        .requestMatchers("/member/kakaoLogin").permitAll()
                         .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/error/**").permitAll()
 //                        .requestMatchers("/admin/**").hasRole("ROLE_ADMIN")
 //                        .requestMatchers("/subadmin/**").hasRole("ROLE_SUB_ADMIN")
-//                        .requestMatchers("/user/**").hasRole("ROLE_USER")
                         .anyRequest().permitAll()
                 );
         http
@@ -59,8 +59,7 @@ public class SecurityConfiguration {
                         .invalidateHttpSession(true)
                         .logoutSuccessUrl("/")
                 )
-                .exceptionHandling(exception -> exception.accessDeniedPage("/error/denied")
-                );
+                .exceptionHandling(exception -> exception.accessDeniedPage("/error/denied"));
 
         return http.build();
     }

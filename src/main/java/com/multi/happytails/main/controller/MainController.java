@@ -8,6 +8,11 @@ public class MainController {
 
     @RequestMapping("/")
     public String home() {
-        return "redirect:/member/login"; // 뷰 리졸버가 index.html 또는 index.jsp 등을 찾습니다.
+        return "redirect:/main/main"; // 뷰 리졸버가 index.html 또는 index.jsp 등을 찾습니다.
+    }
+
+    @RequestMapping("/main/main")
+    public String homePage() {
+        return "/main/main"; // 뷰 리졸버가 index.html 또는 index.jsp 등을 찾습니다.
     }
 }

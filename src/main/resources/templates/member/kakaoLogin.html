@@ -42,16 +42,14 @@
                     nickname: kakaoData.properties.nickname,
                     gender: kakaoData.kakao_account.gender,
                     tel: kakaoData.kakao_account.phone_number,
-                    profile_image: kakaoData.properties.profile_image,
-                    birthday: kakaoData.kakao_account.birthday,
-                    birthyear: kakaoData.kakao_account.birthyear
+                    profile_image: kakaoData.properties.profile_image
                 }),
             })
                 .then(response => response.json())
                 .then(data => {
                     console.log('Success:', data);
                     // 로그인 성공 후 리다이렉트
-                    window.location.href = '/member/mypage';
+                    window.location.href = data.redirect;
                 })
                 .catch((error) => {
                     console.error('Error:', error);
