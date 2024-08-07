@@ -19,7 +19,7 @@ import java.util.Date;
 @Setter
 @ToString
 @Builder
-@NoArgsConstructor
+@NoArgsConstructor//
 @AllArgsConstructor
 public class FindDogReplyDto {
     private long FindDogReplyNo;

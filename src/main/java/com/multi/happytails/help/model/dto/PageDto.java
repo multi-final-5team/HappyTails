@@ -19,7 +19,7 @@ public class PageDto {
     public PageDto(int total, int nowPage, int cntPerPage, String keyword, String searchValue) {
         setNowPage(nowPage);
         setCntPerPage(cntPerPage);
-        setTotal(total);
+        setTotal(total);//
         calcLastPage(getTotal(), getCntPerPage());
         calcStartEndPage(getNowPage(), cntPage);
         calcStartEnd(getNowPage(), getCntPerPage());

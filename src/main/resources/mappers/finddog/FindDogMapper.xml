@@ -83,7 +83,7 @@
             LONGITUDE = #{longitude}
         WHERE FINDDOG_NO = #{findDogNo}
     </update>
-
+<!---->
     <insert id="findDogReplyWrite">
         INSERT INTO TB_FINDDOG_REPLY (FINDDOG_NO, WRITER_ID, CONTENT)
         VALUES (#{findDogNo}, #{writerId}, #{content})

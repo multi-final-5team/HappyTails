@@ -16,7 +16,7 @@ import java.util.Date;
  * 2024-08-02        ehdtka       최초 생성
  */
 @Getter
-@Setter
+@Setter//
 @ToString
 @Builder
 @NoArgsConstructor

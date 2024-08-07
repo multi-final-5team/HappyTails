@@ -47,7 +47,7 @@ public class FindDogService {
     public int findDogDelete(long findDogNo) {
         return findDogMapper.findDogDelete(findDogNo);
     }
-
+    //
     public int findDogUpdate(FindDogDto findDogDto) {
         return findDogMapper.findDogUpdate(findDogDto);
     }

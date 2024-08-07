@@ -16,3 +16,4 @@ public class InquiryResultDto {
     private String content;
     private Date createDate;
 }
+//

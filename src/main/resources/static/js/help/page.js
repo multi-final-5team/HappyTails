@@ -11,7 +11,7 @@ function getpaging(result){
             </a>
         </li>
         `;
-    }
+    }//
 
     // 페이지 번호 처리
     for (let i = result.paging.startPage ; i <= result.paging.endPage; i++) {

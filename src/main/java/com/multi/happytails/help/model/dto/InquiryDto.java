@@ -20,3 +20,4 @@ public class InquiryDto {
     private char result; // N대기 S열람 Y완료
     private Date createDate;
 }
+//

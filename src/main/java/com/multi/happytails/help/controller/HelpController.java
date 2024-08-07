@@ -216,7 +216,7 @@ public class HelpController {
                 for (int i = 0; i < imageUpdateFiles.size(); i++) {
                     uploadService.uploadUpdate(imageUpdateImageNo.get(i), imageUpdateFiles.get(i));
                 }
-            }
+            }//
 
             if (imageFiles != null && !imageFiles.isEmpty()) {
                 UploadDto uploadDto = new UploadDto();

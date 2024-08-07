@@ -30,7 +30,7 @@ import java.util.List;
 public class HelpAdminController {
     @Autowired
     HelpService helpService;
-
+    //
     @Autowired
     UploadService uploadService;
 

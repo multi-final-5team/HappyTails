@@ -32,7 +32,7 @@ public interface FindDogMapper {
     int findDogListCount(@Param("pageDto") PageDto pageDto, @Param("searchMap") Map<String, Object> searchMap);
 
     FindDogDto findDogDetail(@Param("findDogNo") long fingDogNo);
-
+    //
     int findDogDelete(long findDogNo);
 
     int findDogUpdate(FindDogDto findDogDto);

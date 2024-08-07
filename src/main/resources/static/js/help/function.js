@@ -11,7 +11,7 @@ function getHelpCategoryTag() {
                 $('#categoryTag').append(htmlStr);
             }
         }
-    });
+    });//
 }
 
 function dataFormat1(date) {

@@ -36,7 +36,7 @@ public class HelpService {
     public List<QuestionDto> getQuestionList(PageDto pageDto, Map<String,Object> searchMap) {
         System.out.println(searchMap + "=-=-==");
         return helpMapper.getQuestionList(pageDto, searchMap);
-    }
+    }//
 
 
     public int inquiryListCount(PageDto pageDto, Map<String,Object> searchMap) {
