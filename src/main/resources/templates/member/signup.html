@@ -28,6 +28,7 @@
                         <button type="button" class="btn btn-secondary" id="checkIdButton">중복 확인</button>
                     </div>
                     <span id="idCheckResult" class="form-text"></span>
+                    <div id="idError" class="text-danger"></div>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">비밀번호</label>
@@ -35,7 +36,8 @@
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">이메일</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <input type="email" class="form-control" id="email" name="email" required placeholder="example@domain.com">
+                    <div id="emailError" class="text-danger"></div>
                 </div>
                 <div class="mb-3">
                     <label for="name" class="form-label">이름</label>
@@ -43,11 +45,8 @@
                 </div>
                 <div class="mb-3">
                     <label for="nickname" class="form-label">닉네임</label>
-                    <input type="text" class="form-control" id="nickname" name="nickname" required>
-                </div>
-                <div class="mb-3">
-                    <label for="age" class="form-label">나이</label>
-                    <input type="number" class="form-control" id="age" name="age" required>
+                    <input type="text" class="form-control" id="nickname" name="nickname" required maxlength="20" placeholder="한글 또는 영문+숫자 조합 (20자 이내)">
+                    <div id="nicknameError" class="text-danger"></div>
                 </div>
                 <div class="mb-3">
                     <label for="gender" class="form-label">성별</label>
@@ -58,7 +57,8 @@
                 </div>
                 <div class="mb-3">
                     <label for="tel" class="form-label">전화번호</label>
-                    <input type="text" class="form-control" id="tel" name="tel" required>
+                    <input type="text" class="form-control" id="tel" name="tel" required placeholder="010-0000-0000">
+                    <div id="telError" class="text-danger"></div>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">회원가입</button>
             </form>
@@ -79,8 +79,32 @@
     $(document).ready(function() {
         var isIdChecked = false;
 
+        // 아이디 유효성 검사 함수
+        function validateId(id) {
+            return /^[a-zA-Z0-9_]{4,20}$/.test(id);
+        }
+
+        $('#id').on('input', function() {
+            var id = $(this).val();
+            isIdChecked = false;
+            $('#idCheckResult').text('');
+
+            if (validateId(id)) {
+                $('#idError').text('');
+                $('#checkIdButton').prop('disabled', false);
+            } else {
+                $('#idError').text('아이디는 4글자 이상 20글자 이하로 가능하며, 영문자, 숫자, 밑줄(_)만 사용 가능합니다.');
+                $('#checkIdButton').prop('disabled', true);
+            }
+        });
+
         $('#checkIdButton').click(function() {
             var id = $('#id').val();
+            if (!validateId(id)) {
+                $('#idError').text('유효하지 않은 아이디입니다.');
+                return;
+            }
+
             $.ajax({
                 url: '/member/checkIdDuplicate',
                 type: 'POST',
@@ -102,16 +126,87 @@
             });
         });
 
-        $('#id').on('input', function() {
-            isIdChecked = false;
-            $('#idCheckResult').text('');
+        $('#signupForm').submit(function(e) {
+            e.preventDefault();
+
+            var id = $('#id').val();
+            if (!validateId(id)) {
+                $('#idError').text('유효하지 않은 아이디입니다.');
+                return;
+            }
+
+            if (!isIdChecked) {
+                alert('아이디 중복 확인을 해주세요.');
+                return;
+            }
+
+            // 닉네임 유효성 검사
+            var nickname = $('#nickname').val();
+            var nicknameRegex = /^([가-힣]{1,10}|[a-zA-Z0-9]{1,10})$/;
+            if (!nicknameRegex.test(nickname)) {
+                $('#nicknameError').text('닉네임은 한글 또는 영문+숫자 조합으로 10글자 이내로 작성해야 합니다.');
+                return;
+            } else {
+                $('#nicknameError').text('');
+            }
+
+            // 전화번호 유효성 검사
+            var tel = $('#tel').val();
+            var telRegex = /^010-\d{4}-\d{4}$/;
+            if (!telRegex.test(tel)) {
+                $('#telError').text('올바른 전화번호 형식이 아닙니다. (예: 010-0000-0000)');
+                return;
+            } else {
+                $('#telError').text('');
+            }
+
+            // 이메일 유효성 검사
+            var email = $('#email').val();
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                $('#emailError').text('올바른 이메일 형식이 아닙니다.');
+                return;
+            } else {
+                $('#emailError').text('');
+            }
+
+            // 비밀번호 유효성 검사
+            var password = $('#password').val();
+            var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,13}$/;
+            if (!passwordRegex.test(password)) {
+                alert('비밀번호는 4~13자의 영문자와 숫자 조합이어야 합니다.');
+                return;
+            }
+
+            // 모든 유효성 검사를 통과하면 폼 제출
+            this.submit();
         });
 
-        $('#signupForm').submit(function(e) {
-            if (!isIdChecked) {
-                e.preventDefault();
-                alert('아이디 중복 확인을 해주세요.');
+        // 전화번호 입력 시 자동으로 하이픈('-') 추가
+        $('#tel').on('input', function() {
+            var number = $(this).val().replace(/[^0-9]/g, "");
+            var tel = "";
+
+            if(number.length < 4) {
+                return number;
+            } else if(number.length < 7) {
+                tel += number.substr(0, 3);
+                tel += "-";
+                tel += number.substr(3);
+            } else if(number.length < 11) {
+                tel += number.substr(0, 3);
+                tel += "-";
+                tel += number.substr(3, 3);
+                tel += "-";
+                tel += number.substr(6);
+            } else {
+                tel += number.substr(0, 3);
+                tel += "-";
+                tel += number.substr(3, 4);
+                tel += "-";
+                tel += number.substr(7);
             }
+            $(this).val(tel);
         });
     });
 </script>

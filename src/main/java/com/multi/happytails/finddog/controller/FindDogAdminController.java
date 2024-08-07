@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin")
 public class FindDogAdminController {
 
-
-    @GetMapping("/finddog/manager")
+    @GetMapping("/find-dog/manage")
     public String manage() {
 
         return "/finddog/admin/findDogManage";

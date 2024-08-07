@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class MemberDTO {
 
-    private int no;
+    private long no;
     private String id;
     private String pwd;
     private String email;
@@ -21,12 +21,8 @@ public class MemberDTO {
     private String tel;
     private Timestamp signupDate;
     private Timestamp deleteDate;
-//    private String deleteAccount;
     private char deleteAccountFlag;
     private String role;
-    private String profileImage;
-    private String birthday;
-    private String birthyear;
 
 //    private List<MemberDTO> memberRoleList;
 //

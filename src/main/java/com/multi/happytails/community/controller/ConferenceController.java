@@ -16,9 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/community/conference")
@@ -49,25 +47,17 @@ public class ConferenceController {
         } else {
             conferences = conferenceService.findAllSortedByDate();
         }
-
-        Map<Long, List<UploadDto>> conferenceImages = new HashMap<>();
-        for (ConferenceDTO conference : conferences) {
-            List<UploadDto> imageFiles = uploadService.uploadSelect(IMAGE_CODE, conference.getConferenceNo());
-            conferenceImages.put(conference.getConferenceNo(), imageFiles);
-        }
-
-
         model.addAttribute("keyword", keyword);
-        model.addAttribute("conference", conferences);
-        model.addAttribute("conferenceImages", conferenceImages);
+        model.addAttribute("conferences", conferences);
         model.addAttribute("sort", sort);
-
         return "community/conferencelist";
     }
 
     @GetMapping("/{conferenceNo}")
     public String conferenceDetail(@PathVariable("conferenceNo") Long conferenceNo,
-                                   Model model) {
+                                   Model model,
+                                   RedirectAttributes redirectAttributes,
+                                   Principal principal) {
 
         ConferenceDTO conference = conferenceService.findById(conferenceNo);
         // 댓글 조회
@@ -89,10 +79,7 @@ public class ConferenceController {
     }
 
     @GetMapping("/create")
-    public String conferenceCreat(Principal principal) {
-        if (principal == null) {
-            return "redirect:/member/login";
-        }
+    public String conferenceCreate() {
         return "community/conferencecreate";
     }
 
@@ -100,7 +87,9 @@ public class ConferenceController {
     public String save(@ModelAttribute ConferenceDTO conferenceDTO,
                        @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles,
                        Principal principal) {
-
+        if (principal == null) {
+            return "redirect:/member/login";
+        }
         String userId = principal.getName();
         conferenceDTO.setUserId(userId);
 
@@ -139,13 +128,10 @@ public class ConferenceController {
 
         replyService.replyDeleteAll("C", conferenceNo);
 
-        List<UploadDto> uploadDtos = uploadService.uploadSelect(IMAGE_CODE, conferenceNo);
+        UploadDto uploadDto = new UploadDto();
+        uploadDto.setCategoryCode(IMAGE_CODE);
+        // uploadService.uploadDelete(uploadDto);
 
-        if (uploadDtos != null && !uploadDtos.isEmpty()) {
-            for (UploadDto uploadDto : uploadDtos) {
-                uploadService.uploadDelete(uploadDto.getImageNo());
-            }
-        }
         return "redirect:/community/conference";
     }
 

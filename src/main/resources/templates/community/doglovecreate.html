@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
-    <title>내 새꾸 자랑 글쓰기</title>
+    <title>새꾸 자랑 글쓰기</title>
     <link href="https://fonts.googleapis.com/css2?family=Gaegu&display=swap" rel="stylesheet">
     <style>
         body {
@@ -53,13 +53,13 @@
                 <textarea id="content" name="content" class="form-control" rows="5" required placeholder="내용을 입력해주시개"></textarea>
             </div>
             <div class="mb-3">
-                <label for="imageInput" class="form-label">사진:</label>
+                <label for="imageInput" class="form-label">🖼️ 귀여운 사진:</label>
                 <input type="file" id="imageInput" multiple class="form-control">
             </div>
             <div id="imgAddDiv" class="row g-2">
                 <!-- 이미지 미리보기 -->
             </div>
-            <button type="submit" class="btn btn-primary mt-3" onsubmit="return confirm('게시글을 저장할까요?');">저장하기</button>
+            <button type="submit" class="btn btn-primary mt-3" onsubmit="return confirm('우리 강아지 자랑글을 저장할까요?');">🐶 자랑하기</button>
         </form>
     </div>
 </div>
@@ -86,7 +86,7 @@
                     }
                     reader.readAsDataURL(file);
                 } else {
-                    alert('이미지 파일만 선택해주세요');
+                    alert('강아지 사진만 선택해주세요 🐾');
                 }
             });
         });
@@ -104,18 +104,15 @@
                 formData.append('imageFiles', file);
             });
 
-      $.ajax({
+            $.ajax({
                 url: "/community/doglove",
                 processData: false,
                 contentType: false,
                 type: 'POST',
                 data: formData,
-                success: function(response) {
-                    alert('성공적으로 등록되었습니다.');
-                    window.location.href = '/community/doglove';
-                },
-                error: function(xhr, status, error) {
-                    alert('등록에 실패했습니다. 다시 시도해 주세요.');
+                success: function(data) {
+                    alert('성공적으로 등록되었어요! 🎉');
+                    location.href = '/community/doglove';
                 }
             });
         });

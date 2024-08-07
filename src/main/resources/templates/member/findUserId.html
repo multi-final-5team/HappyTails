@@ -22,7 +22,8 @@
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">이메일</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <input type="email" class="form-control" id="email" name="email" required placeholder="example@domain.com">
+                    <div id="emailError" class="text-danger"></div>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">아이디 찾기</button>
             </form>
@@ -43,12 +44,23 @@
     $(function(){
         $("#findUserIdForm").submit(function(event){
             event.preventDefault();
+
+            // 이메일 유효성 검사
+            var email = $('#email').val();
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                $('#emailError').text('올바른 이메일 형식이 아닙니다.');
+                return;
+            } else {
+                $('#emailError').text('');
+            }
+
             $.ajax({
                 type: "POST",
                 url: "/member/findUserId",
                 data: JSON.stringify({
-                    name: $("#name").val(), //input[name=name]
-                    email: $("#email").val() //input[name=email]
+                    name: $("#name").val(),
+                    email: email
                 }),
                 contentType: "application/json",
                 success: function(response) {
