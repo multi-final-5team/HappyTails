@@ -13,13 +13,12 @@
 
 <main>
 
-<h1 class="mb-4">순찰일지</h1>
+<h1 class="mb-4">순찰일지 관리</h1>
 
     <input class="form-control" type="text" id="searchinput">
     <button class="btn btn-info" id="btnserch" onclick="search()">검색</button>
-    <button class="btn btn-primary" id="goPatrolRecordInsertBtn" sec:authorize="isAuthenticated()">생성</button>
 
-<div id="patrolRecordDiv">
+<div id="patrolRecordDiv" sec:authorize="hasRole('ROLE_ADMIN')">
 
 </div>
 
@@ -43,7 +42,7 @@
                     $('<div>').prop({
                         id: 'precord' + index,
                         className: 'card'
-                        }).attr("onclick", "gopatrolRecord(" + data[index].precordNo + ")")
+                        }).attr("onclick", "")
                     );
 
                     $('#' + 'precord' + index).append(
@@ -63,6 +62,17 @@
 
                     $('#' + 'divbody' + index).append(
                         '<sub class="card-text">조회수: ' + data[index].viewcount + '</sub>'
+                    );
+
+                    $('#' + 'patrol' + index).append(
+                        $('<div>').prop({
+                            id: 'divbtn' + index,
+                            className: ''
+                        })
+                    );
+
+                    $('#' + 'precord' + index,).append(
+                        '<button class="" id="btnDelete' + index + '" name="btnDelete' + index + '" onclick="deleteprecord(' + data[index].precordNo + ')">삭제</button>'
                     );
             }
         },
@@ -126,6 +136,25 @@
                 }
             })
         }
+
+    function gopatrolRecordAdmin() {
+        location.href = "/patrolRecord/patrolRecordAdmin";
+    }
+
+    function deleteprecord(precordno) {
+
+        $.ajax({
+            type:'post',
+            url: "/patrolRecord/patrolRecordDeleteAdmin",
+            data: {precordNo : precordno},
+            success : function(data){
+                gopatrolRecordAdmin();
+            },
+            error: function (xhr){
+                console.log(xhr);
+            }
+        }); // $.ajax()
+    }
 </script>
 
 </body>

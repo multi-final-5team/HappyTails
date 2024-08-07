@@ -85,6 +85,11 @@ public class PatrolController {
 
     }
 
+    @RequestMapping("patrolAdmin")
+    public void patrolAdmin(){
+
+    }
+
     /**
      * methodName : makepatrol
      * author : 우재협
@@ -177,11 +182,16 @@ public class PatrolController {
      */
     @GetMapping(value="findOnePatrolByPatrolNo", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public OnePatrolImgDTO findOnePatrolByPatrolNo(@RequestParam(value = "parolNo") int parolNo){
+    public OnePatrolImgDTO findOnePatrolByPatrolNo(@RequestParam(value = "parolNo") int parolNo, @AuthenticationPrincipal CustomUser customUser){
 
         OnePatrolImgDTO onePatrolImgDTO = new OnePatrolImgDTO();
 
         PatrolDTO patrolDTO = patrolService.findOnePatrolByPatrolNo(parolNo);
+
+        if (customUser != null){
+            patrolDTO.setUserId(customUser.getId());
+        }
+
         onePatrolImgDTO.setPatrolDTO(patrolDTO);
 
         List<UploadDto> pageIngs = uploadService.uploadSelect("Z",parolNo);
@@ -242,4 +252,6 @@ public class PatrolController {
 
         return "patrol/patrol";
     }
+
+
 }

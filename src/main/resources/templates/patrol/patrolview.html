@@ -44,15 +44,12 @@
         <input class="form-control" type="text" id="location" name="location"><br>
     </div>
 
-    <button class="btn btn-warning" type="button" id="formUpdateSubmitBtn">수정</button>
-    <br>
-    <button class="btn btn-danger" type="button" id="formDeleteSubmitBtn">삭제</button>
-
 </form>
 
 </main>
 
-<script>
+<script th:inline="javascript">
+    var username = [[${#authentication.name}]];
 
     $(document).ready(function() {
 
@@ -76,6 +73,19 @@
         $('#age').val(data.age);
         $('#breed').val(data.breed);
         $('#location').val(data.location);
+
+
+        if(username == data.userId){
+            $('#formId').append(
+            '<button class="btn btn-warning" type="button" id="formUpdateSubmitBtn" onclick="updateSubmit()">수정</button>'
+            );
+            $('#formId').append(
+            '<button class="btn btn-danger" type="button" id="formDeleteSubmitBtn" onclick="deleteSubmit()">삭제</button>'
+            );
+        }
+
+
+
 
         for(let indexImg in imgs){
             $('#image_container').append(
@@ -126,6 +136,36 @@
         });
         // 폼 삭제 서브밋 End
     });
+
+    function updateSubmit(){
+        let formData = new FormData($("#formId")[0]);
+
+            $.ajax({
+                url : "/patrol/patrolUpdate",
+                processData : false,
+                contentType : false,
+                type : 'POST',
+                data : formData,
+                success : function(data) {
+                    location.replace("/patrol/patrol");
+                }
+            });
+    }
+
+    function deleteSubmit(){
+        let formData = new FormData($("#formId")[0]);
+
+            $.ajax({
+                url : "/patrol/patrolDelete",
+                processData : false,
+                contentType : false,
+                type : 'POST',
+                data : formData,
+                success : function(data) {
+                    location.replace("/patrol/patrol");
+                }
+            });
+    }
 </script>
 
 </body>

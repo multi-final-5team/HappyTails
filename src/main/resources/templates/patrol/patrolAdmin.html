@@ -9,15 +9,8 @@
 
 <style>
     .card{
-        width: 50%;
+        width: 18rem;
     }
-
-    #patroldiv{
-        display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
-    }
-
 </style>
 
 <body class="container mt-5">
@@ -26,11 +19,9 @@
 
 <main>
 
-<h1 class="mb-4">순찰대 목록</h1>
+<h1 class="mb-4">순찰대 관리</h1>
 
-<button class="btn btn-primary" id="goPatrolInsertBtn" sec:authorize="isAuthenticated()">생성</button>
-
-<div id="patroldiv">
+<div id="patroldiv" sec:authorize="hasRole('ROLE_ADMIN')">
 
 </div>
 
@@ -42,6 +33,33 @@
 
     $(document).ready(function(){
 
+        findAllPatrol();
+
+        $('#goPatrolInsertBtn').click(function(){
+            location.href = "/patrol/patrolinsert";
+        });
+    });
+
+    function gopatrolAdmin() {
+         location.href = "/patrol/patrolAdmin;
+    }
+
+    function deletepatrol(patrolno) {
+
+        $.ajax({
+            type:'post',
+            url: "/patrol/patrolDelete",
+            data: {patrolNo : patrolno},
+            success : function(data){
+                gopatrolAdmin();
+            },
+            error: function (xhr){
+                console.log(xhr);
+            }
+        }); // $.ajax()
+    }
+
+    function findAllPatrol() {
         $.ajax({
         type:'get',
         url: "/patrol/findAllPatrol",
@@ -62,7 +80,7 @@
                     $('<div>').prop({
                         id: 'patrol' + index,
                         className: 'card'
-                        }).attr("onclick", "gopatrol(" + data[index].patrolNo + ")")
+                        }).attr("onclick", "")
                     );
 
                     $('#' + 'patrol' + index).append(
@@ -94,20 +112,23 @@
                     $('#' + 'divbody' + index).append(
                         '<sub class="card-text">품종:' + data[index].breed + '</sub>'
                     );
+
+                    $('#' + 'patrol' + index).append(
+                        $('<div>').prop({
+                            id: 'divbtn' + index,
+                            className: ''
+                        })
+                    );
+
+                    $('#' + 'divbtn' + index).append(
+                        '<button class="" id="btnDelete' + index + '" name="btnDelete' + index + '" onclick="deletepatrol(' + data[index].patrolNo + ')">삭제</button>'
+                    );
             }
         },
         error: function (xhr){
             console.log(xhr);
         }
         }); // $.ajax()
-
-        $('#goPatrolInsertBtn').click(function(){
-            location.href = "/patrol/patrolinsert";
-        });
-    });
-
-    function gopatrol(patrolno) {
-         location.href = "/patrol/patrolview?patrolNo="+patrolno;
     }
 </script>
 

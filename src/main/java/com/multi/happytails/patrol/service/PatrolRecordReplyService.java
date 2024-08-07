@@ -47,4 +47,9 @@ public class PatrolRecordReplyService {
 
         return precordReplyDAO.repleyDelete(precordReplyDTO);
     }
+
+    public int repleyDeleteByPrecordNo(int precordNo) {
+
+        return precordReplyDAO.repleyDeleteByPrecordNo(precordNo);
+    }
 }

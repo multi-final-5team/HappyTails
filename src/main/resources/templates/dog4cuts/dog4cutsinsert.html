@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
+
+    <title>Title</title>
+
+</head>
+
+<style>
+    .imgSquare{
+        display: flex;
+        flex-wrap: wrap;
+
+        justify-content: center;
+	    align-items : center;
+
+	    gap: 1% 1%;
+
+        background-color: black;
+        width: 1000px;
+        height: 600px;
+    }
+
+    .imgLine{
+
+        gap: 1% 1%;
+
+        background-color: black;
+        width: 400px;
+        height: 800px;
+    }
+
+    .imgDivSquare{
+        width: 42.5%;
+        height: 47.5%;
+        background-color: white;
+    }
+
+    .imgDivLine{
+        width: 90%;
+        height: 22.5%;
+        background-color: white;
+    }
+
+    .imgDiv img{
+	display:block;
+	width:100%;
+	height:100%;
+    }
+
+    .fileInputTotal{
+        display: flex;
+    }
+
+</style>
+
+<body class="container mt-5">
+
+<menu th:replace="fragments/head :: menu"></menu>
+
+<main>
+
+    <h1 class="mb-4">견생내컷 생성</h1>
+
+    <div class="fileInputTotal" id="">
+        <div class="">
+            <label>이미지1</label><br>
+            <input class="form-control" type="file" id="inputFile1" name="inputFile1" onchange="setThumbnail(event);">
+        </div>
+        <div class="">
+            <label>이미지2</label><br>
+            <input class="form-control" type="file" id="inputFile2" name="inputFile2" onchange="setThumbnail(event);">
+        </div>
+        <div class="">
+            <label>이미지3</label><br>
+            <input class="form-control" type="file" id="inputFile3" name="inputFile3" onchange="setThumbnail(event);">
+        </div>
+        <div class="">
+            <label>이미지4</label><br>
+            <input class="form-control" type="file" id="inputFile4" name="inputFile4" onchange="setThumbnail(event);">
+        </div>
+    </div>
+
+    <label>사진배치</label>
+    <select class="" id="arrangementSelect" name="">
+        <option value="imgSquare" selected>네모나게</option>
+        <option value="imgLine">일자로</option>
+    </select>
+
+    <label for="backgroundColorPicker">배경색 설정:</label>
+    <input type="color" id="backgroundColorPicker">
+
+    <button id="styleChangeButton" onclick="styleChange()">스타일 변경</button>
+
+    <div class="imgSquare" id="capture">
+        <div class="imgDivSquare" id="inputFile1Div">사진1</div>
+        <div class="imgDivSquare" id="inputFile2Div">사진2</div>
+        <div class="imgDivSquare" id="inputFile3Div">사진3</div>
+        <div class="imgDivSquare" id="inputFile4Div">사진4</div>
+    </div>
+    <button id="downloadButton">다운로드</button>
+
+    <button id="saveToServerButton">서버에 저장</button>
+
+</main>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<script>
+    let captureDiv = document.getElementById('capture');
+    let downloadButton = document.getElementById('downloadButton');
+    let saveToServerButton = document.getElementById('saveToServerButton');
+
+    downloadButton.addEventListener('click', () => {
+        html2canvas(captureDiv).then(canvas => {
+            saveImg(canvas.toDataURL('image/jpg'), 'image.jpg');
+        });
+    });
+
+    saveToServerButton.addEventListener('click', () => {
+        html2canvas(captureDiv).then(canvas => {
+            var imgDataUrl = canvas.toDataURL('image/jpg');
+
+            var blobBin = atob(imgDataUrl.split(',')[1]);	// base64 데이터 디코딩
+            var array = [];
+            for (var i = 0; i < blobBin.length; i++) {
+                array.push(blobBin.charCodeAt(i));
+            }
+            var file = new Blob([new Uint8Array(array)], {type: 'image/jpg'});	// Blob 생성
+            const fileName = 'canvas_img_' + new Date().getMilliseconds() + '.jpg'; // 임시 파일명
+            var formdata = new FormData();	// formData 생성
+            formdata.append("file", file , fileName);	// file data 추가
+
+            $.ajax({
+                type : 'post',
+                url : '/dog4cuts/dog4CutsInsert',
+                data : formdata,
+                processData : false,
+                contentType : false,
+                success : function (data) {
+
+                }
+            });
+        });
+    });
+
+    const saveImg = (uri, filename) => {
+        let link = document.createElement('a');
+
+        document.body.appendChild(link);
+
+        link.href = uri;
+        link.download = filename;
+        link.click();
+
+        document.body.removeChild(link);
+    };
+
+    //파일 선택시 표시
+    function setThumbnail(eventInput) {
+        let divId = eventInput.target.id + "Div";
+
+        console.log(divId);
+
+        console.log('실행');
+            var file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+
+                $('#' + divId).empty();
+                $('#' + divId).append('<img src="' + e.target.result + '" alt="Selected Image">');
+
+                }
+            reader.readAsDataURL(file);
+            }
+            else {
+                alert('이미지 파일을 선택해주세요');
+            }
+    }
+
+    //이미지 스타일 변경
+    function styleChange() {
+        var color = $("#backgroundColorPicker").val();
+        $("#capture").css("background-color", color);11
+
+        var arrangement = $("#arrangementSelect").val();
+
+        if(arrangement == "imgSquare"){
+            $("#capture").attr('class', 'imgSquare');
+            $("#capture").children().attr('class', 'imgDivSquare');
+        }
+        else if(arrangement == "imgLine"){
+            $("#capture").attr('class', 'imgLine');
+            $("#capture").children().attr('class', 'imgDivLine');
+        }
+    }
+</script>
+
+</body>
+</html>

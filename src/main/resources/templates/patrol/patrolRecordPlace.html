@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/head :: head">
 
     <title>Title</title>
@@ -13,10 +14,7 @@
 
     <h1 class="mb-4">순찰경로 조회</h1>
 
-
-    <input class="form-control" type="text" id="searchinput">
-    <button class="btn btn-info" id="btnserch">검색</button>
-    <button class="btn btn-primary" id="goPatrolRecordPlaceInsert">생성</button>
+    <button class="btn btn-primary" id="goPatrolRecordPlaceInsert" sec:authorize="isAuthenticated()">생성</button>
 
     <div id="patroldiv">
         <table class="table">
@@ -86,7 +84,6 @@
             type: "POST",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(place),
-            dataType: "json",
             success: function (data){
                 findallplace();
             },

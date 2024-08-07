@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head :: head">
+
+    <title>Title</title>
+
+</head>
+
+<style>
+    .card{
+        width: 50%;
+    }
+
+    #dog4cutsdiv{
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .imgDiv img{
+	display:block;
+	width:100%;
+	height:100%;
+    }
+
+    .divContent{
+
+    }
+
+    .divbtn{
+
+    }
+
+
+</style>
+
+<style>
+
+</style>
+
+<body class="container mt-5">
+
+<menu th:replace="fragments/head :: menu"></menu>
+
+<main>
+
+    <button class="btn btn-primary" id="goPatrolInsertBtn" onclick="goDog4CutsInsert()" sec:authorize="isAuthenticated()">생성</button>
+
+    <div id="dog4cutsdiv">
+
+    </div>
+
+</main>
+
+<script>
+    $(document).ready(function(){
+
+        $.ajax({
+        type:'get',
+        url: "/dog4cuts/findAllDog4Cuts",
+        success : function(dto){
+            var data = dto.list;
+            var imgs = dto.uploadDtos;
+
+            for(let index in data){
+                var img;
+                 for(let indexImg in imgs){
+                    if(imgs[indexImg].foreignNo == data[index].dog4cutsNo){
+                        img = imgs[indexImg].storedFileName;
+                    }
+                 }
+
+                $('#dog4cutsdiv').append(
+
+                    $('<div>').prop({
+                        id: 'dog4cuts' + index,
+                        className: 'card'
+                        }).attr("onclick", "")
+                    );
+
+                    $('#' + 'dog4cuts' + index).append(
+                        $('<div>').prop({
+                            id: 'divContent' + index,
+                            className: 'divContent'
+                        })
+                    );
+
+                    $('#' + 'divContent' + index).append(
+                        $('<div>').prop({
+                            id: 'divimg' + index,
+                            className: 'imgDiv'
+                        })
+                    );
+
+                    $('#divimg' + index).append(
+                        '<img src="/images/X/' + img + '">'
+                    );
+
+                    $('#' + 'divContent' + index).append(
+                        $('<div>').prop({
+                            id: 'divbtn' + index,
+                            className: ''
+                        })
+                    );
+
+                    $('#divbtn' + index).append(
+                        '<button class="btn btn-danger" onclick="deleteDog4Cuts(' + data[index].dog4cutsNo + ')">삭제</button>'
+                    );
+            }
+        },
+        error: function (xhr){
+            console.log(xhr);
+        }
+        }); // $.ajax()
+
+    });
+
+    function deleteDog4Cuts(dog4cutsNo) {
+        $.ajax({
+            type:'post',
+            url: "/dog4cuts/dog4CutsDelete",
+            data: {dog4cutsNo : dog4cutsNo},
+            success : function(data){
+                location.replace("/dog4cuts/dog4cutsview");
+            },
+            error: function (xhr){
+                console.log(xhr);
+            }
+        }); // $.ajax()
+    }
+
+    function goDog4CutsInsert() {
+         location.href = "/dog4cuts/dog4cutsinsert";
+    }
+
+</script>
+
+</body>
+</html>

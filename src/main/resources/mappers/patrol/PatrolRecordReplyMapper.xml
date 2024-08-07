@@ -27,7 +27,10 @@
         WHERE precord_reply_no= #{precordReplyNo} AND user_no= #{userNo}
     </delete>
 
-
+    <delete id="repleyDeleteByPrecordNo">
+        DELETE FROM tb_precord_reply
+        WHERE precord_no= #{precordNo}
+    </delete>
 
 
 </mapper>
