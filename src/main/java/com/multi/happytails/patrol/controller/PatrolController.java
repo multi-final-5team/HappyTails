@@ -272,6 +272,9 @@ public class PatrolController {
 
         patrolDTO.setUserNo((int)customUser.getNo());
 
+
+
+
         List<UploadDto> pageIngs = uploadService.uploadSelect("Z",patrolDTO.getPatrolNo());
 
         if (!pageIngs.isEmpty()) {

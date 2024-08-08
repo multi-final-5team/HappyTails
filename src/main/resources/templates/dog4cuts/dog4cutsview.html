@@ -8,7 +8,7 @@
 </head>
 
 <style>
-    .card{
+    .flexItem{
         width: 45%;
         margin: 2.5%;
     }
@@ -92,7 +92,7 @@
 
                     $('<div>').prop({
                         id: 'dog4cuts' + index,
-                        className: 'card'
+                        className: 'flexItem'
                         }).attr("onclick", "")
                     );
 
@@ -159,13 +159,58 @@
             $.ajax({
                 url:"/dog4cuts/findDog4CutsBySearch",
                 data: {searchword : searchword},
-                success: function (data){
-                $('#patrolRecordDiv').empty();
+                success: function (dto){
+                $('#dog4cutsdiv').empty();
+                var data = dto.list;
+                var imgs = dto.uploadDtos;
 
+            for(let index in data){
+                var img;
+                 for(let indexImg in imgs){
+                    if(imgs[indexImg].foreignNo == data[index].dog4cutsNo){
+                        img = imgs[indexImg].storedFileName;
+                    }
+                 }
 
-                for(let index in data){
+                $('#dog4cutsdiv').append(
 
-                }
+                    $('<div>').prop({
+                        id: 'dog4cuts' + index,
+                        className: 'flexItem'
+                        }).attr("onclick", "")
+                    );
+
+                    $('#' + 'dog4cuts' + index).append(
+                        $('<div>').prop({
+                            id: 'divContent' + index,
+                            className: 'divContent'
+                        })
+                    );
+
+                    $('#' + 'divContent' + index).append(
+                        $('<div>').prop({
+                            id: 'divimg' + index,
+                            className: 'imgDiv'
+                        })
+                    );
+
+                    $('#divimg' + index).append(
+                        '<img src="/images/X/' + img + '">'
+                    );
+
+                    $('#divimg' + index).append(
+                        $('<div>').prop({
+                            id: 'divbtn' + index,
+                            className: 'divbtn'
+                        })
+                    );
+
+                    if(username == data[index].userId){
+                        $('#divbtn' + index).append(
+                        '<button class="btn btn-danger" onclick="deleteDog4Cuts(' + data[index].dog4cutsNo + ')">삭제</button>'
+                        );
+                    }
+            }
 
                 },
                 error: function (xhr){
