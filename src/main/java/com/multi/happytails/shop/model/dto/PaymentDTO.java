@@ -14,6 +14,4 @@ public class PaymentDTO {
     private int purchaseprice;
     private Timestamp date_created;
     private String imPortId;
-
-
 }

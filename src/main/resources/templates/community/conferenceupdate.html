@@ -87,18 +87,14 @@
                 formData.append('imageFiles', file);
             });
 
-      $.ajax({
-                url: "/community/doglove",
+            $.ajax({
+                url: $(this).attr('action'), // 폼의 action 속성에서 URL 가져오기
                 processData: false,
                 contentType: false,
                 type: 'POST',
                 data: formData,
-                success: function(response) {
-                    alert('성공적으로 등록되었습니다.');
-                    window.location.href = '/community/doglove';
-                },
-                error: function(xhr, status, error) {
-                    alert('등록에 실패했습니다. 다시 시도해 주세요.');
+                success: function(data) {
+                    location.href = '/community/conference';
                 }
             });
         });

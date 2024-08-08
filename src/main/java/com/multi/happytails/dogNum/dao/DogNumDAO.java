@@ -1,5 +1,6 @@
 package com.multi.happytails.dogNum.dao;
 
+import com.multi.happytails.community.model.dto.DogloveDTO;
 import com.multi.happytails.dogNum.dto.DogNumDTO;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -16,10 +17,13 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface DogNumDAO {
-    void insertDogNum(DogNumDTO dogNumDTO);
 
     public int getCurrentDogNumNo();
 
     void insert(DogNumDTO dogNumDTO);
 
+    DogNumDTO getDogInfoByDognum(String dogRegNo);
+
+
+    DogloveDTO findById(Long dogRegNo);
 }

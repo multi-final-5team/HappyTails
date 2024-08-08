@@ -58,5 +58,4 @@ public class DogloveService {
     public int update(DogloveDTO dogloveDTO) {
         return dogloveDAO.update(dogloveDTO);
     }
-
 }

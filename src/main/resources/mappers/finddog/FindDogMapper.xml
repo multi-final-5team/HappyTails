@@ -12,7 +12,7 @@
         SELECT FINDDOG_NO
         FROM TB_FINDDOG
         ORDER BY FINDDOG_NO DESC
-        LIMIT 1
+            LIMIT 1
     </select>
 
     <select id="findDogListCount">
@@ -75,12 +75,12 @@
 
     <update id="findDogUpdate">
         UPDATE TB_FINDDOG SET
-            TITLE = #{title},
-            CONTENT = #{content},
-            BREED = #{breed},
-            AREA = #{area},
-            LATITUDE = #{latitude},
-            LONGITUDE = #{longitude}
+                              TITLE = #{title},
+                              CONTENT = #{content},
+                              BREED = #{breed},
+                              AREA = #{area},
+                              LATITUDE = #{latitude},
+                              LONGITUDE = #{longitude}
         WHERE FINDDOG_NO = #{findDogNo}
     </update>
 

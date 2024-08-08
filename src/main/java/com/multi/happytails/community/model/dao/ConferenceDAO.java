@@ -22,6 +22,6 @@ public interface ConferenceDAO {
 
     List<ConferenceDTO> search(String keyword);
 
-    void update(ConferenceDTO conference);
+    int update(ConferenceDTO conference);
 
 }

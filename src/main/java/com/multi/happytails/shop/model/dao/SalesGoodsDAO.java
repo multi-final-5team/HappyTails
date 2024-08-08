@@ -95,4 +95,6 @@ public interface SalesGoodsDAO {
      * @return the int
      */
     int salesPageCount();
+
+    List<SalesGoodsDTO> search(String keyword);
 }

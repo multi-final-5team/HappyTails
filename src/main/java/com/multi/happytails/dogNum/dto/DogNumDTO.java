@@ -17,9 +17,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DogNumDTO {
-    private String dognum;
-    private String dogname;
-    private String doggender;
-    private String breed;
-    private String neutering;
+    private int dognumNo;
+    private String dogregno;
+    private String dognm;
+    private String sexnm;
+    private String kindnm;
+    private String neuteryn;
 }

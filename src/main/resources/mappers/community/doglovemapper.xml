@@ -62,7 +62,7 @@
         UPDATE TB_DOGLOVE SET
         TITLE = #{title},
         CONTENT = #{content},
-        UPDATETIME = CURRENT_TIMESTAMP
+        UPDATETIME = #{updateTime}
         WHERE DOGLOVE_NO = #{dogloveNo}
     </update>
 

@@ -6,31 +6,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${title}">Default Title</title>
 
+    <!-- Google Fonts - Jua -->
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: 'Jua', sans-serif;
+            background-color: #FFF5E6;
+            color: #4A4A4A;
+        }
+        .navbar {
+            background-color: #FFD700 !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .navbar-brand img {
+            height: 40px;
+        }
+        .navbar-light .navbar-nav .nav-link {
+            color: #8B4513;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+        }
+        .navbar-light .navbar-nav .nav-link:hover {
+            background-color: rgba(139, 69, 19, 0.1);
+        }
+        .dropdown-menu {
+            background-color: #FFF5E6;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .dropdown-item:hover {
+            background-color: #FFD700;
+        }
+        .btn-primary {
+            background-color: #8B4513;
+            border-color: #8B4513;
+        }
+        .btn-primary:hover {
+            background-color: #734A12;
+            border-color: #734A12;
+        }
+        footer {
+            background-color: #FFD700;
+            color: #8B4513;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+        .content-wrapper {
+            background-color: #FFFFFF;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .tag {
+            background-color: #FFD700;
+            color: #8B4513;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: inline-block;
+            margin: 0.25rem;
+        }
+    </style>
 
     <!-- Bootstrap Bundle JS (includes Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-
-    <!-- 추가적인 CSS 파일이나 메타 태그 등을 여기에 포함할 수 있습니다 -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 <menu th:fragment="menu">
-    <div class="container my-5">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container my-3">
+        <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">로고자리 > 메인으로 이동</a>
+                <a class="navbar-brand" href="/member/mypage">
+                    <img src="https://kr.object.ncloudstorage.com/team-5/ht-removebg-preview.png" alt="Main-logo">
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                강아지 순찰대
+                                <i class="fas fa-paw"></i> 강아지 순찰대
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" th:href="@{/patrol/patrol}">순찰대 소개</a></li>
@@ -77,26 +150,19 @@
                         </li>
                     </ul>
 
-                    <!-- 로그인 상태에 따른 메뉴 -->
                     <ul class="navbar-nav">
-                        <!-- 로그인하지 않은 경우 -->
                         <li class="nav-item" sec:authorize="!isAuthenticated()">
-                            <a class="nav-link" href="/member/login">로그인</a>
-                        </li>
-                        <!-- 로그인한 경우 -->
-                        <li class="nav-item" sec:authorize="isAuthenticated()">
-                            <a class="nav-link" href="/member/logout">로그아웃</a>
+                            <a class="nav-link" href="/member/login"><i class="fas fa-sign-in-alt"></i> 로그인</a>
                         </li>
                         <li class="nav-item" sec:authorize="isAuthenticated()">
-                            <a class="nav-link" href="/member/mypage">마이페이지</a>
+                            <a class="nav-link" href="/member/logout"><i class="fas fa-sign-out-alt"></i> 로그아웃</a>
                         </li>
                         <li class="nav-item" sec:authorize="isAuthenticated()">
-                            <a class="nav-link" href="/cart/cartList">장바구니</a>
+                            <a class="nav-link" href="/member/mypage"><i class="fas fa-user"></i> 마이페이지</a>
                         </li>
-
-                        <!--관리자와 일반 사용자의 권한에 따른 추가적인 메뉴 구분이 필요하다면,
-                        sec:authorize="hasRole('ROLE_ADMIN')"와 같은 방식으로 추가 구현-->
-
+                        <li class="nav-item" sec:authorize="isAuthenticated()">
+                            <a class="nav-link" href="/cart/cartList"><i class="fas fa-shopping-cart"></i> 장바구니</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -105,7 +171,12 @@
 </menu>
 
 <footer th:fragment="footer">
-    <p>footer 위치</p>
+    <div class="container">
+        <p>5조</p>
+        <p>E-mail: gusq5809@icloud.com, ehuhs0923@gmail.com, wss1821@gmail.com, skdud55@naver.com, supreme4rest@gmail.com</p>
+        <p>GitHub (Resources): <a href="https://github.com/multi-final-Team/FinalProject" target="_blank">https://github.com/multi-final-Team/FinalProject</a></p>
+        <p>&copy; 2024 HappyTails. 모든 강아지들을 사랑합니다! 🐾</p>
+    </div>
 </footer>
 </body>
 </html>

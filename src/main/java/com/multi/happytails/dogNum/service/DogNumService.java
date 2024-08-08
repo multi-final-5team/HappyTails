@@ -1,5 +1,6 @@
 package com.multi.happytails.dogNum.service;
 
+import com.multi.happytails.community.model.dto.DogloveDTO;
 import com.multi.happytails.dogNum.dao.DogNumDAO;
 import com.multi.happytails.dogNum.dto.DogNumDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,13 @@ public class DogNumService {
     public long insert(DogNumDTO dogNumDTO) {
         dogNumDAO.insert(dogNumDTO);
         return dogNumDAO.getCurrentDogNumNo();
+    }
+
+    public DogNumDTO getDogInfoByDogregno(String dogRegNo) {
+        return dogNumDAO.getDogInfoByDognum(dogRegNo);
+    }
+
+    public DogloveDTO findById(Long dogRegNo) {
+        return dogNumDAO.findById(dogRegNo);
     }
 }

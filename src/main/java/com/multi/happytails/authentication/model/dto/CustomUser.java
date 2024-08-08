@@ -7,8 +7,8 @@ import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.Date;
 
 //호출 방법 : @AuthenticationPrincipal CustomUser customUser
 //customUser.getId()
@@ -17,16 +17,17 @@ import java.util.Date;
 @Setter
 @ToString
 public class CustomUser extends User {
+
     private long no;
     private String id;
     private String pwd;
+    private String email;
     private String name;
     private String nickname;
-    private int age;
     private String gender;
     private String tel;
-    private Date singupDate;
-    private Date deleteDate;
+    private Timestamp signupDate;
+    private Timestamp deleteDate;
     private char deleteAccountFlag;
     private String role;
 
@@ -39,11 +40,12 @@ public class CustomUser extends User {
         this.no = member.getNo();
         this.id = member.getId();
         this.pwd = member.getPwd();
+        this.email = member.getEmail();
         this.name = member.getName();
         this.nickname = member.getNickname();
         this.gender = member.getGender();
         this.tel = member.getTel();
-        this.singupDate = member.getSignupDate();
+        this.signupDate = member.getSignupDate();
         this.deleteDate = member.getDeleteDate();
         this.deleteAccountFlag = member.getDeleteAccountFlag();
         this.role = member.getRole();
