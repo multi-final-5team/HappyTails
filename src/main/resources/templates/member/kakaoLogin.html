@@ -36,7 +36,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    id: kakaoData.id,
+                    id: kakaoData.id.toString(),
                     email: kakaoData.kakao_account.email,
                     name: kakaoData.kakao_account.name,
                     nickname: kakaoData.properties.nickname,
