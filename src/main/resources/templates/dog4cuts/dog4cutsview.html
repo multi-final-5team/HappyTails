@@ -153,6 +153,27 @@
          location.href = "/dog4cuts/dog4cutsinsert";
     }
 
+    function search(){
+            var searchword = $('#searchinput').val();
+
+            $.ajax({
+                url:"/dog4cuts/findDog4CutsBySearch",
+                data: {searchword : searchword},
+                success: function (data){
+                $('#patrolRecordDiv').empty();
+
+
+                for(let index in data){
+
+                }
+
+                },
+                error: function (xhr){
+                    console.log(xhr);
+                }
+            })
+        }
+
 </script>
 
 </body>

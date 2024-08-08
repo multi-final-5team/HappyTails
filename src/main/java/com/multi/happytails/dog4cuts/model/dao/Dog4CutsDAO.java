@@ -26,4 +26,6 @@ public interface Dog4CutsDAO {
     List<Dog4CutsDTO> findAllDog4Cuts();
 
     int dog4CutsDelete(Dog4CutsDTO dog4CutsDTO);
+
+    List<Dog4CutsDTO> findDog4CutsBySearch(int searchNo);
 }

@@ -33,4 +33,9 @@ public class Dog4CutsService {
 
         return dog4CutsDAO.dog4CutsDelete(dog4CutsDTO);
     }
+
+    public List<Dog4CutsDTO> findDog4CutsBySearch(int searchNo) {
+
+        return dog4CutsDAO.findDog4CutsBySearch(searchNo);
+    }
 }

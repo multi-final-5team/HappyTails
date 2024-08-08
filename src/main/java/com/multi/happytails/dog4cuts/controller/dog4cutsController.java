@@ -4,11 +4,14 @@ import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.dog4cuts.model.dto.Dog4CutsDTO;
 import com.multi.happytails.dog4cuts.model.dto.Dog4CutsImgDTO;
 import com.multi.happytails.dog4cuts.service.Dog4CutsService;
+import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.member.service.MemberService;
 import com.multi.happytails.patrol.model.dto.PatrolDTO;
 import com.multi.happytails.patrol.model.dto.PatrolImgDTO;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
+import org.apache.catalina.util.StringUtil;
+import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -111,6 +114,43 @@ public class dog4cutsController {
         return dto;
     }
 
+    @GetMapping(value="findDog4CutsBySearch", produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public Dog4CutsImgDTO findDog4CutsBySearch(@RequestParam("searchword") String searchword){
+
+        List<UploadDto> uploadDtos = new ArrayList<>();
+
+        MemberDTO memberDTO = memberService.findMemberById(searchword);
+
+
+        List<Dog4CutsDTO> list = dog4CutsService.findDog4CutsBySearch((int) memberDTO.getNo());
+
+        List<Integer> dog4cutsNoList = new ArrayList<>();
+
+        for (int i = 0; i < list.size(); i++) {
+            dog4cutsNoList.add(list.get(i).getDog4cutsNo());
+            list.get(i).setUserId(memberService.findMemberByUserNo(list.get(i).getUserNo()).getId());
+        }
+
+
+
+        for (int dog4CutsNo : dog4cutsNoList){
+            List<UploadDto> pageIngs = uploadService.uploadSelect("X",dog4CutsNo);
+
+            if (!pageIngs.isEmpty()) {
+                uploadDtos.addAll(pageIngs);
+            }
+        }
+
+        Dog4CutsImgDTO dto = new Dog4CutsImgDTO();
+
+        dto.setUploadDtos(uploadDtos);
+        dto.setList(list);
+
+
+        return dto;
+    }
+
     @PostMapping("dog4CutsDelete")
     public String dog4CutsDelete(Dog4CutsDTO dog4CutsDTO, @AuthenticationPrincipal CustomUser customUser){
 
@@ -127,6 +167,15 @@ public class dog4cutsController {
         int result = dog4CutsService.dog4CutsDelete(dog4CutsDTO);
 
         return "dog4cuts/dog4cutsview";
+    }
+
+    public static boolean isInteger(String strValue) {
+        try {
+            Integer.parseInt(strValue);
+            return true;
+        } catch (NumberFormatException ex) {
+            return false;
+        }
     }
 
 }

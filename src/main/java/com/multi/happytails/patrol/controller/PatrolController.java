@@ -106,7 +106,7 @@ public class PatrolController {
      * @return string
      */
     @PostMapping("makepatrol")
-    public String makepatrol(PatrolDTO patrolDTO , @RequestParam(value = "imageFiles",required = false) List<MultipartFile> imageFiles, @AuthenticationPrincipal(errorOnInvalidType=true) CustomUser customUser
+    public String makepatrol(PatrolDTO patrolDTO , @RequestParam(value = "imageFiles",required = false) List<MultipartFile> imageFiles, @AuthenticationPrincipal() CustomUser customUser
     ){
 
         patrolDTO.setUserNo((int)customUser.getNo());
@@ -187,7 +187,7 @@ public class PatrolController {
      */
     @GetMapping(value="findOnePatrolByPatrolNo", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public OnePatrolImgDTO findOnePatrolByPatrolNo(@RequestParam(value = "parolNo") int parolNo, @AuthenticationPrincipal CustomUser customUser){
+    public OnePatrolImgDTO findOnePatrolByPatrolNo(@RequestParam(value = "parolNo") int parolNo){
 
         OnePatrolImgDTO onePatrolImgDTO = new OnePatrolImgDTO();
 
@@ -221,9 +221,35 @@ public class PatrolController {
      * @return string
      */
     @PostMapping("patrolUpdate")
-    public String patrolUpdate(PatrolDTO patrolDTO, @AuthenticationPrincipal CustomUser customUser){
+    public String patrolUpdate(PatrolDTO patrolDTO, @RequestParam(value = "beforeImgNo",required = false) int beforeImgNo, @RequestParam(value = "imageFiles",required = false) List<MultipartFile> imageFiles){
 
-        patrolDTO.setUserNo((int)customUser.getNo());
+        List<UploadDto> pageIngs = uploadService.uploadSelect("Z",patrolDTO.getPatrolNo());
+
+        System.out.println("beforeImgNo>>>>" + beforeImgNo);
+
+        if (!pageIngs.isEmpty()) {
+            if (beforeImgNo != 0){
+                uploadService.uploadDelete(beforeImgNo);
+            }
+        }
+
+        System.out.println("imageFiles>>>>" + imageFiles);
+
+        if (imageFiles != null) {
+            System.out.println("이미지 업데이트 생성");
+
+            UploadDto uploadDto = new UploadDto();
+            uploadDto.setForeignNo(patrolDTO.getPatrolNo());
+            uploadDto.setCategoryCode("Z");
+
+            for (int i = 0; i < imageFiles.size(); i++) {
+                uploadDto.setFile(imageFiles.get(i));
+
+                System.out.println("uploadDto >>>>" + uploadDto);
+
+                uploadService.uploadInsert(uploadDto);
+            }
+        }
 
         System.out.println("patrolDTO >>>> " + patrolDTO);
 
@@ -242,7 +268,7 @@ public class PatrolController {
      * @return string
      */
     @PostMapping("patrolDelete")
-    public String patrolDelete(PatrolDTO patrolDTO, @AuthenticationPrincipal CustomUser customUser){
+    public String patrolDelete(PatrolDTO patrolDTO , @AuthenticationPrincipal CustomUser customUser){
 
         patrolDTO.setUserNo((int)customUser.getNo());
 
