@@ -4,10 +4,8 @@ package com.multi.happytails.shop.controller;
 import com.multi.happytails.member.model.dao.MemberDAO;
 import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.member.service.MemberService;
-import com.multi.happytails.shop.model.dto.OrderlistDTO;
-import com.multi.happytails.shop.model.dto.PaymentDTO;
-import com.multi.happytails.shop.model.dto.PaymentpageDTO;
-import com.multi.happytails.shop.model.dto.VerificationRequestDTO;
+import com.multi.happytails.shop.model.dto.*;
+import com.multi.happytails.shop.service.CartService;
 import com.multi.happytails.shop.service.PaymentService;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
@@ -31,14 +29,16 @@ import java.util.Map;
 @RequestMapping("/payment")
 public class PaymentController {
 
+    private final CartService cartService;
     private final PaymentService paymentService;
     private final MemberDAO memberDAO;
     private final MemberService memberService;
 
-    public PaymentController(PaymentService paymentService, MemberDAO memberDAO, MemberService memberService) {
+    public PaymentController(PaymentService paymentService, MemberDAO memberDAO, MemberService memberService, CartService cartService) {
         this.paymentService = paymentService;
         this.memberDAO = memberDAO;
         this.memberService = memberService;
+        this.cartService = cartService;
     }
 
     /**
@@ -63,6 +63,18 @@ public class PaymentController {
      */
     @GetMapping("/payment")
     public String selectpaymentpage(Model model, Principal principal) {
+        MemberDTO memberDTO = memberDAO.findMemberById(principal.getName());
+        String username = principal.getName();
+        List<CartDTO> cartList = cartService.cartList(username);
+
+        model.addAttribute("cartList", cartList);
+        model.addAttribute("memberDTO", memberDTO);
+
+        return "/payment/payment";
+    }
+
+    @GetMapping("/payment2")
+    public String selectpaymentpage2(Model model, Principal principal) {
         MemberDTO memberDTO = memberDAO.findMemberById(principal.getName());
         String username = principal.getName();
         PaymentpageDTO paymentpageDTO = paymentService.selectpaymentpage(username);

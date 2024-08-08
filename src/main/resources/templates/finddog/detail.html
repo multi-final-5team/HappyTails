@@ -76,10 +76,10 @@
 <script>
 
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-    mapOption = {
-        center: new kakao.maps.LatLng([[${findDogDto.latitude}]], [[${findDogDto.longitude}]]), // 지도의 중심좌표
-        level: 1 // 지도의 확대 레벨
-    };
+        mapOption = {
+            center: new kakao.maps.LatLng([[${findDogDto.latitude}]], [[${findDogDto.longitude}]]), // 지도의 중심좌표
+            level: 1 // 지도의 확대 레벨
+        };
 
     var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
 
@@ -150,13 +150,13 @@
 
     // 댓글 리스트 불러오기 Start
 
-        function getReplyList() {
-            let params = new URLSearchParams(location.search);
-            let findDogNo = params.get('findDogNo');
+    function getReplyList() {
+        let params = new URLSearchParams(location.search);
+        let findDogNo = params.get('findDogNo');
 
-            $('#tableDiv').html('');
+        $('#tableDiv').html('');
 
-            $.ajax({
+        $.ajax({
             type : "GET",
             url : "/finddog/getReplyList?findDogNo="+findDogNo,
             dataType : "json",
@@ -182,11 +182,11 @@
                                 </tr>
                             </tbody>
                         `;
-                    }
+                }
                 $('#tableDiv').append(template);
             }
-            });
-        }
+        });
+    }
     // 댓글 리스트 불러오기 End
 
 </script>

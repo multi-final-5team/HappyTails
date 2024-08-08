@@ -46,34 +46,34 @@
             <div class="tab-pane fade show active" id="list-find">
                 <h3>잃어버린강아지 리스트</h3>
                 <div class="row" id="findListDiv">
-                <th:block th:each="i : ${#numbers.sequence(0, 8)}">
-                    <div class="col-md-4 mb-4 d-flex align-items-stretch">
-                        <div class="card" style="width: 100%;">
-                            <img src="/image/5d8e3b39-155d-4a1d-abd7-0a4caaa36d5b.jpg" class="card-img-top" alt="..." width="300" height="200">
-                            <div class="card-body">
-                                <h5 class="card-title">제목 입니다.</h5>
-                                <p class="card-text">장소: 서울특별시 머머동</p>
+                    <th:block th:each="i : ${#numbers.sequence(0, 8)}">
+                        <div class="col-md-4 mb-4 d-flex align-items-stretch">
+                            <div class="card" style="width: 100%;">
+                                <img src="/image/5d8e3b39-155d-4a1d-abd7-0a4caaa36d5b.jpg" class="card-img-top" alt="..." width="300" height="200">
+                                <div class="card-body">
+                                    <h5 class="card-title">제목 입니다.</h5>
+                                    <p class="card-text">장소: 서울특별시 머머동</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </th:block>
+                    </th:block>
                 </div>
             </div>
             <div class="tab-pane fade" id="list-misgiving">
                 <h3>유기의심공유 리스트</h3>
                 <div class="row" id="misgivingListDiv">
-<!--                    <th:block th:each="i : ${#numbers.sequence(0, 8)}">-->
-<!--                        <div class="col-md-4 mb-4 d-flex align-items-stretch">-->
-<!--                            <div class="card" style="width: 100%;">-->
-<!--                                <img src="/image/5d8e3b39-155d-4a1d-abd7-0a4caaa36d5b.jpg" class="card-img-top" alt="..." width="300" height="200">-->
-<!--                                <div class="card-body">-->
-<!--                                    <h5 class="card-title">제목 입니다.</h5>-->
-<!--                                    <p class="card-text">장소: 서울특별시 머머동</p>-->
-<!--                                    <p><span class="badge rounded-pill bg-secondary">미해결</span></p>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </th:block>-->
+                    <!--                    <th:block th:each="i : ${#numbers.sequence(0, 8)}">-->
+                    <!--                        <div class="col-md-4 mb-4 d-flex align-items-stretch">-->
+                    <!--                            <div class="card" style="width: 100%;">-->
+                    <!--                                <img src="/image/5d8e3b39-155d-4a1d-abd7-0a4caaa36d5b.jpg" class="card-img-top" alt="..." width="300" height="200">-->
+                    <!--                                <div class="card-body">-->
+                    <!--                                    <h5 class="card-title">제목 입니다.</h5>-->
+                    <!--                                    <p class="card-text">장소: 서울특별시 머머동</p>-->
+                    <!--                                    <p><span class="badge rounded-pill bg-secondary">미해결</span></p>-->
+                    <!--                                </div>-->
+                    <!--                            </div>-->
+                    <!--                        </div>-->
+                    <!--                    </th:block>-->
                 </div>
             </div>
             <div>
@@ -105,7 +105,7 @@
 
         // 글쓰기 페이지 이동 버튼 Start
         $("#writePageBtn").click(function(){
-           location.href="/finddog/write";
+            location.href="/finddog/write";
         });
         // 글쓰기 페이지 이동 버튼 End
 
@@ -198,9 +198,9 @@
     }
     // list 불러오기 End
     // 검색 click 이벤트 Start
-        $("#searchBtn").click(function(){
-            getList(1);
-        });
+    $("#searchBtn").click(function(){
+        getList(1);
+    });
     // 검색 click 이벤트 End
 
     // 글 클릭 시 페이지 이동 Start

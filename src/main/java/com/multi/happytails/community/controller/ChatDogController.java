@@ -93,7 +93,7 @@ public class ChatDogController {
         }
 
     }
-    
+
     @GetMapping("/create")
     public String chatdogCreate(Principal principal) {
         if (principal == null) {
@@ -206,9 +206,9 @@ public class ChatDogController {
 
     @PostMapping("/chatdogrecommend")
     public String chatdogrecommend(@RequestParam Long chatdogNo,
-                            Principal principal,
-                            RedirectAttributes redirectAttributes
-                            ) {
+                                   Principal principal,
+                                   RedirectAttributes redirectAttributes
+    ) {
         if (principal == null) {
             return "redirect:/member/login";
         }

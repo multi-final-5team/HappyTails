@@ -89,7 +89,7 @@
 
         // 글쓰기 페이지 이동 버튼 Start
         $("#writePageBtn").click(function(){
-           location.href="/finddog/write";
+            location.href="/finddog/write";
         });
         // 글쓰기 페이지 이동 버튼 End
 
@@ -183,25 +183,25 @@
     }
     // list 불러오기 End
     // 검색 click 이벤트 Start
-        $("#searchBtn").click(function(){
-            getList(1);
-        });
+    $("#searchBtn").click(function(){
+        getList(1);
+    });
     // 검색 click 이벤트 End
 
     // 글 삭제 Start
     $("#findListDiv").on("click",".deleteBtn",function(){
         let findDogNo = $(this).closest('.listRow').attr('data-find-dog-no');
         if (confirm("삭제 하시겠습니까?")) {
-                $.ajax({
-                    url: "/finddog/delete",
-                    type: 'POST',
-                    data: {"findDogNo": findDogNo},
-                    success: function (result) {
-                        alert(result);
-                        location.href = "/admin/finddog/manager";
-                    }
-                });
-            }
+            $.ajax({
+                url: "/finddog/delete",
+                type: 'POST',
+                data: {"findDogNo": findDogNo},
+                success: function (result) {
+                    alert(result);
+                    location.href = "/admin/finddog/manager";
+                }
+            });
+        }
     });
     // 글 삭제 End
 
@@ -209,16 +209,16 @@
     $("#misgivingListDiv").on("click",".deleteBtn",function(){
         let findDogNo = $(this).closest('.listRow').attr('data-find-dog-no');
         if (confirm("삭제 하시겠습니까?")) {
-                $.ajax({
-                    url: "/finddog/delete",
-                    type: 'POST',
-                    data: {"findDogNo": findDogNo},
-                    success: function (result) {
-                        alert(result);
-                        location.href = "/admin/finddog/manager";
-                    }
-                });
-            }
+            $.ajax({
+                url: "/finddog/delete",
+                type: 'POST',
+                data: {"findDogNo": findDogNo},
+                success: function (result) {
+                    alert(result);
+                    location.href = "/admin/finddog/manager";
+                }
+            });
+        }
     });
     // 글 삭제 End
 

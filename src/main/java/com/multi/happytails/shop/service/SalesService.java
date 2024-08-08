@@ -57,6 +57,7 @@ public interface SalesService {
      * @param id       the id
      * @return the list
      */
+
     List<SalesGoodsDTO> salesListBusiness(int page, int pageSize, String id);
 
     /**
@@ -93,4 +94,6 @@ public interface SalesService {
      * @return the int
      */
     int salesPageCount();
+
+    List<SalesGoodsDTO> search(String keyword);
 }

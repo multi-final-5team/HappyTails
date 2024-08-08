@@ -44,6 +44,7 @@ public class HelpService {
     }
 
     public List<InquiryDto> getInquiryList(PageDto pageDto, Map<String,Object> searchMap) {
+        System.out.println(searchMap + "=-=-==");
         return helpMapper.getInquiryList(pageDto, searchMap);
     }
 

@@ -5,9 +5,9 @@
     <title>게시글 수정</title>
     <style>
         .img-preview {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
+            width: 150px; /* 원하는 너비로 설정 */
+            height: 150px; /* 원하는 높이로 설정 */
+            object-fit: cover; /* 이미지 비율을 유지하며 크기에 맞게 조정 */
         }
     </style>
 </head>
@@ -35,7 +35,7 @@
             <div id="imgAddDiv" class="row g-2">
                 <!-- 기존 이미지 미리보기 -->
                 <div th:each="uploadDto : ${imageFiles}" class="col-3 mb-2">
-                    <img th:src="@{/images/C/{file}(file=${uploadDto.storedFileName})}" alt="Existing Image" class="img-thumbnail">
+                    <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" alt="Existing Image" class="img-thumbnail">
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">수정</button>

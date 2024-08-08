@@ -14,7 +14,7 @@
             <figure class="text-left">
                 <h3>1:1 문의 작성</h3>
             </figure>
-            <form method="post" enctype="multipart/form-data" id="inquiryForm">
+            <form action="/help/inquiry/write" method="post" enctype="multipart/form-data" id="inquiryForm">
                 <div class="mb-3">
                     <label for="title" class="form-label">제목</label>
                     <input type="text" class="form-control" name="title" id="title" th:value="${inquiryDto.title}">

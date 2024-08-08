@@ -43,54 +43,27 @@
                 </div>
             </form>
         </div>
-        <h1 class="mb-4 text-center">장바구니 상품 목록</h1>
-        <div class="card shadow">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-dark">
-                        <tr>
-                            <th>상품명</th>
-                            <th>가격</th>
-                            <th>수량</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="cartList : ${cartList}">
-                            <td>
-                                <a th:href="@{/sales/selectGoods(no=${cartList.goodsNo})}"
-                                   th:text="${cartList.goodsName}"
-                                   class="text-decoration-none"></a>
-                            </td>
-                            <td th:text="${#numbers.formatCurrency(cartList.price)}" class="price"></td>
-                            <td th:text="${cartList.purchaseQuantity}" class="purchaseQuantity"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="right-section">
+            <h3 align="center" th:text="${paymentpageDTO.productname}">상품명</h3>
+            <img src="/img/payment/notebooktest.PNG" alt="Product Image" class="product-image">
+            <p align="center" th:text="${paymentpageDTO.productinfo}">상품 정보</p>
         </div>
     </div>
     <div class="price-info">
-
+        <div class="price-row">
+            <span>판매가</span>
+            <span id="originalPrice" th:text="${paymentpageDTO.productprice + '원'}">0원</span>
+        </div>
         <div class="price-row total-price">
             <span>총 결제금액</span>
-            <span id="amount">원</span>
+            <span id="amount" th:text="${paymentpageDTO.productprice + '원'}">0원</span>
         </div>
         <button class="order-button" onclick="mypayment()">결제하기</button>
     </div>
 </div>
 <script th:inline="javascript">
-    // Thymeleaf를 통해 cartList 데이터를 JavaScript로 전달
-    var cartList = /*[[${cartList}]]*/ [];
-
-    // price의 총합 계산
-    var totalPrice = cartList.reduce(function (sum, item) {
-        return sum + item.price;
-    }, 0);
-
-    // 계산된 총합을 HTML에 표시
-    document.getElementById('amount').textContent = totalPrice + '원';
+    // Thymeleaf 변수를 JavaScript 변수로 변환
+    var originalPrice = /*[[${paymentpageDTO.productprice}]]*/ 0;
 </script>
 </body>
 </html>

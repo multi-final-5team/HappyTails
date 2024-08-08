@@ -19,60 +19,60 @@
 
     <insert id="insertSales" parameterType="com.multi.happytails.shop.model.dto.SalesGoodsDTO">
         INSERT INTO TB_SALES_GOODS (
-        ID, SALE_ADDRESS, GOODS_NAME, GOODS_PRICE, GOODS_QUANTITY, DETAILED_CONTENT, CATEGORY_CODE
+            ID, SALE_ADDRESS, GOODS_NAME, GOODS_PRICE, GOODS_QUANTITY, DETAILED_CONTENT, CATEGORY_CODE
         ) VALUES (
-        #{id}, #{address}, #{name}, #{price}, #{quantity}, #{content}, #{categoryCode}
-        )
+                     #{id}, #{address}, #{name}, #{price}, #{quantity}, #{content}, #{categoryCode}
+                 )
     </insert>
 
     <update id="updateSales" parameterType="com.multi.happytails.shop.model.dto.SalesGoodsDTO">
         UPDATE TB_SALES_GOODS
         SET
-        GOODS_NAME = #{name},
-        GOODS_PRICE = #{price},
-        GOODS_QUANTITY = #{quantity},
-        DETAILED_CONTENT = #{content},
-        CATEGORY_CODE = #{categoryCode}
+            GOODS_NAME = #{name},
+            GOODS_PRICE = #{price},
+            GOODS_QUANTITY = #{quantity},
+            DETAILED_CONTENT = #{content},
+            CATEGORY_CODE = #{categoryCode}
         WHERE
-        ID = #{id} AND GOODS_NO = #{no}
+            ID = #{id} AND GOODS_NO = #{no}
     </update>
 
     <delete id="deleteSales" parameterType="com.multi.happytails.shop.model.dto.SalesGoodsDTO">
         DELETE FROM TB_SALES_GOODS WHERE GOODS_NO = #{no}
     </delete>
 
-<!--    <select id="salesList" resultMap="salesGoodsResultMap">-->
-<!--        SELECT * FROM TB_SALES_GOODS-->
-<!--        ORDER BY GOODS_NO DESC-->
-<!--        LIMIT #{limit} OFFSET #{offset}-->
-<!--    </select>-->
+    <!--    <select id="salesList" resultMap="salesGoodsResultMap">-->
+    <!--        SELECT * FROM TB_SALES_GOODS-->
+    <!--        ORDER BY GOODS_NO DESC-->
+    <!--        LIMIT #{limit} OFFSET #{offset}-->
+    <!--    </select>-->
 
     <select id="salesList" resultMap="salesGoodsResultMap">
         SELECT GOODS_NO, ID, SALE_ADDRESS, GOODS_NAME, GOODS_PRICE, GOODS_QUANTITY, DETAILED_CONTENT, SALES_CREATE_DATE,SALES_UPDATE_DATE,
-        CASE CATEGORY_CODE
-        WHEN 'F' THEN '사료'
-        WHEN 'S' THEN '간식'
-        WHEN 'T' THEN '장난감'
-        WHEN 'C' THEN '옷'
-        END AS CATEGORY_CODE
+               CASE CATEGORY_CODE
+                   WHEN 'F' THEN '사료'
+                   WHEN 'S' THEN '간식'
+                   WHEN 'T' THEN '장난감'
+                   WHEN 'C' THEN '옷'
+                   END AS CATEGORY_CODE
         FROM TB_SALES_GOODS
         ORDER BY GOODS_NO DESC
-        LIMIT #{limit} OFFSET #{offset}
+            LIMIT #{limit} OFFSET #{offset}
     </select>
 
 
     <select id="salesListBusiness" resultMap="salesGoodsResultMap">
         SELECT GOODS_NO, ID, SALE_ADDRESS, GOODS_NAME, GOODS_PRICE, GOODS_QUANTITY, DETAILED_CONTENT, SALES_CREATE_DATE,SALES_UPDATE_DATE,
-        CASE CATEGORY_CODE
-        WHEN 'F' THEN '사료'
-        WHEN 'S' THEN '간식'
-        WHEN 'T' THEN '장난감'
-        WHEN 'C' THEN '옷'
-        END AS CATEGORY_CODE
+               CASE CATEGORY_CODE
+                   WHEN 'F' THEN '사료'
+                   WHEN 'S' THEN '간식'
+                   WHEN 'T' THEN '장난감'
+                   WHEN 'C' THEN '옷'
+                   END AS CATEGORY_CODE
         FROM TB_SALES_GOODS
         WHERE ID = #{id}
         ORDER BY GOODS_NO DESC
-        LIMIT #{limit} OFFSET #{offset}
+            LIMIT #{limit} OFFSET #{offset}
     </select>
 
     <select id="salesPageCount" resultType="int">
@@ -81,12 +81,12 @@
 
     <select id="selectSales" parameterType="com.multi.happytails.shop.model.dto.SalesGoodsDTO" resultMap="salesGoodsResultMap">
         SELECT GOODS_NO, ID, SALE_ADDRESS, GOODS_NAME, GOODS_PRICE, GOODS_QUANTITY, DETAILED_CONTENT, SALES_CREATE_DATE,SALES_UPDATE_DATE,
-        CASE CATEGORY_CODE
-        WHEN 'F' THEN '사료'
-        WHEN 'S' THEN '간식'
-        WHEN 'T' THEN '장난감'
-        WHEN 'C' THEN '옷'
-        END AS CATEGORY_CODE
+               CASE CATEGORY_CODE
+                   WHEN 'F' THEN '사료'
+                   WHEN 'S' THEN '간식'
+                   WHEN 'T' THEN '장난감'
+                   WHEN 'C' THEN '옷'
+                   END AS CATEGORY_CODE
         FROM TB_SALES_GOODS
         WHERE GOODS_NO = #{no}
     </select>
@@ -95,6 +95,11 @@
         SELECT GOODS_NO
         FROM TB_SALES_GOODS
         ORDER BY GOODS_NO DESC
-        LIMIT 1
+            LIMIT 1
+    </select>
+
+    <select id="search" parameterType="String" resultMap="salesGoodsResultMap">
+        SELECT * FROM TB_SALES_GOODS
+        WHERE GOODS_NAME LIKE CONCAT('%', #{keyword}, '%')
     </select>
 </mapper>
