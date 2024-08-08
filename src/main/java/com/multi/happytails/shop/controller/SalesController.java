@@ -103,8 +103,8 @@ public class SalesController {
             int goodsNo = SalesGoods.getNo();
             salesGoodsMap.put(goodsNo, uploadService.uploadSelect("S", goodsNo));
         }
-        model.addAttribute("salesGoodsMap", salesGoodsMap);
 
+        model.addAttribute("salesGoodsMap", salesGoodsMap);
         model.addAttribute("salesGoodsList", salesGoodsList);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
@@ -125,7 +125,7 @@ public class SalesController {
      */
     @GetMapping("/salesListBusiness")
     public String salesListBusiness(@RequestParam(name = "page", defaultValue = "1") int page, Principal principal, Model model) {
-        int pageSize = 10;
+        int pageSize = 8;
         String id = principal.getName();
         List<SalesGoodsDTO> salesGoodsList = salesService.salesListBusiness(page, pageSize, id);
         int totalSalesCount = salesService.salesPageCount();
@@ -243,7 +243,7 @@ public class SalesController {
                                @RequestParam("categoryCode") String categoryCode,
                                @RequestParam("imageFile") MultipartFile imageFile,
                                @RequestParam("imageFiles")List<MultipartFile> imageFiles
-                                ) {
+    ) {
 
         SalesGoodsDTO salesGoodsDTO = new SalesGoodsDTO();
         String Id = principal.getName();
@@ -296,7 +296,7 @@ public class SalesController {
                                @RequestParam(value = "imageUpdateFiles") @Nullable List<MultipartFile> imageUpdateFiles,
                                @RequestParam(value = "imageDeleteImageNo") @Nullable List<Long> imageDeleteImageNo,
                                @RequestParam(value = "imageUpdateImageNo") @Nullable List<Long> imageUpdateImageNo
-                                ) {
+    ) {
 
         System.out.println(">>>>>>>>>>>>>>>>>" + salesGoodsDTO);
         System.out.println(">>>>>>>>>>>>>>>>>" + imageFiles);
@@ -370,6 +370,23 @@ public class SalesController {
     }
     // Delete
 
+    @GetMapping("/search")
+    public String search(@RequestParam("keyword") String keyword, Model model) {
+        List<SalesGoodsDTO> results = salesService
+                 .search(keyword);
+
+        Map<Integer, List<UploadDto>> salesGoodsMap = new HashMap<>();
+
+        for (SalesGoodsDTO SalesGoods : results) {
+            int goodsNo = SalesGoods.getNo();
+            salesGoodsMap.put(goodsNo, uploadService.uploadSelect("S", goodsNo));
+        }
+
+        model.addAttribute("salesGoodsMap", salesGoodsMap);
+        model.addAttribute("salesGoodsList", results);
+
+        return "sales/salesList";
+    }
 
 // PostMan
 

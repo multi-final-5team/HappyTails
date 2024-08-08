@@ -14,17 +14,23 @@
         <figure class="text-left">
             <h3>찾아주개 작성</h3>
         </figure>
-        <form action="/help/inquiry/write" method="post" enctype="multipart/form-data" id="inquiryForm">
+        <form method="post" enctype="multipart/form-data" id="inquiryForm">
             <div class="mb-3">
                 <label for="title" class="form-label">제목</label>
                 <input type="text" class="form-control" name="title" id="title">
             </div>
-            <div class="mb-3">
-                <label for="category" class="form-label">카테고리</label>
-                <select class="form-select form-select-sm category" id="category">
-                    <option value="F">잃어버린강아지</option>
-                    <option value="M">유기의심공유</option>
-                </select>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="breed" class="form-label">품종</label>
+                    <input type="text" class="form-control" name="breed" id="breed">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="category" class="form-label">카테고리</label>
+                    <select class="form-select form-select-sm category" id="category">
+                        <option value="F">잃어버린강아지</option>
+                        <option value="M">유기의심공유</option>
+                    </select>
+                </div>
             </div>
 
             <div class="mb-3">
@@ -65,6 +71,11 @@
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3410cbe0e56cd0dca8e1c3bc13dec0a4&libraries=services"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
+
+    let latitude = 0; //위도
+    let longitude = 0; //경도
+    let area = ''; //장소
+
     var addr = '';
     var geocoder = '';
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
@@ -86,7 +97,7 @@
     kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
         searchDetailAddrFromCoords(mouseEvent.latLng, function(result, status) {
             if (status === kakao.maps.services.Status.OK) {
-                var detailAddr = !!result[0].road_address ? '<div>' +result[0].road_address.address_name + '</div>' : '<div>'+ result[0].address.address_name + '</div>';
+                var detailAddr = !!result[0].road_address ? result[0].road_address.address_name : result[0].address.address_name;
 
                 var content = '<div class="bAddr">' +
                     detailAddr +
@@ -99,6 +110,10 @@
                 // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
                 infowindow.setContent(content);
                 infowindow.open(map, marker);
+
+                latitude = marker.getPosition().Ma; //위도
+                longitude = marker.getPosition().La; //경도
+                area = detailAddr; //장소
             }
         });
     });
@@ -213,6 +228,57 @@
     $('#myMapMove').click(function(){
         getLocation();
     });
+
+    // 이미지 road Start
+    let imageFiles = [];
+    $('#imageInput').on('change', function(event) {
+        console.log('실행');
+        var file = event.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#imgAddDiv').append('<img src="' + e.target.result + '" alt="Selected Image" width="100px" height="100px">');
+            }
+            imageFiles.push(file);
+            reader.readAsDataURL(file);
+        } else {
+            alert('이미지 파일을 선택해주세요');
+        }
+    });
+    // 이미지 road End
+
+    // 폼 서브밋 Start
+    $('#createBtn').click(function(){
+        let title = $('#title').val();
+        let content = $('#content').val();
+        let category = $('#category').val();
+        let breed = $('#breed').val();
+
+        let formData = new FormData();
+        formData.append('title',title);
+        formData.append('content',content);
+        formData.append('category',category);
+        formData.append('breed',breed);
+        formData.append('latitude',latitude);
+        formData.append('longitude',longitude);
+        formData.append('area',area);
+
+        for (let i = 0; i < imageFiles.length;i++) {
+            formData.append('imageFiles',imageFiles[i]);
+        }
+        $.ajax({
+            url : "/finddog/write",
+            processData : false,
+            contentType : false,
+            type : 'POST',
+            data : formData,
+            success : function(result) {
+                alert(result);
+                location.href="/finddog/main";
+            }
+        });
+    });
+    // 폼 서브밋 End
 
 </script>
 </body>

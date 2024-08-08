@@ -1,10 +1,8 @@
 package com.multi.happytails.dogNum.dao;
 
+import com.multi.happytails.community.model.dto.DogloveDTO;
 import com.multi.happytails.dogNum.dto.DogNumDTO;
-import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * packageName    : com.multi.happytails.dogNum.dao
@@ -17,28 +15,15 @@ import java.util.Map;
  * -----------------------------------------------------------
  * 2024-08-02        User       최초 생성
  */
-@Repository
-public class DogNumDAO {
+@Mapper
+public interface DogNumDAO {
 
-    // 강아지 정보를 저장할 Map. 키는 등록번호, 값은 DogNumDTO 객체
-    private final Map<String, DogNumDTO> database = new HashMap<>();
+    public int getCurrentDogNumNo();
 
-    /**
-     * 강아지 정보를 저장합니다.
-     * @param dog 강아지 정보
-     * @return 저장된 강아지 정보
-     */
-    public DogNumDTO save(DogNumDTO dog) {
-        database.put(dog.getDogNum(), dog);
-        return dog;
-    }
+    void insert(DogNumDTO dogNumDTO);
 
-    /**
-     * 등록번호로 강아지 정보를 찾습니다.
-     * @param dogNum 등록번호
-     * @return 해당 강아지 정보
-     */
-    public DogNumDTO find(String dogNum) {
-        return database.get(dogNum);
-    }
+    DogNumDTO getDogInfoByDognum(String dogRegNo);
+
+
+    DogloveDTO findById(Long dogRegNo);
 }

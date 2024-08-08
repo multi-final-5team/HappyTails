@@ -74,14 +74,14 @@
     <select id="selectOrders" resultMap="OrderlistResultMap">
         SELECT * FROM payment
         WHERE refund = 'N'
-        AND username = #{id}
+          AND username = #{id}
         ORDER BY date_created DESC
     </select>
 
     <update id="updateRefundStatus" parameterType="com.multi.happytails.shop.model.dto.OrderlistDTO">
         UPDATE payment
         SET refund = 'Y',
-        refund_date = NOW()
+            refund_date = NOW()
         WHERE im_port_id = #{imPortId}
     </update>
 

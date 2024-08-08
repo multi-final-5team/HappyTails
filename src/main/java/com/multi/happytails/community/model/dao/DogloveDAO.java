@@ -20,7 +20,7 @@ public interface DogloveDAO {
 
     List<DogloveDTO> search(String keyword);
 
-    void update(DogloveDTO doglove);
+    int update(DogloveDTO doglove);
 
     void dgRecommendCount(Long dogloveNo);
 }

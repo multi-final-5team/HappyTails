@@ -16,7 +16,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/community/chatdog")
@@ -38,26 +40,30 @@ public class ChatDogController {
 
     final String categoryCode = "CHATDOG_CODE";
 
-    public ChatDogController(ChatDogService chatDogService) {
-        this.chatDogService = chatDogService;
-
-    }
-
     @GetMapping
     public String chatDogList(
             @RequestParam(value = "sort", defaultValue = "date") String sort,
             @RequestParam(value = "keyword", required = false) String keyword,
             Model model) {
 
-        List<ChatDogDTO> chatdog;
+        List<ChatDogDTO> chatdogs;
         if ("recommendCount".equals(sort)) {
-            chatdog = chatDogService.findAllSortedByRecommendation();
+            chatdogs = chatDogService.findAllSortedByRecommendation();
         } else {
-            chatdog = chatDogService.findAllSortedByDate();
+            chatdogs = chatDogService.findAllSortedByDate();
         }
+
+        Map<Long, List<UploadDto>> chatdogImages = new HashMap<>();
+        for (ChatDogDTO chatdog : chatdogs) {
+            List<UploadDto> imageFiles = uploadService.uploadSelect(IMAGE_CODE, chatdog.getChatdogNo());
+            chatdogImages.put(chatdog.getChatdogNo(), imageFiles);
+        }
+
         model.addAttribute("keyword", keyword);
-        model.addAttribute("chatdog", chatdog);
+        model.addAttribute("chatdog", chatdogs);
+        model.addAttribute("chatdogImages", chatdogImages);
         model.addAttribute("sort", sort);
+
         return "community/chatdoglist";
     }
 
@@ -87,9 +93,13 @@ public class ChatDogController {
         }
 
     }
-    
+
     @GetMapping("/create")
-    public String chatdogCreate() {
+    public String chatdogCreate(Principal principal) {
+        if (principal == null) {
+            return "redirect:/member/login";
+        }
+
         return "community/chatdogcreate";
     }
 
@@ -97,9 +107,7 @@ public class ChatDogController {
     public String save(@ModelAttribute ChatDogDTO chatDogDTO,
                        @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles,
                        Principal principal) {
-        if (principal == null) {
-            return "redirect:/member/login";
-        }
+
         String userId = principal.getName();
         chatDogDTO.setUserId(userId);
 
@@ -135,10 +143,13 @@ public class ChatDogController {
 
         replyService.replyDeleteAll("C", chatdogNo);
 
-        UploadDto uploadDto = new UploadDto();
-        uploadDto.setCategoryCode(IMAGE_CODE);
-        //uploadService.uploadDelete(uploadDto);
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(IMAGE_CODE, chatdogNo);
 
+        if (uploadDtos != null && !uploadDtos.isEmpty()) {
+            for (UploadDto uploadDto : uploadDtos) {
+                uploadService.uploadDelete(uploadDto.getImageNo());
+            }
+        }
         return "redirect:/community/chatdog";
     }
 
@@ -165,9 +176,6 @@ public class ChatDogController {
                          @RequestParam String content,
                          @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles,
                          Principal principal) {
-        if (principal == null) {
-            return "redirect:/member/login";
-        }
 
         String userId = principal.getName();
 
@@ -198,9 +206,9 @@ public class ChatDogController {
 
     @PostMapping("/chatdogrecommend")
     public String chatdogrecommend(@RequestParam Long chatdogNo,
-                            Principal principal,
-                            RedirectAttributes redirectAttributes
-                            ) {
+                                   Principal principal,
+                                   RedirectAttributes redirectAttributes
+    ) {
         if (principal == null) {
             return "redirect:/member/login";
         }

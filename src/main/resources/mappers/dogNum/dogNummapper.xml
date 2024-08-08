@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.multi.happytails.dogNum.dao.DogNumDAO">
+
+    <insert id="insert" parameterType="com.multi.happytails.dogNum.dto.DogNumDTO">
+        INSERT INTO TB_DOGNUM (DOGREGNO, DOGNM, SEXNM, KINDNM, NEUTERYN)
+        VALUES (#{dogregno}, #{dognm}, #{sexnm}, #{kindnm}, #{neuteryn})
+    </insert>
+
+    <select id="getCurrentDogNumNo" resultType="int">
+        SELECT DOGNUM_NO
+        FROM TB_DOGNUM
+        ORDER BY DOGNUM_NO DESC
+        LIMIT 1
+    </select>
+
+    <select id="getDogInfoByDognum" parameterType="String" resultType="com.multi.happytails.dogNum.dto.DogNumDTO">
+        SELECT *
+        FROM TB_DOGNUM
+        WHERE DOGREGNO = #{dogregno}
+    </select>
+
+    <select id="findById" resultType="com.multi.happytails.dogNum.dto.DogNumDTO">
+        SELECT * FROM TB_DOGNUM WHERE DOGREGNO = #{dogregno}
+    </select>
+
+</mapper>

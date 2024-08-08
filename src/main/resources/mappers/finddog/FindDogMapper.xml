@@ -3,5 +3,93 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.multi.happytails.finddog.model.dao.FindDogMapper">
+    <insert id="findDogInsert">
+        INSERT INTO TB_FINDDOG (CATEGORY, WRITER_ID, TITLE, CONTENT, LATITUDE, LONGITUDE, AREA, BREED)
+        VALUES (#{category}, #{writerId}, #{title}, #{content}, #{latitude}, #{longitude}, #{area}, #{breed})
+    </insert>
 
+    <select id="getCurrentFindDogNo">
+        SELECT FINDDOG_NO
+        FROM TB_FINDDOG
+        ORDER BY FINDDOG_NO DESC
+            LIMIT 1
+    </select>
+
+    <select id="findDogListCount">
+        SELECT COUNT(*) AS CNT
+        FROM TB_FINDDOG
+        <where>
+            <if test="searchMap != null">
+                <if test="searchMap.title != '' and searchMap.title != null">
+                    AND TITLE LIKE CONCAT('%', #{searchMap.title}, '%')
+                </if>
+                <if test="searchMap.category != '' and searchMap.category != null">
+                    AND CATEGORY LIKE CONCAT('%', #{searchMap.category}, '%')
+                </if>
+                <if test="searchMap.state != '' and searchMap.state != null">
+                    AND STATE LIKE CONCAT('%', #{searchMap.state}, '%')
+                </if>
+                <if test="searchMap.area != '' and searchMap.area != null">
+                    AND AREA LIKE CONCAT('%', #{searchMap.area}, '%')
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <select id="getFindDogList">
+        SELECT * FROM (
+        SELECT
+        ROW_NUMBER() OVER (ORDER BY FINDDOG_NO DESC) AS RNUM,
+        A.*
+        FROM (
+        SELECT *
+        FROM TB_FINDDOG
+        <where>
+            <if test="searchMap != null">
+                <if test="searchMap.title != '' and searchMap.title != null">
+                    AND TITLE LIKE CONCAT('%', #{searchMap.title}, '%')
+                </if>
+                <if test="searchMap.category != '' and searchMap.category != null">
+                    AND CATEGORY LIKE CONCAT('%', #{searchMap.category}, '%')
+                </if>
+                <if test="searchMap.state != '' and searchMap.state != null">
+                    AND STATE LIKE CONCAT('%', #{searchMap.state}, '%')
+                </if>
+                <if test="searchMap.area != '' and searchMap.area != null">
+                    AND AREA LIKE CONCAT('%', #{searchMap.area}, '%')
+                </if>
+            </if>
+        </where>
+        ) AS A
+        ) AS SubQuery
+        WHERE RNUM BETWEEN  #{pageDto.start} AND #{pageDto.end}
+    </select>
+
+    <select id="findDogDetail">
+        SELECT * FROM TB_FINDDOG WHERE FINDDOG_NO = #{findDogNo}
+    </select>
+
+    <delete id="findDogDelete">
+        DELETE FROM TB_FINDDOG WHERE FINDDOG_NO = #{findDogNo}
+    </delete>
+
+    <update id="findDogUpdate">
+        UPDATE TB_FINDDOG SET
+                              TITLE = #{title},
+                              CONTENT = #{content},
+                              BREED = #{breed},
+                              AREA = #{area},
+                              LATITUDE = #{latitude},
+                              LONGITUDE = #{longitude}
+        WHERE FINDDOG_NO = #{findDogNo}
+    </update>
+
+    <insert id="findDogReplyWrite">
+        INSERT INTO TB_FINDDOG_REPLY (FINDDOG_NO, WRITER_ID, CONTENT)
+        VALUES (#{findDogNo}, #{writerId}, #{content})
+    </insert>
+
+    <select id="findDogReplyList">
+        SELECT * FROM TB_FINDDOG_REPLY WHERE FINDDOG_NO = #{findDogNo} ORDER BY FINDDOG_REPLY_NO DESC
+    </select>
 </mapper>

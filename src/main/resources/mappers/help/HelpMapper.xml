@@ -17,7 +17,7 @@
         SELECT INQUIRY_NO
         FROM TB_INQUIRY
         ORDER BY INQUIRY_NO DESC
-        LIMIT 1
+            LIMIT 1
     </select>
 
     <select id="questionList">
@@ -150,9 +150,9 @@
 
     <update id="inquiryUpdate">
         UPDATE TB_INQUIRY SET
-          TITLE = #{title},
-          HELP_CATEGORY_CODE = #{helpCategoryCode},
-          CONTENT = #{content}
+                              TITLE = #{title},
+                              HELP_CATEGORY_CODE = #{helpCategoryCode},
+                              CONTENT = #{content}
         WHERE INQUIRY_NO = #{inquiryNo}
     </update>
 
@@ -167,9 +167,9 @@
 
     <update id="questionUpdate">
         UPDATE TB_QUESTION SET
-            HELP_CATEGORY_CODE = #{helpCategoryCode},
-            QUESTION_CONTENT = #{questionContent},
-            ANSWER_CONTENT = #{answerContent}
+                               HELP_CATEGORY_CODE = #{helpCategoryCode},
+                               QUESTION_CONTENT = #{questionContent},
+                               ANSWER_CONTENT = #{answerContent}
         WHERE QUESTION_NO = #{questionNo}
     </update>
 </mapper>

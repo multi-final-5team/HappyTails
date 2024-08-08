@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>댕댕이 신분증</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .certificate {
+            background-color: white;
+            border: 2px solid #333;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .certificate h1 {
+            text-align: center;
+            color: #333;
+        }
+        .certificate img {
+            display: block;
+            margin: 10px auto;
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 5px;
+        }
+        .certificate p {
+            margin: 10px 0;
+        }
+        .certificate strong {
+            color: #555;
+        }
+        #images-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+<div class="certificate" id="certificate">
+    <h1>댕댕이 신분증</h1>
+    <div id="images-container">
+        <div th:each="uploadDto : ${uploadDtoList}" class="col-md-4 mb-3">
+            <img th:src="@{/images/N/{file}(file=${uploadDto.storedFileName})}" class="img-fluid rounded">
+        </div>
+    </div>
+    <p><strong>이름:</strong> <span th:text="${dogNm}"></span></p>
+    <p><strong>등록 번호:</strong> <span th:text="${dogRegNo}"></span></p>
+    <p><strong>품종:</strong> <span th:text="${kindNm}"></span></p>
+    <p><strong>성별:</strong> <span th:text="${sexNm}"></span></p>
+    <p><strong>중성화 여부:</strong> <span th:text="${neuterYn}"></span></p>
+    <button onclick="saveCertificate()">신분증 저장하기</button>
+</div>
+
+<script>
+    function saveCertificate() {
+        html2canvas(document.getElementById('certificate')).then(function(canvas) {
+            var imgData = canvas.toDataURL('image/png');
+            var link = document.createElement('a');
+            link.download = '댕댕이_신분증.png';
+            link.href = imgData;
+            link.click();
+        });
+    }
+</script>
+
+</body>
+</html>

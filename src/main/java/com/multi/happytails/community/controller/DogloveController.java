@@ -16,7 +16,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * packageName    : com.multi.happytails.community.controller
@@ -60,16 +62,6 @@ public class DogloveController {
     final String categoryCode = "DOGLOVE_CODE";
 
     /**
-     * Controller 메서드에 데이터 제공
-     *
-     * @param dogloveService the doglove service
-     */
-    public DogloveController(DogloveService dogloveService) {
-        this.dogloveService = dogloveService;
-
-    }
-
-    /**
      * methodName : doglovelist
      * author : Nayoung Yeo
      * description : 게시판 목록을 보여주며 (작성자, 제목, 내용, 날짜, 추천순) 추천순과 최신순 정렬
@@ -91,9 +83,17 @@ public class DogloveController {
         } else {
             dogloves = dogloveService.findAllSortedByDate();
         }
+
+        Map<Long, List<UploadDto>> dogloveImages = new HashMap<>();
+        for (DogloveDTO doglove : dogloves) {
+            List<UploadDto> imageFiles = uploadService.uploadSelect(IMAGE_CODE, doglove.getDogloveNo());
+            dogloveImages.put(doglove.getDogloveNo(), imageFiles);
+        }
         model.addAttribute("keyword", keyword);
         model.addAttribute("dogloves", dogloves);
+        model.addAttribute("dogloveImages", dogloveImages);
         model.addAttribute("sort", sort);
+
         return "community/doglovelist";
     }
 
@@ -141,7 +141,10 @@ public class DogloveController {
      * description : 글 생성 페이지를 보여줌
      */
     @GetMapping("/create")
-    public String dogloveCreate() {
+    public String dogloveCreate(Principal principal) {
+        if (principal == null) {
+            return "redirect:/member/login";
+        }
         return "community/doglovecreate";
     }
 
@@ -155,12 +158,10 @@ public class DogloveController {
      * @param principal  현재 로그인한 사용자 정보
      */
     @PostMapping
-    public String save(@ModelAttribute DogloveDTO dogloveDTO,
-                       @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles,
-                       Principal principal) {
-        if (principal == null) {
-            return "redirect:/member/login";
-        }
+    public String create(@ModelAttribute DogloveDTO dogloveDTO,
+                         @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles,
+                         Principal principal) {
+
         String userId = principal.getName();
         dogloveDTO.setUserId(userId);
 
@@ -170,9 +171,6 @@ public class DogloveController {
 
         UploadDto uploadDto = new UploadDto();
         uploadDto.setForeignNo(dogloveService.dogloveInsert(dogloveDTO));
-
-
-
 
         uploadDto.setCategoryCode(IMAGE_CODE); // 이미지 카테고리 코드
         if (imageFiles != null && !imageFiles.isEmpty()) {
@@ -197,10 +195,13 @@ public class DogloveController {
 
         replyService.replyDeleteAll("L", dogloveNo);
 
-        UploadDto uploadDto = new UploadDto();
-        uploadDto.setCategoryCode(IMAGE_CODE);
-        //uploadService.uploadDelete(uploadDto);
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(IMAGE_CODE, dogloveNo);
 
+        if (uploadDtos != null && !uploadDtos.isEmpty()) {
+            for (UploadDto uploadDto : uploadDtos) {
+                uploadService.uploadDelete(uploadDto.getImageNo());
+            }
+        }
         return "redirect:/community/doglove";
     }
 
@@ -216,21 +217,24 @@ public class DogloveController {
             return "redirect:/community/doglove";
         }
 
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(IMAGE_CODE, dogloveNo);
+
         model.addAttribute("doglove", doglove);
-        System.out.println("Returning update form view for dogloveNo: " + dogloveNo);
+        model.addAttribute("uploadDtos", uploadDtos);
 
         return "community/dogloveupdate";
     }
 
     @PostMapping("/update/{dogloveNo}")
-    public String update(@PathVariable  Long dogloveNo,
-                         @RequestParam String title,
-                         @RequestParam String content,
-                         @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles,
+    public String update(@PathVariable Long dogloveNo,
+                         @ModelAttribute DogloveDTO dogloveDTO,
+                         @RequestParam("title") String title,
+                         @RequestParam("content") String content,
+                         @RequestParam(value = "imageFiles") @Nullable List<MultipartFile> imageFiles,
+                         @RequestParam(value = "imageUpdateFiles") @Nullable List<MultipartFile> imageUpdateFiles,
+                         @RequestParam(value = "imageDeleteImageNo") @Nullable List<Long> imageDeleteImageNo,
+                         @RequestParam(value = "imageUpdateImageNo") @Nullable List<Long> imageUpdateImageNo,
                          Principal principal) {
-        if (principal == null) {
-            return "redirect:/member/login";
-        }
 
         String userId = principal.getName();
 
@@ -239,20 +243,37 @@ public class DogloveController {
         if (doglove == null || !doglove.getUserId().equals(userId)) {
             return "redirect:/community/doglove";
         }
+        int result = dogloveService.update(dogloveDTO);
 
-        doglove.setTitle(title);
-        doglove.setContent(content);
-        dogloveService.update(doglove);
+        if (result == 1) {
+            // 이미지 삭제
+            if (imageDeleteImageNo != null && !imageDeleteImageNo.isEmpty()) {
+                for (Long imageNo : imageDeleteImageNo) {
+                    uploadService.uploadDelete(imageNo);
+                }
+            }
 
-        // 이미지 처리
-        if (imageFiles != null && !imageFiles.isEmpty()) {
-            UploadDto uploadDto = new UploadDto();
-            uploadDto.setForeignNo(dogloveNo);
-            uploadDto.setCategoryCode(IMAGE_CODE); // 이미지 카테고리 코드
+            // 이미지 업데이트
+            if (imageUpdateFiles != null && !imageUpdateFiles.isEmpty() && imageUpdateImageNo != null) {
+                for (int i = 0; i < imageUpdateFiles.size(); i++) {
+                    if (i < imageUpdateImageNo.size()) {
+                        Long imageNo = imageUpdateImageNo.get(i);
+                        MultipartFile file = imageUpdateFiles.get(i);
+                        uploadService.uploadUpdate(imageNo, file);
+                    }
+                }
+            }
 
-            for (MultipartFile file : imageFiles) {
-                uploadDto.setFile(file);
-                uploadService.uploadInsert(uploadDto); // 이미지 업로드 서비스
+            // 새 이미지 추가
+            if (imageFiles != null && !imageFiles.isEmpty()) {
+                UploadDto uploadDto = new UploadDto();
+                uploadDto.setForeignNo(dogloveDTO.getDogloveNo());
+                uploadDto.setCategoryCode(IMAGE_CODE);
+
+                for (MultipartFile file : imageFiles) {
+                    uploadDto.setFile(file);
+                    uploadService.uploadInsert(uploadDto);
+                }
             }
         }
 
@@ -260,6 +281,8 @@ public class DogloveController {
     }
 
     /**
+
+     /**
      * methodName : dogloveRecommend
      * author : Nayoung Yeo
      * description : 추천수 증가
@@ -269,9 +292,9 @@ public class DogloveController {
      */
     @PostMapping("/dogloveRecommend")
     public String dogloveRecommend(@RequestParam Long dogloveNo,
-                            Principal principal,
-                            RedirectAttributes redirectAttributes
-                            ) {
+                                   Principal principal,
+                                   RedirectAttributes redirectAttributes
+    ) {
         if (principal == null) {
             return "redirect:/member/login";
         }
