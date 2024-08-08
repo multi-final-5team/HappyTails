@@ -16,6 +16,8 @@ package com.multi.happytails.patrol.controller;
 
 
 import com.multi.happytails.authentication.model.dto.CustomUser;
+import com.multi.happytails.member.model.dto.MemberDTO;
+import com.multi.happytails.member.service.MemberService;
 import com.multi.happytails.patrol.model.dto.OnePatrolImgDTO;
 import com.multi.happytails.patrol.model.dto.PatrolDTO;
 import com.multi.happytails.patrol.model.dto.PatrolImgDTO;
@@ -54,6 +56,9 @@ public class PatrolController {
      */
     @Autowired
     UploadService uploadService;
+
+    @Autowired
+    MemberService memberService;
 
     /**
      * methodName : patrol
@@ -188,9 +193,10 @@ public class PatrolController {
 
         PatrolDTO patrolDTO = patrolService.findOnePatrolByPatrolNo(parolNo);
 
-        if (customUser != null){
-            patrolDTO.setUserId(customUser.getId());
-        }
+        MemberDTO memberDTO = memberService.findMemberByUserNo(patrolDTO.getUserNo());
+
+        patrolDTO.setUserId(memberDTO.getId());
+
 
         onePatrolImgDTO.setPatrolDTO(patrolDTO);
 

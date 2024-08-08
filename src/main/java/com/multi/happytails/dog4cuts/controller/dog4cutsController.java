@@ -4,6 +4,7 @@ import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.dog4cuts.model.dto.Dog4CutsDTO;
 import com.multi.happytails.dog4cuts.model.dto.Dog4CutsImgDTO;
 import com.multi.happytails.dog4cuts.service.Dog4CutsService;
+import com.multi.happytails.member.service.MemberService;
 import com.multi.happytails.patrol.model.dto.PatrolDTO;
 import com.multi.happytails.patrol.model.dto.PatrolImgDTO;
 import com.multi.happytails.upload.model.dto.UploadDto;
@@ -39,6 +40,9 @@ public class dog4cutsController {
 
     @Autowired
     UploadService uploadService;
+
+    @Autowired
+    MemberService memberService;
 
     @RequestMapping("dog4cutsview")
     public void dog4cutsview(){
@@ -85,6 +89,7 @@ public class dog4cutsController {
 
         for (int i = 0; i < list.size(); i++) {
             dog4cutsNoList.add(list.get(i).getDog4cutsNo());
+            list.get(i).setUserId(memberService.findMemberByUserNo(list.get(i).getUserNo()).getId());
         }
 
 

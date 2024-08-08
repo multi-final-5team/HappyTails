@@ -75,6 +75,8 @@
         $('#location').val(data.location);
 
 
+
+
         if(username == data.userId){
             $('#formId').append(
             '<button class="btn btn-warning" type="button" id="formUpdateSubmitBtn" onclick="updateSubmit()">수정</button>'
@@ -82,6 +84,12 @@
             $('#formId').append(
             '<button class="btn btn-danger" type="button" id="formDeleteSubmitBtn" onclick="deleteSubmit()">삭제</button>'
             );
+        }
+        else{
+            $("#name" ).prop('readonly', true);
+            $("#age" ).prop('readonly', true);
+            $("#breed" ).prop('readonly', true);
+            $("#location" ).prop('readonly', true);
         }
 
 

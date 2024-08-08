@@ -9,13 +9,18 @@
 
 <style>
     .card{
-        width: 50%;
+        width: 45%;
+        margin: 2.5%;
     }
 
     #dog4cutsdiv{
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
+    }
+
+    .imgDiv{
+        position: relative;
     }
 
     .imgDiv img{
@@ -29,7 +34,10 @@
     }
 
     .divbtn{
+        position: absolute;
 
+        top: 80%;
+        left: 80%;
     }
 
 
@@ -45,6 +53,8 @@
 
 <main>
 
+    <h1 class="mb-4">견생네컷</h1>
+
     <button class="btn btn-primary" id="goPatrolInsertBtn" onclick="goDog4CutsInsert()" sec:authorize="isAuthenticated()">생성</button>
 
     <div id="dog4cutsdiv">
@@ -53,7 +63,9 @@
 
 </main>
 
-<script>
+<script th:inline="javascript">
+    var username = [[${#authentication.name}]];
+
     $(document).ready(function(){
 
         $.ajax({
@@ -97,16 +109,18 @@
                         '<img src="/images/X/' + img + '">'
                     );
 
-                    $('#' + 'divContent' + index).append(
+                    $('#divimg' + index).append(
                         $('<div>').prop({
                             id: 'divbtn' + index,
-                            className: ''
+                            className: 'divbtn'
                         })
                     );
 
-                    $('#divbtn' + index).append(
+                    if(username == data[index].userId){
+                        $('#divbtn' + index).append(
                         '<button class="btn btn-danger" onclick="deleteDog4Cuts(' + data[index].dog4cutsNo + ')">삭제</button>'
-                    );
+                        );
+                    }
             }
         },
         error: function (xhr){

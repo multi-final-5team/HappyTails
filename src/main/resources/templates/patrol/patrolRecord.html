@@ -15,8 +15,11 @@
 
 <h1 class="mb-4">순찰일지</h1>
 
-    <input class="form-control" type="text" id="searchinput">
-    <button class="btn btn-info" id="btnserch" onclick="search()">검색</button>
+    <div style="width: 30%;margin-left:auto;">
+        <input class="form-control" type="text" id="searchinput">
+        <button class="btn btn-info" id="btnserch" onclick="search()" style="margin-left:70%; width: 30%;">검색</button>
+    </div>
+
     <button class="btn btn-primary" id="goPatrolRecordInsertBtn" sec:authorize="isAuthenticated()">생성</button>
 
 <div id="patrolRecordDiv">
@@ -58,7 +61,7 @@
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '<sub class="card-text">글쓴이: ' + data[index].userNo + '</sub><br>'
+                        '<sub class="card-text">글쓴이: ' + data[index].userId + '</sub><br>'
                     );
 
                     $('#' + 'divbody' + index).append(

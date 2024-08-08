@@ -40,6 +40,11 @@ public class MemberService {
         return memberDAO.findMemberById(id);
     }
 
+    //넘버 > 유저정보 필요해서 임의로 작성
+    public MemberDTO findMemberByUserNo(int no) {
+        return memberDAO.findMemberByUserNo(no);
+    }
+
     /**
      * methodName : findUserByDetails
      * author : Eunsoo Lee

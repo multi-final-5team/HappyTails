@@ -16,6 +16,8 @@ package com.multi.happytails.patrol.controller;
 
 
 import com.multi.happytails.authentication.model.dto.CustomUser;
+import com.multi.happytails.member.model.dto.MemberDTO;
+import com.multi.happytails.member.service.MemberService;
 import com.multi.happytails.patrol.model.dto.*;
 import com.multi.happytails.patrol.service.PatrolPlaceService;
 import com.multi.happytails.patrol.service.PatrolRecordReplyService;
@@ -56,6 +58,9 @@ public class PatrolRecordController {
 
     @Autowired
     PatrolRecordReplyService patrolRecordReplyService;
+
+    @Autowired
+    MemberService memberService;
 
     /**
      * The Upload service.
@@ -226,6 +231,14 @@ public class PatrolRecordController {
     public List<PrecordDTO> findAllPatrol(){
 
         List<PrecordDTO> list = patrolRecordService.findAllPatrolRecord();
+
+        for(PrecordDTO dto : list){
+            MemberDTO memberDTO = memberService.findMemberByUserNo(dto.getUserNo());
+
+            String userName = memberDTO.getName();
+
+            dto.setUserId(userName);
+        }
 
         return list;
     }

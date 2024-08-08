@@ -21,9 +21,8 @@
     <input type="hidden" id="precordNo" name="precordNo">
     <input type="hidden" id="userNo" name="userNo">
 
-    <div class="mb-3">
+    <div class="mb-3" id="titleDiv">
     <label class="form-label">제목</label><br>
-    <input class="form-control" type="text" id="title" name="title"><br>
     </div>
 
     <div class="mb-3">
@@ -32,9 +31,8 @@
     </select><br>
     </div>
 
-    <div class="mb-3">
+    <div class="mb-3" id="contentDiv">
     <label class="form-label">내용</label><br>
-    <input class="form-control" type="text" id="content" name="content"><br>
     </div>
 
     <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
@@ -150,15 +148,15 @@
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '<b class="card-text">작성자: ' + data[index].userNo + '</b><br>'
+                        '<b class="card-text">작성자: ' + data[index].userName + '</b><br>'
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '<sub class="card-text">내용: ' + data[index].content + '</sub><br>'
+                        '<sub class="card-text">작성시간: ' + data[index].createtime + '</sub><br>'
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '<sub class="card-text">작성시간: ' + data[index].createtime + '</sub>'
+                        '내용<br><textarea class="card-text" style="resize:none;" readonly>' + data[index].content + '</textarea>'
                     );
 
                     $('#' + 'divbody' + index).append(
@@ -264,15 +262,32 @@
                 var imgs = dto.uploadDtos;
 
                 $('#userNo').val(data.userNo);
-                $('#title').val(data.title);
-                $('#content').val(data.content);
 
                 if(username == data.userId){
+                    $('#titleDiv').append(
+                        '<input class="form-control" type="text" id="title" name="title" ><br>'
+                    );
+
+                    $('#title').val(data.title);
+
+                    $('#contentDiv').append(
+                        '<textarea class="form-control" type="text" id="content" name="content" rows="10" >' + data.content +'</textarea><br>'
+                    );
                     $('#formId').append(
                     '<button class="btn btn-warning" type="button" id="formUpdateSubmitBtn" onclick="updateSubmit()">수정</button>'
                     );
                     $('#formId').append(
                     '<button class="btn btn-danger" type="button" id="formDeleteSubmitBtn" onclick="deleteSubmit()">삭제</button>'
+                    );
+                }
+                else{
+                    $('#titleDiv').append(
+                        '<input class="form-control" type="text" id="title" name="title" readonly><br>'
+                    );
+
+                    $('#title').val(data.title);
+                    $('#contentDiv').append(
+                        '<textarea class="form-control" type="text" id="content" name="content" rows="10" style="resize:none;" readonly>' + data.content +'</textarea><br>'
                     );
                 }
 
@@ -289,7 +304,8 @@
                         '<img id="img' + indexImg + '" src="/images/Y/' + imgs[indexImg].storedFileName + '">'
                     );
 
-                    //이미지 수정 버튼
+                    if(username == data.userId){
+                        //이미지 수정 버튼
                     $('#imgdiv' + indexImg).append(
                         '<button type="button" class="btn btn-success" id="btnUpdate' + indexImg + '" name="btnUpdate' + indexImg + '" onclick="imgUpdate(' + imgs[indexImg].imageNo + ',' + indexImg + ')">수정</button>'
                     );
@@ -298,9 +314,7 @@
                     $('#imgdiv' + indexImg).append(
                         '<button type="button" class="btn btn-danger" id="btnDelete' + indexImg + '" name="btnDelete' + indexImg + '" onclick="imgDelete(' + imgs[indexImg].imageNo + ',' + indexImg + ')">삭제</button>'
                     );
-
-
-
+                    }
                 }
 
             },
@@ -396,7 +410,7 @@
     }
 
     function showReply(replyDTO , index) {
-        if(replyShowFlag != index){
+        if((replyShowFlag != index)&&(username == replyDTO.userId)){
             $('.replyShowDiv').empty();
 
             var replyTargetNum = $('#precordNo').val();

@@ -41,6 +41,24 @@
         WHERE USER_ID = #{memberId}
     </select>
 
+    <select id="findMemberByUserNo" resultMap="memberResultMap">
+        SELECT
+        USER_NO,
+        USER_ID,
+        USER_PASSWORD,
+        USER_EMAIL,
+        USER_NAME,
+        USER_NICKNAME,
+        USER_GENDER,
+        USER_TEL,
+        USER_SIGNUP_DATE,
+        USER_DELETE_ACCOUNT_DATE,
+        USER_DELETE_ACCOUNT_FLAG,
+        USER_ROLE
+        FROM TB_USERS
+        WHERE USER_NO = #{no}
+    </select>
+
     <select id="findUserByDetails" resultMap="memberResultMap">
         SELECT
             USER_NO,

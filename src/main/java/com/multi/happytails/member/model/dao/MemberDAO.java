@@ -61,4 +61,5 @@ public interface MemberDAO {
 
     void updateMember(MemberDTO member);
 
-    }
+    MemberDTO findMemberByUserNo(int no);
+}

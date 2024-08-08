@@ -19,5 +19,6 @@ import java.sql.Timestamp;
 public class Dog4CutsDTO {
     private int dog4cutsNo;
     private int userNo;
+    private String userId;
     private Timestamp createtime;
 }

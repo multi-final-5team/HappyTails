@@ -33,24 +33,28 @@
 <h1 class="mb-4">멍지도</h1>
 
 
-<div id="map" style="width:100%;height:350px;"></div>
+    <div style="display: flex;">
+        <div id="map" style="width:70%;height:350px;"></div>
+        <div style="width:30%;">
+            <select class="form-select" name="serchplace" id="serchplace" style="margin: 1% auto; width:70%;">
+                <option value="동물병원">동물병원</option>
+                <option value="도보여행">산책로</option>
+                <option value="애견카페">애견카페</option>
+                <option value="반려동물미용">반려동물미용</option>
+            </select>
 
-<select class="form-select" name="serchplace" id="serchplace">
-    <option value="동물병원">동물병원</option>
-    <option value="도보여행">산책로</option>
-    <option value="애견카페">애견카페</option>
-    <option value="반려동물미용">반려동물미용</option>
-</select>
+            <select class="form-select" name="radius" id="radius" style="margin: 1% auto; width:70%;">
+                <option value="1000">1Km</option>
+                <option value="5000">5Km</option>
+                <option value="10000">10Km</option>
+                <option value="15000">15Km</option>
+                <option value="20000">20Km</option>
+            </select>
 
-<select class="form-select" name="radius" id="radius">
-    <option value="1000">1Km</option>
-    <option value="5000">5Km</option>
-    <option value="10000">10Km</option>
-    <option value="15000">15Km</option>
-    <option value="20000">20Km</option>
-</select>
+            <button class="btn btn-info" id="btnserch" style="margin: 0 0 0 15%;">검색</button>
+        </div>
+    </div>
 
-<button class="btn btn-info" id="btnserch">검색</button>
 <div id="placenumdiv"></div>
 <input type="hidden" id="hidden_lat" value="">
 <input type="hidden" id="hidden_lng" value="">
