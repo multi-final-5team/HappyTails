@@ -92,4 +92,10 @@
     <select id="findDogReplyList">
         SELECT * FROM TB_FINDDOG_REPLY WHERE FINDDOG_NO = #{findDogNo} ORDER BY FINDDOG_REPLY_NO DESC
     </select>
+
+    <update id="findDogStateUpdate">
+        UPDATE TB_FINDDOG SET
+            STATE = 'Y'
+        WHERE FINDDOG_NO = #{findDogNo}
+    </update>
 </mapper>

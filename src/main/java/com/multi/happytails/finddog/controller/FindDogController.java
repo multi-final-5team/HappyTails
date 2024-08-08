@@ -151,6 +151,15 @@ public class FindDogController {
         return "삭제 되었습니다.";
     }
 
+    @PostMapping("/stateUpdate")
+    @ResponseBody
+    public String findDogStateUpdate(@RequestParam("findDogNo") long findDogNo) {
+
+        findDogService.findDogStateUpdate(findDogNo);
+
+        return "해결 상태로 변경 되었습니다.";
+    }
+
     @PostMapping("/update")
     @ResponseBody
     public String findDogUpdate(@ModelAttribute FindDogDto findDogDto,
