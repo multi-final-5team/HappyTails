@@ -59,4 +59,8 @@ public class FindDogService {
     public List<FindDogReplyDto> findDogReplyList(long findDogNo) {
         return findDogMapper.findDogReplyList(findDogNo);
     }
+
+    public int findDogStateUpdate(long findDogNo) {
+        return findDogMapper.findDogStateUpdate(findDogNo);
+    }
 }
