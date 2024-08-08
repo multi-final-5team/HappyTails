@@ -49,4 +49,5 @@ public class PatrolService {
     public int patrolDelete(int pnum) {
         return patrolDAO.patrolDelete(pnum);
     }
+
 }

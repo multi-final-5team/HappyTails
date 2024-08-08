@@ -21,6 +21,11 @@
 
 <h1 class="mb-4">순찰대 관리</h1>
 
+    <div style="width: 30%;margin-left:auto;">
+        <input class="form-control" type="text" id="searchinput">
+        <button class="btn btn-info" id="btnserch" onclick="search()" style="margin-left:70%; width: 30%;">검색</button>
+    </div>
+
 <div id="patroldiv" sec:authorize="hasRole('ROLE_ADMIN')">
 
 </div>

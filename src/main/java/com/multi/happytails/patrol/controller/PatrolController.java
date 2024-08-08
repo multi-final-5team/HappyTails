@@ -140,12 +140,12 @@ public class PatrolController {
      * author : 우재협
      * 설명 : 모든 순찰대 조회
      *
-     * @param model
+     *
      * @return patrol img dto
      */
     @GetMapping(value="findAllPatrol", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public PatrolImgDTO findAllPatrol(Model model , @AuthenticationPrincipal CustomUser customUser){
+    public PatrolImgDTO findAllPatrol(){
 
         List<UploadDto> uploadDtos = new ArrayList<>();
 
