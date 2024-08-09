@@ -52,9 +52,13 @@
         </dl>
         <!-- 작성자만 보이게 -->
         <div th:if="${findDogDto.writerId} == ${#authentication.principal.username}">
+            <th:block th:if="${findDogDto.state} == 'N'">
+                <input type="button" class="btn btn-warning float-end" id="stateUpdateBtn" value="해결">
+            </th:block>
             <input type="button" class="btn btn-danger float-end" id="deleteBtn" value="삭제">
             <input type="button" class="btn btn-success float-end" id="updatePageBtn" value="수정">
         </div>
+
         <br>
         <div class="mb-3">
             <label for="content" class="form-label">댓글</label>
@@ -122,6 +126,23 @@
         });
         // 수정 버튼 End
 
+        // 해결 버튼 Start
+        $('#stateUpdateBtn').click(function(){
+            if (confirm("해결 상태로 변경 하시겠습니까?")) {
+                $.ajax({
+                    url: "/finddog/stateUpdate",
+                    type: 'POST',
+                    data: {"findDogNo": findDogNo},
+                    success: function (result) {
+                        alert(result);
+                        location.href='/finddog/detail?findDogNo='+findDogNo;
+                    }
+                });
+            }
+        });
+        // 해결 버튼 End
+
+
         // 댓글 작성 버튼 Start
         $('#createBtn').click(function(){
             let content = $('#content').val();
@@ -146,6 +167,24 @@
         });
         // 댓글 작성 버튼 End
 
+        // 댓글 삭제 버튼 Start
+        $('#tableDiv').on('click','.reply-delete-btn',function(){
+
+            let findReplyNo = $(this).closest('tr').data('replyNo');
+
+            /*if (confirm("삭제 하시겠습니까?")) {
+                $.ajax({
+                    url: "/finddog/replyDelte",
+                    type: 'POST',
+                    data: {"findDogReplyNo": findDogReplyNo},
+                    success: function (result) {
+                        alert(result);
+                        location.href = "/finddog/main";
+                    }
+                });
+            }*/
+        });
+        // 댓글 삭제 버튼 End
     });
 
     // 댓글 리스트 불러오기 Start
@@ -169,16 +208,18 @@
                                 <th scope="col">생성 날짜</th>
                                 <th scope="col">작성자</th>
                                 <th scope="col">내용</th>
+                                <th scope="col">삭제</th>
                             </tr>
                         </thead>
                     `;
                 for(let i = 0; i < result.length; i++) {
                     template += `
                             <tbody>
-                                <tr class="listRow">
+                                <tr class="listRow" data-reply-no="`+result[i].findReplyNo+`">
                                     <td>`+dataFormat1(result[i].createDate)+`</td>
                                     <td>`+result[i].writerId+`</td>
                                     <td>`+result[i].content+`</td>
+                                    <td><input type="button" class="btn btn-danger reply-delete-btn" value="삭제"</td>
                                 </tr>
                             </tbody>
                         `;

@@ -40,4 +40,6 @@ public interface FindDogMapper {
     int findDogReplyWrite(FindDogReplyDto findDogReplyDto);
 
     List<FindDogReplyDto> findDogReplyList(long findDogNo);
+
+    int findDogStateUpdate(long findDogNo);
 }
