@@ -25,4 +25,10 @@
         SELECT * FROM TB_DOGNUM WHERE DOGREGNO = #{dogregno}
     </select>
 
+    <!-- 동물 등록 번호 존재 여부 확인 쿼리 -->
+    <select id="isDogRegNoExists" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM TB_DOGNUM
+        WHERE DOGREGNO = #{dogRegNo}
+    </select>
 </mapper>

@@ -2,64 +2,39 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
-    <title>새꾸 자랑 글쓰기</title>
-    <link href="https://fonts.googleapis.com/css2?family=Gaegu&display=swap" rel="stylesheet">
+    <title>내 새꾸 자랑 글쓰기</title>
     <style>
-        body {
-            font-family: 'Gaegu', cursive;
-            background-color: #FFF5EE;
-            background-image: url('paw-pattern.png');
-        }
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            background-color: white;
-        }
-        .btn {
-            border-radius: 20px;
-            font-size: 1.1em;
-        }
         .img-preview {
-            width: 150px;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 10px;
-            border: 3px solid #FFD1DC;
-        }
-        h1 {
-            color: #FF69B4;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-        label {
-            color: #4169E1;
-            font-weight: bold;
-        }
+          width: 150px; /* 원하는 너비로 설정 */
+          height: 150px; /* 원하는 높이로 설정 */
+          object-fit: cover; /* 이미지 비율을 유지하며 크기에 맞게 조정 */
+      }
     </style>
 </head>
 <body class="container mt-5">
 <menu th:replace="fragments/head :: menu"></menu>
 
-<h1 class="mb-4 text-center">🐾 내 새꾸 자랑하기 🐾</h1>
+<h1 class="mb-4 text-center">🐾 내 새꾸 자랑하기 게시글 작성 🐾</h1>
+<h3 class="mb-4 text-center">우리 아이의 사랑스러운 순간들을 자랑하시개! 🐶</h3>
 
 <div class="card">
     <div class="card-body">
         <form id="submitForm" action="/community/doglove" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="title" class="form-label">🏷️ 제목:</label>
-                <input type="text" id="title" name="title" class="form-control" required placeholder="제목을 입력해주시개">
-            </div>
+                <input type="text" id="title" name="title" class="form-control" required placeholder="제목을 입력해주시개"></div>
             <div class="mb-3">
                 <label for="content" class="form-label">📝 내용:</label>
                 <textarea id="content" name="content" class="form-control" rows="5" required placeholder="내용을 입력해주시개"></textarea>
             </div>
             <div class="mb-3">
-                <label for="imageInput" class="form-label">🖼️ 귀여운 사진:</label>
+                <label for="imageInput" class="form-label">사진:</label>
                 <input type="file" id="imageInput" multiple class="form-control">
             </div>
             <div id="imgAddDiv" class="row g-2">
                 <!-- 이미지 미리보기 -->
             </div>
-            <button type="submit" class="btn btn-primary mt-3" onsubmit="return confirm('우리 강아지 자랑글을 저장할까요?');">🐶 자랑하기</button>
+            <button type="submit" class="btn btn-primary mt-3" onsubmit="return confirm('게시글을 저장할까요?');">저장하기</button>
         </form>
     </div>
 </div>
@@ -80,13 +55,13 @@
                     reader.onload = function(e) {
                         $('#imgAddDiv').append(
                             `<div class="col-3 mb-2">
-                                <img src="${e.target.result}" alt="Selected Image" class="img-preview">
+                                <img src="${e.target.result}" alt="Selected Image" class="img-thumbnail">
                             </div>`
                         );
                     }
                     reader.readAsDataURL(file);
                 } else {
-                    alert('강아지 사진만 선택해주세요 🐾');
+                    alert('이미지 파일만 선택해주세요');
                 }
             });
         });
@@ -100,22 +75,32 @@
             formData.append('title', title);
             formData.append('content', content);
 
+            if (title.trim() === '' || content.trim() === '') {
+            alert('제목과 내용은 필수 입력 항목입니다.');
+            return;
+            }
+
             imageFiles.forEach(file => {
                 formData.append('imageFiles', file);
             });
 
-            $.ajax({
+      $.ajax({
                 url: "/community/doglove",
                 processData: false,
                 contentType: false,
                 type: 'POST',
                 data: formData,
-                success: function(data) {
-                    alert('성공적으로 등록되었어요! 🎉');
-                    location.href = '/community/doglove';
+                success: function(response) {
+                    alert('성공적으로 등록되었습니다.');
+                    window.location.href = '/community/doglove';
+                },
+                error: function(xhr, status, error) {
+                    alert('등록에 실패했습니다. 다시 시도해 주세요.');
                 }
             });
         });
     });
 </script>
+<footer th:replace="fragments/head :: footer"></footer>
+
 </html>

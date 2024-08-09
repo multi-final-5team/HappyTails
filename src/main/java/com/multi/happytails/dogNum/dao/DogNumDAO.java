@@ -26,4 +26,8 @@ public interface DogNumDAO {
 
 
     DogloveDTO findById(Long dogRegNo);
+
+    boolean existsByDogregno(String dogRegNo);
+
+    boolean isDogRegNoExists(String dogRegNo);
 }

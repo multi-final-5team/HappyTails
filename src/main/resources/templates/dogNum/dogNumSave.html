@@ -62,12 +62,16 @@
 </head>
 <body>
 <div class="certificate" id="certificate">
-    <h1>댕댕이 신분증</h1>
+    <h1>댕댕이 등록증</h1>
     <div id="images-container">
+        <!-- 업로드된 이미지 리스트 -->
         <div th:each="uploadDto : ${uploadDtoList}" class="col-md-4 mb-3">
-            <img th:src="@{/images/N/{file}(file=${uploadDto.storedFileName})}" class="img-fluid rounded">
+            <img th:src="@{/images/N/{file}(file=${uploadDto.storedFileName})}" class="img-fluid rounded" alt="Image">
         </div>
-    </div>
+
+        <div th:each="uploadDto : ${imageFiles}" class="col-md-4 mb-3">
+            <img th:src="@{/images/N/{file}(file=${uploadDto.storedFileName})}" class="img-fluid" alt="Image">
+        </div>
     <p><strong>이름:</strong> <span th:text="${dogNm}"></span></p>
     <p><strong>등록 번호:</strong> <span th:text="${dogRegNo}"></span></p>
     <p><strong>품종:</strong> <span th:text="${kindNm}"></span></p>

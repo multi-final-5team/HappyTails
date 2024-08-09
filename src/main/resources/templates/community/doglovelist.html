@@ -3,7 +3,6 @@
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
     <title>내 새꾸 자랑 게시판 목록</title>
-    <link href="https://fonts.googleapis.com/css2?family=Gaegu&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Gaegu', cursive;
@@ -50,7 +49,8 @@
         </form>
     </div>
     <div>
-        <a href="/community/doglove/create" class="btn btn-primary btn-sm me-2">🦴 새 글 작성하기</a>
+        <a href="/community/doglove/create" onclick="return checkLogin()" class="btn btn-primary btn-sm me-2">🦴 새 글 작성하기</a>
+
     </div>
 </div>
 
@@ -59,16 +59,30 @@
     <div class="col-md-4 mb-4" th:each="doglove : ${dogloves}">
         <div class="card">
             <div class="card-body">
+                <p class="card-text"><small class="text-muted">게시글 번호: <span class="badge bg-secondary" th:text="${doglove.dogloveNo}"></span></small></p>
+                <div th:if="${dogloveImages != null and dogloveImages.get(doglove.dogloveNo) != null and !dogloveImages.get(doglove.dogloveNo).empty}" class="mb-3">
+                    <img th:src="@{/images/L/{file}(file=${dogloveImages.get(doglove.dogloveNo)[0].storedFileName})}" class="img-fluid rounded" alt="대표 이미지">
+                </div>
                 <h5 class="card-title" th:text="${doglove.title}"></h5>
                 <h6 class="card-subtitle mb-2 text-muted" th:text="${doglove.userId}"></h6>
                 <p class="card-text" th:text="${#strings.abbreviate(doglove.content, 50)}"></p>
                 <p class="card-text"><small class="text-muted" th:text="${#temporals.format(doglove.createTime, 'yyyy-MM-dd')}"></small></p>
                 <a th:href="@{/community/doglove/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}" class="btn btn-sm btn-outline-primary">자세히 보기</a>
                 <span class="badge bg-primary float-end" th:text="${doglove.recommendCount + ' ❤️'}"></span>
+                <div th:if="${#authentication.name == 'admin'}" class="mt-2">
+
+                    <a th:href="@{/doglove/delete/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}" class="btn btn-sm btn-danger" onclick="return confirmDelete();" >삭제</a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 </body>
+<footer th:replace="fragments/head :: footer"></footer>
+<script>
+    function confirmDelete() {
+        return confirm("삭제하시겠습니까?");
+    }
+</script>
 </html>

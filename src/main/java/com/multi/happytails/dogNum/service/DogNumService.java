@@ -38,4 +38,10 @@ public class DogNumService {
     public DogloveDTO findById(Long dogRegNo) {
         return dogNumDAO.findById(dogRegNo);
     }
+
+
+    public boolean isDogRegNoExists(String dogRegNo) {
+        return dogNumDAO.isDogRegNoExists(dogRegNo);
+
+    }
 }

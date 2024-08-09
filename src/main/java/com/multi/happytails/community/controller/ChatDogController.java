@@ -69,9 +69,7 @@ public class ChatDogController {
 
     @GetMapping("/{chatdogNo}")
     public String chatdogDetail(@PathVariable("chatdogNo") Long chatdogNo,
-                                Model model,
-                                RedirectAttributes redirectAttributes,
-                                Principal principal) {
+                                Model model) {
 
         ChatDogDTO chatdog = chatDogService.findById(chatdogNo);
         //댓글 조회
@@ -106,7 +104,7 @@ public class ChatDogController {
     @PostMapping
     public String save(@ModelAttribute ChatDogDTO chatDogDTO,
                        @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles,
-                       Principal principal) {
+                       Principal principal, Model model) {
 
         String userId = principal.getName();
         chatDogDTO.setUserId(userId);
@@ -115,6 +113,11 @@ public class ChatDogController {
         chatDogDTO.setCategoryCode(categoryCode);
         chatDogDTO.setCreateTime(LocalDateTime.now());
 
+        if (chatDogDTO.getTitle() == null || chatDogDTO.getTitle().trim().isEmpty() ||
+                chatDogDTO.getContent() == null || chatDogDTO.getContent().trim().isEmpty()) {
+            model.addAttribute("errorMessage", "제목과 내용은 필수 입력 항목입니다.");
+            return "community/chatdogcreate"; //
+        }
         UploadDto uploadDto = new UploadDto();
         uploadDto.setForeignNo(chatDogService.insert(chatDogDTO));
 
@@ -165,16 +168,22 @@ public class ChatDogController {
             return "redirect:/community/chatdog";
         }
 
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(IMAGE_CODE, chatdogNo);
+
         model.addAttribute("chatdog", chatdog);
+        model.addAttribute("uploadDtos", uploadDtos);
+
 
         return "community/chatdogupdate";
     }
 
     @PostMapping("/update/{chatdogNo}")
     public String update(@PathVariable  Long chatdogNo,
-                         @RequestParam String title,
-                         @RequestParam String content,
-                         @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles,
+                         @ModelAttribute ChatDogDTO chatDogDTO,
+                         @RequestParam(value = "imageFiles") @Nullable List<MultipartFile> imageFiles,
+                         @RequestParam(value = "imageUpdateFiles") @Nullable List<MultipartFile> imageUpdateFiles,
+                         @RequestParam(value = "imageDeleteImageNo") @Nullable List<Long> imageDeleteImageNo,
+                         @RequestParam(value = "imageUpdateImageNo") @Nullable List<Long> imageUpdateImageNo,
                          Principal principal) {
 
         String userId = principal.getName();
@@ -185,19 +194,37 @@ public class ChatDogController {
             return "redirect:/community/chatdog";
         }
 
-        chatdog.setTitle(title);
-        chatdog.setContent(content);
-        chatDogService.update(chatdog);
+        int result = chatDogService.update(chatDogDTO);
 
-        // 이미지 처리
-        if (imageFiles != null && !imageFiles.isEmpty()) {
-            UploadDto uploadDto = new UploadDto();
-            uploadDto.setForeignNo(chatdogNo);
-            uploadDto.setCategoryCode(IMAGE_CODE); // 이미지 카테고리 코드
+        if (result == 1) {
+            // 이미지 삭제
+            if (imageDeleteImageNo != null && !imageDeleteImageNo.isEmpty()) {
+                for (Long imageNo : imageDeleteImageNo) {
+                    uploadService.uploadDelete(imageNo);
+                }
+            }
 
-            for (MultipartFile file : imageFiles) {
-                uploadDto.setFile(file);
-                uploadService.uploadInsert(uploadDto); // 이미지 업로드 서비스
+            // 이미지 업데이트
+            if (imageUpdateFiles != null && !imageUpdateFiles.isEmpty() && imageUpdateImageNo != null) {
+                for (int i = 0; i < imageUpdateFiles.size(); i++) {
+                    if (i < imageUpdateImageNo.size()) {
+                        Long imageNo = imageUpdateImageNo.get(i);
+                        MultipartFile file = imageUpdateFiles.get(i);
+                        uploadService.uploadUpdate(imageNo, file);
+                    }
+                }
+            }
+
+            // 새 이미지 추가
+            if (imageFiles != null && !imageFiles.isEmpty()) {
+                UploadDto uploadDto = new UploadDto();
+                uploadDto.setForeignNo(chatDogDTO.getChatdogNo());
+                uploadDto.setCategoryCode(IMAGE_CODE);
+
+                for (MultipartFile file : imageFiles) {
+                    uploadDto.setFile(file);
+                    uploadService.uploadInsert(uploadDto);
+                }
             }
         }
 
@@ -220,8 +247,19 @@ public class ChatDogController {
 
     @GetMapping("/search")
     public String search(@RequestParam("keyword") String keyword, Model model) {
-        List<ChatDogDTO> results = chatDogService.search(keyword);
+        List<ChatDogDTO> results;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            results = chatDogService.findAllSortedByDate();
+        } else {
+            results = chatDogService.search(keyword.trim());
+        }
+
+
         model.addAttribute("chatdog", results);
+        model.addAttribute("keyword", keyword);
+
         return "community/chatdoglist";
     }
+
 }

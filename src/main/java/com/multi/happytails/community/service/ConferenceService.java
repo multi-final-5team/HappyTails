@@ -43,8 +43,8 @@ public class ConferenceService {
     public void cfcommendCount(Long conferenceNo, String userId) { conferenceDAO.cfcommendCount(conferenceNo);
     }
 
-    public List<ConferenceDTO>search(String keyword) {
-        return conferenceDAO.search(keyword);
+    public List<ConferenceDTO>cfsearch(String keyword) {
+        return conferenceDAO.cfsearch(keyword);
     }
 
     public void delete(Long conferenceNo) {

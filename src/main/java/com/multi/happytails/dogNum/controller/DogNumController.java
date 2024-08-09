@@ -63,6 +63,10 @@ public class DogNumController {
                                              @RequestParam String neuterYn,
                                              @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles,
                                              RedirectAttributes redirectAttributes) {
+        // 등록번호 중복 체크
+        if (dogNumService.isDogRegNoExists(dogRegNo)) {
+            return ResponseEntity.badRequest().body("동물 등록 번호가 이미 존재합니다.");
+        }
 
         DogNumDTO dogNumDTO = new DogNumDTO();
         dogNumDTO.setDogregno(dogRegNo);
@@ -86,28 +90,34 @@ public class DogNumController {
         return ResponseEntity.ok(message);
     }
 
-    @GetMapping("/dogNumSave")
+    @GetMapping("{dognumNo}")
     public String dogCertificate(
                                  @RequestParam("dogRegNo") String dogRegNo,
+                                 @PathVariable("dognumNo") Long dognumNo,
                                  Model model) {
-        // 강아지 정보를 조회
+                // 강아지 정보를 조회
         DogNumDTO dogInfo = dogNumService.getDogInfoByDogregno(dogRegNo);
 
-        List<UploadDto> uploadDtoList = uploadService.uploadSelect(IMAGE_CODE, Long.parseLong(dogRegNo));
+        List<UploadDto> uploadDtoList = uploadService.uploadSelect(IMAGE_CODE, Long.parseLong(String.valueOf(dognumNo)));
 
         if (dogInfo != null) {
             // 모델에 강아지 정보 추가
+            model.addAttribute("dognumNo", dogInfo.getDognumNo());
             model.addAttribute("dogRegNo", dogInfo.getDogregno());
             model.addAttribute("dogNm", dogInfo.getDognm());
             model.addAttribute("sexNm", dogInfo.getSexnm());
             model.addAttribute("kindNm", dogInfo.getKindnm());
             model.addAttribute("neuterYn", dogInfo.getNeuteryn());
             model.addAttribute("uploadDtoList", uploadDtoList);
+            System.out.println("dogRegNo: " + dogRegNo + ", dognumNo: " + dognumNo);
 
         } else {
             // 강아지 정보가 없는 경우 에러 처리
             model.addAttribute("errorMessage", "강아지 정보를 찾을 수 없습니다.");
         }
+
+
+
 
         return "dogNum/dogNumSave";
     }

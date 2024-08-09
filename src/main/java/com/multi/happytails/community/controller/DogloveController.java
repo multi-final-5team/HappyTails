@@ -110,9 +110,7 @@ public class DogloveController {
 
     @GetMapping("/{dogloveNo}")
     public String dogloveDetail(@PathVariable("dogloveNo") Long dogloveNo,
-                                Model model,
-                                RedirectAttributes redirectAttributes,
-                                Principal principal) {
+                                Model model) {
 
         DogloveDTO doglove = dogloveService.findById(dogloveNo);
         //댓글 조회
@@ -160,7 +158,7 @@ public class DogloveController {
     @PostMapping
     public String create(@ModelAttribute DogloveDTO dogloveDTO,
                          @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles,
-                         Principal principal) {
+                         Principal principal, Model model) {
 
         String userId = principal.getName();
         dogloveDTO.setUserId(userId);
@@ -168,6 +166,13 @@ public class DogloveController {
         //게시판 카테고리 코드
         dogloveDTO.setCategoryCode(categoryCode);
         dogloveDTO.setCreateTime(LocalDateTime.now());
+
+        if (dogloveDTO.getTitle() == null || dogloveDTO.getTitle().trim().isEmpty() ||
+                dogloveDTO.getContent() == null || dogloveDTO.getContent().trim().isEmpty()) {
+            model.addAttribute("errorMessage", "제목과 내용은 필수 입력 항목입니다.");
+            return "community/doglovecreate";
+        }
+
 
         UploadDto uploadDto = new UploadDto();
         uploadDto.setForeignNo(dogloveService.dogloveInsert(dogloveDTO));
@@ -206,7 +211,7 @@ public class DogloveController {
     }
 
     @GetMapping("/update/{dogloveNo}")
-    public String updateForm(@PathVariable Long dogloveNo, Model model, Principal principal ) {
+    public String updateForm(@PathVariable Long dogloveNo, Model model, Principal principal) {
         if (principal == null) {
             return "redirect:/member/login";
         }
@@ -281,8 +286,7 @@ public class DogloveController {
     }
 
     /**
-
-     /**
+     * /**
      * methodName : dogloveRecommend
      * author : Nayoung Yeo
      * description : 추천수 증가
@@ -306,8 +310,21 @@ public class DogloveController {
 
     @GetMapping("/search")
     public String search(@RequestParam("keyword") String keyword, Model model) {
-        List<DogloveDTO> results = dogloveService.search(keyword);
+        List<DogloveDTO> results;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // 공백만 입력된 경우 전체 데이터를 검색
+            results = dogloveService.findAllSortedByDate();
+        } else {
+            // 유효한 검색어가 있는 경우 해당 키워드로 검색
+            results = dogloveService.search(keyword.trim());
+        }
+
         model.addAttribute("dogloves", results);
+        model.addAttribute("keyword", keyword);
+
         return "community/doglovelist";
     }
+
 }
+
