@@ -24,4 +24,6 @@ public interface PatrolRecordDAO {
     int patrolRecordDelete(PrecordDTO precordDTO);
 
     int patrolRecordViewcountUpdate(@Param("precordNo") int precordNo, @Param("viewcount") int viewcount);
+
+    List<PrecordDTO> findPrecordBySearch(String searchword);
 }

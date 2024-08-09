@@ -18,6 +18,7 @@ import lombok.Data;
 public class PatrolDTO {
     private int patrolNo;
     private int userNo;
+    private String userId;
     private String name;
     private int age;
     private String breed;

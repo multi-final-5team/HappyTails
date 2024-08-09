@@ -31,12 +31,16 @@
 
 </main>
 
+<menu th:replace="fragments/head :: footer"></menu>
+
 <!-- Kakao Map API -->
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a76def1c0c0dd8e389a263fe93ef2974"></script>
 
 <script>
     var interval;
     var tracepoint = [];
+
+    var linePath = [];
 
     setLocation();
 
@@ -54,6 +58,43 @@
         // 지도 타입 컨트롤을 지도에 표시합니다
         map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
 
+        // 지도에 표시할 선을 생성합니다
+        var polyline = new kakao.maps.Polyline({
+        path: linePath, // 선을 구성하는 좌표배열 입니다
+        strokeWeight: 5, // 선의 두께 입니다
+        strokeColor: '#FFAE00', // 선의 색깔입니다
+        strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+        strokeStyle: 'solid' // 선의 스타일입니다
+        });
+
+        polyline.setMap(map);
+
+        // 지도에 클릭 이벤트를 등록합니다
+        // 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출합니다
+        kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+
+            // 클릭한 위도, 경도 정보를 가져옵니다
+            var latlng = mouseEvent.latLng;
+
+            var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
+            message += '경도는 ' + latlng.getLng() + ' 입니다';
+
+            console.log("위치 : " + latlng.getLat() + "/" + latlng.getLng());
+
+            var PlacePointDTO = {
+                latitude: latlng.getLat(),
+                longitude: latlng.getLng()
+            };
+
+
+
+            tracepoint.push(PlacePointDTO);
+            linePath.push(new kakao.maps.LatLng(latlng.getLat(), latlng.getLng()));
+            polyline.setPath(linePath);
+
+            console.log("총 길이: " + polyline.getLength());
+        });
+
 
     $(document).ready(function(){
         mapMove();
@@ -68,6 +109,17 @@
             traceStop();
         });
 
+        $('#btnclear').click(function(){
+            console.log("지우기");
+
+            interval = null;
+
+            tracepoint = [];
+            linePath = [];
+
+            polyline.setPath(linePath);
+        });
+
         $('#btnmake').click(function(){
             console.log(tracepoint);
             if(tracepoint.length != 0){
@@ -76,9 +128,8 @@
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
                     data: JSON.stringify(tracepoint),
-                    dataType: "json",
                     success: function(){
-                        console.log("ajax 성공");
+                        goPatrolRecordPlace();
                     },
                     error: function(err){
     	                console.log(err);
@@ -88,6 +139,10 @@
         });
 
     }); // ready()
+
+    function goPatrolRecordPlace() {
+        location.href = "/patrolRecordPlace/patrolRecordPlace";
+    }
 
 
     //지도 이동
@@ -142,8 +197,11 @@
                 longitude: pointlng
             };
 
-            tracepoint.push(PlacePointDTO);
 
+
+            tracepoint.push(PlacePointDTO);
+            linePath.push(new kakao.maps.LatLng(pointlat, pointlng));
+            polyline.setPath(linePath);
         }, 1000);
     }
 

@@ -9,6 +9,12 @@
         FROM tb_precord;
     </select>
 
+    <select id="findPrecordBySearch">
+        SELECT precord_no AS precordNo, user_no AS userNo, title, content, viewcount
+        FROM tb_precord
+        WHERE title LIKE #{ searchword }
+    </select>
+
     <select id="findOnePatrolRecordByPrecordNo">
         SELECT precord_no AS precordNo, user_no AS userNo, title, content, viewcount
         FROM tb_precord
@@ -46,5 +52,7 @@
         DELETE FROM tb_precord
         WHERE precord_no= #{precordNo};
     </delete>
+
+
 
 </mapper>

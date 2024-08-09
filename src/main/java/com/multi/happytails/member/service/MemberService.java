@@ -21,6 +21,19 @@ public class MemberService {
         return memberDAO.findMemberById(id);
     }
 
+    //넘버 > 유저정보 필요해서 임의로 작성
+    public MemberDTO findMemberByUserNo(int no) {
+        return memberDAO.findMemberByUserNo(no);
+    }
+
+    /**
+     * methodName : findUserByDetails
+     * author : Eunsoo Lee
+     * description : 입력된 회원 정보로 회원의 필요한 정보 찾기
+     *
+     * @param memberDTO 조회할 회원 정보를 담은 MemberDTO 객체
+     * @return 조회된 회원 정보를 담은 MemberDTO 객체
+     */
     public MemberDTO findUserByDetails(MemberDTO memberDTO) {
         System.out.println(memberDTO);
         MemberDTO memberDTO2 = memberDAO.findUserByDetails(memberDTO);

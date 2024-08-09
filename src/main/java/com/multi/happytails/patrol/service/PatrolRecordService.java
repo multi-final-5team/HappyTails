@@ -55,4 +55,9 @@ public class PatrolRecordService {
 
         return patrolRecordDAO.patrolRecordViewcountUpdate(precordNo, viewcount);
     }
+
+    public List<PrecordDTO> findPrecordBySearch(String searchword) {
+
+        return patrolRecordDAO.findPrecordBySearch(searchword);
+    }
 }

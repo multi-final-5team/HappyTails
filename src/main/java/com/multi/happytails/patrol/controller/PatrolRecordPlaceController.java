@@ -102,7 +102,6 @@ public class PatrolRecordPlaceController {
 
 
 
-
     // 두 좌표 사이의 거리를 구하는 함수
     // dsitance(첫번쨰 좌표의 위도, 첫번째 좌표의 경도, 두번째 좌표의 위도, 두번째 좌표의 경도)
     public double distance(double lat1, double lon1, double lat2, double lon2){

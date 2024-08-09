@@ -16,6 +16,8 @@ package com.multi.happytails.patrol.controller;
 
 
 import com.multi.happytails.authentication.model.dto.CustomUser;
+import com.multi.happytails.member.model.dto.MemberDTO;
+import com.multi.happytails.member.service.MemberService;
 import com.multi.happytails.patrol.model.dto.OnePatrolImgDTO;
 import com.multi.happytails.patrol.model.dto.PatrolDTO;
 import com.multi.happytails.patrol.model.dto.PatrolImgDTO;
@@ -55,6 +57,9 @@ public class PatrolController {
     @Autowired
     UploadService uploadService;
 
+    @Autowired
+    MemberService memberService;
+
     /**
      * methodName : patrol
      * author : 우재협
@@ -85,6 +90,11 @@ public class PatrolController {
 
     }
 
+    @RequestMapping("patrolAdmin")
+    public void patrolAdmin(){
+
+    }
+
     /**
      * methodName : makepatrol
      * author : 우재협
@@ -96,7 +106,7 @@ public class PatrolController {
      * @return string
      */
     @PostMapping("makepatrol")
-    public String makepatrol(PatrolDTO patrolDTO , @RequestParam(value = "imageFiles",required = false) List<MultipartFile> imageFiles, @AuthenticationPrincipal(errorOnInvalidType=true) CustomUser customUser
+    public String makepatrol(PatrolDTO patrolDTO , @RequestParam(value = "imageFiles",required = false) List<MultipartFile> imageFiles, @AuthenticationPrincipal() CustomUser customUser
     ){
 
         patrolDTO.setUserNo((int)customUser.getNo());
@@ -130,12 +140,12 @@ public class PatrolController {
      * author : 우재협
      * 설명 : 모든 순찰대 조회
      *
-     * @param model
+     *
      * @return patrol img dto
      */
     @GetMapping(value="findAllPatrol", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public PatrolImgDTO findAllPatrol(Model model , @AuthenticationPrincipal CustomUser customUser){
+    public PatrolImgDTO findAllPatrol(){
 
         List<UploadDto> uploadDtos = new ArrayList<>();
 
@@ -182,6 +192,12 @@ public class PatrolController {
         OnePatrolImgDTO onePatrolImgDTO = new OnePatrolImgDTO();
 
         PatrolDTO patrolDTO = patrolService.findOnePatrolByPatrolNo(parolNo);
+
+        MemberDTO memberDTO = memberService.findMemberByUserNo(patrolDTO.getUserNo());
+
+        patrolDTO.setUserId(memberDTO.getId());
+
+
         onePatrolImgDTO.setPatrolDTO(patrolDTO);
 
         List<UploadDto> pageIngs = uploadService.uploadSelect("Z",parolNo);
@@ -205,9 +221,35 @@ public class PatrolController {
      * @return string
      */
     @PostMapping("patrolUpdate")
-    public String patrolUpdate(PatrolDTO patrolDTO, @AuthenticationPrincipal CustomUser customUser){
+    public String patrolUpdate(PatrolDTO patrolDTO, @RequestParam(value = "beforeImgNo",required = false) int beforeImgNo, @RequestParam(value = "imageFiles",required = false) List<MultipartFile> imageFiles){
 
-        patrolDTO.setUserNo((int)customUser.getNo());
+        List<UploadDto> pageIngs = uploadService.uploadSelect("Z",patrolDTO.getPatrolNo());
+
+        System.out.println("beforeImgNo>>>>" + beforeImgNo);
+
+        if (!pageIngs.isEmpty()) {
+            if (beforeImgNo != 0){
+                uploadService.uploadDelete(beforeImgNo);
+            }
+        }
+
+        System.out.println("imageFiles>>>>" + imageFiles);
+
+        if (imageFiles != null) {
+            System.out.println("이미지 업데이트 생성");
+
+            UploadDto uploadDto = new UploadDto();
+            uploadDto.setForeignNo(patrolDTO.getPatrolNo());
+            uploadDto.setCategoryCode("Z");
+
+            for (int i = 0; i < imageFiles.size(); i++) {
+                uploadDto.setFile(imageFiles.get(i));
+
+                System.out.println("uploadDto >>>>" + uploadDto);
+
+                uploadService.uploadInsert(uploadDto);
+            }
+        }
 
         System.out.println("patrolDTO >>>> " + patrolDTO);
 
@@ -226,9 +268,12 @@ public class PatrolController {
      * @return string
      */
     @PostMapping("patrolDelete")
-    public String patrolDelete(PatrolDTO patrolDTO, @AuthenticationPrincipal CustomUser customUser){
+    public String patrolDelete(PatrolDTO patrolDTO , @AuthenticationPrincipal CustomUser customUser){
 
         patrolDTO.setUserNo((int)customUser.getNo());
+
+
+
 
         List<UploadDto> pageIngs = uploadService.uploadSelect("Z",patrolDTO.getPatrolNo());
 
@@ -242,4 +287,6 @@ public class PatrolController {
 
         return "patrol/patrol";
     }
+
+
 }

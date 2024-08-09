@@ -28,7 +28,7 @@
 
     <div class="mb-3">
     <label class="form-label">내용</label><br>
-    <input class="form-control" type="text" id="content" name="content"><br>
+        <textarea class="form-control" id="content" name="content" rows="10"></textarea>
     </div>
 
     <div  class="mb-3" id="image_container">
@@ -42,6 +42,8 @@
 </form>
 
 </main>
+
+<menu th:replace="fragments/head :: footer"></menu>
 
 <script>
     $(document).ready(function() {

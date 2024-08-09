@@ -42,4 +42,5 @@ public interface PatrolPlaceDAO {
     int findPrecordPlaceNoByPrecordNo(int precordNo);
 
     int updatePrecordNoNULL(int precordPlaceNo);
+
 }

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.multi.happytails.dog4cuts.model.dao.Dog4CutsDAO">
+
+    <insert id="dog4CutsInsert">
+        INSERT INTO tb_dog4cuts
+        (user_no)
+        VALUES(#{userNo});
+    </insert>
+
+    <select id="findOneDog4CutsNum">
+        SELECT dog4cuts_no AS dog4cutsNo
+        FROM tb_dog4cuts
+        WHERE user_no = #{userNo}
+        ORDER BY dog4cuts_no DESC
+        LIMIT 1
+    </select>
+
+    <select id="findAllDog4Cuts">
+        SELECT dog4cuts_no AS dog4cutsNo, user_no AS userNo, createtime
+        FROM tb_dog4cuts
+    </select>
+
+    <select id="findDog4CutsBySearch">
+        SELECT dog4cuts_no AS dog4cutsNo, user_no AS userNo, createtime
+        FROM tb_dog4cuts
+        WHERE user_no LIKE #{ searchNo}
+    </select>
+
+    <delete id="dog4CutsDelete">
+        DELETE FROM tb_dog4cuts
+        WHERE dog4cuts_no=  #{dog4cutsNo} AND user_no = #{userNo}
+    </delete>
+
+
+</mapper>

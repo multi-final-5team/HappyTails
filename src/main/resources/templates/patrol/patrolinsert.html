@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/head :: head">
 
     <title>Title</title>
@@ -41,11 +42,13 @@
     <input class="form-control" type="text" id="location" name="location"><br>
     </div>
 
-    <input class="btn btn-primary" type="button" id="formSubmitBtn" value="신청">
+    <input class="btn btn-primary" type="button" id="formSubmitBtn" value="신청" sec:authorize="isAuthenticated()">
 
 </form>
 
 </main>
+
+<menu th:replace="fragments/head :: footer"></menu>
 
 <script>
     $(document).ready(function() {

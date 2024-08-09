@@ -19,4 +19,5 @@ public interface MemberDAO {
 
     void deleteMember(String id);
 
+    MemberDTO findMemberByUserNo(int no);
     }

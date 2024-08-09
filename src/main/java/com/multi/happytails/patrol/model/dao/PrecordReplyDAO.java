@@ -26,4 +26,6 @@ public interface PrecordReplyDAO {
     int repleyUpdate(PrecordReplyDTO precordReplyDTO);
 
     int repleyDelete(PrecordReplyDTO precordReplyDTO);
+
+    int repleyDeleteByPrecordNo(int precordNo);
 }

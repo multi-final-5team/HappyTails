@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.multi.happytails.patrol.pageable.model.dao.BoardDAO">
+
+    <select id="getListPlace">
+        SELECT precord_place_no AS precordPlaceNo, precord_no AS precordNo, patrol_no AS patrolNo, precord_total AS precordTotal
+        FROM tb_precord_place
+        WHERE patrol_no = #{patrolNo}
+        OFFSET #{pageable.offset} ROWS FETCH NEXT #{pageable.pageSize} ROWS ONLY
+    </select>
+
+    <select id="getListPlaceCount" resultType="int">
+        SELECT COUNT(*) AS CNT
+        FROM BOARD
+        <where>
+            <if test="title != null and title != ''">
+                AND TITLE LIKE '%' || #{title} || '%'
+            </if>
+            <if test="writer != null and writer != ''">
+                AND WRITER LIKE '%' || #{writer} || '%'
+            </if>
+        </where>
+    </select>
+
+</mapper>

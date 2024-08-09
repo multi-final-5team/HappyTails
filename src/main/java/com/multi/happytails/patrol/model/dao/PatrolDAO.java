@@ -32,4 +32,5 @@ public interface PatrolDAO {
     int patrolUpdate(PatrolDTO patrolDTO);
 
     int patrolDelete(int pnum);
+
 }

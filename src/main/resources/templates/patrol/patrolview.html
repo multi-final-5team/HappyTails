@@ -23,6 +23,7 @@
 
     <input type="hidden" id="patrolNo" name="patrolNo">
     <input type="hidden" id="userNo" name="userNo">
+    <input type="hidden" id="beforeImgNo" name="beforeImgNo" value="0">
 
     <div class="mb-3">
         <label class="form-label">강아지 이름</label><br>
@@ -44,15 +45,14 @@
         <input class="form-control" type="text" id="location" name="location"><br>
     </div>
 
-    <button class="btn btn-warning" type="button" id="formUpdateSubmitBtn">수정</button>
-    <br>
-    <button class="btn btn-danger" type="button" id="formDeleteSubmitBtn">삭제</button>
-
 </form>
 
 </main>
 
-<script>
+<menu th:replace="fragments/head :: footer"></menu>
+
+<script th:inline="javascript">
+    var username = [[${#authentication.name}]];
 
     $(document).ready(function() {
 
@@ -77,10 +77,34 @@
         $('#breed').val(data.breed);
         $('#location').val(data.location);
 
-        for(let indexImg in imgs){
-            $('#image_container').append(
-                '<img src="/images/Z/' + imgs[indexImg].storedFileName + '">'
+
+
+
+        if(username == data.userId){
+            $('#formId').append(
+            '<button class="btn btn-warning" type="button" id="formUpdateSubmitBtn" onclick="updateSubmit()">수정</button>'
             );
+            $('#formId').append(
+            '<button class="btn btn-danger" type="button" id="formDeleteSubmitBtn" onclick="deleteSubmit()">삭제</button>'
+            );
+        }
+        else{
+            $("#name" ).prop('readonly', true);
+            $("#age" ).prop('readonly', true);
+            $("#breed" ).prop('readonly', true);
+            $("#location" ).prop('readonly', true);
+        }
+
+
+
+
+        for(let indexImg in imgs){
+            if(indexImg == 0){
+                $('#image_container').append(
+                    '<img src="/images/Z/' + imgs[indexImg].storedFileName + '">'
+                );
+                $('#beforeImgNo').val(imgs[indexImg].imageNo);
+            }
         }
 
     },
@@ -89,12 +113,14 @@
     }
     }); // $.ajax()
 
-
-
-
         $('#formUpdateSubmitBtn').click(function(){
 
+
             let formData = new FormData($("#formId")[0]);
+
+            for (let i = 0; i < imageFiles.length;i++) {
+                formData.append('imageFiles',imageFiles[i]);
+            }
 
             $.ajax({
                 url : "/patrol/patrolUpdate",
@@ -126,6 +152,60 @@
         });
         // 폼 삭제 서브밋 End
     });
+
+    // 이미지 road Start
+            var imageFiles = [];
+            $('#inputFile').on('change', function(event) {
+            console.log('실행');
+            var file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                $('#image_container').empty();
+                $('#image_container').append('<img src="' + e.target.result + '" alt="Selected Image" width="100px" height="100px">');
+                }
+            imageFiles.push(file);
+            reader.readAsDataURL(file);
+            }
+            else {
+                alert('이미지 파일을 선택해주세요');
+            }
+            });
+        // 이미지 road End
+
+    function updateSubmit(){
+        let formData = new FormData($("#formId")[0]);
+
+        for (let i = 0; i < imageFiles.length;i++) {
+                formData.append('imageFiles',imageFiles[i]);
+            }
+
+            $.ajax({
+                url : "/patrol/patrolUpdate",
+                processData : false,
+                contentType : false,
+                type : 'POST',
+                data : formData,
+                success : function(data) {
+                    location.replace("/patrol/patrol");
+                }
+            });
+    }
+
+    function deleteSubmit(){
+        let formData = new FormData($("#formId")[0]);
+
+            $.ajax({
+                url : "/patrol/patrolDelete",
+                processData : false,
+                contentType : false,
+                type : 'POST',
+                data : formData,
+                success : function(data) {
+                    location.replace("/patrol/patrol");
+                }
+            });
+    }
 </script>
 
 </body>
