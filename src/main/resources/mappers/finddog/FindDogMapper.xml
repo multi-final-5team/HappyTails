@@ -98,4 +98,14 @@
             STATE = 'Y'
         WHERE FINDDOG_NO = #{findDogNo}
     </update>
+
+    <delete id="findDogReplyDelete">
+        DELETE FROM TB_FINDDOG_REPLY WHERE FINDDOG_REPLY_NO = #{findDogReplyNo}
+    </delete>
+
+    <update id="findDogReplyUpdate">
+        UPDATE TB_FINDDOG_REPLY SET
+            CONTENT = #{content}
+        WHERE FINDDOG_REPLY_NO = #{findDogReplyNo}
+    </update>
 </mapper>

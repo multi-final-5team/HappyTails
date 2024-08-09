@@ -72,6 +72,7 @@
 <!-- 스크립트 -->
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3410cbe0e56cd0dca8e1c3bc13dec0a4&libraries=services"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="/js/help/function.js"></script>
 <script>
 
     let latitude = 0; //위도
@@ -312,9 +313,20 @@
         let breed = $('#breed').val();
 
         let formData = new FormData();
+
+        let dataArr = [title, content, breed];
+
+        let result = handleNullInArray(dataArr);
+
+        if (result == 0) {
+            alert('값이 비어있습니다.');
+            return;
+        }
+
         formData.append('title',title);
         formData.append('content',content);
         formData.append('breed',breed);
+
         if (area != null && area != '') {
             formData.append('latitude',latitude);
             formData.append('longitude',longitude);

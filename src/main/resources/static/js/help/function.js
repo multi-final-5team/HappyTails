@@ -24,3 +24,25 @@ function dataFormat1(date) {
 
     return `${year}.${month}.${day} ${hours}:${minutes}`;
 }
+
+function handleNullInArray(arr) {
+    if (!Array.isArray(arr)) {
+        throw new Error('배열이 아닙니다.');
+    }
+    let result = 1;
+
+    for (let i = 0 ; i < arr.length; i++) {
+
+        if (typeof arr[i] === 'string') {
+            if (arr[i].trim() == '') {
+                result = 0;
+            }
+        } else {
+            if (arr[i] == null || arr[i] == '') {
+                result = 0;
+            }
+        }
+
+    }
+    return result;
+}
