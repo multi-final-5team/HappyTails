@@ -34,6 +34,11 @@
             <p class="card-text"><strong>판매자:</strong> <span th:text="${salesDetails.id}">ID</span></p>
             <p class="card-text"><strong>주소:</strong> <span th:text="${salesDetails.address}">주소</span></p>
 
+            <div th:if="${uploadDtoList != null && !uploadDtoList.isEmpty()}" class="mb-4">
+                <img th:src="@{/images/S/{file}(file=${uploadDtoList[0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="407" height="407">
+
+
+                <p class="card-text"><strong>가격:</strong> <span th:text="${#numbers.formatCurrency(salesDetails.price)}">가격</span></p>
             <form action="/cart/insertCart" method="post">
                 <input type="hidden" id="goodsNo1" name="goodsNo" th:value="${goodsNo}">
                 <div>
@@ -45,17 +50,13 @@
                 </div>
             </form>
 
-            <div th:if="${uploadDtoList != null && !uploadDtoList.isEmpty()}" class="mb-4">
-                <h3>대표 이미지</h3>
-                <img th:src="@{/images/S/{file}(file=${uploadDtoList[0].storedFileName})}" alt="대표 이미지" class="img-fluid mb-3">
 
-                <p class="card-text"><strong>가격:</strong> <span th:text="${#numbers.formatCurrency(salesDetails.price)}">가격</span></p>
+
+                <div class="text-center">
                 <p class="card-text"><strong>상세 설명:</strong> <span th:text="${salesDetails.content}">상세 설명</span></p>
-
                 <h3>상세 이미지</h3>
-                <div class="row">
-                    <div th:each="uploadDto, iterStat : ${uploadDtoList}" th:if="${iterStat.index > 0}" class="col-md-4 mb-3">
-                        <img th:src="@{/images/S/{file}(file=${uploadDto.storedFileName})}" alt="상세 이미지" class="img-fluid">
+                    <div th:each="uploadDto, iterStat : ${uploadDtoList}" th:if="${iterStat.index > 0}" class="col">
+                        <img th:src="@{/images/S/{file}(file=${uploadDto.storedFileName})}" alt="상세 이미지" class="img-fluid" width="780px" height="980px">
                     </div>
                 </div>
             </div>
@@ -179,4 +180,5 @@
     });
 </script>
 </body>
+<footer th:replace="fragments/head :: footer"></footer>
 </html>
