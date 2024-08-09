@@ -78,6 +78,8 @@
             </th:block>
         </div>
     </main>
+<!-- 스크립트 -->
+<script src="/js/help/function.js"></script>
 <script>
     let params = new URLSearchParams(location.search);
     let inquiryNo = params.get('inquiryNo');
@@ -123,6 +125,15 @@
         $('#createBtn').click(function(){
 
             let content = $('#content').val();
+
+            let dataArr = [content];
+
+            let result = handleNullInArray(dataArr);
+
+            if (result == 0) {
+                alert('값이 비어있습니다.');
+                return;
+            }
 
             let formData = new FormData();
             formData.append('content',content);

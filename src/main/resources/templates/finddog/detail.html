@@ -149,6 +149,15 @@
 
             let formData = new FormData();
 
+            let dataArr = [content];
+
+            let result = handleNullInArray(dataArr);
+
+            if (result == 0) {
+                alert('값이 비어있습니다.');
+                return;
+            }
+
             formData.append('content',content);
             formData.append('findDogNo',findDogNo);
 
@@ -217,7 +226,16 @@
             let findDogReplyNo = $(this).closest('tr').attr('data-reply-no');
             let content = $(this).closest('tr').find('.replyContent').val();
 
-                        let formData = new FormData();
+            let dataArr = [content];
+
+            let result = handleNullInArray(dataArr);
+
+            if (result == 0) {
+                alert('값이 비어있습니다.');
+                return;
+            }
+
+            let formData = new FormData();
 
             formData.append('findDogReplyNo',findDogReplyNo);
             formData.append('content',content);

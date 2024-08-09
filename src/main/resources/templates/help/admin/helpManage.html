@@ -125,6 +125,15 @@
             formData.append("questionContent", $('#writeQuestion').val());
             formData.append("answerContent", $('#writeAnswer').val());
 
+            let dataArr = [$('#writeCategory').val(), $('#writeQuestion').val(), $('#writeAnswer').val()];
+
+            let result = handleNullInArray(dataArr);
+
+            if (result == 0) {
+                alert('값이 비어있습니다.');
+                return;
+            }
+
             $.ajax({
                 url : "/admin/question/write",
                 processData : false,
@@ -377,14 +386,21 @@
     // 자주묻는 질문 수정 버튼 Start
     $('#questionUpdateBtn').click(function(){
 
-        console.log('이게실행');
-
         let formData = new FormData();
 
         let questionNo = $('#updateQuestionNo').val();
         let helpCategoryCode = $('#updateCategory').val();
         let questionContent = $('#updateQuestion').val();
         let answerContent = $('#updateAnswer').val();
+
+        let dataArr = [helpCategoryCode, questionContent, answerContent];
+
+        let result = handleNullInArray(dataArr);
+
+        if (result == 0) {
+            alert('값이 비어있습니다.');
+            return;
+        }
 
         formData.append('questionNo', questionNo);
         formData.append('helpCategoryCode', helpCategoryCode);

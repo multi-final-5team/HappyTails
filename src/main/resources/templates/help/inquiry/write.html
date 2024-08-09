@@ -43,6 +43,7 @@
     </main>
 
 <!-- 스크립트 -->
+<script src="/js/help/function.js"></script>
 <script>
     $(document).ready(function() {
         // 카테고리 불러오기 Start
@@ -83,7 +84,17 @@
             let content = $('#content').val();
             let category = $('#category').val();
 
+            let dataArr = [title, content, category];
+
+            let result = handleNullInArray(dataArr);
+
+            if (result == 0) {
+                alert('값이 비어있습니다.');
+                return;
+            }
+
             let formData = new FormData();
+
             formData.append('title',title);
             formData.append('content',content);
             formData.append('helpCategoryCode',category);
