@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.multi.happytails.member.model.dao.BusinessDAO">
+
+    <resultMap id="businessResultMap" type="com.multi.happytails.member.model.dto.BusinessDTO">
+        <id column="BUSINESS_NO" property="businessNo" />
+        <result column="BUSINESS_ID" property="businessId" />
+        <result column="BUSINESS_OWNER" property="businessOwner" />
+        <result column="BUSINESS_TEL" property="businessTel" />
+        <result column="BUSINESS_NUMBER" property="businessNumber" />
+        <result column="BUSINESS_ADDRESS" property="businessAddress" />
+    </resultMap>
+
+    <insert id="insertBusiness">
+        INSERT INTO TB_BUSINESS (
+            BUSINESS_ID,
+            BUSINESS_OWNER,
+            BUSINESS_TEL,
+            BUSINESS_NUMBER,
+            BUSINESS_ADDRESS
+        ) VALUES (
+            #{businessId},
+            #{businessOwner},
+            #{businessTel},
+            #{businessNumber},
+            #{businessAddress}
+        )
+    </insert>
+</mapper>
