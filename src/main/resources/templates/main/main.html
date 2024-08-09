@@ -6,11 +6,107 @@
 <body>
 <menu th:replace="~{fragments/head :: menu}"></menu>
 <main class="container mt-5">
-<h1>메인페이지</h1>
+    <div class="text-center">
+        <div>
+            <img src="https://kr.object.ncloudstorage.com/team-5/HappyTailsMain.png" alt="Main-logo" width="55%">
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="text-center">
+        <div class="row">
+            <div class="col">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <h2>이 달의 인기글 (추천수)</h2>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="100px">
+                            </td>
+                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
+    <!--                            14px 0px 0px 0px;">-->
+                                <p>제목이 늘어납니다</p>
+                                <p>작성자</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>사진</td>
+                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
+                                <!--                            14px 0px 0px 0px;">-->
+                                <p>제목이 늘어납니다</p>
+                                <p>작성자</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>사진</td>
+                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
+                                <!--                            14px 0px 0px 0px;">-->
+                                <p>제목이 늘어납니다</p>
+                                <p>작성자</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>사진</td>
+                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
+                                <!--                            14px 0px 0px 0px;">-->
+                                <p>제목이 늘어납니다</p>
+                                <p>작성자</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>사진</td>
+                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
+                                <!--                            14px 0px 0px 0px;">-->
+                                <p>제목이 늘어납니다</p>
+                                <p>작성자</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <h2>뉴스</h2>
+                        </tr>
+                    </thead>
+                    <tbody th:each="item, stat  : ${rssNews}" th:if="${stat.index < 5}" >
+                        <tr>
 
+                            <td>
+                                <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="100px">
+                            </td>
+                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
+                                <!--                            14px 0px 0px 0px;">-->
+                                <a th:href="${item.link}">
+                                <p th:text="${item.title}"></p>
+                                </a>
+                                <p>기자 이름</p>
+                            </td>
+                        </tr>
 
-<a href="/map/map">지도</a><br>
-
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+        <br>
+        <h2>오늘의 댕댕이</h2>
+        <br>
+        <div>
+            <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="150px" class="mb-3 mx-3">
+            <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="150px" class="mb-3 mx-3">
+            <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="150px" class="mb-3 mx-3">
+            <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="150px" class="mb-3 mx-3">
+            <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="150px" class="mb-3 mx-3">
+        </div>
+    </div>
 </main>
 </body>
+<footer th:replace="fragments/head :: footer"></footer>
 </html>

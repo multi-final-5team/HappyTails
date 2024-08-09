@@ -16,7 +16,7 @@
             <label for="IMGFile" class="form-label">대표이미지:</label>
             <input type="file" class="form-control" id="IMGFile" name="IMGFile" hidden="hidden">
             <div class="imgDiv">
-                <img th:src="@{/images/S/{file}(file=${uploadDtos[0].storedFileName})}" alt="대표 이미지" class="img-fluid mb-3" width="100px" height="100px">
+                <img th:src="@{/images/S/{file}(file=${uploadDtos[0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="100px" height="100px">
                 <input type="button" class="btn btn-success imgUpdateBtn" th:data-image-no="${uploadDtos[0].imageNo}" value="수정">
             </div>
         </div>
@@ -47,7 +47,7 @@
             <div id="imgAddDiv">
                 <th:block th:each="dto, iterStat : ${uploadDtos}" th:if="${iterStat.index > 0}">
                     <div class="imgDiv">
-                        <img th:src="@{/images/S/{file}(file=${dto.storedFileName})}" alt="추가 이미지" class="img-fluid mb-3" width="100px" height="100px">
+                        <img th:src="@{/images/S/{file}(file=${dto.storedFileName})}" alt="추가 이미지" class="img-fluid" width="200px" height="200px">
                         <input type="button" class="btn btn-danger imgDeleteBtn" th:data-image-no="${dto.imageNo}" value="삭제">
                         <input type="button" class="btn btn-success imgUpdateBtn" th:data-image-no="${dto.imageNo}" value="수정">
                     </div>
@@ -188,4 +188,5 @@
     });
 </script>
 </body>
+<footer th:replace="fragments/head :: footer"></footer>
 </html>

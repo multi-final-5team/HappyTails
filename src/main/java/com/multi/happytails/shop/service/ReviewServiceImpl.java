@@ -30,8 +30,8 @@ public class ReviewServiceImpl implements ReviewService{
     }
 
     @Override
-    public void updateReview(ReviewDTO reviewDTO) {
-        reviewDAO.updateReview(reviewDTO);
+    public int updateReview(ReviewDTO reviewDTO) {
+        return reviewDAO.updateReview(reviewDTO);
     }
 
     @Override

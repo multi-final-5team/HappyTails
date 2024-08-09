@@ -1,12 +1,11 @@
 package com.multi.happytails.shop.controller;
 
-import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.shop.model.dto.ReviewDTO;
 import com.multi.happytails.shop.service.ReviewService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -90,18 +89,56 @@ public class ReviewController {
     /**
      * methodName : updateReview
      * author : Shin HyeonCheol
-     * description : Modify Review
+     * description :
      *
-     * @param customUser the custom user
-     * @param reviewDTO  the review dto
+     * @param principal          the principal
+     * @param reviewDTO          the review dto
+     * @param imageFiles         the image files
+     * @param imageUpdateFiles   the image update files
+     * @param imageDeleteImageNo the image delete image no
+     * @param imageUpdateImageNo the image update image no
      * @return the string
      */
     @PostMapping("/updateReview")
-    public String updateReview(@AuthenticationPrincipal CustomUser customUser, @RequestBody ReviewDTO reviewDTO) {
-        String userId = customUser.getId();
+    public String updateReview(Principal principal,
+                               @ModelAttribute ReviewDTO reviewDTO,
+                               @RequestParam(value = "imageFiles") @Nullable List<MultipartFile> imageFiles,
+                               @RequestParam(value = "imageUpdateFiles") @Nullable List<MultipartFile> imageUpdateFiles,
+                               @RequestParam(value = "imageDeleteImageNo") @Nullable List<Long> imageDeleteImageNo,
+                               @RequestParam(value = "imageUpdateImageNo") @Nullable List<Long> imageUpdateImageNo) {
+        String userId = principal.getName();
         reviewDTO.setId(userId);
-        reviewService.updateReview(reviewDTO);
-        return "redirect:/sales/salesList";
+
+        int result = reviewService.updateReview(reviewDTO);
+
+        if (result == 1) {
+
+            if (imageDeleteImageNo != null && !imageDeleteImageNo.isEmpty()) {
+                for (int i = 0; i < imageDeleteImageNo.size(); i++) {
+                    uploadService.uploadDelete(imageDeleteImageNo.get(i));
+                }
+            }
+
+            if (imageUpdateFiles != null && !imageUpdateFiles.isEmpty()) {
+                for (int i = 0; i < imageUpdateFiles.size(); i++) {
+                    System.out.println(imageUpdateImageNo.get(i) + imageUpdateFiles.get(i).getOriginalFilename() + "===-=-=-=-=-=-=");
+                    uploadService.uploadUpdate(imageUpdateImageNo.get(i), imageUpdateFiles.get(i));
+                }
+            }
+
+            if (imageFiles != null && !imageFiles.isEmpty()) {
+                UploadDto uploadDto = new UploadDto();
+                uploadDto.setForeignNo(reviewDTO.getNo());
+                uploadDto.setCategoryCode(UPLOAD_INQUIRY_CODE);
+
+                for (int i = 0; i < imageFiles.size(); i++) {
+                    uploadDto.setFile(imageFiles.get(i));
+                    uploadService.uploadInsert(uploadDto);
+                }
+            }
+        }
+
+        return "/sales/salesList";
     }
     // Update
 

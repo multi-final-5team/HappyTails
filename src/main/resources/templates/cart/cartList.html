@@ -21,6 +21,7 @@
                         <thead class="table-dark">
                         <tr>
                             <th>상품명</th>
+                            <th>대표 이미지</th>
                             <th>가격</th>
                             <th>수량</th>
                         </tr>
@@ -32,23 +33,28 @@
                                    th:text="${cartList.goodsName}"
                                    class="text-decoration-none"></a>
                             </td>
+                            <td>
+<!--                                <div th:if="${cartList[cartList.goodsNo].size() > 0}" class="card-body">-->
+<!--                                    <img th:src="@{/images/S/{file}(file=${salesGoodsMap[cartList.goodsNo][0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="300" height="200">-->
+<!--                                </div>-->
+                            </td>
                             <td th:text="${#numbers.formatCurrency(cartList.price)}" class="price"></td>
                             <td th:text="${cartList.purchaseQuantity}" class="purchaseQuantity"></td>
                         </tr>
                         </tbody>
                     </table>
+                    <table>
+                            <tr>예상 결제 금액 : </tr>
+                            <tr th:text="${#numbers.formatCurrency(#aggregates.sum(cartList.![price]))} + '원' " id="amount"></tr>
+                            <tr><a href="/payment/payment" class="btn btn-primary w-100 mb-3">결제하기</a></tr>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-    <div>
-        <h6>예상 결제 금액</h6>
-        <span th:text="${totalPrice}"></span>
-        <a href="/payment/payment" class="btn btn-primary w-100 mb-3">결제하기</a>
-    </div>
 
 </main>
 
-
 </body>
+<footer th:replace="fragments/head :: footer"></footer>
 </html>

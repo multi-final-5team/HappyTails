@@ -298,12 +298,6 @@ public class SalesController {
                                @RequestParam(value = "imageUpdateImageNo") @Nullable List<Long> imageUpdateImageNo
     ) {
 
-        System.out.println(">>>>>>>>>>>>>>>>>" + salesGoodsDTO);
-        System.out.println(">>>>>>>>>>>>>>>>>" + imageFiles);
-        System.out.println(">>>>>>>>>>>>>>>>>" + imageDeleteImageNo);
-        System.out.println(">>>>>>>>>>>>>>>>>" + imageUpdateImageNo);
-        System.out.println(">>>>>>>>>>>>>>>>>" + imageUpdateFiles);
-
         String Id = principal.getName();
         System.out.println("custom get id = " + Id);
         salesGoodsDTO.setId(Id);

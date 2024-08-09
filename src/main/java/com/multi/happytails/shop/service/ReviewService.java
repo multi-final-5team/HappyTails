@@ -32,7 +32,7 @@ public interface ReviewService {
      *
      * @param reviewDTO the review dto
      */
-    void updateReview(ReviewDTO reviewDTO);
+    int updateReview(ReviewDTO reviewDTO);
 
     /**
      * methodName : deleteReview
@@ -59,4 +59,5 @@ public interface ReviewService {
      * @return the review no
      */
     int getReviewNo();
+
 }

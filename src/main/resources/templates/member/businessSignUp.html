@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}">
+    <title>사업자 등록</title>
+</head>
+<body>
+<menu th:replace="~{fragments/head :: menu}"></menu>
+<main class="container mt-5">
+    <h1 class="text-center mb-5">사업자 등록</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4 mx-auto">
+            <form action="/member/businessSignUp" method="post" id="businessSignupForm">
+                <div class="mb-3">
+                    <label for="businessOwner" class="form-label">대표자</label>
+                    <input type="text" class="form-control" id="businessOwner" name="businessOwner" required>
+                </div>
+                <div class="mb-3">
+                    <label for="businessTel" class="form-label">대표 번호</label>
+                    <input type="tel" class="form-control" id="businessTel" name="businessTel" required placeholder="010-0000-0000">
+                    <div id="telError" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="businessNumber" class="form-label">사업자 번호</label>
+                    <input type="text" class="form-control" id="businessNumber" name="businessNumber" required placeholder="000-00-00000">
+                    <div id="businessNumberError" class="text-danger"></div>
+                </div>
+                <div class="mb-3">
+                    <label for="businessAddress" class="form-label">업장 주소</label>
+                    <input type="text" class="form-control" id="businessAddress" name="businessAddress" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">사업자 등록</button>
+            </form>
+            <div class="text-center mt-3">
+                <a href="/member/mypage">취소</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    $(document).ready(function() {
+        // 전화번호 유효성 검사 및 자동 하이픈 추가
+        $('#businessTel').on('input', function() {
+            var number = $(this).val().replace(/[^0-9]/g, "");
+            var tel = "";
+
+            if(number.length < 4) {
+                return number;
+            } else if(number.length < 7) {
+                tel += number.substr(0, 3);
+                tel += "-";
+                tel += number.substr(3);
+            } else if(number.length < 11) {
+                tel += number.substr(0, 3);
+                tel += "-";
+                tel += number.substr(3, 3);
+                tel += "-";
+                tel += number.substr(6);
+            } else {
+                tel += number.substr(0, 3);
+                tel += "-";
+                tel += number.substr(3, 4);
+                tel += "-";
+                tel += number.substr(7);
+            }
+            $(this).val(tel);
+        });
+
+        // 사업자 번호 유효성 검사 및 자동 하이픈 추가
+        $('#businessNumber').on('input', function() {
+            var number = $(this).val().replace(/[^0-9]/g, "");
+            var businessNumber = "";
+
+            if(number.length < 4) {
+                return number;
+            } else if(number.length < 6) {
+                businessNumber += number.substr(0, 3);
+                businessNumber += "-";
+                businessNumber += number.substr(3);
+            } else {
+                businessNumber += number.substr(0, 3);
+                businessNumber += "-";
+                businessNumber += number.substr(3, 2);
+                businessNumber += "-";
+                businessNumber += number.substr(5);
+            }
+            $(this).val(businessNumber);
+        });
+
+        // 폼 제출 시 유효성 검사
+        $('#businessSignupForm').submit(function(e) {
+            e.preventDefault();
+
+            // 전화번호 유효성 검사
+            var tel = $('#businessTel').val();
+            var telRegex = /^010-\d{4}-\d{4}$/;
+            if (!telRegex.test(tel)) {
+                $('#telError').text('올바른 전화번호 형식이 아닙니다. (예: 010-0000-0000)');
+                return;
+            } else {
+                $('#telError').text('');
+            }
+
+            // 사업자 번호 유효성 검사
+            var businessNumber = $('#businessNumber').val();
+            var businessNumberRegex = /^\d{3}-\d{2}-\d{5}$/;
+            if (!businessNumberRegex.test(businessNumber)) {
+                $('#businessNumberError').text('올바른 사업자 번호 형식이 아닙니다. (예: 000-00-00000)');
+                return;
+            } else {
+                $('#businessNumberError').text('');
+            }
+
+            // 모든 유효성 검사를 통과하면 폼 제출
+            this.submit();
+        });
+    });
+</script>
+</body>
+</html>

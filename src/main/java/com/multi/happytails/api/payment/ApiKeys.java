@@ -22,6 +22,7 @@ public class ApiKeys {
     @Value("${spring.iamport.api-secret}")
     private String iamportApiSecret;
 
+
     public String getIamportApiKey() {
         return iamportApiKey;
     }
@@ -29,4 +30,5 @@ public class ApiKeys {
     public String getIamportApiSecret() {
         return iamportApiSecret;
     }
+
 }

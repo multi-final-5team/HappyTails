@@ -95,7 +95,7 @@
            if (file && file.type.startsWith('image/')) {
              var reader = new FileReader();
              reader.onload = function(e) {
-               $('#imgAddDiv').append('<img src="' + e.target.result + '" alt="Selected Image" class="inputImg">'); // width="100px" height="100px">');
+               $('#imgAddDiv').append('<img src="' + e.target.result + '" alt="Selected Image" width="200px" height="200px">');
              }
              imageFiles.push(file);
              reader.readAsDataURL(file);
@@ -134,4 +134,5 @@
     });
 </script>
 </body>
+<footer th:replace="fragments/head :: footer"></footer>
 </html>
