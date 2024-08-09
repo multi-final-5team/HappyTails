@@ -2,7 +2,7 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
-    <title>게시글 작성</title>
+    <title>떠들개 글쓰기</title>
     <style>
         .img-preview {
             width: 150px; /* 원하는 너비로 설정 */
@@ -14,83 +14,94 @@
 <body class="container mt-5">
 <menu th:replace="fragments/head :: menu"></menu>
 
-<h1 class="mb-4 text-center">떠들개 게시글 작성</h1>
+<h1 class="mb-4 text-center">🐾 떠들개 게시글 작성 🐾</h1>
+<h3 class="mb-4 text-center">견주들과 자유롭게 얘기하시개! 🐶</h3>
 
 <div class="card">
     <div class="card-body">
         <form id="submitForm" action="/community/chatdog" method="post" enctype="multipart/form-data">
             <div class="mb-3">
-                <label for="title" class="form-label">제목:</label>
-                <input type="text" id="title" name="title" class="form-control" required>
+                <label for="title" class="form-label">🏷️ 제목:</label>
+                <input type="text" id="title" name="title" class="form-control" required placeholder="제목을 입력해주시개"></div>
+            <div class="mb-3">
+                <label for="content" class="form-label">📝 내용:</label>
+                <textarea id="content" name="content" class="form-control" rows="5" required placeholder="내용을 입력해주시개"></textarea>
             </div>
             <div class="mb-3">
-                <label for="content" class="form-label">내용:</label>
-                <textarea id="content" name="content" class="form-control" rows="5" required></textarea>
-            </div>
-            <div>
-                <label for="imageInput">이미지:</label>
-                <input type="file" id="imageInput" multiple>
+                <label for="imageInput" class="form-label">사진:</label>
+                <input type="file" id="imageInput" multiple class="form-control">
             </div>
             <div id="imgAddDiv" class="row g-2">
                 <!-- 이미지 미리보기 -->
             </div>
-            <button type="submit" class="btn btn-primary" onsubmit="return confirm('저장 하시겠습니까?');">저장</button>
+            <button type="submit" class="btn btn-primary mt-3" onsubmit="return confirm('게시글을 저장할까요?');">저장하기</button>
         </form>
     </div>
 </div>
 
-<a href="/community/chatdog" class="btn btn-secondary mt-3">목록으로 돌아가기</a>
+<a href="/community/chatdog" class="btn btn-secondary mt-3">🏠 목록으로</a>
+<footer th:replace="fragments/head :: footer"></footer>
 
 </body>
 <script>
     $(document).ready(function() {
-        let imageFiles = [];
-        $('#imageInput').on('change', function(event) {
-            $('#imgAddDiv').empty(); // 이전 이미지 미리보기 지우기
-            imageFiles = Array.from(event.target.files); // 선택한 이미지 파일을 배열로 저장
+           let imageFiles = [];
+           $('#imageInput').on('change', function(event) {
+               $('#imgAddDiv').empty();
+               imageFiles = Array.from(event.target.files);
 
-            imageFiles.forEach(file => {
-                if (file && file.type.startsWith('image/')) {
-                    var reader = new FileReader();
-                    reader.onload = function(e) {
-                        $('#imgAddDiv').append(
-                            `<div class="col-3 mb-2">
-                                <img src="${e.target.result}" alt="Selected Image" class="img-thumbnail">
-                            </div>`
-                        );
-                    }
-                    reader.readAsDataURL(file);
-                } else {
-                    alert('이미지 파일만 선택해주세요');
-                }
-            });
-        });
+               imageFiles.forEach(file => {
+                   if (file && file.type.startsWith('image/')) {
+                       var reader = new FileReader();
+                       reader.onload = function(e) {
+                           $('#imgAddDiv').append(
+                               `<div class="col-3 mb-2">
+                                   <img src="${e.target.result}" alt="Selected Image" class="img-thumbnail">
+                               </div>`
+                           );
+                       }
+                       reader.readAsDataURL(file);
+                   } else {
+                       alert('이미지 파일만 선택해주세요');
+                   }
+               });
+           });
+           // 폼 서브밋
+           $('#submitForm').submit(function(event) {
+               event.preventDefault();
 
-        // 폼 서브밋
-        $('#submitForm').submit(function(event) {
-            event.preventDefault();
+               let title = $('#title').val();
+               let content = $('#content').val();
+               let formData = new FormData();
+               formData.append('title', title);
+               formData.append('content', content);
 
-            let title = $('#title').val();
-            let content = $('#content').val();
-            let formData = new FormData();
-            formData.append('title', title);
-            formData.append('content', content);
+            if (title.trim() === '' || content.trim() === '') {
+            alert('제목과 내용은 필수 입력 항목입니다.');
+            return;
+        }
 
-            imageFiles.forEach(file => {
-                formData.append('imageFiles', file);
-            });
+               imageFiles.forEach(file => {
+                   formData.append('imageFiles', file);
+               });
 
-            $.ajax({
-                url: "/community/chatdog",
-                processData: false,
-                contentType: false,
-                type: 'POST',
-                data: formData,
-                success: function(data) {
-                    location.href = '/community/chatdog';
-                }
-            });
-        });
-    });
+
+         $.ajax({
+                   url: "/community/chatdog",
+                   processData: false,
+                   contentType: false,
+                   type: 'POST',
+                   data: formData,
+                   success: function(response) {
+                       alert('성공적으로 등록되었습니다.');
+                       window.location.href = '/community/chatdog';
+                   },
+                   error: function(xhr, status, error) {
+                       alert('등록에 실패했습니다. 다시 시도해 주세요.');
+                   }
+               });
+           });
+       });
 </script>
+<footer th:replace="fragments/head :: footer"></footer>
 </html>

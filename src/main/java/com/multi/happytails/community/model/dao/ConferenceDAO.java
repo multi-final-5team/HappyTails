@@ -20,7 +20,7 @@ public interface ConferenceDAO {
 
     void cfcommendCount(Long ConferenceNo);
 
-    List<ConferenceDTO> search(String keyword);
+    List<ConferenceDTO> cfsearch(String keyword);
 
     int update(ConferenceDTO conference);
 

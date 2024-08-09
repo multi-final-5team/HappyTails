@@ -4,33 +4,41 @@
     <meta charset="UTF-8">
     <title>집사 회의 게시판 목록</title>
     <style>
-        .table thead th {
-            text-align: center;
-            background-color: #f8f9fa;
+        body {
+            font-family: 'Gaegu', cursive;
+            background-color: #FFF5EE;
+            background-image: url('paw-pattern.png');
         }
-        .table tbody td {
-            vertical-align: middle;
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            background-color: white;
         }
-        .table tbody td:nth-child(3) {
-            text-align: left;
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .btn {
+            border-radius: 20px;
         }
     </style>
 </head>
 <body class="container mt-5">
 <menu th:replace="fragments/head :: menu"></menu>
 
-<h1 class="mb-4 text-center">집사 회의 게시판</h1>
+<h1 class="mb-4 text-center">🐾 집사 회의 게시판 🐾</h1>
+<h3 class="mb-4 text-center">견주들만의 고민을 공유하시개! 🐶</h3>
 
 <!-- 추천순/최신순 / 새 글 작성 -->
 <div class="d-flex justify-content-between mb-3">
     <div>
         <form action="/community/conference" method="get" class="d-inline me-2">
             <input type="hidden" name="sort" value="date"/>
-            <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'date' ? '최신순(현재)' : '최신순'}"></button>
+            <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'date' ? '🐶 최신순(현재)' : '🐶 최신순'}"></button>
         </form>
         <form action="/community/conference" method="get" class="d-inline">
             <input type="hidden" name="sort" value="recommendCount"/>
-            <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'recommendCount' ? '추천순(현재)' : '추천순'}"></button>
+            <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'recommendCount' ? '❤️ 추천순(현재)' : '❤️ 추천순'}"></button>
         </form>
     </div>
     <!-- 검색 폼 추가 -->
@@ -41,35 +49,39 @@
         </form>
     </div>
     <div>
-        <a href="/community/conference/create" class="btn btn-primary btn-sm me-2">새 글 작성하기</a>
+        <a href="/community/conference/create" class="btn btn-primary btn-sm me-2">🦴 새 글 작성하기</a>
     </div>
 </div>
 
-<!-- 게시글 목록 -->
-<table class="table table-hover">
-    <thead>
-    <tr>
-        <th style="width: 10%;">No</th>
-        <th style="width: 10%;">작성자</th>
-        <th style="width: 15%;">제목</th>
-        <th style="width: 20%;">내용</th>
-        <th style="width: 13%;">작성 시간</th>
-        <th style="width: 8%;">추천 수</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="conference : ${conferences}">
-        <td th:text="${conference.conferenceNo}" class="text-center"></td>
-        <td th:text="${conference.userId}" class="text-center"></td>
-        <td>
-            <a th:href="@{/community/conference/{conferenceNo}(conferenceNo=${conference.conferenceNo})}" th:text="${conference.title}"></a>
-        </td>
-        <td th:text="${#strings.abbreviate(conference.content, 30)}"></td>
-        <td th:text="${#temporals.format(conference.createTime, 'yyyy-MM-dd')}" class="text-center"></td>
-        <td th:text="${conference.recommendCount}" class="text-center"></td>
-    </tr>
-    </tbody>
-</table>
+<!-- 게시글 목록 (카드 형식) -->
+<div class="row">
+    <div class="col-md-4 mb-4" th:each="conference : ${conference}">
+        <div class="card">
+            <div class="card-body">
+                <p class="card-text"><small class="text-muted">게시글 번호: <span class="badge bg-secondary" th:text="${conference.conferenceNo}"></span></small></p>
+                <div th:if="${conferenceImages != null and conferenceImages.get(conference.conferenceNo) != null and !conferenceImages.get(conference.conferenceNo).empty}" class="mb-3">
+                    <img th:src="@{/images/O/{file}(file=${conferenceImages.get(conference.conferenceNo)[0].storedFileName})}" class="img-fluid rounded" alt="대표 이미지">
+                </div>
+                <h5 class="card-title" th:text="${conference.title}"></h5>
+                <h6 class="card-subtitle mb-2 text-muted" th:text="${conference.userId}"></h6>
+                <p class="card-text" th:text="${#strings.abbreviate(conference.content, 50)}"></p>
+                <p class="card-text"><small class="text-muted" th:text="${#temporals.format(conference.createTime, 'yyyy-MM-dd')}"></small></p>
+                <a th:href="@{/community/conference/{conferenceNo}(conferenceNo=${conference.conferenceNo})}" class="btn btn-sm btn-outline-primary">자세히 보기</a>
+                <span class="badge bg-primary float-end" th:text="${conference.recommendCount + ' ❤️'}"></span>
+                <div th:if="${#authentication.name == 'admin'}" class="mt-2">
+
+                    <a th:href="@{/conference/delete/{conferenceNo}(conferenceNo=${conference.conferenceNo})}" class="btn btn-sm btn-danger" onclick="return confirmDelete();" >삭제</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
+<footer th:replace="fragments/head :: footer"></footer>
+<script>
+    function confirmDelete() {
+        return confirm("삭제하시겠습니까?");
+    }
+</script>
 </html>

@@ -99,7 +99,7 @@ public class ConferenceController {
     @PostMapping
     public String save(@ModelAttribute ConferenceDTO conferenceDTO,
                        @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles,
-                       Principal principal) {
+                       Principal principal, Model model) {
 
         String userId = principal.getName();
         conferenceDTO.setUserId(userId);
@@ -111,9 +111,11 @@ public class ConferenceController {
         UploadDto uploadDto = new UploadDto();
         uploadDto.setForeignNo(conferenceService.insert(conferenceDTO));
 
-
-        System.out.println("Inserting conferenceDTO: " + conferenceDTO);
-
+        if (conferenceDTO.getTitle() == null || conferenceDTO.getTitle().trim().isEmpty() ||
+                conferenceDTO.getContent() == null || conferenceDTO.getContent().trim().isEmpty()) {
+            model.addAttribute("errorMessage", "제목과 내용은 필수 입력 항목입니다.");
+            return "community/conferencecreate"; //
+        }
 
         uploadDto.setCategoryCode(IMAGE_CODE); // 이미지 카테고리 코드
         if (imageFiles != null && !imageFiles.isEmpty()) {
@@ -221,9 +223,9 @@ public class ConferenceController {
             }
         }
 
-
-        return "redirect:/community/conference";
+        return "redirect:/community/doglove";
     }
+
 
     @PostMapping("/conferencerecommend")
     public String conferencerecommend(@RequestParam Long conferenceNo,
@@ -240,8 +242,19 @@ public class ConferenceController {
 
     @GetMapping("/search")
     public String search(@RequestParam("keyword") String keyword, Model model) {
-        List<ConferenceDTO> results = conferenceService.search(keyword);
-        model.addAttribute("conferences", results);
+        List<ConferenceDTO> results;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            // 공백만 입력된 경우 전체 데이터를 검색
+            results = conferenceService.findAllSortedByDate();
+        } else {
+            // 유효한 검색어가 있는 경우 해당 키워드로 검색
+            results = conferenceService.cfsearch(keyword.trim());
+        }
+
+        model.addAttribute("conference", results);
+        model.addAttribute("keyword", keyword);
+
         return "community/conferencelist";
     }
 }

@@ -26,7 +26,6 @@
         </choose>
     </select>
 
-
     <update id="cdcommendCount">
         UPDATE TB_CHAT_DOG
         SET RECOMMEND_COUNT = COALESCE(RECOMMEND_COUNT, 0) + 1

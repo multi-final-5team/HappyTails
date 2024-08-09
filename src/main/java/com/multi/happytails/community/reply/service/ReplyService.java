@@ -43,11 +43,12 @@ public class ReplyService {
     }
 
 
-
     public void updateReply(int communityReplyNo, String content) {
 
         replyDAO.updateReply(communityReplyNo, content);
     }
 }
+
+
 
 

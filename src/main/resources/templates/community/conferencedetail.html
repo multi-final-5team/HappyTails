@@ -44,15 +44,16 @@
 <body class="container mt-5">
 <menu th:replace="fragments/head :: menu"></menu>
 
-<h1 class="mb-4 text-center">집사 회의 게시글 상세 페이지</h1>
+<h1 class="mb-4 text-center">🐾 집사 회의 게시글 상세 페이지 🐾</h1>
+<h3 class="mb-4 text-center">견주들만의 고민을 공유하시개! 🐶</h3>
 
 <div class="card mb-4">
     <div class="card-body">
-        <h2 class="card-title"> <strong>제목 : </strong> <span th:text="${conference.title}"></span></h2>
-        <p class="card-text"><strong>작성자 : </strong> <span th:text="${conference.userId}"></span></p>
-        <p class="card-text"><strong>작성일 : </strong> <span th:text="${#temporals.format(conference.createTime, 'yyyy-MM-dd')}"></span></p>
+        <h2 class="card-title">🐶 <strong>제목 : </strong> <span th:text="${conference.title}"></span></h2>
+        <p class="card-text">📝 <strong>작성자 : </strong> <span th:text="${conference.userId}"></span></p>
+        <p class="card-text">🗓️ <strong>작성일 : </strong> <span th:text="${#temporals.format(conference.createTime, 'yyyy-MM-dd')}"></span></p>
         <p class="card-text" th:text="${conference.content}"></p>
-        <p class="card-text"><strong>추천 수:</strong> <span th:id="recommendCount" th:text="${conference.recommendCount}"></span></p>
+        <p class="card-text">❤️ <strong>추천 수:</strong> <span th:id="recommendCount" th:text="${conference.recommendCount}"></span></p>
     </div>
 
     <div class="row">
@@ -66,67 +67,80 @@
             <input type="hidden" name="communityCategoryCode" value="C" />
             <input type="hidden" name="foreignNo" th:value="${conference.conferenceNo}" />
             <div style="margin-bottom: 10px;">
-                <textarea name="content" required rows="3" class="form-control"></textarea>
+                <textarea name="content" required rows="3" class="form-control" placeholder="댓글을 남겨주시개"></textarea>
             </div>
             <div style="display: flex; justify-content: flex-end;">
-                <button type="submit" style="background-color: #007bff; color: white; border: none; padding: 10px 20px; cursor: pointer;">댓글 생성</button>
+                <button type="submit" class="btn btn-blue">🐾 댓글 남기기</button>
             </div>
         </form>
     </div>
 
-    <form th:action="@{/community/conference/conferencerecommend}" method="post" onsubmit="return confirm('추천 하시겠습니까?');">
+    <form th:action="@{/community/conference/conferencerecommend}" method="post" onsubmit="return confirm('이 게시글을 추천하시겠어요?');">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-        <button type="submit" class="btn-green">추천</button>
+        <button type="submit" class="btn btn-green">❤️ 추천하기</button>
         <input type="hidden" name="conferenceNo" th:value="${conference.conferenceNo}"/>
     </form>
 
-    <h3 class="mt-4">댓글 목록</h3>
+    <h3 class="mt-4">🐾 댓글 목록</h3>
     <ul class="reply-list mt-4" style="list-style-type: none; padding: 0;">
-        <li th:each="reply : ${reply}" style="margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        <li th:each="reply : ${reply}" class="comment-item">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <p style="margin: 0;">
                     <strong th:text="${reply.writerId}">작성자</strong>:
                     <span th:text="${reply.content}">내용</span>
                 </p>
-                <!-- 현재 로그인한 사용자와 댓글 작성자가 같을 경우에만 수정 및 삭제 버튼 표시 -->
-                <div th:if="${#authentication.name == reply.writerId}">
+                <div th:if="${#authentication.name == 'admin' or #authentication.name == reply.writerId}">
                     <!-- 댓글 수정 페이지로 이동하는 버튼 -->
                     <a th:href="@{/community/O/{foreignNo}/reply/update/{communityReplyNo}(foreignNo=${conference.conferenceNo}, communityReplyNo=${reply.communityReplyNo})}"
-                       style="background-color: #007bff; color: white; border: none; padding: 5px 10px; cursor: pointer; text-decoration: none;">댓글 수정</a>
-
+                       class="btn btn-sm btn-blue">✏️ 수정</a>
                     <!-- 댓글 삭제 폼 -->
-                    <form th:action="@{/community/O/{foreignNo}/reply/delete/{replyNo}(foreignNo=${conference.conferenceNo}, replyNo=${reply.communityReplyNo})}"
+                    <form th:action="@{/community/O/{foreignNo}/reply/delete/{communityReplyNo}(foreignNo=${conference.conferenceNo}, communityReplyNo=${reply.communityReplyNo})}"
                           method="post"
                           class="comment-form"
                           style="display: inline-block;"
-                          onsubmit="return confirm('댓글을 삭제하시겠습니까?');">
+                          onsubmit="return confirm('댓글을 삭제하시겠어요?');">
                         <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}"/>
-                        <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer;">댓글 삭제</button>
+                        <button type="submit" class="btn btn-sm btn-danger">🗑️ 삭제</button>
                     </form>
                 </div>
             </div>
         </li>
     </ul>
 
-    <!-- 게시글 삭제 버튼 표시 -->
-    <div class="button-container" th:if="${#authentication.name == conference.userId}">
-        <form th:action="@{/community/conference/delete}" method="post" onsubmit="return confirm('게시글을 삭제하시겠습니까?');">
-            <input type="hidden" name="conferenceNo" th:value="${conference.conferenceNo}">
-            <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 10px 20px; cursor: pointer;">게시글 삭제</button>
-        </form>
+    <div class="d-flex justify-content-between mt-4">
+        <a href="/community/conference" class="btn btn-secondary">🏠 목록으로</a>
+        <div>
+            <div th:if="${#authentication.name == conference.userId}" class="d-inline-block me-2">
+                <a th:href="@{/community/conference/update/{conferenceNo}(conferenceNo=${conference.conferenceNo})}"
+                   class="btn btn-info">✏️ 게시글 수정</a>
+                <form th:action="@{/community/conference/delete}" method="post" class="d-inline-block"
+                      onsubmit="return confirm('게시글을 삭제하시겠어요?');">
+                    <input type="hidden" name="conferenceNo" th:value="${conference.conferenceNo}">
+                    <button type="submit" class="btn btn-danger">🗑️ 게시글 삭제</button>
+                </form>
+            </div>
+            <a href="/community/conferenceNo/create" class="btn btn-primary">✍새 글 작성</a>
+        </div>
     </div>
-
-    <!-- 게시글 수정 버튼 표시 -->
-    <div class="button-container" th:if="${#authentication.name == conference.userId}">
-        <a th:href="@{/community/conference/update/{conferenceNo}(conferenceNo=${conference.conferenceNo})}"
-           style="background-color: #17a2b8; color: white; padding: 10px 20px; cursor: pointer; text-decoration: none;">게시글 수정</a>
-    </div>
-
-    <div class="d-flex justify-content-between">
-        <a href="/community/conference" class="btn btn-secondary">목록으로 돌아가기</a>
-        <a href="/community/conference/create" class="btn btn-primary">새 글 작성하기</a>
-    </div>
-
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var images = document.getElementsByTagName('img');
+        for (var i = 0; i < images.length; i++) {
+            images[i].onerror = function() {
+                // 이미지 요소의 부모 요소(div)를 찾아 제거
+                var parentDiv = this.closest('.col-md-4');
+                if (parentDiv) {
+                    parentDiv.remove();
+                } else {
+                    this.style.display = 'none';
+                }
+            }
+        }
+    });
+</script>
 </body>
+<footer th:replace="fragments/head :: footer"></footer>
+
 </html>

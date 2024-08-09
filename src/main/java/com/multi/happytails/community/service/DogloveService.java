@@ -16,7 +16,6 @@ public class DogloveService {
     @Autowired
     private ReplyService replyService;
 
-
     @Autowired
     private DogloveDAO dogloveDAO;
 
@@ -54,8 +53,10 @@ public class DogloveService {
         dogloveDAO.delete(dogloveNo);
     }
 
-
     public int update(DogloveDTO dogloveDTO) {
         return dogloveDAO.update(dogloveDTO);
     }
 }
+
+
+

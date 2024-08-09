@@ -22,7 +22,7 @@ public interface ChatDogDAO {
 
     List<ChatDogDTO> search(String keyword);
 
-    void update(ChatDogDTO chatdog);
+    int update(ChatDogDTO chatdog);
 
 
 }

@@ -5,53 +5,30 @@
     <title>내 새꾸 자랑 상세 페이지</title>
     <link href="https://fonts.googleapis.com/css2?family=Gaegu&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Gaegu', cursive;
-            background-color: #FFF5EE;
-            background-image: url('paw-pattern.png');
-        }
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            background-color: white;
-        }
-        .btn {
-            border-radius: 20px;
-            font-size: 1.1em;
-        }
-        .comment-item {
-            background-color: #F0F8FF;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            padding: 15px;
-        }
-        .btn-blue {
-            background-color: #4169E1;
-            color: white;
-        }
-        .btn-green {
-            background-color: #98FB98;
-            color: #333;
+        /* 깨진 이미지 아이콘 숨기기 */
+        img[src=""], img:not([src]) {
+            display: none;
         }
     </style>
 </head>
 <body class="container mt-5">
 <menu th:replace="fragments/head :: menu"></menu>
 
-<h1 class="mb-4 text-center">🐾 내 새꾸 자랑 상세 페이지 🐾</h1>
+<h1 class="mb-4 text-center">내 새꾸 자랑 상세 페이지</h1>
+<h3 class="mb-4 text-center">우리 아이의 사랑스러운 순간들을 자랑하시개! 🐶</h3>
 
 <div class="card mb-4">
     <div class="card-body">
         <h2 class="card-title">🐶 <strong>제목 : </strong> <span th:text="${doglove.title}"></span></h2>
         <p class="card-text">📝 <strong>작성자 : </strong> <span th:text="${doglove.userId}"></span></p>
-        <p class="card-text">🗓️ <strong>작성일 : </strong> <span th:text="${#temporals.format(doglove.createTime, 'yyyy-MM-dd')}"></span></p>
+        <p class="card-text">🗓️ <strong>작성일 : </strong> <span th:text="${#temporals.format(doglove.createTime, 'yyyy-MM-dd-ss')}"></span></p>
         <p class="card-text" th:text="${doglove.content}"></p>
         <p class="card-text">❤️ <strong>추천 수:</strong> <span th:id="recommendCount" th:text="${doglove.recommendCount}"></span></p>
     </div>
 
     <div class="row">
         <div th:each="uploadDto : ${imageFiles}" class="col-md-4 mb-3">
-            <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" class="img-fluid rounded" alt="강아지 이미지">
+            <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" class="img-fluid rounded">
         </div>
     </div>
 
@@ -60,7 +37,7 @@
             <input type="hidden" name="communityCategoryCode" value="L" />
             <input type="hidden" name="foreignNo" th:value="${doglove.dogloveNo}" />
             <div style="margin-bottom: 10px;">
-                <textarea name="content" required rows="3" class="form-control" placeholder="귀여운 댓글을 남겨주세요! 🐾"></textarea>
+                <textarea name="content" required rows="3" class="form-control" placeholder="댓글을 남겨주시개"></textarea>
             </div>
             <div style="display: flex; justify-content: flex-end;">
                 <button type="submit" class="btn btn-blue">🐾 댓글 남기기</button>
@@ -68,7 +45,7 @@
         </form>
     </div>
 
-    <form th:action="@{/community/doglove/dogloveRecommend}" method="post" onsubmit="return confirm('이 귀여운 게시글을 추천하시겠어요?');">
+    <form th:action="@{/community/doglove/dogloveRecommend}" method="post" onsubmit="return confirm('이 게시글을 추천하시겠어요?');">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
         <button type="submit" class="btn btn-green">❤️ 추천하기</button>
         <input type="hidden" name="dogloveNo" th:value="${doglove.dogloveNo}"/>
@@ -82,14 +59,13 @@
                     <strong th:text="${reply.writerId}">작성자</strong>:
                     <span th:text="${reply.content}">내용</span>
                 </p>
-                <div th:if="${#authentication.name == reply.writerId}">
+                <div th:if="${#authentication.name == 'admin' or #authentication.name == reply.writerId}">
+                    <!-- 댓글 수정 페이지로 이동하는 버튼 -->
                     <a th:href="@{/community/L/{foreignNo}/reply/update/{communityReplyNo}(foreignNo=${doglove.dogloveNo}, communityReplyNo=${reply.communityReplyNo})}"
                        class="btn btn-sm btn-blue">✏️ 수정</a>
+                    <!-- 댓글 삭제 폼 -->
                     <form th:action="@{/community/L/{foreignNo}/reply/delete/{communityReplyNo}(foreignNo=${doglove.dogloveNo}, communityReplyNo=${reply.communityReplyNo})}"
-                          method="post"
-                          class="comment-form"
-                          style="display: inline-block;"
-                          onsubmit="return confirm('정말로 이 귀여운 댓글을 삭제하시겠어요?');">
+                          method="post" class="comment-form" style="display: inline-block;" onsubmit="return confirm('댓글을 삭제하시겠어요?');">
                         <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}"/>
                         <button type="submit" class="btn btn-sm btn-danger">🗑️ 삭제</button>
                     </form>
@@ -105,15 +81,34 @@
                 <a th:href="@{/community/doglove/update/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}"
                    class="btn btn-info">✏️ 게시글 수정</a>
                 <form th:action="@{/community/doglove/delete}" method="post" class="d-inline-block"
-                      onsubmit="return confirm('정말로 이 귀여운 게시글을 삭제하시겠어요?');">
+                      onsubmit="return confirm('게시글을 삭제하시겠어요?');">
                     <input type="hidden" name="dogloveNo" th:value="${doglove.dogloveNo}">
                     <button type="submit" class="btn btn-danger">🗑️ 게시글 삭제</button>
                 </form>
             </div>
-            <a href="/community/doglove/create" class="btn btn-primary">✍️ 새 글 작성</a>
+            <a href="/community/doglove/create" class="btn btn-primary">✍새 글 작성</a>
         </div>
     </div>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var images = document.getElementsByTagName('img');
+        for (var i = 0; i < images.length; i++) {
+            images[i].onerror = function() {
+                // 이미지 요소의 부모 요소(div)를 찾아 제거
+                var parentDiv = this.closest('.col-md-4');
+                if (parentDiv) {
+                    parentDiv.remove();
+                } else {
+                    this.style.display = 'none';
+                }
+            }
+        }
+    });
+</script>
 </body>
+<footer th:replace="fragments/head :: footer"></footer>
+
 </html>

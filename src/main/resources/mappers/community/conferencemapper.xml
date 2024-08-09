@@ -75,7 +75,7 @@
         LIMIT 1
     </select>
 
-    <select id="search" parameterType="String" resultType="com.multi.happytails.community.model.dto.ConferenceDTO">
+    <select id="cfsearch" parameterType="String" resultType="com.multi.happytails.community.model.dto.ConferenceDTO">
         SELECT * FROM TB_CONFERENCE
         WHERE TITLE LIKE CONCAT('%', #{keyword}, '%')
     </select>

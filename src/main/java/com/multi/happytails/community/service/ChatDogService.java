@@ -18,11 +18,11 @@ public class ChatDogService {
 
 
     @Autowired
-    private ChatDogDAO chatdogDAO;
+    private static ChatDogDAO chatdogDAO;
 
     public ChatDogService(ChatDogDAO chatdogDAO) { this.chatdogDAO = chatdogDAO; }
 
-    public List<ChatDogDTO> findAllSortedByDate() {
+    public static List<ChatDogDTO> findAllSortedByDate() {
         return chatdogDAO.findAll("date");
     }
 
@@ -53,8 +53,8 @@ public class ChatDogService {
     }
 
 
-    public void update(ChatDogDTO chatdog) {
-        Long chatdogNo = chatdog.getChatdogNo();
-        chatdogDAO.update(chatdog);
+    public int update(ChatDogDTO chatDogDTO) {
+        return chatdogDAO.update(chatDogDTO);
+
     }
 }
