@@ -211,6 +211,24 @@ public class FindDogController {
         return "댓글이 작성 되었습니다.";
     }
 
+    @PostMapping("/replyDelte")
+    @ResponseBody
+    public String replyDelte(@RequestParam("findDogReplyNo") long findDogReplyNo) {
+
+        findDogService.findDogReplyDelete(findDogReplyNo);
+
+        return "댓글이 삭제 되었습니다.";
+    }
+
+    @PostMapping("/replyUpdate")
+    @ResponseBody
+    public String replyUpdate(@ModelAttribute FindDogReplyDto findDogReplyDto) {
+
+        findDogService.findDogReplyUpdate(findDogReplyDto);
+
+        return "댓글이 수정 되었습니다.";
+    }
+
     @GetMapping("/getReplyList")
     @ResponseBody
     public List<FindDogReplyDto> getReplyList(@RequestParam("findDogNo") long findDogNo) {

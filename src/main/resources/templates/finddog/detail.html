@@ -170,21 +170,77 @@
         // 댓글 삭제 버튼 Start
         $('#tableDiv').on('click','.reply-delete-btn',function(){
 
-            let findReplyNo = $(this).closest('tr').data('replyNo');
+            let findDogReplyNo = $(this).closest('tr').attr('data-reply-no');
 
-            /*if (confirm("삭제 하시겠습니까?")) {
+            if (confirm("삭제 하시겠습니까?")) {
                 $.ajax({
                     url: "/finddog/replyDelte",
                     type: 'POST',
                     data: {"findDogReplyNo": findDogReplyNo},
                     success: function (result) {
                         alert(result);
-                        location.href = "/finddog/main";
+                        location.href = "/finddog/detail?findDogNo=" + findDogNo;
                     }
                 });
-            }*/
+            }
         });
         // 댓글 삭제 버튼 End
+
+        // 댓글 수정 버튼 Start
+        $('#tableDiv').on('click','.reply-update-btn',function(){
+
+            let findDogContent = $(this).closest('tr').attr('data-reply-content');
+            let contentTd = $(this).closest('tr').find('td:nth-child(3)');
+
+            let htmlStr = `
+                <input type="text" class="replyContent" value="`+findDogContent+`">
+                <input type="button" value="작성" class="replyUpdateBtn">
+                <input type="button" value="취소" class="replyUpdateClose">
+            `;
+
+            contentTd.html(htmlStr);
+
+        });
+        // 댓글 수정 버튼 End
+
+        // 댓글 수정 취소 버튼 Start
+        $('#tableDiv').on('click','.replyUpdateClose',function() {
+            let contentTd = $(this).closest('tr').find('td:nth-child(3)');
+            let findDogContent = $(this).closest('tr').attr('data-reply-content');
+
+            contentTd.html(findDogContent);
+        });
+        // 댓글 수정 취소 버튼 End
+
+        // 댓글 수정 작성 버튼 Start
+        $('#tableDiv').on('click','.replyUpdateBtn',function() {
+            let findDogReplyNo = $(this).closest('tr').attr('data-reply-no');
+            let content = $(this).closest('tr').find('.replyContent').val();
+
+                        let formData = new FormData();
+
+            formData.append('findDogReplyNo',findDogReplyNo);
+            formData.append('content',content);
+
+
+            if (confirm("수정 하시겠습니까?")) {
+               $.ajax({
+                    url : "/finddog/replyUpdate",
+                    processData : false,
+                    contentType : false,
+                    type : 'POST',
+                    data : formData,
+                    success: function (result) {
+                        alert(result);
+                        location.reload();
+                    }
+                });
+            }
+
+
+        });
+        // 댓글 수정 작성 버튼 End
+
     });
 
     // 댓글 리스트 불러오기 Start
@@ -208,18 +264,18 @@
                                 <th scope="col">생성 날짜</th>
                                 <th scope="col">작성자</th>
                                 <th scope="col">내용</th>
-                                <th scope="col">삭제</th>
+                                <th scope="col">수정/삭제</th>
                             </tr>
                         </thead>
                     `;
                 for(let i = 0; i < result.length; i++) {
                     template += `
                             <tbody>
-                                <tr class="listRow" data-reply-no="`+result[i].findReplyNo+`">
+                                <tr class="listRow" data-reply-no="`+result[i].findDogReplyNo+`" data-reply-content="`+result[i].content+`">
                                     <td>`+dataFormat1(result[i].createDate)+`</td>
                                     <td>`+result[i].writerId+`</td>
                                     <td>`+result[i].content+`</td>
-                                    <td><input type="button" class="btn btn-danger reply-delete-btn" value="삭제"</td>
+                                    <td><input type="button" class="btn btn-success reply-update-btn" value="수정"><input type="button" class="btn btn-danger reply-delete-btn" value="삭제"></td>
                                 </tr>
                             </tbody>
                         `;
