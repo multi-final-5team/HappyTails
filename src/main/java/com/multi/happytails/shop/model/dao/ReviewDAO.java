@@ -34,7 +34,7 @@ public interface ReviewDAO {
      *
      * @param reviewDTO the review dto
      */
-    void updateReview(ReviewDTO reviewDTO);
+    int updateReview(ReviewDTO reviewDTO);
 
     /**
      * methodName : deleteReview

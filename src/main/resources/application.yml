@@ -9,7 +9,6 @@ spring:
     api-key: "8823427741880022"
     api-secret: "a2JYpyYXr3kLHaKOtrQj816byiBP6GzhduJx3FwWrLYpMPQsjXBheQQTH4EHOfnlDKvTZjsqjvu6lEMp"
 
-
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

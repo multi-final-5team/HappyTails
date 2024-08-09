@@ -27,7 +27,7 @@
         STAR_RATING = #{starRating},
         CONTENT = #{content}
         WHERE
-        REVIEW_NO = #{no} AND ID = #{id} AND GOODS_NO = #{goodsNo}
+        REVIEW_NO = #{no} AND ID = #{id}
     </update>
 
     <delete id="deleteReview">
