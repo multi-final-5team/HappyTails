@@ -15,9 +15,9 @@
 
 <h1 class="mb-4">순찰일지</h1>
 
-    <div style="width: 30%;margin-left:auto;">
-        <input class="form-control" type="text" id="searchinput">
-        <button class="btn btn-info" id="btnserch" onclick="search()" style="margin-left:70%; width: 30%;">검색</button>
+    <div style="width: 30%;margin-left:auto;display: flex;">
+        <input class="form-control" type="text" id="searchinput" style="width: 70%;">
+        <button class="btn btn-info" id="btnserch" onclick="search()" style="width: 30%;">검색</button>
     </div>
 
     <button class="btn btn-primary" id="goPatrolRecordInsertBtn" sec:authorize="isAuthenticated()">생성</button>
@@ -27,6 +27,8 @@
 </div>
 
 </main>
+
+<menu th:replace="fragments/head :: footer"></menu>
 
 
 <script>

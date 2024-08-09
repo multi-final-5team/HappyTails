@@ -69,19 +69,19 @@
     <div class="fileInputTotal" id="" style="margin: 3%;">
         <div class="">
             <label>이미지1</label><br>
-            <input class="form-control" type="file" id="inputFile1" name="inputFile1" onchange="setThumbnail(event);">
+            <input class="form-control" type="file" id="inputFile1" name="inputFile1" onchange="setThumbnail(event);" >
         </div>
         <div class="">
             <label>이미지2</label><br>
-            <input class="form-control" type="file" id="inputFile2" name="inputFile2" onchange="setThumbnail(event);">
+            <input class="form-control" type="file" id="inputFile2" name="inputFile2" onchange="setThumbnail(event);" >
         </div>
         <div class="">
             <label>이미지3</label><br>
-            <input class="form-control" type="file" id="inputFile3" name="inputFile3" onchange="setThumbnail(event);">
+            <input class="form-control" type="file" id="inputFile3" name="inputFile3" onchange="setThumbnail(event);" >
         </div>
         <div class="">
             <label>이미지4</label><br>
-            <input class="form-control" type="file" id="inputFile4" name="inputFile4" onchange="setThumbnail(event);">
+            <input class="form-control" type="file" id="inputFile4" name="inputFile4" onchange="setThumbnail(event);" >
         </div>
     </div>
 
@@ -108,6 +108,8 @@
 
 </main>
 
+<menu th:replace="fragments/head :: footer"></menu>
+
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
@@ -116,13 +118,17 @@
     let saveToServerButton = document.getElementById('saveToServerButton');
 
     downloadButton.addEventListener('click', () => {
-        html2canvas(captureDiv).then(canvas => {
+        if(inputCheck()){
+            html2canvas(captureDiv).then(canvas => {
             saveImg(canvas.toDataURL('image/jpg'), 'image.jpg');
-        });
+            });
+        }
     });
 
     saveToServerButton.addEventListener('click', () => {
-        html2canvas(captureDiv).then(canvas => {
+        if(inputCheck()){
+
+            html2canvas(captureDiv).then(canvas => {
             var imgDataUrl = canvas.toDataURL('image/jpg');
 
             var blobBin = atob(imgDataUrl.split(',')[1]);	// base64 데이터 디코딩
@@ -146,6 +152,8 @@
                 }
             });
         });
+
+        }
     });
 
     const saveImg = (uri, filename) => {
@@ -197,6 +205,21 @@
         else if(arrangement == "imgLine"){
             $("#capture").attr('class', 'imgLine');
             $("#capture").children().attr('class', 'imgDivLine');
+        }
+    }
+
+    function inputCheck() {
+        var fileCheck1 = $('#inputFile1').val();
+        var fileCheck2 = $('#inputFile2').val();
+        var fileCheck3 = $('#inputFile3').val();
+        var fileCheck4 = $('#inputFile4').val();
+        if(!fileCheck1 || !fileCheck2 || !fileCheck3 || !fileCheck4){
+            alert("파일을 첨부해 주세요");
+
+            return false;
+        }
+        else{
+            return true;
         }
     }
 

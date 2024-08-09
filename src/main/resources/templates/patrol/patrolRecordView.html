@@ -6,6 +6,18 @@
     <title>Title</title>
 
 </head>
+
+<style>
+    .card-body{
+        display: flex;
+        align-items: center;
+    }
+    .replyInput{
+        resize : none;
+        width : 100%;
+    }
+</style>
+
 <body class="container mt-5">
 
 <menu th:replace="fragments/head :: menu"></menu>
@@ -48,8 +60,16 @@
     <div class="bg-light p-4 rounded" sec:authorize="isAuthenticated()">
         <form class="" id="replyForm" method="post" action="/patrolRecord/reply/repleyInsert">
             <input type="hidden" id="replyPrecordNo" name="replyPrecordNo">
-            <textarea class="" id="replyContent" name="replyContent" style="resize:none;" rows="4" cols="70"></textarea><br>
-            <button type="submit">댓글작성</button>
+            <textarea class="replyInput" id="replyContent" name="replyContent" rows="4" maxlength="255"></textarea><br>
+            <div class="comment-form-wrap" >
+                <span class="starrr" id="comment-star"></span>
+
+                <span class="length">
+                <span class="comment_length">0</span>
+                    / 255
+                </span>
+                <button type="submit" style="margin-left: 85%;">댓글작성</button>
+            </div>
         </form>
     </div>
 
@@ -58,6 +78,8 @@
     </div>
 
 </main>
+
+<menu th:replace="fragments/head :: footer"></menu>
 
 <script th:inline="javascript">
     var username = [[${#authentication.name}]];
@@ -135,8 +157,15 @@
                 $('#allReplyDiv').append(
 
                     $('<div>').prop({
-                        id: 'precordReply' + index,
-                        className: 'card'
+                        id: 'precordReplyWrap' + index,
+                        className: ''
+                        })
+                    );
+
+                    $('#' + 'precordReplyWrap' + index).append(
+                        $('<div>').prop({
+                            id: 'precordReply' + index,
+                            className: 'card'
                         }).attr("onclick", "showReply(" + JSON.stringify(data[index]) + "," +  index +")")
                     );
 
@@ -148,18 +177,18 @@
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '<b class="card-text">작성자: ' + data[index].userName + '</b><br>'
+                        '<b class="card-text">작성자: ' + data[index].userName + '&emsp;&emsp;&emsp;</b>'
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '<sub class="card-text">작성시간: ' + data[index].createtime + '</sub><br>'
+                        '<p class="card-text" style="margin-bottom: 0;	max-width:70% ; word-wrap:break-word;">' + data[index].content + '</p>'
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '내용<br><textarea class="card-text" style="resize:none;" readonly>' + data[index].content + '</textarea>'
+                        '<sub class="card-text" style="margin-left: auto;">' + data[index].createtime + '</sub>'
                     );
 
-                    $('#' + 'divbody' + index).append(
+                    $('#' + 'precordReplyWrap' + index).append(
                         $('<div>').prop({
                             id: 'replyChange' + index,
                             className: 'replyShowDiv'
@@ -432,6 +461,18 @@
             replyShowFlag = index;
         }
     }
+
+       // 댓글 글자수 감지
+    $("#replyContent").keyup(function (e){
+        var content = $(this).val();
+
+        //글자수 세기
+        if(content.length == 0 || content == ""){
+            $(".comment_length").text('0');
+        }else{
+            $(".comment_length").text(content.length);
+        }
+    });
 </script>
 
 </body>

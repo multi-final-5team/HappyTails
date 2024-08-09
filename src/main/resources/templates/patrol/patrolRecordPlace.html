@@ -12,6 +12,8 @@
 
 <main>
 
+
+
     <h1 class="mb-4">순찰경로 조회</h1>
 
     <button class="btn btn-primary" id="goPatrolRecordPlaceInsert" sec:authorize="isAuthenticated()">생성</button>
@@ -51,6 +53,7 @@
 
 </main>
 
+<menu th:replace="fragments/head :: footer"></menu>
 
 <script>
     $(document).ready(function(){

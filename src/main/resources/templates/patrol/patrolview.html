@@ -49,6 +49,8 @@
 
 </main>
 
+<menu th:replace="fragments/head :: footer"></menu>
+
 <script th:inline="javascript">
     var username = [[${#authentication.name}]];
 
