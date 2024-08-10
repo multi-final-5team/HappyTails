@@ -67,29 +67,9 @@ public class ReplyController {
             @PathVariable int communityReplyNo,
             @RequestParam String content) {
 
-
         replyService.updateReply(communityReplyNo, content);
         return "redirect:/community/" + getRedirectUrl(communityCategoryCode) + "/" + foreignNo;
     }
-
-
-
-    @GetMapping("/{communityCategoryCode}/{foreignNo}/reply/update/{communityReplyNo}")
-    public String getUpdate(
-            @PathVariable String communityCategoryCode,
-            @PathVariable Long foreignNo,
-            @PathVariable int communityReplyNo,
-            Model model) {
-
-        ReplyDTO reply = replyService.getReplyById(communityReplyNo);
-        model.addAttribute("reply", reply);
-        model.addAttribute("foreignNo", foreignNo);
-        model.addAttribute("communityCategoryCode", communityCategoryCode);
-        return "community/replyupdate";
-    }
-
-
-
 
     private String getRedirectUrl(String communityCategoryCode) {
         switch (ReplyCode.valueOf(communityCategoryCode)) {

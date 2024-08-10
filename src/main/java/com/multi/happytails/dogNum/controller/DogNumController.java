@@ -90,19 +90,18 @@ public class DogNumController {
         return ResponseEntity.ok(message);
     }
 
-    @GetMapping("{dognumNo}")
+/*    @GetMapping("/{dogNumNo}")
     public String dogCertificate(
-                                 @RequestParam("dogRegNo") String dogRegNo,
-                                 @PathVariable("dognumNo") Long dognumNo,
-                                 Model model) {
-                // 강아지 정보를 조회
-        DogNumDTO dogInfo = dogNumService.getDogInfoByDogregno(dogRegNo);
+            @RequestParam("dogRegNo") String dogRegNo,
+            @PathVariable("dognumNo") Long dognumNo,
+            Model model) {
 
-        List<UploadDto> uploadDtoList = uploadService.uploadSelect(IMAGE_CODE, Long.parseLong(String.valueOf(dognumNo)));
+        // 강아지 정보를 조회
+        DogNumDTO dogInfo = dogNumService.getDogInfoByDogregno(dogRegNo);
+        List<UploadDto> uploadDtoList = uploadService.uploadSelect(IMAGE_CODE, dognumNo);
 
         if (dogInfo != null) {
             // 모델에 강아지 정보 추가
-            model.addAttribute("dognumNo", dogInfo.getDognumNo());
             model.addAttribute("dogRegNo", dogInfo.getDogregno());
             model.addAttribute("dogNm", dogInfo.getDognm());
             model.addAttribute("sexNm", dogInfo.getSexnm());
@@ -116,9 +115,33 @@ public class DogNumController {
             model.addAttribute("errorMessage", "강아지 정보를 찾을 수 없습니다.");
         }
 
+        return "dogNum/dogNumSave";
+    }*/
 
+    @GetMapping("/dogNumSave")
+    public String dogCertificate(
+            @RequestParam("dogRegNo") String dogRegNo,
+            Model model) {
+        // 강아지 정보를 조회
+        DogNumDTO dogInfo = dogNumService.getDogInfoByDogregno(dogRegNo);
 
+        List<UploadDto> uploadDtoList = uploadService.uploadSelect(IMAGE_CODE, Long.parseLong(dogRegNo));
+
+        if (dogInfo != null) {
+            // 모델에 강아지 정보 추가
+            model.addAttribute("dogRegNo", dogInfo.getDogregno());
+            model.addAttribute("dogNm", dogInfo.getDognm());
+            model.addAttribute("sexNm", dogInfo.getSexnm());
+            model.addAttribute("kindNm", dogInfo.getKindnm());
+            model.addAttribute("neuterYn", dogInfo.getNeuteryn());
+            model.addAttribute("uploadDtoList", uploadDtoList);
+
+        } else {
+            // 강아지 정보가 없는 경우 에러 처리
+            model.addAttribute("errorMessage", "강아지 정보를 찾을 수 없습니다.");
+        }
 
         return "dogNum/dogNumSave";
     }
+
 }

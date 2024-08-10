@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
     <title>DBTI</title>
 </head>
-<body>
+<body class="container mt-5">
+<menu th:replace="fragments/head :: menu"></menu>
+
 <h1>DBTI</h1>
 
 <form action="/survey/submit" method="post">

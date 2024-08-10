@@ -110,5 +110,69 @@
 </script>
 </body>
 <footer th:replace="fragments/head :: footer"></footer>
+<script>
+    // 댓글 수정 버튼 Start
+       $('#tableDiv').on('click','.reply-update-btn',function(){
 
+           let dogLoveContent = $(this).closest('tr').attr('data-reply-content');
+           let contentTd = $(this).closest('tr').find('td:nth-child(3)');
+
+           let htmlStr = `
+               <input type="text" class="replyContent" value="`+dogLoveContent+`">
+               <input type="button" value="작성" class="replyUpdateBtn">
+               <input type="button" value="취소" class="replyUpdateClose">
+           `;
+
+           contentTd.html(htmlStr);
+
+       });
+       // 댓글 수정 버튼 End
+
+       // 댓글 수정 취소 버튼 Start
+       $('#tableDiv').on('click','.replyUpdateClose',function() {
+           let contentTd = $(this).closest('tr').find('td:nth-child(3)');
+           let dogLoveContent = $(this).closest('tr').attr('data-reply-content');
+
+           contentTd.html(dogLoveContent);
+       });
+       // 댓글 수정 취소 버튼 End
+
+       // 댓글 수정 작성 버튼 Start
+       $('#tableDiv').on('click','.replyUpdateBtn',function() {
+           let communityReplyNo = $(this).closest('tr').attr('data-reply-no');
+           let content = $(this).closest('tr').find('.dogLoveContent').val();
+
+           let dataArr = [content];
+
+           let result = handleNullInArray(dataArr);
+
+           if (result == 0) {
+               alert('값이 비어있습니다.');
+               return;
+           }
+
+           let formData = new FormData();
+
+           formData.append('communityReplyNo',dogLoveContent);
+           formData.append('content',content);
+
+
+           if (confirm("수정 하시겠습니까?")) {
+              $.ajax({
+                   url : "/community/replyUpdate",
+                   processData : false,
+                   contentType : false,
+                   type : 'POST',
+                   data : formData,
+                   success: function (result) {
+                       alert(result);
+                       location.reload();
+                   }
+               });
+           }
+
+       });
+       // 댓글 수정 작성 버튼 End
+
+</script>
 </html>
