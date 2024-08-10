@@ -252,9 +252,9 @@ public class PatrolRecordController {
 
         PrecordDTO precordDTO = patrolRecordService.findOnePatrolRecordByPrecordNo(precordNo);
 
-        if (customUser != null){
-            precordDTO.setUserId(customUser.getId());
-        }
+        MemberDTO memberDTO = memberService.findMemberByUserNo(precordDTO.getUserNo());
+
+        precordDTO.setUserId(memberDTO.getId());
 
         onePatrolRecordImgDTO.setPrecordDTO(precordDTO);
 
