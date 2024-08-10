@@ -75,22 +75,15 @@
 
         <div class="price-row total-price">
             <span>총 결제금액</span>
-            <span id="amount">원</span>
+            <p th:text="${#numbers.formatCurrency(#aggregates.sum(cartList.![price * purchaseQuantity]))} + '원'" id="amount"></p>
         </div>
         <button class="order-button" onclick="mypayment()">결제하기</button>
     </div>
 </div>
 <script th:inline="javascript">
     // Thymeleaf를 통해 cartList 데이터를 JavaScript로 전달
-    var cartList = /*[[${cartList}]]*/ [];
+    var originalPrice = /*[[${#aggregates.sum(cartList.![price * purchaseQuantity])}]]*/ 0;
 
-    // price의 총합 계산
-    var totalPrice = cartList.reduce(function (sum, item) {
-        return sum + item.price;
-    }, 0);
-
-    // 계산된 총합을 HTML에 표시
-    document.getElementById('amount').textContent = totalPrice + '원';
 </script>
 </body>
 </html>

@@ -29,29 +29,27 @@
     <h1 class="mb-4">상품 상세 정보</h1>
     <div class="card mb-4">
         <div class="card-body">
-            <h2 class="card-title" th:text="${salesDetails.name}">상품명</h2>
-            <h6 class="card-subtitle mb-2 text-muted" th:text="'카테고리: ' + ${salesDetails.categoryCode}">카테고리 코드</h6>
-            <p class="card-text"><strong>판매자:</strong> <span th:text="${salesDetails.id}">ID</span></p>
-            <p class="card-text"><strong>주소:</strong> <span th:text="${salesDetails.address}">주소</span></p>
-
-            <div th:if="${uploadDtoList != null && !uploadDtoList.isEmpty()}" class="mb-4">
-                <img th:src="@{/images/S/{file}(file=${uploadDtoList[0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="407" height="407">
-
-
-                <p class="card-text"><strong>가격:</strong> <span th:text="${#numbers.formatCurrency(salesDetails.price)}">가격</span></p>
-            <form action="/cart/insertCart" method="post">
-                <input type="hidden" id="goodsNo1" name="goodsNo" th:value="${goodsNo}">
-                <div>
-                    <label for="purchaseQuantity">수량 </label>
-                    <input type="number" id="purchaseQuantity" name="purchaseQuantity" required>
+            <div class="card mx-auto" style="width: 50%; min-width: 300px;">
+                <div class="card-body  text-center">
+                    <h2 class="card-title" th:text="${salesDetails.name}">상품명</h2>
+                    <h6 class="card-subtitle mb-2 text-muted" th:text="'카테고리: ' + ${salesDetails.categoryCode}">카테고리 코드</h6>
+                    <p class="card-text"><strong>주소:</strong> <span th:text="${salesDetails.address}">주소</span></p>
+                    <div th:if="${uploadDtoList != null && !uploadDtoList.isEmpty()}" class="mb-4">
+                        <img th:src="@{/images/S/{file}(file=${uploadDtoList[0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="407" height="407">
+                        <p class="card-text"><strong>가격:</strong> <span th:text="${#numbers.formatCurrency(salesDetails.price)}">가격</span></p>
+                        <form action="/cart/insertCart" method="post">
+                            <input type="hidden" id="goodsNo1" name="goodsNo" th:value="${goodsNo}">
+                            <div>
+                                <label for="purchaseQuantity">수량 </label>
+                                <input type="number" id="purchaseQuantity" name="purchaseQuantity" required>
+                            </div>
+                            <div>
+                                <button type="submit">장바구니 추가</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div>
-                    <button type="submit">장바구니 추가</button>
-                </div>
-            </form>
-
-
-
+            </div>
                 <div class="text-center">
                 <p class="card-text"><strong>상세 설명:</strong> <span th:text="${salesDetails.content}">상세 설명</span></p>
                 <h3>상세 이미지</h3>
@@ -60,72 +58,71 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <div class="mb-4">
-        <h2>리뷰</h2>
-        <div th:if="${reviewList != null && !reviewList.isEmpty()}">
-            <div th:each="review : ${reviewList}" class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="'리뷰자 : '+ ${review.id}">리뷰어 ID</h5>
-                    <h6 class="card-subtitle mb-2 text-muted" th:text="'평점 : ' + ${review.starRating}">별점</h6>
-                    <div class="row">
-                        <div th:each="image : ${reviewMap[review.no]}" class="col-md-4 mb-3">
-
-                            <img th:src="@{/images/R/{file}(file=${image.storedFileName})}" alt="리뷰 이미지" class="img-review">
-
+        <div class="mb-4">
+            <h2>리뷰</h2>
+            <div th:if="${reviewList != null && !reviewList.isEmpty()}">
+                <div th:each="review : ${reviewList}" class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="'리뷰자 : '+ ${review.id}">리뷰어 ID</h5>
+                        <h6 class="card-subtitle mb-2 text-muted" th:text="'평점 : ' + ${review.starRating}">별점</h6>
+                        <div class="row">
+                            <div th:each="image : ${reviewMap[review.no]}" class="col-md-4 mb-3">
+                                <img th:src="@{/images/R/{file}(file=${image.storedFileName})}" alt="리뷰 이미지" class="img-review">
+                            </div>
                         </div>
-                    </div>
-                    <p class="card-text" th:text="${review.content}">리뷰 내용</p>
-                    <p class="card-text"><small class="text-muted" th:text="${#dates.format(review.reviewDate, 'yyyy-MM-dd HH:mm:ss')}">리뷰 날짜</small></p>
-                    <div th:if="${review.id == principalName}">
-                        <a th:href="@{/review/deleteReview(reviewNo=${review.no})}"
-                           class="btn btn-danger btn-sm">
-                            삭제
-                        </a>
+                        <p class="card-text" th:text="${review.content}">리뷰 내용</p>
+                        <p class="card-text"><small class="text-muted" th:text="${#dates.format(review.reviewDate, 'yyyy-MM-dd HH:mm:ss')}">리뷰 날짜</small></p>
+                        <div th:if="${review.id == principalName}">
+                            <a th:href="@{/review/deleteReview(reviewNo=${review.no})}"
+                               class="btn btn-danger btn-sm">
+                                삭제
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div th:if="${reviewList == null || reviewList.isEmpty()}" class="alert alert-info">
+                리뷰가 없습니다.
+            </div>
         </div>
-        <div th:if="${reviewList == null || reviewList.isEmpty()}" class="alert alert-info">
-            리뷰가 없습니다.
-        </div>
-    </div>
 
-    <div class="card">
-        <div class="card-body">
-            <h3 class="card-title">리뷰 작성</h3>
-            <form id="insertForm" enctype="multipart/form-data">
-                <input type="hidden" id="goodsNo" name="goodsNo" th:value="${goodsNo}">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">리뷰 작성</h3>
+                <form id="insertForm" enctype="multipart/form-data">
+                    <input type="hidden" id="goodsNo" name="goodsNo" th:value="${goodsNo}">
 
-                <div class="mb-3">
-                    <label for="starRating" class="form-label">별점:</label>
-                    <div class="star-rating">
-                        <input type="radio" id="star1" name="starRating" value="1"><label for="star1">&#9733;</label>
-                        <input type="radio" id="star2" name="starRating" value="2"><label for="star2">&#9733; &#9733;</label>
-                        <input type="radio" id="star3" name="starRating" value="3"><label for="star3">&#9733; &#9733; &#9733;</label>
-                        <input type="radio" id="star4" name="starRating" value="4"><label for="star4">&#9733; &#9733; &#9733; &#9733;</label>
-                        <input type="radio" id="star5" name="starRating" value="5" required><label for="star5">&#9733; &#9733; &#9733; &#9733; &#9733;</label>
+                    <div class="mb-3">
+                        <label for="starRating" class="form-label">별점:</label>
+                        <div class="star-rating">
+                            <input type="radio" id="star1" name="starRating" value="1"><label for="star1">&#9733;</label>
+                            <input type="radio" id="star2" name="starRating" value="2"><label for="star2">&#9733; &#9733;</label>
+                            <input type="radio" id="star3" name="starRating" value="3"><label for="star3">&#9733; &#9733; &#9733;</label>
+                            <input type="radio" id="star4" name="starRating" value="4"><label for="star4">&#9733; &#9733; &#9733; &#9733;</label>
+                            <input type="radio" id="star5" name="starRating" value="5" required><label for="star5">&#9733; &#9733; &#9733; &#9733; &#9733;</label>
+                        </div>
                     </div>
-                </div>
 
-                <div class="mb-3">
-                    <label for="imageInput" class="form-label">이미지 첨부:</label>
-                    <input type="file" class="form-control" id="imageInput" multiple>
-                    <div id="imgAddDiv" class="d-flex flex-wrap mt-2"></div>
-                </div>
+                    <div class="mb-3">
+                        <label for="imageInput" class="form-label">이미지 첨부:</label>
+                        <input type="file" class="form-control" id="imageInput" multiple>
+                        <div id="imgAddDiv" class="d-flex flex-wrap mt-2"></div>
+                    </div>
 
-                <div class="mb-3">
-                    <label for="content" class="form-label">리뷰 내용:</label>
-                    <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
-                </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">리뷰 내용:</label>
+                        <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+                    </div>
 
-                <button type="submit" class="btn btn-primary">리뷰 등록</button>
-            </form>
+                    <button type="submit" class="btn btn-primary">리뷰 등록</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
+
+
 
 <script>
     $(document).ready(function() {
