@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +61,7 @@ public class MemberController {
     @PostMapping("/kakaoLogin")
     @ResponseBody
     public ResponseEntity<?> kakaoLogin(@RequestBody Map<String, String> kakaoData, HttpServletRequest request) {
+
         String id = kakaoData.get("id");
         String email = kakaoData.get("email");
         String name = kakaoData.get("name");
@@ -99,7 +99,6 @@ public class MemberController {
         // 회원이 존재하는지 확인
         MemberDTO member = memberService.findMemberById(memberDTO.getId());
 
-        System.out.println(member + "________________00");
         if (member == null) {
             // 새 회원 등록
             memberService.insertMember(memberDTO);
@@ -112,8 +111,6 @@ public class MemberController {
 
         MemberDTO customUserInfo = new MemberDTO();
         customUserInfo = memberService.findMemberById(member.getId());
-        System.out.println(customUserInfo + "=customUserInfo");
-        System.out.println(member.getId() + "=getId");
 
         List<GrantedAuthority> authorities = new ArrayList<>();
 
@@ -145,6 +142,7 @@ public class MemberController {
     @GetMapping("/getCurrentUser")
     @ResponseBody
     public ResponseEntity<MemberDTO> getCurrentUser(@AuthenticationPrincipal CustomUser customUser) {
+
         if (customUser == null) { // null 체크 추가
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -160,6 +158,7 @@ public class MemberController {
 
     @PostMapping("/findUserId")
     public ResponseEntity<?> findUserId(@RequestBody MemberDTO memberDTO) {
+
         MemberDTO member = memberService.findUserByDetails(memberDTO);
         if (member != null) {
             return ResponseEntity.ok(member);
@@ -176,6 +175,7 @@ public class MemberController {
     @PostMapping("/changePassword")
     @ResponseBody
     public ResponseEntity<String> changePassword(@RequestBody Map<String, String> payload) {
+
         String id = payload.get("id");
         String email = payload.get("email");
         String newPassword = payload.get("newPassword");
@@ -199,7 +199,7 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public ModelAndView handleFileUpload(@RequestParam("file") MultipartFile file, // MultipartFile file은 프로필 이미지 파일을 받기
+    public ModelAndView handleFileUpload(@RequestParam("file") MultipartFile file,
                                          @RequestParam("id") String id,
                                          @RequestParam("password") String password,
                                          @RequestParam("email") String email,
@@ -219,8 +219,6 @@ public class MemberController {
         memberDTO.setGender(gender);
         memberDTO.setTel(tel);
         memberDTO.setRole("ROLE_MEMBER");
-
-        System.out.println(memberDTO);
 
 //            // 회원 정보를 db에 저장
             memberService.insertMember(memberDTO);
@@ -254,9 +252,8 @@ public class MemberController {
     }
 
     @GetMapping("/mypage")
-    public String myPage(Model model, @AuthenticationPrincipal CustomUser customUser, Principal principal) {
-        System.out.println(principal.getName() + "=================88");
-        System.out.println(customUser + "====================99");
+    public String myPage(Model model, @AuthenticationPrincipal CustomUser customUser) {
+
         if (customUser == null) {
             return "redirect:/member/login";
         }
@@ -272,6 +269,7 @@ public class MemberController {
 
     @GetMapping("/memberinfo")
     public String showMemberInfo(Model model, @AuthenticationPrincipal CustomUser customUser) {
+
         if (customUser == null) {
             return "redirect:/member/login";
         }
@@ -283,6 +281,7 @@ public class MemberController {
 
     @PostMapping("/memberinfo")
     public String updateMemberInfo(@ModelAttribute MemberDTO memberDTO, @AuthenticationPrincipal CustomUser customUser) {
+
         if (customUser != null) {
             String userId = customUser.getUsername();
             memberService.updateMember(userId, memberDTO);
@@ -294,6 +293,7 @@ public class MemberController {
 
     @PostMapping("/deleteMemberAccount")
     public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal CustomUser customUser, HttpServletRequest request, HttpServletResponse response) {
+
         if (customUser != null) {
             memberService.deleteMember(customUser.getUsername());
 
