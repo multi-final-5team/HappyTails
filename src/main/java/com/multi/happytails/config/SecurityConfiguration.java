@@ -46,7 +46,7 @@ public class SecurityConfiguration {
                         .loginPage("/member/login")
                         .usernameParameter("username")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/member/mypage", true)
+                        .defaultSuccessUrl("/", true)
                         .failureForwardUrl("/error/login")
 //                        .permitAll()
                 );
