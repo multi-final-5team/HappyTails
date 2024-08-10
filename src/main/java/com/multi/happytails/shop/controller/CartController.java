@@ -2,6 +2,8 @@ package com.multi.happytails.shop.controller;
 
 import com.multi.happytails.shop.model.dto.CartDTO;
 import com.multi.happytails.shop.service.CartService;
+import com.multi.happytails.upload.model.dto.UploadDto;
+import com.multi.happytails.upload.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * packageName    : com.multi.happytails.shop.controller
@@ -30,6 +34,9 @@ public class CartController {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private UploadService uploadService;
 
     @PostMapping("/insertCart")
     public String insertReview(Principal principal,
@@ -52,11 +59,17 @@ public class CartController {
         int totalPrice = 0;
         String id = principal.getName();
         List<CartDTO> cartList = cartService.cartList(id);
-        for(CartDTO cart : cartList) {
-            totalPrice += cart.totalPrice();
+
+        Map<Integer, List<UploadDto>> cartMap = new HashMap<>();
+
+        for (CartDTO cartDTO : cartList) {
+            int goodsNo = cartDTO.getGoodsNo();
+            cartMap.put(goodsNo, uploadService.uploadSelect("S", goodsNo));
         }
+
         model.addAttribute("cartList", cartList);
-        model.addAttribute("totalPrice", totalPrice);
+        model.addAttribute("cartMap", cartMap);
+
 
         return "/cart/cartList";
     }

@@ -3,7 +3,7 @@
 <head th:replace="fragments/head :: head">
 
 </head>
-<body class="bg-light">
+<body>
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
     <div class="container">
@@ -14,7 +14,7 @@
             <div class="tab-pane fade show active" id="list-find">
                 <div class="row">
                     <th:block th:each="salesGoods : ${salesGoodsList}">
-                        <div class="col-md-4 mb-4 d-flex align-items-stretch">
+                        <div class="col-md-4 mb-4 d-flex align-items-stretch listRow">
                             <div class="card" style="width: 100%;">
                                 <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}" class="card-body">
                                     <img th:src="@{/images/S/{file}(file=${salesGoodsMap[salesGoods.no][0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="300" height="200">
@@ -23,7 +23,7 @@
                                    th:text="${salesGoods.name}"
                                    class="text-decoration-none"></a>
                                 <p th:text="${#numbers.formatCurrency(salesGoods.price)}"></p>
-                                <span class="badge bg-secondary" th:text="${salesGoods.categoryCode}"></span>
+                                <span th:text="'#' + ${salesGoods.categoryCode}"></span>
                             </div>
                         </div>
                     </th:block>
@@ -31,12 +31,15 @@
             </div>
         </div>
     </div>
-    <div class="mb-4">
-        <form action="/sales/search" method="get" class="d-flex">
-            <input type="text" name="keyword" class="form-control me-2" placeholder="제품명" aria-label="검색">
-            <button type="submit" class="btn btn-outline-success">검색</button>
-        </form>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form action="/sales/search" method="get" class="d-flex align-items-center">
+                <input type="text" name="keyword" class="form-control me-2" placeholder="제품명" aria-label="검색">
+                <button type="submit" class="btn btn-success" style="white-space: nowrap;">검색</button>
+            </form>
+        </div>
     </div>
+    <br>
     <!-- 페이징 네비게이션 추가 -->
     <div class="d-flex justify-content-center">
         <nav aria-label="Page navigation">

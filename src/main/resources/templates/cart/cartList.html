@@ -9,19 +9,19 @@
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
     <div class="container my-5">
-        <h1 class="mb-4 text-center">판매 상품 목록</h1>
+        <h1 class="mb-4 text-center">장바구니</h1>
         <div class="card shadow">
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead class="table-dark">
                         <tr>
-                            <th>상품명</th>
                             <th>대표 이미지</th>
+                            <th>상품명</th>
                             <th>가격</th>
                             <th>수량</th>
                         </tr>
@@ -29,25 +29,29 @@
                         <tbody>
                         <tr th:each="cartList : ${cartList}">
                             <td>
+                                <div th:if="${cartMap[cartList.goodsNo].size() > 0}">
+                                    <img th:src="@{/images/S/{file}(file=${cartMap[cartList.goodsNo][0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="100" height="100">
+                                </div>
+                            </td>
+                            <td>
                                 <a th:href="@{/sales/selectGoods(no=${cartList.goodsNo})}"
                                    th:text="${cartList.goodsName}"
                                    class="text-decoration-none"></a>
-                            </td>
-                            <td>
-<!--                                <div th:if="${cartList[cartList.goodsNo].size() > 0}" class="card-body">-->
-<!--                                    <img th:src="@{/images/S/{file}(file=${salesGoodsMap[cartList.goodsNo][0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="300" height="200">-->
-<!--                                </div>-->
                             </td>
                             <td th:text="${#numbers.formatCurrency(cartList.price)}" class="price"></td>
                             <td th:text="${cartList.purchaseQuantity}" class="purchaseQuantity"></td>
                         </tr>
                         </tbody>
                     </table>
-                    <table>
-                            <tr>예상 결제 금액 : </tr>
-                            <tr th:text="${#numbers.formatCurrency(#aggregates.sum(cartList.![price]))} + '원' " id="amount"></tr>
-                            <tr><a href="/payment/payment" class="btn btn-primary w-100 mb-3">결제하기</a></tr>
-                    </table>
+                    <br>
+                    <div class="card mx-auto" style="width: 50%; min-width: 300px;">
+                        <div class="card-body  text-center">
+                            <p>예상 결제 금액</p>
+                            <p th:text="${#numbers.formatCurrency(#aggregates.sum(cartList.![price * purchaseQuantity]))} + '원'" id="amount"></p>
+                            <p><a href="/payment/payment" class="btn btn-primary">결제하기</a></p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

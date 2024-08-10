@@ -9,7 +9,7 @@
         }
     </style>
 </head>
-<body class="bg-light">
+<body>
 <menu th:replace="fragments/head :: menu"></menu>
 <div class="container my-5">
     <h1 id="sales-list" class="mb-4 text-center">상품 판매 목록 - 판매자</h1>
@@ -44,15 +44,15 @@
                             </div>
                         </td>
                         <td>
-                            <span class="badge bg-secondary" th:text="${salesGoods.categoryCode}"></span>
+                            <span th:text="${salesGoods.categoryCode}"></span>
                         </td>
                         <td>
                             <a th:href="@{/sales/updateform(no=${salesGoods.no})}"
-                               class="btn btn-primary">
+                               class="btn btn-success">
                                 수정
                             </a>
                             <a th:href="@{/sales/deleteGoods(no=${salesGoods.no})}"
-                               class="btn btn-danger btn-sm">
+                               class="btn btn-danger">
                                 삭제
                             </a>
                         </td>
@@ -62,7 +62,10 @@
             </div>
         </div>
     </div>
-    <a class="navbar-brand" href="/sales/insertform"> 판매 상품 등록</a>
+    <br>
+    <div class="col-12">
+    <a class="navbar-brand btn btn-primary" href="/sales/insertform"> 판매 상품 등록</a>
+    </div>
 </div>
 </body>
 <footer th:replace="fragments/head :: footer"></footer>

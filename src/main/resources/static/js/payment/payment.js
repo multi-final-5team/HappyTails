@@ -7,7 +7,20 @@ document.addEventListener('DOMContentLoaded', function() {
     username = document.getElementById('name').value;
     productname = document.querySelector('h3').textContent;
     productinfo = document.querySelector('.right-section p').textContent;
-    productprice = document.getElementById('amount').textContent;
+
+    const amountElement = document.getElementById('amount');
+    if (amountElement) {
+        productprice = parseFloat(amountElement.textContent.replace(/[^0-9.-]+/g,""));
+        if (isNaN(productprice) || productprice <= 0) {
+            console.error('유효하지 않은 제품 가격:', amountElement.textContent);
+            productprice = 0;
+        }
+    } else {
+        console.error('amount 요소를 찾을 수 없습니다.');
+        productprice = 0;
+    }
+
+    console.log('초기 제품 가격:', productprice);
 
     // 초기 총 결제금액 설정
     updateTotalPrice();
@@ -15,21 +28,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function updateTotalPrice() {
     const amountDisplay = document.getElementById('amount');
+    if (!amountDisplay) {
+        console.error('amount 표시 요소를 찾을 수 없습니다.');
+        return;
+    }
 
-
-    let totalPrice = originalPrice
+    let totalPrice = productprice;
 
     // 총 결제금액이 100원 미만이 되지 않도록 제한
     if (totalPrice < 100) {
-        alert("총 결제금액이 100원보다 작아질 수 없습니다");
+        console.warn("총 결제금액이 100원보다 작습니다. 100원으로 설정합니다.");
         totalPrice = 100;
     }
 
     amountDisplay.textContent = totalPrice + '원';
+    console.log('업데이트된 총 가격:', totalPrice);
 }
 
 function mypayment() {
-    const myAmount = Number(document.getElementById("amount").textContent.replace('원', ''));
+    const amountDisplay = document.getElementById('amount');
+    if (!amountDisplay) {
+        alert("결제 금액을 표시하는 요소를 찾을 수 없습니다.");
+        return;
+    }
+
+    const myAmount = parseFloat(amountDisplay.textContent.replace(/[^0-9.-]+/g,""));
+
+    if (isNaN(myAmount) || myAmount <= 0) {
+        alert("유효하지 않은 결제 금액입니다: " + amountDisplay.textContent);
+        return;
+    }
+
+    console.log('결제 요청 금액:', myAmount);
+
     const IMP = window.IMP;
     IMP.init("imp30336517");
 
@@ -66,7 +97,7 @@ function mypayment() {
                     // 검증 요청 자체가 실패한 경우 결제 취소
                     await cancelPayment(rsp.imp_uid, myAmount);
                     console.log("Sending amount to server:", myAmount);
-                    alert("검증 실패로 인해 결제가 취소되었습니다: " + error.response.data);
+                    alert("검증 실패로 인해 결제가 취소되었습니다: " + (error.response ? error.response.data : error.message));
                 }
             } else {
                 alert("결제 실패: " + rsp.error_msg);
