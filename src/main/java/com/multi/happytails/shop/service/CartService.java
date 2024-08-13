@@ -16,7 +16,11 @@ import java.util.List;
  * 2024-07-26        ShinHyeoncheol       최초 생성
  */
 public interface CartService {
+
+
     void insertCart(CartDTO cartDTO);
 
     List<CartDTO> cartList(String id);
+
+    void clearCart(String username);
 }

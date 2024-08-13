@@ -33,4 +33,8 @@ public class CartServiceImpl implements CartService{
     public List<CartDTO> cartList(String id) {
         return cartDAO.cartList(id);
     }
+
+    public void clearCart(String username) {
+        cartDAO.clearCart(username);
+    }
 }

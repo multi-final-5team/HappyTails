@@ -1,6 +1,5 @@
 package com.multi.happytails.shop.controller;
 
-
 import com.multi.happytails.member.model.dao.MemberDAO;
 import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.member.service.MemberService;
@@ -14,15 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -73,6 +70,15 @@ public class PaymentController {
         return "/payment/payment";
     }
 
+    @RequestMapping("/paymentHistory")
+    public String orderHistory(Model model, Principal principal) {
+        String username = principal.getName();
+        List<Payment> paymentHistory = paymentService.paymentList(username);
+        model.addAttribute("paymentHistory", paymentHistory);
+
+        return "/payment/PaymentHistory";
+    }
+
     @GetMapping("/payment2")
     public String selectpaymentpage2(Model model, Principal principal) {
         MemberDTO memberDTO = memberDAO.findMemberById(principal.getName());
@@ -97,20 +103,32 @@ public class PaymentController {
     @PostMapping("/verifyPayment")
     public ResponseEntity<Map<String, Object>> verifyPayment(@RequestBody VerificationRequestDTO request, Principal principal) {
         try {
+            String username = principal.getName();
+            List<CartDTO> cartItems = cartService.cartList(username);
 
-            PaymentpageDTO paymentpageDTO = paymentService.selectpaymentpage(principal.getName());
             PaymentDTO paymentDTO = new PaymentDTO();
-            paymentDTO.setUsername(principal.getName());
-            paymentDTO.setProductinfo(paymentpageDTO.getProductinfo());
-            paymentDTO.setProductname(paymentpageDTO.getProductname());
-            paymentDTO.setProductprice(paymentpageDTO.getProductprice());
-            paymentDTO.setPurchaseprice(request.getAmount().intValue());
+            paymentDTO.setUsername(username);
             paymentDTO.setImPortId(request.getImPortId());
 
-            // 결제 검증
+            // Calculate total price from cart items
+            int totalPrice = cartItems.stream().mapToInt(CartDTO::totalPrice).sum();
+            paymentDTO.setPurchaseprice(totalPrice);
+
+            // Combine product information
+            String productInfo = cartItems.stream()
+                    .map(item -> item.getGoodsName() + " x " + item.getPurchaseQuantity())
+                    .collect(Collectors.joining(", "));
+            paymentDTO.setProductinfo(productInfo);
+
+            // Use the first item's name as the main product name
+            paymentDTO.setProductname(cartItems.get(0).getGoodsName() + (cartItems.size() > 1 ? " 외 " + (cartItems.size() - 1) + "건" : ""));
+
+            // Verify payment
             boolean verified = paymentService.verifyPayment(request, paymentDTO);
 
             if (verified) {
+                // Clear the cart after successful payment
+                cartService.clearCart(username);
                 return ResponseEntity.ok(Map.of("success", true, "message", "Payment verified successfully"));
             } else {
                 return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Payment amount mismatch"));

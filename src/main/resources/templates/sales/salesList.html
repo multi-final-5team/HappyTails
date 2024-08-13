@@ -17,7 +17,7 @@
                         <div class="col-md-4 mb-4 d-flex align-items-stretch listRow">
                             <div class="card" style="width: 100%;">
                                 <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}" class="card-body">
-                                    <img th:src="@{/images/S/{file}(file=${salesGoodsMap[salesGoods.no][0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="300" height="200">
+                                    <img th:src="@{/images/S/{file}(file=${salesGoodsMap[salesGoods.no][0].storedFileName})}" alt="대표 이미지" class="card-img-top" width="300" height="200">
                                 </div>
                                 <a th:href="@{/sales/selectGoods(no=${salesGoods.no})}"
                                    th:text="${salesGoods.name}"

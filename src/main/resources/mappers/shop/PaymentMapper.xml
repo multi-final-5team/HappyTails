@@ -51,7 +51,6 @@
 
     <insert id="insertPayment" parameterType="com.multi.happytails.shop.model.dto.PaymentDTO">
         INSERT INTO payment (
-        payment_no,
         username,
         productname,
         productinfo,
@@ -60,7 +59,6 @@
         date_created,
         im_port_id
         ) VALUES (
-        null,
         #{username},
         #{productname},
         #{productinfo},
@@ -78,6 +76,51 @@
         ORDER BY date_created DESC
     </select>
 
+    <insert id="insertPaymentItems" parameterType="com.multi.happytails.shop.model.dto.PaymentDTO">
+        INSERT INTO payment_items (
+        payment_no,
+        goods_no,
+        goods_name,
+        purchase_quantity,
+        price
+        )
+        VALUES
+        <foreach collection="cartItems" item="item" separator=",">
+            (
+            #{payment_no},
+            #{item.goodsNo},
+            #{item.goodsName},
+            #{item.purchaseQuantity},
+            #{item.price}
+            )
+        </foreach>
+    </insert>
+
+    <resultMap id="paymentDetailsResultMap" type="com.multi.happytails.shop.model.dto.PaymentDTO">
+        <id property="payment_no" column="payment_no"/>
+        <result property="username" column="username"/>
+        <result property="productname" column="productname"/>
+        <result property="productinfo" column="productinfo"/>
+        <result property="productprice" column="productprice"/>
+        <result property="purchaseprice" column="purchaseprice"/>
+        <result property="date_created" column="date_created"/>
+        <result property="refund" column="refund"/>
+        <result property="imPortId" column="im_port_id"/>
+        <collection property="cartItems" ofType="com.multi.happytails.shop.model.dto.CartDTO">
+            <result property="goodsNo" column="goods_no"/>
+            <result property="goodsName" column="goods_name"/>
+            <result property="purchaseQuantity" column="purchase_quantity"/>
+            <result property="price" column="price"/>
+        </collection>
+    </resultMap>
+
+    <select id="getPaymentDetails" resultMap="paymentDetailsResultMap">
+        SELECT p.*, pi.goods_no, pi.goods_name, pi.purchase_quantity, pi.price
+        FROM payment p
+        LEFT JOIN payment_items pi ON p.payment_no = pi.payment_no
+        WHERE p.im_port_id = #{imPortId}
+    </select>
+
     <update id="updateRefundStatus" parameterType="com.multi.happytails.shop.model.dto.OrderlistDTO">
         UPDATE payment
         SET refund = 'Y',
@@ -85,4 +128,8 @@
         WHERE im_port_id = #{imPortId}
     </update>
 
+    <select id="paymentList" resultMap="paymentDetailsResultMap">
+        SELECT * FROM payment
+        WHERE username = #{username}
+    </select>
 </mapper>

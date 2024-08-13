@@ -87,7 +87,7 @@ function mypayment() {
 
                     if (data.success) {
                         alert("결제 및 검증 성공");
-                        window.location.href = '/hello';
+                        window.location.href = '/payment/orderlist';
                     } else {
                         // 검증 실패 시 결제 취소 로직 추가
                         await cancelPayment(rsp.imp_uid, myAmount);

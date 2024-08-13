@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}">
+    <title>구매 상품 목록</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+<menu th:replace="~{fragments/head :: menu}"></menu>
+<div class="container">
+    <h1>구매 상품 목록</h1>
+
+
+    <div th:if="${not #lists.isEmpty(paymentHistory)}">
+        <div class="paymentHistory-item" th:each="paymentHistory : ${paymentHistory}" th:data-username="${paymentHistory.username}">
+            <div class="paymentHistory-info">
+                <div class="paymentHistory-details">
+                    <h3 th:text="${paymentHistory.productname}"></h3>
+                    <p th:text="${paymentHistory.productinfo}"></p>
+                    <p th:text="'가격: ' + ${paymentHistory.purchaseprice} + '원'"></p>
+                    <p th:text="${paymentHistory.refund == 'Y' ? '환불 상품' : '구매 상품'}"></p>
+                    <p th:text="${#dates.format(paymentHistory.date_created, 'yyyy-MM-dd')}"></p>
+                </div>
+            </div>
+            <div class="paymentHistory-actions">
+
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${#lists.isEmpty(paymentHistory)}">
+        주문 정보가 없습니다.
+    </div>
+
+    <div class="pagination"></div>
+
+
+</div>
+
+</body>
+<footer th:replace="fragments/head :: footer"></footer>
+</html>
