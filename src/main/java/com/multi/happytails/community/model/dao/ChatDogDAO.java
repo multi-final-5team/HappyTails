@@ -24,5 +24,6 @@ public interface ChatDogDAO {
 
     int update(ChatDogDTO chatdog);
 
+    List<ChatDogDTO> mainChatDogList();
 
 }
