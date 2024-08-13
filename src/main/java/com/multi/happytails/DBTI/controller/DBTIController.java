@@ -1,87 +1,95 @@
 package com.multi.happytails.DBTI.controller;
 
 import com.multi.happytails.DBTI.model.dao.DBTISaveDAO;
-import com.multi.happytails.DBTI.model.dto.DBTISaveDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.time.LocalDate;
-import java.util.Map;
+import java.util.List;
 
 @Controller
-@RequestMapping("/DBTI/dog")
+@RequestMapping("/DBTI")
 public class DBTIController {
 
     @Autowired
     private DBTISaveDAO dbtiSaveDAO;
 
     @GetMapping("/start")
-    public String showDogForm() {
-        return "DBTI/dbticontent";
+    public String dbtiIntro() {
+        return "DBTI/start";
     }
 
-    @PostMapping("/saveDog")
-    public String saveForm(@RequestParam("dogName") String name,
-                           @RequestParam("dogBreed") String breed,
-                           @RequestParam("dogBirthdate") String birthdateStr,
-                           @RequestParam("dogGender") String gender,
-                           Model model) {
-
-        LocalDate birthdate = LocalDate.parse(birthdateStr);
-
-        DBTISaveDTO dog = new DBTISaveDTO();
-        dog.setName(name);
-        dog.setBreed(breed);
-        dog.setBirthdate(birthdate);
-        dog.setGender(gender);
-
-        dbtiSaveDAO.insertDog(dog);
-
-        model.addAttribute("dog", dog);
-
-        return "DBTI/save";
+    @GetMapping("/dbticontent1")
+    public String dbticontent1() {
+        return "/DBTI/dbticontent1";
     }
 
-    @PostMapping("/submitDbti")
-    public String submitDbti(@RequestParam Map<String, String> params, Model model) {
-        int W_C = 0;
-        int T_N = 0;
-        int E_I = 0;
-        int A_L = 0;
+    @GetMapping("/dbticontent2")
+    public String dbticontent2() {
+        return "/DBTI/dbticontent2";
+    }
 
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            String key = entry.getKey();
-            int score = Integer.parseInt(entry.getValue());
+    @GetMapping("/dbticontent3")
+    public String dbticontent3() {
+        return "/DBTI/dbticontent3";
+    }
 
-            switch (key) {
-                case "question1":
-                    if (score >= 3) W_C += score;  // 예시: 3 이상의 점수는 'W' 성향
-                    else W_C -= score;             // 그 이하의 점수는 'C' 성향
+    @GetMapping("/dbticontent4")
+    public String dbticontent4() {
+        return "/DBTI/dbticontent4";
+    }
+
+    @GetMapping("/result")
+    public String dbtiResult() {
+        return "/DBTI/result";
+    }
+    @PostMapping("/calculate")
+    public String calculateDBTI(@RequestBody List<Integer> answers) {
+        int[] scores = new int[4];  // W/C, T/N, E/I, A/L 순서
+
+        // 질문별 점수 계산
+        for (int i = 0; i < answers.size(); i++) {
+            int answer = answers.get(i);
+            switch (i) {
+                case 0:
+                case 9:
+                    scores[0] += answer > 3 ? 1 : 0;  // C
                     break;
-                case "question2":
-                    if (score >= 3) T_N += score;  // 예시: 3 이상의 점수는 'T' 성향
-                    else T_N -= score;             // 그 이하의 점수는 'N' 성향
+                case 1:
+                case 4:
+                case 7:
+                    scores[2] += answer > 3 ? 1 : 0;  // E
                     break;
-                // 다른 질문들에 대한 점수 계산 추가
-                // 예: case 'question3': ...
+                case 2:
+                case 10:
+                case 14:
+                    scores[0] += answer > 3 ? 0 : 1;  // W
+                    break;
+                case 3:
+                case 6:
+                case 11:
+                    scores[1] += answer > 3 ? 0 : 1;  // T
+                    break;
+                case 5:
+                case 13:
+                    scores[3] += answer > 3 ? 1 : 0;  // A
+                    break;
+                case 8:
+                case 12:
+                    scores[1] += answer > 3 ? 1 : 0;  // N
+                    break;
             }
         }
+        StringBuilder dbti = new StringBuilder();
+        dbti.append(scores[0] >= 2 ? 'C' : 'W');
+        dbti.append(scores[1] >= 2 ? 'N' : 'T');
+        dbti.append(scores[2] >= 2 ? 'E' : 'I');
+        dbti.append(scores[3] >= 1 ? 'A' : 'L');
 
-        String W_C_type = W_C > 0 ? "W" : "C"; //개체성향
-        String T_N_type = T_N > 0 ? "T" : "N"; //대인관계
-        String E_I_type = E_I > 0 ? "E" : "I"; //타견관계
-        String A_L_type = A_L > 0 ? "A" : "L"; //환경적응
-
-        String dbtiResult = W_C_type + T_N_type + E_I_type + A_L_type;
-        model.addAttribute("result", dbtiResult);
-
-        return "DBTI/result"; // 결과를 보여줄 HTML 파일 이름
-    }
-
-    @GetMapping("/rollback")
-    public String dogrollback() {
-        return "redirect:/DBTI/dog/rollback";
+        return dbti.toString();
     }
 }
+

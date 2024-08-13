@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>DBTI 결과</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+            background-color: #FFF5E6;
+            color: #4D3300;
+            line-height: 1.6;
+            padding: 20px;
+            text-align: center;
+        }
+        .result-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #FFFFFF;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #FF9966;
+            margin-bottom: 20px;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="result-container">
+    <h1>우리 강아지의 DBTI 결과는?</h1>
+    <p th:text="${dbti}">WTEL</p>
+    <img th:src="${imageUrl}" alt="DBTI 결과 이미지">
+    <!-- 여기에 DBTI 유형에 대한 설명을 추가할 수 있습니다 -->
+</div>
+</body>
+</html>
