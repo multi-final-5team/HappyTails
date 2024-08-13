@@ -21,4 +21,6 @@ public interface CartDAO {
     void insertCart(CartDTO cartDTO);
 
     List<CartDTO> cartList(String id);
+
+    void clearCart(String username);
 }

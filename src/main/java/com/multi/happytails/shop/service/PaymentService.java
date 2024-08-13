@@ -58,7 +58,7 @@ public class PaymentService {
         IamportResponse<Payment> payment = client.paymentByImpUid(request.getImPortId());
 
         BigDecimal actualAmount = payment.getResponse().getAmount();
-        BigDecimal requestedAmount = request.getAmount();
+        BigDecimal requestedAmount = BigDecimal.valueOf(paymentDTO.getPurchaseprice());
 
         System.out.println("Actual Amount: " + actualAmount);
         System.out.println("Requested Amount: " + requestedAmount);
@@ -92,4 +92,7 @@ public class PaymentService {
         return client.cancelPaymentByImpUid(cancelData);
     }
 
+    public List<Payment> paymentList(String username) {
+        return paymentDAO.paymentList(username);
+    }
 }

@@ -125,8 +125,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // 주문 취소 버튼에 이벤트 리스너 추가
+    document.querySelectorAll('.cancel-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const imPortId = this.getAttribute('data-imp-uid');
+            const amount = this.getAttribute('data-amount');
+            cancelOrder(imPortId, amount);
+        });
+    });
+
     updateTotalItemsCount();
     displayPage(currentPage);
     updatePagination();
-
 });

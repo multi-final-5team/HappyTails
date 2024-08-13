@@ -28,4 +28,9 @@
         JOIN TB_SALES_GOODS g ON c.GOODS_NO = g.GOODS_NO
         WHERE c.ID = #{id};
     </select>
+
+    <delete id="clearCart" parameterType="string">
+        DELETE FROM TB_CART
+        WHERE ID = #{username}
+    </delete>
 </mapper>

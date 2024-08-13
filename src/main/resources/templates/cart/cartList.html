@@ -47,7 +47,7 @@
                     <div class="card mx-auto" style="width: 50%; min-width: 300px;">
                         <div class="card-body  text-center">
                             <p>예상 결제 금액</p>
-                            <p th:text="${#numbers.formatCurrency(#aggregates.sum(cartList.![price * purchaseQuantity]))} + '원'" id="amount"></p>
+                            <p th:text="${#numbers.formatCurrency(#aggregates.sum(cartList.![price * purchaseQuantity]) ?: 0)} + '원'" id="amount"></p>
                             <p><a href="/payment/payment" class="btn btn-primary">결제하기</a></p>
                         </div>
                     </div>
