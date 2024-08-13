@@ -23,4 +23,6 @@ public interface DogloveDAO {
     int update(DogloveDTO doglove);
 
     void dgRecommendCount(Long dogloveNo);
+
+    List<DogloveDTO> mainDogLoveList();
 }

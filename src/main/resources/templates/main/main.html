@@ -23,48 +23,28 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="100px">
-                            </td>
-                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
-    <!--                            14px 0px 0px 0px;">-->
-                                <p>제목이 늘어납니다</p>
-                                <p>작성자</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>사진</td>
-                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
-                                <!--                            14px 0px 0px 0px;">-->
-                                <p>제목이 늘어납니다</p>
-                                <p>작성자</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>사진</td>
-                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
-                                <!--                            14px 0px 0px 0px;">-->
-                                <p>제목이 늘어납니다</p>
-                                <p>작성자</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>사진</td>
-                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
-                                <!--                            14px 0px 0px 0px;">-->
-                                <p>제목이 늘어납니다</p>
-                                <p>작성자</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>사진</td>
-                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
-                                <!--                            14px 0px 0px 0px;">-->
-                                <p>제목이 늘어납니다</p>
-                                <p>작성자</p>
-                            </td>
-                        </tr>
+                        <th:block th:each="chatDogDTO, stat : ${chatDogUpList}">
+                            <tr>
+                                <th:block th:if="${chatDogStoredImages.get(stat.index)} != ''">
+                                    <td>
+                                        <img th:src="@{/images/C/{file}(file=${chatDogStoredImages.get(stat.index)})}" alt="Main-logo" width="100px" height="100px">
+                                    </td>
+                                </th:block>
+                                <th:block th:if="${chatDogStoredImages.get(stat.index)} == ''">
+                                    <td>
+                                        <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="100px" height="100px">
+                                    </td>
+                                </th:block>
+                                <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
+                                    <!--                            14px 0px 0px 0px;">-->
+                                    <a th:href="@{/community/chatdog/{chatdogNo}(chatdogNo=${chatDogDTO.chatdogNo})}">
+                                        <p th:text="${chatDogDTO.title}"></p>
+                                    </a>
+                                    <p th:text="${chatDogDTO.userId}"></p>
+                                </td>
+                            </tr>
+                        </th:block>
+
                     </tbody>
                 </table>
             </div>
@@ -99,11 +79,14 @@
         <h2>오늘의 댕댕이</h2>
         <br>
         <div>
-            <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="150px" class="mb-3 mx-3">
-            <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="150px" class="mb-3 mx-3">
-            <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="150px" class="mb-3 mx-3">
-            <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="150px" class="mb-3 mx-3">
-            <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="150px" class="mb-3 mx-3">
+            <th:block th:each="dogLoveStoredImage, stat : ${dogLoveStoredImages}">
+                <th:block th:if="${dogLoveStoredImage} != ''">
+                    <img th:src="@{/images/L/{file}(file=${dogLoveStoredImage})}" alt="Main-logo" width="150px" height="150px" class="mb-3 mx-3">
+                </th:block>
+                <th:block th:if="${dogLoveStoredImage} == ''">
+                    <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="150px" height="150px" class="mb-3 mx-3">
+                </th:block>
+            </th:block>
         </div>
     </div>
 </main>

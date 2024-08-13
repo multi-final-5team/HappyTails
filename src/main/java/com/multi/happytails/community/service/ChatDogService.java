@@ -57,4 +57,8 @@ public class ChatDogService {
         return chatdogDAO.update(chatDogDTO);
 
     }
+
+    public List<ChatDogDTO> mainChatDogList() {
+        return chatdogDAO.mainChatDogList();
+    }
 }

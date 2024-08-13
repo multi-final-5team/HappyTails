@@ -81,4 +81,12 @@
         WHERE TITLE LIKE CONCAT('%', #{keyword}, '%')
     </select>
 
+    <select id="mainChatDogList">
+        SELECT *
+        FROM TB_CHAT_DOG
+        WHERE DATE_FORMAT(CREATETIME, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')
+        AND CATEGORY_CODE = 'CHATDOG_CODE'
+        ORDER BY RECOMMEND_COUNT DESC
+        LIMIT 5
+    </select>
 </mapper>

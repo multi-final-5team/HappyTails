@@ -56,6 +56,10 @@ public class DogloveService {
     public int update(DogloveDTO dogloveDTO) {
         return dogloveDAO.update(dogloveDTO);
     }
+
+    public List<DogloveDTO> mainDogLoveList() {
+        return dogloveDAO.mainDogLoveList();
+    }
 }
 
 

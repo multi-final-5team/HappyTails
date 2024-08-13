@@ -82,4 +82,15 @@
         WHERE TITLE LIKE CONCAT('%', #{keyword}, '%')
     </select>
 
+    <select id="mainDogLoveList">
+        SELECT *
+        FROM (
+            SELECT *
+            FROM TB_DOGLOVE
+            ORDER BY RECOMMEND_COUNT DESC
+            LIMIT 100
+        ) AS top_doglove
+        ORDER BY RAND(UNIX_TIMESTAMP(CURDATE()) DIV 86400)
+        LIMIT 5
+    </select>
 </mapper>
