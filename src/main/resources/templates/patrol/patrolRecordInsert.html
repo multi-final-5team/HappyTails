@@ -5,6 +5,14 @@
     <title>Title</title>
 
 </head>
+
+<style>
+    #formId{
+        width : 80%;
+        margin : 3%;
+    }
+</style>
+
 <body class="container mt-5">
 
 <menu th:replace="fragments/head :: menu"></menu>
@@ -13,33 +21,35 @@
 
 <h1 class="mb-4">순찰일지 작성</h1>
 
-<form action="makePrecord" method="post" enctype="multipart/form-data" id="formId">
+    <div class="bg-white border rounded d-flex justify-content-center">
+        <form action="makePrecord" method="post" enctype="multipart/form-data" id="formId">
 
-    <div class="mb-3">
-    <label class="form-label">제목</label><br>
-    <input class="form-control" type="text" id="title" name="title"><br>
+            <div class="mb-3">
+                <label class="form-label">제목</label><br>
+                <input class="form-control" type="text" id="title" name="title"><br>
+            </div>
+
+            <div class="mb-3">
+                <select id="precordPlace" name="precordPlace" class="datatable-selector">
+                    <!-- ajax로 조회 -->
+                </select><br>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">내용</label><br>
+                <textarea class="form-control" id="content" name="content" rows="10"></textarea>
+            </div>
+
+            <div  class="mb-3" id="image_container">
+                <!-- 이미지 들어가는곳 -->
+            </div>
+
+            <input class="form-control" type="file" id="inputFile" name="inputFile"><br>
+
+            <input class="btn btn-primary" type="button" id="formSubmitBtn" value="작성">
+
+        </form>
     </div>
-
-    <div class="mb-3">
-    <select id="precordPlace" name="precordPlace" class="datatable-selector">
-        <!-- ajax로 조회 -->
-    </select><br>
-    </div>
-
-    <div class="mb-3">
-    <label class="form-label">내용</label><br>
-        <textarea class="form-control" id="content" name="content" rows="10"></textarea>
-    </div>
-
-    <div  class="mb-3" id="image_container">
-        <!-- 이미지 들어가는곳 -->
-    </div>
-
-    <input class="form-control" type="file" id="inputFile" name="inputFile"><br>
-
-    <input class="btn btn-primary" type="button" id="formSubmitBtn" value="작성">
-
-</form>
 
 </main>
 
