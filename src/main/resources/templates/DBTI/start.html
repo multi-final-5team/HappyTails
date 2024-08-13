@@ -1,100 +1,101 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Dog Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBTI 검사 - 반려견 성격 유형 테스트</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <style>
-        .question {
-            display: none;
+        body {
+            font-family: 'Jua', sans-serif;
+            background-color: #FFF5E6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #FFFFFF;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #FF9966;
+            margin-bottom: 20px;
+        }
+        .dog-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 20px auto;
+            border: 5px solid #FF9966;
+        }
+        .start-button {
+            background-color: #FF9966;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Jua', sans-serif;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .start-button:hover {
+            background-color: #FF8C5A;
+            transform: scale(1.05);
+        }
+        .intro-text {
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .features {
+            text-align: left;
+            margin-top: 20px;
+            padding-left: 20px;
+        }
+        .features li {
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-<h1>우리 강아지 정보를 입력해주세요</h1>
-
-<div id="startSection">
-    <button type="button" onclick="startQuestionnaire()">시작하기</button>
+<div class="container">
+    <h1>🐾 DBTI 반려견 성격 유형 검사 🐾</h1>
+    <p class="intro-text">
+        25만 마리의 강아지 데이터를 분석하여 개발한 과학적인 반려견 성격 유형 검사입니다.
+        행복한 반려생활을 위해 여러분의 소중한 반려견의 성향을 알아보세요!
+    </p>
+    <img src="/images/dog.png" alt="강아지 이미지 들어감" class="dog-image">
+    <p class="intro-text">
+        해피테일즈의 빅데이터 기술과 전문가의 경험을 바탕으로 4가지 분석 기준에 따라
+        반려견 성격 유형을 16가지로 분류했습니다.
+    </p>
+    <h3>DBTI 검사를 통해 알 수 있는 것:</h3>
+    <ul class="features">
+        <li>반려견의 성격 유형</li>
+        <li>반려견의 행복도</li>
+        <li>보호자 점수</li>
+        <li>활동에너지</li>
+        <li>교감능력</li>
+        <li>산책지수</li>
+        <li>맞춤형 양육 방법</li>
+    </ul>
+    <a href="/main/main"  class="start-button">Home</a>
+    <a href="/DBTI/dbticontent1" class="start-button">DBTI 검사 시작하기</a>
 </div>
-
-<form id="dogForm" action="/DBTI/dog/saveDog" method="post" onsubmit="return validateFinalForm()">
-    <div id="Q1" class="question">
-        <h2>강아지 이름을 알려주세요</h2>
-        <label for="dogName">강아지 이름:</label>
-        <input type="text" id="dogName" name="dogName" required>
-        <button type="button" onclick="nextQuestion('Q2')">다음</button>
-    </div>
-
-    <div id="Q2" class="question">
-        <h2>강아지 품종을 입력해주세요</h2>
-        <label for="dogBreed">강아지 품종:</label>
-        <select id="dogBreed" name="dogBreed" required>
-            <option value="">-- 선택해주세요 --</option>
-            <option value="말티즈">말티즈</option>
-            <option value="치와와">치와와</option>
-            <option value="웰시 코기">웰시 코기</option>
-            <option value="푸들">푸들</option>
-            <option value="시바견">시바견</option>
-            <option value="진돗개">진돗개</option>
-            <option value="포메라니안">포메라니안</option>
-            <option value="말티푸">말티푸</option>
-            <option value="믹스견">믹스견</option>
-            <option value="그 외">그 외</option>
-        </select>
-        <button type="button" onclick="nextQuestion('Q3')">다음</button>
-    </div>
-
-    <div id="Q3" class="question">
-        <h2>강아지의 생년월일을 알려주세요</h2>
-        <label for="dogBirthdate">생년월일:</label>
-        <input type="date" id="dogBirthdate" name="dogBirthdate" required>
-        <button type="button" onclick="nextQuestion('Q4')">다음</button>
-    </div>
-
-    <div id="Q4" class="question">
-        <h2>강아지의 성별을 알려주세요</h2>
-        <label>성별:</label>
-        <input type="radio" id="male" name="dogGender" value="남아" required>
-        <label for="male">남아</label>
-        <input type="radio" id="female" name="dogGender" value="여아" required>
-        <label for="female">여아</label>
-        <button type="submit">제출</button>
-    </div>
-</form>
-
-<script>
-    function startQuestionnaire() {
-        document.getElementById('startSection').style.display = 'none';
-        document.getElementById('Q1').style.display = 'block';
-    }
-    function nextQuestion(nextQuestionId) {
-        let currentQuestion = document.querySelector('.question:not([style*="display: none"])');
-        if (currentQuestion) {
-            currentQuestion.style.display = 'none';
-        }
-        // 다음 질문을 표시
-        let nextQuestion = document.getElementById(nextQuestionId);
-        if (nextQuestion) {
-            nextQuestion.style.display = 'block';
-        }
-    }
-    function validateFinalForm() {
-        let genderInputs = document.getElementsByName('dogGender');
-        let isGenderSelected = false;
-        for (let input of genderInputs) {
-            if (input.checked) {
-                isGenderSelected = true;
-                break;
-            }
-        }
-        if (!isGenderSelected) {
-            alert('성별을 선택해주세요.');
-            return false;
-        }
-        return true;
-    }
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('startSection').style.display = 'block';
-    });
-</script>
 </body>
 </html>
