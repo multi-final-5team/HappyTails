@@ -114,6 +114,41 @@ public class dog4cutsController {
         return dto;
     }
 
+    @GetMapping(value="findAllDog4CutsByUserNo", produces = "application/json; charset=UTF-8")
+    @ResponseBody
+    public Dog4CutsImgDTO findAllDog4CutsByUserNo(@AuthenticationPrincipal CustomUser customUser){
+
+        List<UploadDto> uploadDtos = new ArrayList<>();
+
+
+        List<Dog4CutsDTO> list = dog4CutsService.findAllDog4CutsByUserNo((int) customUser.getNo());
+
+        List<Integer> dog4cutsNoList = new ArrayList<>();
+
+        for (int i = 0; i < list.size(); i++) {
+            dog4cutsNoList.add(list.get(i).getDog4cutsNo());
+            list.get(i).setUserId(memberService.findMemberByUserNo(list.get(i).getUserNo()).getId());
+        }
+
+
+
+        for (int dog4CutsNo : dog4cutsNoList){
+            List<UploadDto> pageIngs = uploadService.uploadSelect("X",dog4CutsNo);
+
+            if (!pageIngs.isEmpty()) {
+                uploadDtos.addAll(pageIngs);
+            }
+        }
+
+        Dog4CutsImgDTO dto = new Dog4CutsImgDTO();
+
+        dto.setUploadDtos(uploadDtos);
+        dto.setList(list);
+
+
+        return dto;
+    }
+
     @GetMapping(value="findDog4CutsBySearch", produces = "application/json; charset=UTF-8")
     @ResponseBody
     public Dog4CutsImgDTO findDog4CutsBySearch(@RequestParam("searchword") String searchword){

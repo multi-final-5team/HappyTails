@@ -5,6 +5,14 @@
     <title>Title</title>
 
 </head>
+
+<style>
+    #formId{
+        width : 40%;
+        margin : 3%;
+    }
+</style>
+
 <body class="container mt-5">
 
 <menu th:replace="fragments/head :: menu"></menu>
@@ -13,39 +21,41 @@
 
 <h1 class="mb-4">순찰대 상세</h1>
 
-<form id="formId" method="post" enctype="multipart/form-data" >
+    <div class="bg-white border rounded d-flex justify-content-center">
+        <form id="formId" method="post" enctype="multipart/form-data" >
 
-    <div  class="mb-3" id="image_container">
-        <!-- 이미지 들어가는곳 -->
+            <div  class="mb-3" id="image_container">
+                <!-- 이미지 들어가는곳 -->
+            </div>
+
+            <input class="form-control" type="file" id="inputFile" name="inputFile"><br>
+
+            <input type="hidden" id="patrolNo" name="patrolNo">
+            <input type="hidden" id="userNo" name="userNo">
+            <input type="hidden" id="beforeImgNo" name="beforeImgNo" value="0">
+
+            <div class="mb-3">
+                <label class="form-label">강아지 이름</label><br>
+                <input class="form-control" type="text" id="name" name="name"><br>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">나이</label><br>
+                <input class="form-control" type="number" id="age" name="age"><br>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">품종</label><br>
+                <input class="form-control" type="text" id="breed" name="breed"><br>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">주소</label><br>
+                <input class="form-control" type="text" id="location" name="location"><br>
+            </div>
+
+        </form>
     </div>
-
-    <input class="form-control" type="file" id="inputFile" name="inputFile"><br>
-
-    <input type="hidden" id="patrolNo" name="patrolNo">
-    <input type="hidden" id="userNo" name="userNo">
-    <input type="hidden" id="beforeImgNo" name="beforeImgNo" value="0">
-
-    <div class="mb-3">
-        <label class="form-label">강아지 이름</label><br>
-        <input class="form-control" type="text" id="name" name="name"><br>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">나이</label><br>
-        <input class="form-control" type="number" id="age" name="age"><br>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">품종</label><br>
-        <input class="form-control" type="text" id="breed" name="breed"><br>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">주소</label><br>
-        <input class="form-control" type="text" id="location" name="location"><br>
-    </div>
-
-</form>
 
 </main>
 

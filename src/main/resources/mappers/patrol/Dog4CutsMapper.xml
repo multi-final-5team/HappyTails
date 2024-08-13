@@ -23,6 +23,12 @@
         FROM tb_dog4cuts
     </select>
 
+    <select id="findAllDog4CutsByUserNo">
+        SELECT dog4cuts_no AS dog4cutsNo, user_no AS userNo, createtime
+        FROM tb_dog4cuts
+        WHERE user_no = #{userNo}
+    </select>
+
     <select id="findDog4CutsBySearch">
         SELECT dog4cuts_no AS dog4cutsNo, user_no AS userNo, createtime
         FROM tb_dog4cuts

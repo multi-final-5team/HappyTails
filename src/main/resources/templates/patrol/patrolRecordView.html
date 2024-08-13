@@ -16,6 +16,11 @@
         resize : none;
         width : 100%;
     }
+
+    #formId{
+        width : 80%;
+        margin : 3%;
+    }
 </style>
 
 <body class="container mt-5">
@@ -26,36 +31,38 @@
 
 <h1 class="mb-4">순찰일지 수정</h1>
 
-<form  method="post" enctype="multipart/form-data" id="formId">
+    <div class="bg-white border rounded d-flex justify-content-center">
+        <form  method="post" enctype="multipart/form-data" id="formId">
 
-    <input type="hidden" id="beforePrecordNo" name="beforePrecordNo">
+            <input type="hidden" id="beforePrecordNo" name="beforePrecordNo">
 
-    <input type="hidden" id="precordNo" name="precordNo">
-    <input type="hidden" id="userNo" name="userNo">
+            <input type="hidden" id="precordNo" name="precordNo">
+            <input type="hidden" id="userNo" name="userNo">
 
-    <div class="mb-3" id="titleDiv">
-    <label class="form-label">제목</label><br>
+            <div class="mb-3" id="titleDiv">
+                <label class="form-label">제목</label><br>
+            </div>
+
+            <div class="mb-3">
+                <select id="precordPlace" name="precordPlace" class="datatable-selector">
+                    <!-- ajax로 조회 -->
+                </select><br>
+            </div>
+
+            <div class="mb-3" id="contentDiv">
+                <label class="form-label">내용</label><br>
+            </div>
+
+            <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
+
+            <div  class="mb-3" id="image_container">
+                <!-- 이미지 들어가는곳 -->
+            </div>
+            <label for="inputFile" class="form-label">이미지 첨부</label>
+            <input class="form-control" type="file" id="inputFile" name="inputFile"><br>
+
+        </form>
     </div>
-
-    <div class="mb-3">
-    <select id="precordPlace" name="precordPlace" class="datatable-selector">
-        <!-- ajax로 조회 -->
-    </select><br>
-    </div>
-
-    <div class="mb-3" id="contentDiv">
-    <label class="form-label">내용</label><br>
-    </div>
-
-    <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
-
-    <div  class="mb-3" id="image_container">
-        <!-- 이미지 들어가는곳 -->
-    </div>
-    <label for="inputFile" class="form-label">이미지 첨부</label>
-    <input class="form-control" type="file" id="inputFile" name="inputFile"><br>
-
-</form>
 
     <div class="bg-light p-4 rounded" sec:authorize="isAuthenticated()">
         <form class="" id="replyForm" method="post" action="/patrolRecord/reply/repleyInsert">

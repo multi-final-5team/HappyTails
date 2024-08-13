@@ -29,6 +29,11 @@ public class Dog4CutsService {
         return dog4CutsDAO.findAllDog4Cuts();
     }
 
+    public List<Dog4CutsDTO> findAllDog4CutsByUserNo(int userNo) {
+
+        return dog4CutsDAO.findAllDog4CutsByUserNo(userNo);
+    }
+
     public int dog4CutsDelete(Dog4CutsDTO dog4CutsDTO) {
 
         return dog4CutsDAO.dog4CutsDelete(dog4CutsDTO);

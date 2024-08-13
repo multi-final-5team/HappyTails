@@ -35,18 +35,20 @@
     }
 
     .imgDivSquare{
+        position : relative;
         width: 42.5%;
         height: 47.5%;
         background-color: white;
     }
 
     .imgDivLine{
+        position : relative;
         width: 90%;
         height: 22.5%;
         background-color: white;
     }
 
-    img{
+    .cutImg{
 	display:block;
 	width:100%;
 	height:100%;
@@ -55,6 +57,13 @@
     .fileInputTotal{
         display: flex;
     }
+
+    #captureWrap{
+        position : relative;
+        width: 1000px;
+        overflow:auto;
+    }
+
 
 </style>
 
@@ -96,15 +105,42 @@
 
     <button id="styleChangeButton" onclick="styleChange()">스타일 변경</button>
 
-    <div class="imgSquare" id="capture">
-        <div class="imgDivSquare" id="inputFile1Div">사진1</div>
-        <div class="imgDivSquare" id="inputFile2Div">사진2</div>
-        <div class="imgDivSquare" id="inputFile3Div">사진3</div>
-        <div class="imgDivSquare" id="inputFile4Div">사진4</div>
+    <div>
+        <div>
+            <label>스티커 추가</label>
+
+            <div  class="mb-3" id="image_container">
+                <!-- 이미지 들어가는곳 -->
+            </div>
+
+            <input class="form-control" type="file" id="inputFile" name="inputFile" style="width : 40%;">
+            <button class="" id="addStickerBtn" name="addStickerBtn" onclick="addSticker()">스티커추가</button>
+        </div>
+
+        <div>
+            <label>프레임 변경</label>
+
+            <input class="form-control" type="file" id="inputFileFrame" name="inputFileFrame" style="width : 40%;">
+            <div>
+                <button class="" id="addFrameBtn" name="addFrameBtn" onclick="addFrame()">프레임 변경</button>
+                <button class="" id="removeFrameBtn" name="removeFrameBtn" onclick="removeFrame()">취소</button>
+            </div>
+        </div>
     </div>
+
+
+    <div id="captureWrap">
+        <div class="imgSquare" id="capture">
+            <div class="imgDivSquare" id="inputFile1Div">사진1</div>
+            <div class="imgDivSquare" id="inputFile2Div">사진2</div>
+            <div class="imgDivSquare" id="inputFile3Div">사진3</div>
+            <div class="imgDivSquare" id="inputFile4Div">사진4</div>
+        </div>
+    </div>
+
     <button id="downloadButton">다운로드</button>
 
-    <button id="saveToServerButton">서버에 저장</button>
+    <button id="saveToServerButton">업로드</button>
 
 </main>
 
@@ -113,9 +149,34 @@
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
+    var stickerFlag = 0;
+    var frameFlag = 0;
+    var frameSrc;
+
     let captureDiv = document.getElementById('capture');
     let downloadButton = document.getElementById('downloadButton');
     let saveToServerButton = document.getElementById('saveToServerButton');
+
+    captureDiv.addEventListener('click', (e) => {
+        e.stopPropagation();
+
+        //클릭 좌표
+        console.log(e.offsetX + " , " + e.offsetY);
+
+        if(stickerFlag == 1){
+            x = e.offsetX - 50;
+            y = e.offsetY - 50;
+            var $sticker = $("#stickerImg").clone();
+            $sticker.attr('class', 'stickerImg');
+            $sticker.css("position", "absolute");
+            $sticker.css("left", x + "px");
+            $sticker.css("top", y + "px");
+
+            $sticker.appendTo(e.target);
+
+            stickerFlag = 0;
+        }
+    });
 
     downloadButton.addEventListener('click', () => {
         if(inputCheck()){
@@ -181,7 +242,7 @@
                 reader.onload = function(e) {
 
                 $('#' + divId).empty();
-                $('#' + divId).append('<img src="' + e.target.result + '" alt="Selected Image">');
+                $('#' + divId).append('<img src="' + e.target.result + '" alt="Selected Image" class="cutImg">');
 
                 }
             reader.readAsDataURL(file);
@@ -193,8 +254,11 @@
 
     //이미지 스타일 변경
     function styleChange() {
+        $(".stickerImg").remove();
+
+
         var color = $("#backgroundColorPicker").val();
-        $("#capture").css("background-color", color);11
+        $("#capture").css("background-color", color);
 
         var arrangement = $("#arrangementSelect").val();
 
@@ -223,6 +287,53 @@
         }
     }
 
+    //스티커 사진 변경
+    $('#inputFile').on('change', function(event) {
+            console.log('실행');
+            var file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                $('#image_container').empty();
+                $('#image_container').append('<img src="' + e.target.result + '" alt="Selected Image" id="stickerImg" width="100px" height="100px">');
+                }
+            reader.readAsDataURL(file);
+            }
+            else {
+                alert('이미지 파일을 선택해주세요');
+            }
+    });
+
+    //프레임 사진 변경
+    $('#inputFileFrame').on('change', function(event) {
+            console.log('실행');
+            var file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+
+                frameSrc = e.target.result;
+                frameFlag = 1;
+                }
+            reader.readAsDataURL(file);
+            }
+            else {
+                alert('이미지 파일을 선택해주세요');
+            }
+    });
+
+    //스티커 플래그
+    function addSticker() {
+        stickerFlag = 1;
+    }
+
+    function addFrame() {
+        var className = $('#capture').attr('class');
+    }
+
+    function removeFrame() {
+
+    }
 </script>
 
 </body>
