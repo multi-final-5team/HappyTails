@@ -21,7 +21,10 @@ import com.multi.happytails.member.service.MemberService;
 import com.multi.happytails.patrol.model.dto.OnePatrolImgDTO;
 import com.multi.happytails.patrol.model.dto.PatrolDTO;
 import com.multi.happytails.patrol.model.dto.PatrolImgDTO;
+import com.multi.happytails.patrol.model.dto.PrecordPlaceDTO;
 import com.multi.happytails.patrol.service.PatrolService;
+import com.multi.happytails.score.model.dto.ScoreDTO;
+import com.multi.happytails.score.service.ScoreService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +63,9 @@ public class PatrolController {
     @Autowired
     MemberService memberService;
 
+    @Autowired
+    ScoreService scoreService;
+
     /**
      * methodName : patrol
      * author : 우재협
@@ -92,6 +98,11 @@ public class PatrolController {
 
     @RequestMapping("patrolAdmin")
     public void patrolAdmin(){
+
+    }
+
+    @RequestMapping("patrolRank")
+    public void patrolRank(){
 
     }
 
@@ -288,5 +299,14 @@ public class PatrolController {
         return "patrol/patrol";
     }
 
+
+    @GetMapping(value="findPatrolRank")
+    public String findPatrolRank(Model model){
+
+        List<ScoreDTO> list = scoreService.findPatrolRank();
+        model.addAttribute("patrolRank", list);
+
+        return "patrol/patrolRank::#rankTbody";
+    }
 
 }

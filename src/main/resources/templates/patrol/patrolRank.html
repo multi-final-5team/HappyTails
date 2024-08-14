@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head :: head">
+
+    <title>Title</title>
+
+</head>
+
+<style>
+
+</style>
+
+<body class="container mt-5">
+
+<menu th:replace="fragments/head :: menu"></menu>
+
+<main>
+
+<h1 class="mb-4">순찰대 현황</h1>
+
+    <div id="patrolRankDiv">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>
+                    순위
+                </th>
+                <th>
+                    이름
+                </th>
+                <th>
+                    점수
+                </th>
+                <th>
+                    계급
+                </th>
+            </tr>
+            </thead>
+            <tbody id="rankTbody" class="table-group-divider">
+            <tr th:each="score , scoreStat : ${patrolRank}">
+                <td th:text="${scoreStat.count}"></td>
+                <td th:text="${score.userNo}"></td>
+                <td th:text="${score.policeScore}"></td>
+
+                <td th:if = "${score.policeScore > 6600}" th:text="치안총감"></td>
+                <td th:if = "${score.policeScore > 5500} and ${score.policeScore <= 6600}" th:text="치안정감"></td>
+                <td th:if = "${score.policeScore > 4500} and ${score.policeScore <= 5500}" th:text="치안감"></td>
+                <td th:if = "${score.policeScore > 3600} and ${score.policeScore <= 4500}" th:text="경무관"></td>
+                <td th:if = "${score.policeScore > 2800} and ${score.policeScore <= 3600}" th:text="총경"></td>
+                <td th:if = "${score.policeScore > 2100} and ${score.policeScore <= 2800}" th:text="경정"></td>
+                <td th:if = "${score.policeScore > 1500} and ${score.policeScore <= 2100}" th:text="경감"></td>
+                <td th:if = "${score.policeScore > 1000} and ${score.policeScore <= 1500}" th:text="경위"></td>
+                <td th:if = "${score.policeScore > 600} and ${score.policeScore <= 1000}" th:text="경사"></td>
+                <td th:if = "${score.policeScore > 300} and ${score.policeScore <= 600}" th:text="경장"></td>
+                <td th:if = "${score.policeScore > 100} and ${score.policeScore <= 300}" th:text="순경"></td>
+                <td th:if = "${score.policeScore <= 100}" th:text="신입"></td>
+
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</main>
+
+<menu th:replace="fragments/head :: footer"></menu>
+
+
+<script>
+
+    $(document).ready(function(){
+
+        findallplace();
+
+    }); // ready()
+
+    function findallplace(){
+            $.ajax({
+                url:"/patrol/findPatrolRank",
+                success: function (patrolRank){
+
+                    $('#rankTbody').replaceWith(patrolRank);
+                    console.log(patrolRank);
+
+                    },
+                    error: function (xhr){
+                        console.log(xhr);
+                }
+            })
+        }
+</script>
+
+</body>
+</html>

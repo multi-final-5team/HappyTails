@@ -23,6 +23,8 @@ import com.multi.happytails.patrol.service.PatrolPlaceService;
 import com.multi.happytails.patrol.service.PatrolRecordReplyService;
 import com.multi.happytails.patrol.service.PatrolRecordService;
 import com.multi.happytails.patrol.service.PatrolService;
+import com.multi.happytails.score.model.dto.ScoreDTO;
+import com.multi.happytails.score.service.ScoreService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import jakarta.annotation.Nullable;
@@ -61,6 +63,9 @@ public class PatrolRecordController {
 
     @Autowired
     MemberService memberService;
+
+    @Autowired
+    ScoreService scoreService;
 
     /**
      * The Upload service.
@@ -109,6 +114,33 @@ public class PatrolRecordController {
 
         patrolPlaceService.updatePrecordNo(target.getPrecordNo(), precordPlace);
 
+        int count = scoreService.scoreCountByUserNo((int)customUser.getNo());
+
+        if(count < 1){
+            scoreService.scoreInsert((int)customUser.getNo());
+        }
+
+        //점수부여
+        ScoreDTO scoreDTO = scoreService.findOneScoreByUserNo((int)customUser.getNo());
+
+        PrecordPlaceDTO precordPlaceDTO = patrolPlaceService.findOnePrecordPlaceByPrecordNo(target.getPrecordNo());
+
+        int distance = (int) precordPlaceDTO.getPrecordTotal();
+
+        int point = 0;
+
+        if(distance <= 3000){
+            point = distance / 300;
+        }
+        else if(distance > 3000){
+            point = 10;
+        }
+
+        scoreDTO.setPoliceScore(scoreDTO.getPoliceScore() + point);
+
+        scoreService.scoreUpdate(scoreDTO);
+        //점수부여
+
         System.out.println("target >>>> " + target);
 
 
@@ -128,7 +160,7 @@ public class PatrolRecordController {
 
 
     @PostMapping("patrolRecordUpdate")
-    public String patrolUpdate(PrecordDTO PrecordDTO, @RequestParam("beforePrecordNo") int beforePrecordNo , @RequestParam("precordPlace") int precordPlace,
+    public String patrolUpdate(PrecordDTO PrecordDTO, @RequestParam("beforePrecordNo") int beforePrecordNo , @RequestParam("precordPlace") int precordPlace, @AuthenticationPrincipal() CustomUser customUser ,
                                @RequestParam(value = "imageFiles",required = false)List<MultipartFile> imageFiles,
                                @RequestParam(value = "imageUpdateFiles",required = false) List<MultipartFile> imageUpdateFiles,
                                @RequestParam(value = "imageDeleteImageNo",required = false) List<Long> imageDeleteImageNo,
@@ -139,8 +171,46 @@ public class PatrolRecordController {
 
 
         if (beforePrecordNo != precordPlace){
+            ScoreDTO scoreDTO = scoreService.findOneScoreByUserNo((int)customUser.getNo());
+
+            PrecordPlaceDTO precordPlaceDTO = patrolPlaceService.findOnePrecordPlaceByPrecordNo(PrecordDTO.getPrecordNo());
+
+            //기존 거리점수 빼기
+            int distance = (int) precordPlaceDTO.getPrecordTotal();
+
+            int point = 0;
+
+            if(distance <= 3000){
+                point = distance / 300;
+            }
+            else if(distance > 3000){
+                point = 10;
+            }
+            scoreDTO.setPoliceScore(scoreDTO.getPoliceScore() - point);
+            //기존 거리점수 빼기
+
+            //선택한 순찰기록으로 변경
             patrolPlaceService.updatePrecordNo(PrecordDTO.getPrecordNo(), precordPlace);
 
+            //점수부여
+            PrecordPlaceDTO precordPlaceDTOAfter = patrolPlaceService.findOnePrecordPlaceByPrecordNo(PrecordDTO.getPrecordNo());
+            distance = (int) precordPlaceDTO.getPrecordTotal();
+
+            point = 0;
+
+            if(distance <= 3000){
+                point = distance / 300;
+            }
+            else if(distance > 3000){
+                point = 10;
+            }
+
+            scoreDTO.setPoliceScore(scoreDTO.getPoliceScore() + point);
+
+            scoreService.scoreUpdate(scoreDTO);
+            //점수부여
+
+            //이전에 선택한 순찰기록 선택해제
             patrolPlaceService.updatePrecordNoNULL(beforePrecordNo);
         }
 
@@ -181,6 +251,27 @@ public class PatrolRecordController {
 
     @PostMapping("patrolRecordDelete")
     public String patrolDelete(PrecordDTO PrecordDTO, @RequestParam("beforePrecordNo") int beforePrecordNo , @AuthenticationPrincipal CustomUser customUser){
+
+        //기존 거리점수 빼기
+        ScoreDTO scoreDTO = scoreService.findOneScoreByUserNo((int)customUser.getNo());
+
+        PrecordPlaceDTO precordPlaceDTO = patrolPlaceService.findOnePrecordPlaceByPrecordNo(PrecordDTO.getPrecordNo());
+
+
+        int distance = (int) precordPlaceDTO.getPrecordTotal();
+
+        int point = 0;
+
+        if(distance <= 3000){
+            point = distance / 300;
+        }
+        else if(distance > 3000){
+            point = 10;
+        }
+        scoreDTO.setPoliceScore(scoreDTO.getPoliceScore() - point);
+
+        scoreService.scoreUpdate(scoreDTO);
+        //기존 거리점수 빼기
 
         //순찰경로삭제
         patrolPlaceService.updatePrecordNoNULL(beforePrecordNo);
