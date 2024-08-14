@@ -31,7 +31,6 @@ public class UploadController {
     @ResponseBody
     public ResponseEntity<Resource> downloadImage(@PathVariable("fileName") String fileName,
                                                   @PathVariable("categoryCode")  String categoryCode) {
-        System.out.println(fileName + categoryCode);
         String projectPath = System.getProperty("user.dir");
         String directory = projectPath + this.fileDir;
         String filePath = directory + categoryCode + "/" +fileName;
