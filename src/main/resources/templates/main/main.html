@@ -2,8 +2,10 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head}">
     <title>메인페이지</title>
+
 </head>
 <body>
+<link href="/css/main/chat.css" rel="stylesheet">
 <menu th:replace="~{fragments/head :: menu}"></menu>
 <main class="container mt-5">
     <div class="text-center">
@@ -90,6 +92,120 @@
         </div>
     </div>
 </main>
+
+<div class="chatbot-container">
+    <button id="chatbotToggle">
+        <img src="https://kr.object.ncloudstorage.com/team-5/ht-removebg-preview.png" alt="Puppy Icon" style="width: 100%; height: 100%; border-radius: 50%;">
+    </button>
+    <div id="chatbox" class="chatbox">
+        <div class="chatbox-header">
+            <img src="https://kr.object.ncloudstorage.com/team-5/ht-removebg-preview.png" alt="chat">
+            <span>Puppy Chatbot</span>
+            <button class="close-btn" aria-label="Close">🐾</button>
+        </div>
+        <div class="chatbox-body">
+            <!-- Messages will be dynamically added here -->
+        </div>
+        <div class="chatbox-footer">
+            <input type="text" placeholder="강아지에게 말해보세요...">
+            <button>🐶</button>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+
+    var stompClient = null;
+
+    function connect(message) {
+        return new Promise((resolve, reject) => {
+        var socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/dog', function (payload) {
+                onMessageReceived(payload);
+                resolve(payload.body);  // 서버로부터의 응답을 Promise로 해결
+            });
+            sendMessage(message);
+        }, function (error) {
+            console.error('Error: ' + error);
+            reject(error);
+        });
+        });
+    }
+
+    function onMessageReceived(payload) {
+    }
+
+    function onError(error) {
+        console.error('Error: ' + error);
+    }
+
+    function sendMessage(content) {
+        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(content));
+    }
+
+    const chatbotToggle = document.getElementById('chatbotToggle');
+    const chatbox = document.getElementById('chatbox');
+    const closeBtn = document.querySelector('.close-btn');
+    const messageInput = document.querySelector('.chatbox-footer input');
+    const sendButton = document.querySelector('.chatbox-footer button');
+    const chatBody = document.querySelector('.chatbox-body');
+
+    chatbotToggle.addEventListener('click', () => {
+        chatbox.classList.toggle('active');
+        if (chatbox.classList.contains('active') && chatBody.children.length === 0) {
+            addMessage("멍멍! 안녕하세요! 무엇을 도와드릴까요?", false);
+        }
+    });
+
+    closeBtn.addEventListener('click', () => {
+        chatbox.classList.remove('active');
+    });
+
+    function addMessage(content, isUser = false) {
+        const messageContainer = document.createElement('div');
+        messageContainer.classList.add('message-container');
+        if (isUser) messageContainer.classList.add('user');
+
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        messageElement.classList.add(isUser ? 'user' : 'bot');
+        messageElement.textContent = content;
+
+        messageContainer.appendChild(messageElement);
+        chatBody.appendChild(messageContainer);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function handleUserInput() {
+    const message = messageInput.value.trim();
+    if (message) {
+        addMessage(message, true);
+        messageInput.value = '';
+
+        // 비동기적으로 connect 함수를 호출하고 응답을 처리
+        connect(message)
+            .then((response) => {
+                addMessage(response, false);
+            })
+            .catch((error) => {
+                console.error('Failed to receive message:', error);
+            });
+        }
+    }
+
+
+    sendButton.addEventListener('click', handleUserInput);
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleUserInput();
+        }
+    });
+</script>
 </body>
 <footer th:replace="fragments/head :: footer"></footer>
 </html>

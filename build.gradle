@@ -54,6 +54,17 @@ dependencies {
 
 	implementation 'org.springframework.data:spring-data-commons' //페이징 라이브러리
 
+	// Spring Boot WebSocket Starter
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	// RabbitMQ Starter Dependency (Not required if you're using the simple in-memory broker for STOMP)
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+	// Full Featured STOMP Broker Relay
+	implementation 'org.springframework.boot:spring-boot-starter-reactor-netty'
+
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
 }
 
 tasks.named('test') {

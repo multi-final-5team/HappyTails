@@ -8,65 +8,64 @@
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
     <div class="container">
-        <figure class="text-center">
-            <h2>찾아주개</h2>
-        </figure>
-        <figure class="text-left">
-            <h3>찾아주개 수정</h3>
-        </figure>
-        <form method="post" enctype="multipart/form-data" id="inquiryForm">
-            <div class="mb-3">
-                <label for="title" class="form-label">제목</label>
-                <input type="text" class="form-control" name="title" id="title" th:value="${findDogDto.title}">
-            </div>
-            <div class="row">
-                <div class="form-group col-md-6">
-                    <label for="breed" class="form-label">품종</label>
-                    <input type="text" class="form-control" name="breed" id="breed" th:value="${findDogDto.breed}">
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label for="content" class="form-label">내용</label>
-                <textarea class="form-control" name="content" id="content" rows="3" th:text="${findDogDto.content}"></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="imageInput" class="form-label">이미지 첨부</label>
-                <input class="form-control" type="file" id="imageInput">
-            </div>
-            <div id="imgAddDiv">
-                <th:block th:if="${uploadDtos != null}">
-                    <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
-                        <div class="imgDiv">
-                            <img th:src="@{/images/F/{file}(file=${uploadDto.storedFileName})}" alt="..." width="100px" height="100px">
-                            <input type="button" class="btn btn-danger imgDeleteBtn" th:data-image-no="${uploadDto.imageNo}" value="삭제">
-                            <input type="button" class="btn btn-success imgUpdateBtn" th:data-image-no="${uploadDto.imageNo}" value="수정">
-                        </div>
-                    </th:block>
-                </th:block>
-            </div>
-            <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
-
-            <div class="row">
-                <div class="col-6">
-                    <h2>장소</h2>
-                    <div class="col">
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control mb-2" id="zipp_code_id" name="zipp_code" maxlength="10" placeholder="우편번호" style="width: 50%; display: inline;" hidden="hidden">
-                            <input type="button" id="zipp_btn" class="btn btn-primary" onclick="execDaumPostcode()" value="지도 위치 이동"><br><br>
-                            <input type="button" class="btn btn-primary" id="myMapMove" value="지도 내 위치로 이동"><br>
-                            <input type="text" class="form-control mb-2" name="user_add1" id="UserAdd1" maxlength="40" placeholder="기본 주소를 입력하세요" hidden="hidden" required>
-                            <input type="text" class="form-control" name="user_add2" id="UserAdd2" maxlength="40" placeholder="상세 주소를 입력하세요" hidden="hidden">
-                            <br>
-                        </div>
+        <h1 class="mb-4 text-center">🐾 찾아주개 🐾</h1>
+        <h3 class="mb-4 text-center">잃어버린 반려견, 함께 찾습니다. 🐶</h3>
+        <div class="card w-75 mx-auto">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" id="inquiryForm">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">제목</label>
+                        <input type="text" class="form-control" name="title" id="title" th:value="${findDogDto.title}">
                     </div>
-                </div>
-                <div id="map" style="width:800px;height:500px;"></div>
+
+                    <div class="form-group mb-3 w-25">
+                        <label for="breed" class="form-label">품종</label>
+                        <input type="text" class="form-control" name="breed" id="breed" th:value="${findDogDto.breed}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="content" class="form-label">내용</label>
+                        <textarea class="form-control" name="content" id="content" rows="3" th:text="${findDogDto.content}"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imageInput" class="form-label">이미지 첨부</label>
+                        <input class="form-control" type="file" id="imageInput">
+                    </div>
+                    <div id="imgAddDiv">
+                        <th:block th:if="${uploadDtos != null}">
+                            <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
+                                <div class="imgDiv">
+                                    <img th:src="@{/images/F/{file}(file=${uploadDto.storedFileName})}" alt="..." width="100px" height="100px">
+                                    <input type="button" class="btn btn-danger imgDeleteBtn" th:data-image-no="${uploadDto.imageNo}" value="삭제">
+                                    <input type="button" class="btn btn-success imgUpdateBtn" th:data-image-no="${uploadDto.imageNo}" value="수정">
+                                </div>
+                            </th:block>
+                        </th:block>
+                    </div>
+                    <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
+
+                    <h2>위치</h2>
+                    <div class="row ms-3">
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="row">
+                                    <input type="text" class="form-control mb-2" id="zipp_code_id" name="zipp_code" maxlength="10" placeholder="우편번호" style="width: 50%; display: inline;" hidden="hidden">
+                                    <input type="button" id="zipp_btn" class="btn btn-primary col-4 mb-3" onclick="execDaumPostcode()" value="지도 위치 이동"><br><br>
+                                    <input type="button" class="btn btn-primary col-4 mx-3 mb-3" id="myMapMove" value="내 위치로 이동"><br>
+                                    <input type="text" class="form-control mb-2" name="user_add1" id="UserAdd1" maxlength="40" placeholder="기본 주소를 입력하세요" hidden="hidden" required>
+                                    <input type="text" class="form-control" name="user_add2" id="UserAdd2" maxlength="40" placeholder="상세 주소를 입력하세요" hidden="hidden">
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                            <div id="map" style="width:800px;height:500px;"></div>
+                    </div>
+
+                    <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
+
+                </form>
             </div>
-
-            <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
-
-        </form>
+        </div>
     </div>
 </main>
 <!-- 스크립트 -->

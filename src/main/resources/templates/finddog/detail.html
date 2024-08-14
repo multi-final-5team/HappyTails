@@ -7,71 +7,71 @@
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
-    <dd class="container">
-        <figure class="text-center">
-            <h2>찾아주개</h2>
-        </figure>
-        <figure class="text-left">
-            <h3>찾아주개 상세보기</h3>
-        </figure>
-
-        <dl class="row">
-            <dt class="col-sm-3">제목</dt>
-            <dd class="col-sm-9"><th:block th:text="${findDogDto.title}"></th:block></dd>
-            <dt class="col-sm-3">작성자</dt>
-            <dd class="col-sm-9"><th:block th:text="${findDogDto.writerId}"></th:block></dd>
-            <dt class="col-sm-3">장소</dt>
-            <dd class=" col-sm-9">
-                <pre><th:block th:text="${findDogDto.area}"></th:block></pre>
-            </dd>
-            <dt class="col-sm-3">카테고리</dt>
-            <dd class="col-sm-9">
-                <th:block th:if="${findDogDto.category} == 'M'">
-                    <p>유기의심공유</p>
-                </th:block>
-                <th:block th:if="${findDogDto.category} == 'F'">
-                    <p>잃어버린강아지 찾기</p>
-                </th:block>
-            </dd>
-
-            <dt class="col-sm-3">내용</dt>
-            <dd class=" col-sm-9 row">
-                <pre><th:block th:text="${findDogDto.content}"></th:block></pre>
-            </dd>
-
-            <th:block th:if="${uploadDtos != null}">
-                <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
-                    <dd class="text-center">
-                        <img th:src="@{/images/F/{file}(file=${uploadDto.storedFileName})}" alt="..." width="600px" height="500px">
+    <div class="container">
+        <h1 class="mb-4 text-center">🐾 찾아주개 🐾</h1>
+        <h3 class="mb-4 text-center">잃어버린 반려견, 함께 찾습니다. 🐶</h3>
+        <div class="card w-75 mx-auto">
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">제목</dt>
+                    <dd class="col-sm-9"><th:block th:text="${findDogDto.title}"></th:block></dd>
+                    <dt class="col-sm-3">작성자</dt>
+                    <dd class="col-sm-9"><th:block th:text="${findDogDto.writerId}"></th:block></dd>
+                    <dt class="col-sm-3">장소</dt>
+                    <dd class=" col-sm-9">
+                        <th:block th:text="${findDogDto.area}"></th:block>
                     </dd>
-                </th:block>
-            </th:block>
+                    <dt class="col-sm-3">카테고리</dt>
+                    <dd class="col-sm-9">
+                        <th:block th:if="${findDogDto.category} == 'M'">
+                            <p>유기의심공유</p>
+                        </th:block>
+                        <th:block th:if="${findDogDto.category} == 'F'">
+                            <p>잃어버린강아지 찾기</p>
+                        </th:block>
+                    </dd>
 
-            <dt class="col-sm-3">위치</dt>
-            <div id="map" style="width:800px;height:500px;"></div>
-        </dl>
-        <!-- 작성자만 보이게 -->
-        <div th:if="${findDogDto.writerId} == ${#authentication.principal.username}">
-            <th:block th:if="${findDogDto.state} == 'N'">
-                <input type="button" class="btn btn-warning float-end" id="stateUpdateBtn" value="해결">
-            </th:block>
-            <input type="button" class="btn btn-danger float-end" id="deleteBtn" value="삭제">
-            <input type="button" class="btn btn-success float-end" id="updatePageBtn" value="수정">
-        </div>
+                    <dt class="col-sm-3">내용</dt>
+                    <dd class="col-sm-9" style="white-space: pre-wrap;" th:text="${findDogDto.content}">
+                    </dd>
 
-        <br>
-        <div class="mb-3">
-            <label for="content" class="form-label">댓글</label>
-            <textarea class="form-control" id="content" rows="3"></textarea>
-        </div>
-        <div>
-            <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
-        </div>
-        <div>
-            <table class="table table-hover" id="tableDiv">
-            </table>
-        </div>
+                    <th:block th:if="${uploadDtos != null}">
+                        <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
+                            <dd class="text-center">
+                                <img th:src="@{/images/F/{file}(file=${uploadDto.storedFileName})}" alt="..." width="600px" height="500px">
+                            </dd>
+                        </th:block>
+                    </th:block>
 
+                    <dt class="col-sm-3">위치</dt>
+                    <div class="d-flex justify-content-center">
+                        <div id="map" style="width:800px;height:500px;"></div>
+                    </div>
+                </dl>
+
+                <!-- 작성자만 보이게 -->
+                <div th:if="${findDogDto.writerId} == ${#authentication.principal.username}">
+                    <th:block th:if="${findDogDto.state} == 'N'">
+                        <input type="button" class="btn btn-warning float-end" id="stateUpdateBtn" value="해결">
+                    </th:block>
+                    <input type="button" class="btn btn-danger float-end" id="deleteBtn" value="삭제">
+                    <input type="button" class="btn btn-success float-end" id="updatePageBtn" value="수정">
+                </div>
+
+                <br>
+                <div class="mb-3">
+                    <label for="content" class="form-label">댓글</label>
+                    <textarea class="form-control" id="content" rows="3"></textarea>
+                </div>
+                <div>
+                    <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
+                </div>
+                <div>
+                    <table class="table table-hover" id="tableDiv">
+                    </table>
+                </div>
+            </div>
+        </div>
 </main>
 <!-- 스크립트 -->
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3410cbe0e56cd0dca8e1c3bc13dec0a4&libraries=services"></script>
@@ -279,8 +279,8 @@
                 template = `
                         <thead>
                             <tr>
-                                <th scope="col">생성 날짜</th>
                                 <th scope="col">작성자</th>
+                                <th scope="col">생성 날짜</th>
                                 <th scope="col">내용</th>
                                 <th scope="col">수정/삭제</th>
                             </tr>
@@ -290,8 +290,8 @@
                     template += `
                             <tbody>
                                 <tr class="listRow" data-reply-no="`+result[i].findDogReplyNo+`" data-reply-content="`+result[i].content+`">
-                                    <td>`+dataFormat1(result[i].createDate)+`</td>
                                     <td>`+result[i].writerId+`</td>
+                                    <td>`+dataFormat1(result[i].createDate)+`</td>
                                     <td>`+result[i].content+`</td>
                                     <td><input type="button" class="btn btn-success reply-update-btn" value="수정"><input type="button" class="btn btn-danger reply-delete-btn" value="삭제"></td>
                                 </tr>

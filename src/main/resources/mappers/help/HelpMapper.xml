@@ -111,7 +111,7 @@
         <where>
             <if test="searchMap != null">
                 <if test="searchMap.title != '' and searchMap.title != null">
-                    AND TITLE LIKE CONCAT('%', #{searchMap.title}, '%')
+                    AND QUESTION_CONTENT LIKE CONCAT('%', #{searchMap.title}, '%')
                 </if>
                 <if test="searchMap.category != '' and searchMap.category != null">
                     AND HELP_CATEGORY_CODE LIKE CONCAT('%', #{searchMap.category}, '%')
@@ -131,7 +131,7 @@
         <where>
             <if test="searchMap != null">
                 <if test="searchMap.title != '' and searchMap.title != null">
-                    AND TITLE LIKE CONCAT('%', #{searchMap.title}, '%')
+                    AND QUESTION_CONTENT LIKE CONCAT('%', #{searchMap.title}, '%')
                 </if>
                 <if test="searchMap.category != '' and searchMap.category != null">
                     AND HELP_CATEGORY_CODE LIKE CONCAT('%', #{searchMap.category}, '%')

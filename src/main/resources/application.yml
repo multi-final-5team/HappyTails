@@ -49,3 +49,8 @@ portone:
     key: P2Z4cX3LE4GpectU2WJb9FBwVS3imAnxydy9eqvblMmZLW3KeBqFusZGL9QyGDb3FWNqvQsMovYrWQok
     secret: 자신의_포트원_API_시크릿
   cid: 자신의_포트원_상점_식별자
+
+clova:
+  api:
+    url: https://47rv9xlkxz.apigw.ntruss.com/custom/v1/15493/f69f6c6d015b3086ad093d91891151366447026ce08fa9f2737293979ffbca0d
+    secret-key: eHpJeEFqdGZ1RHdtaVdFSGVKVkpMaXBmY3lKcHVybkI=

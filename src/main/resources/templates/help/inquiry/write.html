@@ -9,36 +9,36 @@
 <menu th:replace="fragments/head :: menu"></menu>
     <main>
         <div class="container">
-            <figure class="text-center">
-                <h2>고객센터</h2>
-            </figure>
-            <figure class="text-left">
-                <h3>1:1 문의 작성</h3>
-            </figure>
-            <form action="/help/inquiry/write" method="post" enctype="multipart/form-data" id="inquiryForm">
-                <div class="mb-3">
-                    <label for="title" class="form-label">제목</label>
-                    <input type="text" class="form-control" name="title" id="title">
-                </div>
-                <div class="mb-3">
-                    <label for="category" class="form-label">카테고리</label>
-                    <select class="form-select form-select-sm category" id="category" name="helpCategoryCode">
-                    </select>
-                </div>
+            <h1 class="mb-4 text-center">🐾 고객센터 🐾</h1>
+            <h3 class="mb-4 text-center">고민 있으면 여기다 얘기하개 🐶</h3>
+            <div class="card w-75 mx-auto">
+                <div class="card-body">
+                    <form action="/help/inquiry/write" method="post" enctype="multipart/form-data" id="inquiryForm">
+                        <div class="mb-3">
+                            <label for="title" class="form-label">제목</label>
+                            <input type="text" class="form-control" name="title" id="title">
+                        </div>
+                        <div class="mb-3 w-25">
+                            <label for="category" class="form-label">카테고리</label>
+                            <select class="form-select form-select-sm category" id="category" name="helpCategoryCode">
+                            </select>
+                        </div>
 
-                <div class="mb-3">
-                    <label for="content" class="form-label">내용</label>
-                    <textarea class="form-control" name="content" id="content" rows="3"></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="imageInput" class="form-label">이미지 첨부</label>
-                    <input class="form-control" type="file" id="imageInput">
-                </div>
-                <div id="imgAddDiv">
+                        <div class="mb-3">
+                            <label for="content" class="form-label">내용</label>
+                            <textarea class="form-control" name="content" id="content" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="imageInput" class="form-label">이미지 첨부</label>
+                            <input class="form-control" type="file" id="imageInput">
+                        </div>
+                        <div id="imgAddDiv">
 
+                        </div>
+                        <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
+                    </form>
                 </div>
-                <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
-            </form>
+            </div>
         </div>
     </main>
 
