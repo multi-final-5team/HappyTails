@@ -73,7 +73,7 @@
 
 <main>
 
-    <h1 class="mb-4">견생내컷 생성</h1>
+    <h1 class="mb-4">견생네컷 생성</h1>
 
     <div class="fileInputTotal" id="" style="margin: 3%;">
         <div class="">
@@ -105,26 +105,31 @@
 
     <button id="styleChangeButton" onclick="styleChange()">스타일 변경</button>
 
-    <div>
-        <div>
+    <div class="d-flex justify-content-center" style="margin: 3%;">
+        <div style="width : 100%;">
             <label>스티커 추가</label>
 
             <div  class="mb-3" id="image_container">
                 <!-- 이미지 들어가는곳 -->
             </div>
 
-            <input class="form-control" type="file" id="inputFile" name="inputFile" style="width : 40%;">
+            <input class="form-control" type="file" id="inputFile" name="inputFile" style="width : 100%;">
             <button class="" id="addStickerBtn" name="addStickerBtn" onclick="addSticker()">스티커추가</button>
         </div>
 
-        <div>
+        <div style="width : 100%;">
             <label>프레임 변경</label>
 
-            <input class="form-control" type="file" id="inputFileFrame" name="inputFileFrame" style="width : 40%;">
+            <input class="form-control" type="file" id="inputFileFrame" name="inputFileFrame" style="width : 100%;">
             <div>
                 <button class="" id="addFrameBtn" name="addFrameBtn" onclick="addFrame()">프레임 변경</button>
                 <button class="" id="removeFrameBtn" name="removeFrameBtn" onclick="removeFrame()">취소</button>
             </div>
+        </div>
+        <div style="width : 100%;">
+            <label>사진 흑백필터</label><br>
+            <button class="" id="grayscaleBtn" name="grayscaleBtn" onclick="addGrayscale()">사진흑백으로</button>
+            <button class="" id="removeGrayscaleBtn" name="removeGrayscaleBtn" onclick="removeGrayscale()">취소</button>
         </div>
     </div>
 
@@ -151,6 +156,7 @@
 <script>
     var stickerFlag = 0;
     var frameFlag = 0;
+    var frameLoadFlag = 0;
     var frameSrc;
 
     let captureDiv = document.getElementById('capture');
@@ -158,10 +164,12 @@
     let saveToServerButton = document.getElementById('saveToServerButton');
 
     captureDiv.addEventListener('click', (e) => {
-        e.stopPropagation();
 
         //클릭 좌표
         console.log(e.offsetX + " , " + e.offsetY);
+
+        console.log(e.target.nodeName.toLowerCase());
+        var targetTag = e.target.nodeName.toLowerCase();
 
         if(stickerFlag == 1){
             x = e.offsetX - 50;
@@ -172,7 +180,12 @@
             $sticker.css("left", x + "px");
             $sticker.css("top", y + "px");
 
-            $sticker.appendTo(e.target);
+            if(targetTag == "img"){
+                $sticker.appendTo(e.target.parentElement);
+            }
+            else{
+                $sticker.appendTo(e.target);
+            }
 
             stickerFlag = 0;
         }
@@ -329,10 +342,39 @@
 
     function addFrame() {
         var className = $('#capture').attr('class');
+
+        console.log("className >> " + className);
+
+        var frameImage = new Image();
+        frameImage.src = frameSrc;
+
+        frameImage.addEventListener('load', function() {
+            frameLoadFlag = 1;
+        });
+
+        if(frameLoadFlag == 1){
+            console.log(frameImage.width + " , " + frameImage.height);
+
+            if((className == "imgSquare") && (frameImage.width > frameImage.height)){
+                 $('#capture').css({'background-image':'url('+ frameSrc +')'});
+            }
+            else if((className == "imgLine") && (frameImage.width < frameImage.height)){
+                $('#capture').css({'background-image':'url('+ frameSrc +')'});
+            }
+        }
+
     }
 
     function removeFrame() {
 
+    }
+
+    function addGrayscale() {
+        $(".cutImg").css("filter", "grayscale(100%)");
+    }
+
+    function removeGrayscale() {
+        $(".cutImg").css("filter", "grayscale(0)");
     }
 </script>
 

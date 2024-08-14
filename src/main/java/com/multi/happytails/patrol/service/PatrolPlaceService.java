@@ -79,4 +79,9 @@ public class PatrolPlaceService {
         return patrolPlaceDAO.findPrecordPlaceNoByPrecordNo(precordNo);
     }
 
+    public PrecordPlaceDTO findOnePrecordPlaceByPrecordNo(int precordNo){
+
+        return patrolPlaceDAO.findOnePrecordPlaceByPrecordNo(precordNo);
+    }
+
 }

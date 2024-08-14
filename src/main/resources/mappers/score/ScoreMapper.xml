@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.multi.happytails.score.model.dao.ScoreDAO">
+
+    <insert id="scoreInsert">
+        INSERT INTO tb_score
+        ( user_no, police_score, police_score_month, recommend, recommend_month)
+        VALUES(#{userNo}, 0, 0, 0, 0);
+    </insert>
+
+    <select id="scoreCountByUserNo">
+        SELECT COUNT(*)
+        FROM tb_score
+        WHERE user_no = #{userNo};
+    </select>
+
+    <select id="findAllScore">
+        SELECT no, user_no AS userNo, police_score AS policeScore, police_score_month AS policeScoreMonth, recommend, recommend_month AS recommendMonth
+        FROM tb_score;
+    </select>
+
+    <select id="findPatrolRank">
+        SELECT no, user_no AS userNo, police_score AS policeScore
+        FROM tb_score
+        ORDER BY police_score DESC;
+    </select>
+
+    <select id="findOneScoreByUserNo">
+        SELECT no, user_no AS userNo, police_score AS policeScore, police_score_month AS policeScoreMonth, recommend, recommend_month AS recommendMonth
+        FROM tb_score
+        WHERE user_no = #{userNo};
+    </select>
+
+    <update id="scoreUpdate">
+        UPDATE tb_score
+        SET user_no= #{userNo},
+        police_score= #{policeScore},
+        police_score_month= #{policeScoreMonth},
+        recommend= #{recommend},
+        recommend_month= #{recommendMonth}
+        WHERE no = #{no};
+    </update>
+
+    <delete id="scoreDelete">
+        DELETE FROM tb_score
+        WHERE no = #{no};
+    </delete>
+
+
+</mapper>

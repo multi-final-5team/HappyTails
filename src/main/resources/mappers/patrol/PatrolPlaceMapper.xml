@@ -72,5 +72,10 @@
         WHERE precord_place_no= #{precordPlaceNo}
     </update>
 
+    <select id="findOnePrecordPlaceByPrecordNo">
+        SELECT precord_place_no AS precordPlaceNo, precord_no AS precordNo, patrol_no AS patrolNo, precord_total AS precordTotal
+        FROM tb_precord_place
+        WHERE precord_no = #{precordNo};
+    </select>
 
 </mapper>
