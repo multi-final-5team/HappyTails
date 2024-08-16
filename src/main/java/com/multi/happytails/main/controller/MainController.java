@@ -4,8 +4,9 @@ import com.multi.happytails.community.model.dto.ChatDogDTO;
 import com.multi.happytails.community.model.dto.DogloveDTO;
 import com.multi.happytails.community.service.ChatDogService;
 import com.multi.happytails.community.service.DogloveService;
-import com.multi.happytails.main.dto.RssNewsDTO;
 import com.multi.happytails.main.service.MainService;
+import com.multi.happytails.shop.model.dto.SalesGoodsDTO;
+import com.multi.happytails.shop.service.SalesService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class MainController {
@@ -30,6 +33,9 @@ public class MainController {
 
     @Autowired
     private UploadService uploadService;
+
+    @Autowired
+    private SalesService salesService;
 
     @Autowired
     public MainController(MainService mainService) {
@@ -61,9 +67,11 @@ public class MainController {
         }
 
 
-        //뉴스
-        String rssUrl = "https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fwww.newsunion.kr%2F%3Fr%3Ds134556%26m%3Dnews%26mod%3Dgoogle_rss%26mid%3D32";
-        List<RssNewsDTO> rssNews = mainService.GetRssNewsData(rssUrl);
+//        //뉴스
+//        String rssUrl = "https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fwww.newsunion.kr%2F%3Fr%3Ds134556%26m%3Dnews%26mod%3Dgoogle_rss%26mid%3D32";
+//        List<RssNewsDTO> rssNews = mainService.GetRssNewsData(rs//멍샵
+        //멍샵
+        List<SalesGoodsDTO> randomProducts = salesService.getRandomProducts();
 
         //내 새끼 자랑 (최신글 5개)
         List<DogloveDTO> dogloveDTOS = dogloveService.mainDogLoveList();
@@ -82,7 +90,8 @@ public class MainController {
         }
 
         // 화면 전송
-        model.addAttribute("rssNews", rssNews);
+//        model.addAttribute("rssNews", rssNews);
+        model.addAttribute("randomProducts", randomProducts);
         model.addAttribute("chatDogUpList", chatDogUpList);
         model.addAttribute("chatDogStoredImages", chatDogStoredImages);
         model.addAttribute("dogLoveStoredImages", dogLoveStoredImages);

@@ -71,4 +71,9 @@ public class SalesServiceImpl implements SalesService {
     public List<SalesGoodsDTO> search(String keyword) {
         return salesGoodsDAO.search(keyword);
     }
+
+    @Override
+    public List<SalesGoodsDTO> getRandomProducts() {
+        return salesGoodsDAO.getRandomProducts();
+    }
 }

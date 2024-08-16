@@ -44,7 +44,9 @@ public class CommunityAdminController {
     @GetMapping("/doglove/delete/{dogloveNo}")
     public String deleteDoglove(@PathVariable Long dogloveNo) {
         dogloveService.delete(dogloveNo);
+
         replyService.replyDeleteAll("L", Math.toIntExact(dogloveNo));
+
         List<UploadDto> uploadDtos = uploadService.uploadSelect(IMAGE_DOGLOVE, dogloveNo);
 
         if (uploadDtos != null && !uploadDtos.isEmpty()) {
@@ -60,7 +62,9 @@ public class CommunityAdminController {
     @GetMapping("/chatdog/delete/{chatdogNo}")
     public String deleteChatdog(@PathVariable Long chatdogNo) {
         chatDogService.delete(chatdogNo);
+
         replyService.replyDeleteAll("C", Math.toIntExact(chatdogNo));
+
 
         List<UploadDto> uploadDtos = uploadService.uploadSelect(IMAGE_CHATDOG, chatdogNo);
 
@@ -77,7 +81,9 @@ public class CommunityAdminController {
     @GetMapping("/conference/delete/{conferenceNo}")
     public String deleteConference(@PathVariable Long conferenceNo) {
         conferenceService.delete(conferenceNo);
+
         replyService.replyDeleteAll("O", Math.toIntExact(conferenceNo));
+
 
         List<UploadDto> uploadDtos = uploadService.uploadSelect(IMAGE_CONFERENCE, conferenceNo);
 

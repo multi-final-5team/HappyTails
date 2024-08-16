@@ -17,5 +17,5 @@ import java.util.List;
  */
 public interface MainService {
 
-    List<RssNewsDTO> GetRssNewsData(String rssUrl);
+//    List<RssNewsDTO> GetRssNewsData(String rssUrl);
 }

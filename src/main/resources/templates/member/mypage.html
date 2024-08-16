@@ -30,7 +30,7 @@
             <h3 id="name" class="mb-4"></h3>
             <div class="d-grid gap-2">
                 <button id="purchase-history" class="btn btn-primary">구매 목록</button>
-                <button id="business-signup" class="btn btn-primary">사업자 등록</button>
+                <button id="business-registration" class="btn btn-primary">사업자 등록</button>
                 <button id="member-info" class="btn btn-primary">회원정보수정</button>
                 <button id="delete-account" class="btn btn-danger">회원탈퇴</button>
             </div>
@@ -59,8 +59,8 @@
              window.location.href = '/payment/paymentHistory';
          });
 
-        $('#business-signup').click(function() {
-            window.location.href = '/member/businessSignUp';
+        $('#business-registration').click(function() {
+            window.location.href = '/member/businessRegistration';
         });
 
         $('#member-info').click(function() {

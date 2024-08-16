@@ -48,7 +48,38 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log('Success:', data);
-                    // 로그인 성공 후 리다이렉트
+                    if (data.status === 'INTEGRATION_REQUIRED') {
+                        // 회원 통합 여부를 묻는 팝업창 표시
+                        if (confirm(data.message)) {
+                            integrateAccount(kakaoData.kakao_account.email, true);
+                        } else {
+                            integrateAccount(kakaoData.kakao_account.email, false);
+                        }
+                    } else {
+                        // 로그인 성공 후 리다이렉트
+                        window.location.href = data.redirect;
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function integrateAccount(email, integrate) {
+            fetch('/member/integrateAccount', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: email,
+                    integrate: integrate.toString() // boolean 값을 문자열로 변환
+                }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Integration result:', data);
+                    alert(data.message);
                     window.location.href = data.redirect;
                 })
                 .catch((error) => {
@@ -61,7 +92,7 @@
     </script>
 </head>
 <body>
-    <h1>카카오 로그인 처리 중...</h1>
-    <p>잠시만 기다려주세요.</p>
+<h1>카카오 로그인 처리 중...</h1>
+<p>잠시만 기다려주세요.</p>
 </body>
 </html>
