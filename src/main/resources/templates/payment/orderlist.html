@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head}">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-    <title>주문 목록</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>판매 내역</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/js/payment/orderlist.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 
 <body>
-<menu th:replace="~{fragments/head :: menu}"></menu>
 <div class="container">
-    <h1>주문 목록</h1>
+    <h1>판매 내역</h1>
 
     <div class="search-bar">
         <input type="text" id="searchInput" placeholder="검색">
@@ -33,10 +35,13 @@
                 </div>
             </div>
             <div class="order-actions">
-                <button class="cancel-button"
+                <button class="partial-cancel-btn"
+                        th:data-payment-no="${order.payment_no}"
                         th:data-imp-uid="${order.imPortId}"
-                        th:data-amount="${order.purchaseprice}">
-                    주문 취소하기
+                        th:data-productname="${order.productname}"
+                        th:data-price="${order.purchaseprice}"
+                        th:data-quantity="1">
+                    부분 취소
                 </button>
             </div>
         </div>
@@ -47,10 +52,7 @@
     </div>
 
     <div class="pagination"></div>
-
-
 </div>
 
 </body>
-<footer th:replace="fragments/head :: footer"></footer>
 </html>

@@ -17,6 +17,7 @@
 
     <resultMap id="OrderlistResultMap"
                type="com.multi.happytails.shop.model.dto.OrderlistDTO">
+        <result column="payment_no" property="payment_no"/>
         <result column="username" property="username"/>
         <result column="productname" property="productname"/>
         <result column="productinfo" property="productinfo"/>
@@ -132,4 +133,11 @@
         SELECT * FROM payment
         WHERE username = #{username}
     </select>
+
+    <update id="updatePartialRefundStatus">
+        UPDATE payment
+        SET refund = 'Y',
+        refund_date = NOW()
+        WHERE payment_no = #{paymentNo}
+    </update>
 </mapper>

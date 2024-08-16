@@ -73,6 +73,11 @@
                         </div>
                         <p class="card-text" th:text="${review.content}">리뷰 내용</p>
                         <p class="card-text"><small class="text-muted" th:text="${#dates.format(review.reviewDate, 'yyyy-MM-dd HH:mm:ss')}">리뷰 날짜</small></p>
+
+                        <div th:if="${review.id == principalName}">
+                            <button class="btn btn-warning btn-sm" onclick="openUpdatePopup([${review.no}])">수정</button>
+                        </div>
+
                         <div th:if="${review.id == principalName}">
                             <a th:href="@{/review/deleteReview(reviewNo=${review.no})}"
                                class="btn btn-danger btn-sm">
@@ -96,11 +101,16 @@
                     <div class="mb-3">
                         <label for="starRating" class="form-label">별점:</label>
                         <div class="star-rating">
-                            <input type="radio" id="star1" name="starRating" value="1"><label for="star1">&#9733;</label>
-                            <input type="radio" id="star2" name="starRating" value="2"><label for="star2">&#9733; &#9733;</label>
-                            <input type="radio" id="star3" name="starRating" value="3"><label for="star3">&#9733; &#9733; &#9733;</label>
-                            <input type="radio" id="star4" name="starRating" value="4"><label for="star4">&#9733; &#9733; &#9733; &#9733;</label>
-                            <input type="radio" id="star5" name="starRating" value="5" required><label for="star5">&#9733; &#9733; &#9733; &#9733; &#9733;</label>
+<!--                            <input type="radio" id="star1" name="starRating" value="1"><label for="star1">&#9733;</label>-->
+<!--                            <input type="radio" id="star2" name="starRating" value="2"><label for="star2">&#9733; &#9733;</label>-->
+<!--                            <input type="radio" id="star3" name="starRating" value="3"><label for="star3">&#9733; &#9733; &#9733;</label>-->
+<!--                            <input type="radio" id="star4" name="starRating" value="4"><label for="star4">&#9733; &#9733; &#9733; &#9733;</label>-->
+<!--                            <input type="radio" id="star5" name="starRating" value="5" required><label for="star5">&#9733; &#9733; &#9733; &#9733; &#9733;</label>-->
+                            <input type="radio" id="star1" name="starRating" value="1"><label for="star1">1점</label>
+                            <input type="radio" id="star2" name="starRating" value="2"><label for="star2">2점</label>
+                            <input type="radio" id="star3" name="starRating" value="3"><label for="star3">3점</label>
+                            <input type="radio" id="star4" name="starRating" value="4"><label for="star4">4점</label>
+                            <input type="radio" id="star5" name="starRating" value="5" required><label for="star5">5점</label>
                         </div>
                     </div>
 
@@ -175,6 +185,17 @@
             });
         });
     });
+
+   function openUpdatePopup(reviewNo) {
+        var popupWidth = 600;
+        var popupHeight = 400;
+        var left = (screen.width - popupWidth) / 2;
+        var top = (screen.height - popupHeight) / 2;
+
+        var url = '/review/updateReview?reviewNo=' + reviewNo;
+        window.open(url, '리뷰 수정', 'width=' + popupWidth + ', height=' + popupHeight + ', top=' + top + ', left=' + left + ', scrollbars=yes');
+    }
+
 </script>
 </body>
 <footer th:replace="fragments/head :: footer"></footer>
