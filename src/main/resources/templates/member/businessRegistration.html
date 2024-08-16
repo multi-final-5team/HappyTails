@@ -9,7 +9,11 @@
     <h1 class="text-center mb-5">사업자 등록</h1>
     <div class="row justify-content-center">
         <div class="col-md-6 col-lg-4 mx-auto">
-            <form action="/member/businessSignUp" method="post" id="businessSignupForm">
+            <form action="/member/businessRegistration" method="post" id="businessRegistrationForm">
+                <div class="mb-3">
+                    <label for="file" class="form-label">사업자 등록증</label>
+                    <input type="file" class="form-control" id="file" name="file">
+                </div>
                 <div class="mb-3">
                     <label for="businessOwner" class="form-label">대표자</label>
                     <input type="text" class="form-control" id="businessOwner" name="businessOwner" required>
@@ -88,7 +92,7 @@
         });
 
         // 폼 제출 시 유효성 검사
-        $('#businessSignupForm').submit(function(e) {
+        $('#businessRegistrationForm').submit(function(e) {
             e.preventDefault();
 
             // 전화번호 유효성 검사

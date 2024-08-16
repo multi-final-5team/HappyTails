@@ -97,4 +97,6 @@ public interface SalesGoodsDAO {
     int salesPageCount();
 
     List<SalesGoodsDTO> search(String keyword);
+
+    List<SalesGoodsDTO> getRandomProducts();
 }

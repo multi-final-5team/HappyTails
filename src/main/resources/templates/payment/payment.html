@@ -3,21 +3,7 @@
 <head th:replace="~{fragments/head :: head}">
 
 <title>결제하기</title>
-    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
-    <!-- jQuery 라이브러리 로드 -->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-    <!-- 포트원(구 아임포트) 결제 라이브러리 로드 -->
-    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
-    <!-- Axios HTTP 클라이언트 라이브러리 로드 -->
-    <script type="text/javascript" src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <!-- 최신 버전의 jQuery 라이브러리 로드 (보안 무결성 검사 포함) -->
-    <script
-            src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous"
-    ></script>
-    <link rel="stylesheet" href="/css/payment/payment.css">
-    <script src="/js/payment/payment.js"></script>
+
 
 </head>
 <body>
@@ -81,6 +67,16 @@
         <button class="order-button" onclick="mypayment()">결제하기</button>
     </div>
 </div>
+<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+<!-- jQuery 라이브러리 로드 -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<!-- 포트원(구 아임포트) 결제 라이브러리 로드 -->
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<!-- Axios HTTP 클라이언트 라이브러리 로드 -->
+<script type="text/javascript" src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- 최신 버전의 jQuery 라이브러리 로드 (보안 무결성 검사 포함) -->
+
+<script src="/js/payment/payment.js"></script>
 <script th:inline="javascript">
     // Thymeleaf를 통해 cartList 데이터를 JavaScript로 전달
     var originalPrice = /*[[${#aggregates.sum(cartList.![price * purchaseQuantity])}]]*/ 0;

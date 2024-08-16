@@ -11,6 +11,7 @@
         <result column="BUSINESS_TEL" property="businessTel" />
         <result column="BUSINESS_NUMBER" property="businessNumber" />
         <result column="BUSINESS_ADDRESS" property="businessAddress" />
+        <result column="BUSINESS_REGISTRATION_FLAG" property="businessRegistrationFlag" />
     </resultMap>
 
     <insert id="insertBusiness">
@@ -19,13 +20,15 @@
             BUSINESS_OWNER,
             BUSINESS_TEL,
             BUSINESS_NUMBER,
-            BUSINESS_ADDRESS
+            BUSINESS_ADDRESS,
+            BUSINESS_REGISTRATION_FLAG
         ) VALUES (
             #{businessId},
             #{businessOwner},
             #{businessTel},
             #{businessNumber},
-            #{businessAddress}
+            #{businessAddress},
+            #{businessRegistrationFlag}
         )
     </insert>
 </mapper>
