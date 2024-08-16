@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -69,59 +68,39 @@ public class MemberController {
         String gender = kakaoData.get("gender");
         String tel = kakaoData.get("tel");
 
+        MemberDTO existingMember = memberService.findMemberByEmail(email);
+
+        if (existingMember != null && existingMember.getSignupPathFlag() != 'K') {
+            // 기존 웹 회원이 존재하는 경우
+            return ResponseEntity.ok().body("{\"status\": \"INTEGRATION_REQUIRED\", \"message\": \"동일한 이메일 존재. 회원 통합을 해야 이용 가능 합니다. 진행하시겠습니까?\"}");
+        }
+
         MemberDTO memberDTO = new MemberDTO();
         memberDTO.setId("kakao_" + id);
-        memberDTO.setPwd(("1234")); // 임시 비밀번호 설정
+        memberDTO.setPwd("1234"); // 임시 비밀번호 설정
         memberDTO.setEmail(email);
         memberDTO.setName(name);
         memberDTO.setNickname(nickname);
-        memberDTO.setGender(gender); // 선택 동의 항목
-        memberDTO.setTel(tel);
+        memberDTO.setGender("male".equals(gender) ? "M" : "F");
+        memberDTO.setTel(tel != null ? tel.replaceAll("[^0-9]", "").substring(0, Math.min(tel.length(), 30)) : null);
+        memberDTO.setSignupPathFlag('K');
         memberDTO.setRole("ROLE_MEMBER");
 
-        // 전화번호(tel) 데이터 처리
-        if (tel != null) {
-            // 특수문자 제거
-            tel = tel.replaceAll("[^0-9]", "");
-            // 길이 제한 (예: 15자)
-            if (tel.length() > 30) {
-                tel = tel.substring(0, 30);
-            }
-        }
-
-        // 성별 변환
-        if ("male".equals(gender)) {
-            memberDTO.setGender("M");
-        } else if ("female".equals(gender)) {
-            memberDTO.setGender("F");
-        }
-
-        // 회원이 존재하는지 확인
-        MemberDTO member = memberService.findMemberById(memberDTO.getId());
-
-        if (member == null) {
+        if (existingMember == null) {
             // 새 회원 등록
             memberService.insertMember(memberDTO);
-            member = memberService.findMemberById(memberDTO.getId());
         } else {
-            // 기존 회원 정보 업데이트
-            memberService.updateMember(memberDTO.getId(), memberDTO);
-            member = memberService.findMemberById(memberDTO.getId());
+            // 기존 카카오 회원 정보 업데이트
+            memberService.updateMember(existingMember.getId(), memberDTO);
         }
 
-        MemberDTO customUserInfo = new MemberDTO();
-        customUserInfo = memberService.findMemberById(member.getId());
+        MemberDTO customUserInfo = memberService.findMemberById(memberDTO.getId());
 
-        List<GrantedAuthority> authorities = new ArrayList<>();
-
-        // role 변수를 이용해 권한을 추가합니다.
-        if (customUserInfo.getRole() != null) {
-            authorities.add(new SimpleGrantedAuthority(customUserInfo.getRole()));
-        }
-
-        CustomUser customUser = (CustomUser) authenticationService.loadUserByUsername(member.getId());
+        CustomUser customUser = (CustomUser) authenticationService.loadUserByUsername(memberDTO.getId());
 
         // Spring Security 인증 처리
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(customUserInfo.getRole()));
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(customUser, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(token);
 
@@ -130,13 +109,40 @@ public class MemberController {
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                 SecurityContextHolder.getContext());
 
-        // 인증 확인
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            return ResponseEntity.ok().body("{\"redirect\": \"/main/main\"}");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("{\"error\": \"Authentication failed\"}");
+        return ResponseEntity.ok().body("{\"redirect\": \"/main/main\"}");
+    }
+
+
+    @PostMapping("/integrateAccount")
+    @ResponseBody
+    public ResponseEntity<?> integrateAccount(@RequestBody Map<String, String> integrationData, HttpServletRequest request) {
+        String email = integrationData.get("email");
+        boolean integrate = Boolean.parseBoolean(integrationData.get("integrate"));
+
+        if (integrate) {
+            MemberDTO existingMember = memberService.findMemberByEmail(email);
+            if (existingMember != null) {
+                existingMember.setSignupPathFlag('K');
+                memberService.updateMember(existingMember.getId(), existingMember);
+
+                CustomUser customUser = (CustomUser) authenticationService.loadUserByUsername(existingMember.getId());
+
+                // Spring Security 인증 처리
+                List<GrantedAuthority> authorities = new ArrayList<>();
+                authorities.add(new SimpleGrantedAuthority(existingMember.getRole()));
+                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(customUser, null, authorities);
+                SecurityContextHolder.getContext().setAuthentication(token);
+
+                // 세션 생성
+                HttpSession session = request.getSession(true);
+                session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                        SecurityContextHolder.getContext());
+
+                return ResponseEntity.ok().body("{\"status\": \"SUCCESS\", \"message\": \"회원통합 성공\", \"redirect\": \"/main/main\"}");
+            }
         }
+
+        return ResponseEntity.ok().body("{\"status\": \"FAILURE\", \"message\": \"회원통합 실패. 로그인 페이지로 이동합니다.\", \"redirect\": \"/member/login\"}");
     }
 
     @GetMapping("/getCurrentUser")
@@ -218,6 +224,7 @@ public class MemberController {
         memberDTO.setNickname(nickname);
         memberDTO.setGender(gender);
         memberDTO.setTel(tel);
+        memberDTO.setSignupPathFlag('W');
         memberDTO.setRole("ROLE_MEMBER");
 
 //            // 회원 정보를 db에 저장

@@ -8,9 +8,19 @@
 <link href="/css/main/chat.css" rel="stylesheet">
 <menu th:replace="~{fragments/head :: menu}"></menu>
 <main class="container mt-5">
-    <div class="text-center">
-        <div>
-            <img src="https://kr.object.ncloudstorage.com/team-5/HappyTailsMain.png" alt="Main-logo" width="55%">
+    <div class="d-flex justify-content-center">
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner" id="dog4cutImgDiv">
+
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
     </div>
     <br>
@@ -51,29 +61,47 @@
                 </table>
             </div>
             <div class="col">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <h2>뉴스</h2>
-                        </tr>
-                    </thead>
-                    <tbody th:each="item, stat  : ${rssNews}" th:if="${stat.index < 5}" >
-                        <tr>
+                <div class="row justify-content-center mb-4">
+                    <div class="col-12">
+                        <h3>오늘의 추천 상품</h3>
+                    </div>
+                    <div class="col-md-4 mb-4 d-flex align-items-stretch" th:each="randomProducts : ${randomProducts}">
+                        <div class="card" style="width: 100%;">
+                            <!--                            <div class="card-body" th:if="${salesGoodsMap[randomGoods.no] != null and salesGoodsMap[randomGoods.no].size() > 0}">-->
+                            <!--                                <img th:src="${salesGoodsMap[randomGoods.no][0].filePath}" class="card-img-top" alt="상품 이미지">-->
+                            <!--                            </div>-->
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a class="text-decoration-none" th:href="@{/sales/selectGoods(no=${randomProducts.no})}" th:text="${randomProducts.name}"></a>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                            <td>
-                                <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="100px">
-                            </td>
-                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
-                                <!--                            14px 0px 0px 0px;">-->
-                                <a th:href="${item.link}">
-                                <p th:text="${item.title}"></p>
-                                </a>
-                                <p th:text="${item.pubDate}"></p>
-                            </td>
-                        </tr>
+<!--                <table class="table table-sm">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <h2>뉴스</h2>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody th:each="item, stat  : ${rssNews}" th:if="${stat.index < 5}" >-->
+<!--                        <tr>-->
 
-                    </tbody>
-                </table>
+<!--                            <td>-->
+<!--                                <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="100px">-->
+<!--                            </td>-->
+<!--                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">-->
+<!--                                &lt;!&ndash;                            14px 0px 0px 0px;">&ndash;&gt;-->
+<!--                                <a th:href="${item.link}">-->
+<!--                                <p th:text="${item.title}"></p>-->
+<!--                                </a>-->
+<!--                                <p th:text="${item.pubDate}"></p>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+
+<!--                    </tbody>-->
+<!--                </table>-->
             </div>
         </div>
         <br>
@@ -205,8 +233,52 @@
             handleUserInput();
         }
     });
+
+    $(document).ready(function(){
+    //견생네컷 조회
+    $.ajax({
+        type:'get',
+        url: "/dog4cuts/findAllDog4Cuts",
+        success : function(dto){
+            var data = dto.list;
+            var imgs = dto.uploadDtos;
+
+            for(let index in data){
+                var img;
+                for(let indexImg in imgs){
+                    if(imgs[indexImg].foreignNo == data[index].dog4cutsNo){
+                        img = imgs[indexImg].storedFileName;
+                    }
+                }
+
+                if(index == 0){
+                    $('#dog4cutImgDiv').append(
+                        $('<div>').prop({
+                            id: 'dog4cuts' + index,
+                            className: 'carousel-item active'
+                        }).attr("onclick", "")
+                    );
+                }
+                else{
+                    $('#dog4cutImgDiv').append(
+                        $('<div>').prop({
+                            id: 'dog4cuts' + index,
+                            className: 'carousel-item'
+                        }).attr("onclick", "")
+                    );
+                }
+
+                $('#dog4cuts' + index).append(
+                    '<img src="/images/X/' + img + '" class="d-block w-100">'
+                );
+            }
+        },
+        error: function (xhr){
+            console.log(xhr);
+        }
+        }); // $.ajax()
+    });
 </script>
 </body>
 <footer th:replace="fragments/head :: footer"></footer>
 </html>
-ㄲ

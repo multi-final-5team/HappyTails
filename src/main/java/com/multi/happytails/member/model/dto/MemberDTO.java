@@ -20,6 +20,7 @@ public class MemberDTO {
     private String gender;
     private String tel;
     private Timestamp signupDate;
+    private char signupPathFlag;
     private Timestamp deleteDate;
     private char deleteAccountFlag;
     private String role;

@@ -96,4 +96,6 @@ public interface SalesService {
     int salesPageCount();
 
     List<SalesGoodsDTO> search(String keyword);
+
+    List<SalesGoodsDTO> getRandomProducts();
 }
