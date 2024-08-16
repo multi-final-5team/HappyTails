@@ -18,13 +18,13 @@ public class BusinessController {
     @Autowired
     private BusinessService businessService;
 
-    @GetMapping("/businessSignUp")
-    public void businessSignUpPage() {
+    @GetMapping("/businessRegistration")
+    public void businessRegistrationPage() {
 
     }
 
-    @PostMapping("/businessSignUp")
-    public String processSignup(BusinessDTO businessDTO, Model model) {
+    @PostMapping("/businessRegistration")
+    public String processRegistration(BusinessDTO businessDTO, Model model) {
         try {
             // 현재 로그인한 사용자의 ID를 가져옵니다.
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -37,7 +37,7 @@ public class BusinessController {
             return "redirect:/member/mypage";
         } catch (Exception e) {
             model.addAttribute("error", "사업자 등록 중 오류가 발생했습니다. 다시 시도해 주세요.");
-            return "businessSignUp";
+            return "/member/businessRegistration";
         }
     }
 }

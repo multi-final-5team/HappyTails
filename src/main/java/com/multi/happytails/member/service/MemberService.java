@@ -54,6 +54,7 @@ public class MemberService {
             if (memberDTO.getNickname() != null) existingMember.setNickname(memberDTO.getNickname());
             if (memberDTO.getGender() != null) existingMember.setGender(memberDTO.getGender());
             if (memberDTO.getTel() != null) existingMember.setTel(memberDTO.getTel());
+            if (memberDTO.getSignupPathFlag() != '\0') existingMember.setSignupPathFlag(memberDTO.getSignupPathFlag());
 
             memberDAO.updateMember(existingMember);
         }
@@ -61,5 +62,9 @@ public class MemberService {
 
     public void deleteMember(String id) {
         memberDAO.deleteMember(id);
+    }
+
+    public MemberDTO findMemberByEmail(String email) {
+        return memberDAO.findMemberByEmail(email);
     }
 }

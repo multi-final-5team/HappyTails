@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/index :: head}">
+    <meta charset="UTF-8">
+    <title>관리</title>
+</head>
+<body class="sb-nav-fixed">
+<menu th:replace="~{admin/index :: headDiv}"></menu>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Tables</h1>
+            <div class="card mb-4">
+                <div class="card-body">
+                    설명 글 정도로 하면 될듯..??
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    자주묻는 질문 리스트
+                </div>
+                <div class="card-body">
+                    <table id="datatablesSimple">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Position</th>
+                            <th>Office</th>
+                            <th>Age</th>
+                            <th>Start date</th>
+                            <th>Salary</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>Name</th>
+                            <th>Position</th>
+                            <th>Office</th>
+                            <th>Age</th>
+                            <th>Start date</th>
+                            <th>Salary</th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        <tr th:each="salesGoods : ${salesGoodsList}">
+                            <td>
+                                <a th:href="@{/sales/selectGoods(no=${salesGoods.no})}"
+                                   th:text="${salesGoods.name}"
+                                   class="text-decoration-none">
+                                </a>
+                            </td>
+                            <td th:text="${#numbers.formatCurrency(salesGoods.price)}"></td>
+                            <td>
+                                <div class="row">
+                                    <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}" class="col-md-4 mb-3">
+                                        <img th:src="@{/images/S/{file}(file=${salesGoodsMap[salesGoods.no][0].storedFileName})}" alt="대표 이미지" class="img-fluid">
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary" th:text="${salesGoods.categoryCode}"></span>
+                            </td>
+                            <td>
+                                <a th:href="@{/sales/deleteGoods(no=${salesGoods.no})}"
+                                   class="btn btn-danger btn-sm">
+                                    삭제
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>
