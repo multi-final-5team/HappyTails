@@ -4,6 +4,9 @@ import com.multi.happytails.community.model.dao.DogloveDAO;
 import com.multi.happytails.community.model.dto.DogloveDTO;
 import com.multi.happytails.community.reply.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +19,7 @@ public class DogloveService {
     @Autowired
     private ReplyService replyService;
 
+
     @Autowired
     private DogloveDAO dogloveDAO;
 
@@ -23,15 +27,19 @@ public class DogloveService {
         this.dogloveDAO = dogloveDAO;
     }
 
-    public List<DogloveDTO> findAllSortedByDate() {
-        return dogloveDAO.findAll("date");
+    public Page<DogloveDTO> findAllSortedByDate(int page, int size) {
+        List<DogloveDTO> doglove = dogloveDAO.findAll("date", page * size, size);
+        long total = dogloveDAO.countAll();
+        return new PageImpl<>(doglove, PageRequest.of(page, size), total);
     }
 
-    public List<DogloveDTO> findAllSortedByRecommendation() {
-        return dogloveDAO.findAll("recommendCount");
+    public Page<DogloveDTO> findAllSortedByRecommendation(int page, int size) {
+        List<DogloveDTO> doglove = dogloveDAO.findAll("recommendCount", page * size, size);
+        long total = dogloveDAO.countAll();
+        return new PageImpl<>(doglove, PageRequest.of(page, size), total);
     }
 
-    public DogloveDTO findById(Long dogloveNo) {
+    public DogloveDTO findById(long dogloveNo) {
         return dogloveDAO.findById(dogloveNo);
     }
 
@@ -41,16 +49,18 @@ public class DogloveService {
         return dogloveDAO.getCurrentDogloveNo();
     }
 
-    public void dgRecommendCount(Long dogloveNo, String userId) {
+    public void dgRecommendCount(long dogloveNo, String userId) {
         dogloveDAO.dgRecommendCount(dogloveNo);
     }
 
-    public List<DogloveDTO>search(String keyword) {
-        return dogloveDAO.search(keyword);
+    public void delete(long dogloveNo) {
+        dogloveDAO.delete(dogloveNo);
     }
 
-    public void delete(Long dogloveNo) {
-        dogloveDAO.delete(dogloveNo);
+    public Page<DogloveDTO> dlsearch(String keyword, int page, int size, String sort) {
+        List<DogloveDTO> searchResults = dogloveDAO.dlsearch(keyword, sort, page * size, size);
+        long total = dogloveDAO.countDogloveSearch(keyword);
+        return new PageImpl<>(searchResults, PageRequest.of(page, size), total);
     }
 
     public int update(DogloveDTO dogloveDTO) {
@@ -60,6 +70,8 @@ public class DogloveService {
     public List<DogloveDTO> mainDogLoveList() {
         return dogloveDAO.mainDogLoveList();
     }
+
+
 }
 
 

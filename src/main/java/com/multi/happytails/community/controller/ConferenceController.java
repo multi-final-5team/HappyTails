@@ -8,6 +8,7 @@ import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/community/conference")
@@ -39,31 +38,35 @@ public class ConferenceController {
 
     @GetMapping
     public String conferenceList(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "sort", defaultValue = "date") String sort,
             @RequestParam(value = "keyword", required = false) String keyword,
             Model model) {
 
-        List<ConferenceDTO> conferences;
-        if ("recommendCount".equals(sort)) {
-            conferences = conferenceService.findAllSortedByRecommendation();
+        Page<ConferenceDTO> conferencePage;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            conferencePage = conferenceService.cfsearch(keyword.trim(), page - 1, size, sort);
         } else {
-            conferences = conferenceService.findAllSortedByDate();
+            // 검색어가 없는 경우
+            if ("recommendCount".equals(sort)) {
+                conferencePage = conferenceService.findAllSortedByRecommendation(page - 1, size);
+            } else {
+                conferencePage = conferenceService.findAllSortedByDate(page - 1, size);
+            }
         }
-
-        Map<Long, List<UploadDto>> conferenceImages = new HashMap<>();
-        for (ConferenceDTO conference : conferences) {
-            List<UploadDto> imageFiles = uploadService.uploadSelect(IMAGE_CODE, conference.getConferenceNo());
-            conferenceImages.put(conference.getConferenceNo(), imageFiles);
-        }
-
 
         model.addAttribute("keyword", keyword);
-        model.addAttribute("conference", conferences);
-        model.addAttribute("conferenceImages", conferenceImages);
+        model.addAttribute("conference", conferencePage.getContent());
         model.addAttribute("sort", sort);
+        model.addAttribute("currentPage", conferencePage.getNumber() + 1);
+        model.addAttribute("totalPages", conferencePage.getTotalPages());
+        model.addAttribute("totalItems", conferencePage.getTotalElements());
 
         return "community/conferencelist";
     }
+
 
     @GetMapping("/{conferenceNo}")
     public String conferenceDetail(@PathVariable("conferenceNo") Long conferenceNo,
@@ -139,7 +142,7 @@ public class ConferenceController {
 
         conferenceService.delete(conferenceNo);
 
-        replyService.replyDeleteAll("C", conferenceNo);
+        replyService.replyDeleteAll("C", Math.toIntExact(conferenceNo));
 
         List<UploadDto> uploadDtos = uploadService.uploadSelect(IMAGE_CODE, conferenceNo);
 
@@ -240,21 +243,4 @@ public class ConferenceController {
         return "redirect:/community/conference/{conferenceNo}";
     }
 
-    @GetMapping("/search")
-    public String search(@RequestParam("keyword") String keyword, Model model) {
-        List<ConferenceDTO> results;
-
-        if (keyword == null || keyword.trim().isEmpty()) {
-            // 공백만 입력된 경우 전체 데이터를 검색
-            results = conferenceService.findAllSortedByDate();
-        } else {
-            // 유효한 검색어가 있는 경우 해당 키워드로 검색
-            results = conferenceService.cfsearch(keyword.trim());
-        }
-
-        model.addAttribute("conference", results);
-        model.addAttribute("keyword", keyword);
-
-        return "community/conferencelist";
-    }
 }

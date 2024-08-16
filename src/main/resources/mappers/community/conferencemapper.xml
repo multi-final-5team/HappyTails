@@ -5,7 +5,7 @@
 
 <mapper namespace="com.multi.happytails.community.model.dao.ConferenceDAO">
 
-    <select id="findAll" parameterType="String" resultType="com.multi.happytails.community.model.dto.ConferenceDTO">
+    <select id="findAll" parameterType="map" resultType="com.multi.happytails.community.model.dto.ConferenceDTO">
         SELECT
         CONFERENCE_NO AS conferenceNo,
         USER_ID AS userId,
@@ -17,13 +17,18 @@
         RECOMMEND_COUNT AS recommendCount
         FROM TB_CONFERENCE
         <choose>
-            <when test="parameter == 'recommendCount'">
+            <when test="sortOrder == 'recommendCount'">
                 ORDER BY RECOMMEND_COUNT DESC
             </when>
             <otherwise>
                 ORDER BY CREATETIME DESC
             </otherwise>
         </choose>
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="countAll" resultType="long">
+        SELECT COUNT(*) FROM TB_CONFERENCE
     </select>
 
     <update id="cfcommendCount">
@@ -75,9 +80,24 @@
         LIMIT 1
     </select>
 
-    <select id="cfsearch" parameterType="String" resultType="com.multi.happytails.community.model.dto.ConferenceDTO">
-        SELECT * FROM TB_CONFERENCE
+    <select id="cfsearch" parameterType="map" resultType="com.multi.happytails.community.model.dto.ConferenceDTO">
+        SELECT *
+        FROM TB_CONFERENCE
         WHERE TITLE LIKE CONCAT('%', #{keyword}, '%')
+        <choose>
+            <when test="sort == 'recommendCount'">
+                ORDER BY RECOMMEND_COUNT DESC
+            </when>
+            <otherwise>
+                ORDER BY CREATETIME DESC
+            </otherwise>
+        </choose>
+        LIMIT #{offset}, #{limit}
     </select>
 
+    <select id="countConferenceSearch" parameterType="string" resultType="long">
+        SELECT COUNT(*)
+        FROM TB_CONFERENCE
+        WHERE TITLE LIKE CONCAT('%', #{keyword}, '%')
+    </select>
 </mapper>

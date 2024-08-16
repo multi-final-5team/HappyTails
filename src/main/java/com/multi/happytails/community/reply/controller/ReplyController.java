@@ -4,9 +4,10 @@ import com.multi.happytails.community.reply.model.dto.ReplyDTO;
 import com.multi.happytails.community.reply.service.ReplyCode;
 import com.multi.happytails.community.reply.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -24,8 +25,11 @@ public class ReplyController {
             @PathVariable int foreignNo,
             @PathVariable String communityCategoryCode,
             @RequestParam String content,
-            Principal principal,
-            Model model) {
+            Principal principal) {
+
+        if (principal == null) {
+            return "redirect:/member/login";
+        }
 
         String writerId = principal.getName();
         ReplyDTO replyDTO = new ReplyDTO();
@@ -59,7 +63,7 @@ public class ReplyController {
         return "redirect:/community/" + getRedirectUrl(communityCategoryCode) + "/" + foreignNo;
     }
 
-    // 댓글 수정 처리
+   /* // 댓글 수정 처리
     @PostMapping("/{communityCategoryCode}/{foreignNo}/reply/update/{communityReplyNo}")
     public String updateReply(
             @PathVariable String communityCategoryCode,
@@ -69,6 +73,19 @@ public class ReplyController {
 
         replyService.updateReply(communityReplyNo, content);
         return "redirect:/community/" + getRedirectUrl(communityCategoryCode) + "/" + foreignNo;
+    }*/
+
+    @PostMapping("/{communityCategoryCode}/{foreignNo}/reply/update/{communityReplyNo}")
+    @ResponseBody
+    public ResponseEntity<String> updateReplyAjax(
+            @PathVariable("communityReplyNo") int communityReplyNo,
+            @RequestParam("content") String content) {
+        try {
+            replyService.updateReply(communityReplyNo, content);
+            return ResponseEntity.ok("댓글이 성공적으로 수정되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 수정 중 오류가 발생했습니다.");
+        }
     }
 
     private String getRedirectUrl(String communityCategoryCode) {

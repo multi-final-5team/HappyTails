@@ -2,27 +2,34 @@ package com.multi.happytails.community.model.dao;
 
 import com.multi.happytails.community.model.dto.DogloveDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 @Mapper
 public interface DogloveDAO {
 
-    List<DogloveDTO> findAll(String sortOrder);
+    DogloveDTO findById(long dogloveNo);
 
-    DogloveDTO findById(Long dogloveNo);
-
-    void delete(Long dogloveNo);
+    void delete(long dogloveNo);
 
     void dogloveInsert(DogloveDTO dogloveDTO);
 
     public int getCurrentDogloveNo();
 
-    List<DogloveDTO> search(String keyword);
-
     int update(DogloveDTO doglove);
 
-    void dgRecommendCount(Long dogloveNo);
+    void dgRecommendCount(long dogloveNo);
+
+    List<DogloveDTO> findAll(String sortOrder, int offset, int limit);
+
+    public List<DogloveDTO> dlsearch(@Param("keyword") String keyword, @Param("sort") String sort, @Param("offset") int offset, @Param("limit") int limit);
+
+    long countDogloveSearch(String keyword);
+
+    long countAll();
 
     List<DogloveDTO> mainDogLoveList();
+
+
 }
