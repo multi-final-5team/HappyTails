@@ -92,7 +92,7 @@ public class SalesController {
      */
     @GetMapping("/salesList")
     public String salesList(@RequestParam(name = "page", defaultValue = "1") int page, Model model) {
-        int pageSize = 10;
+        int pageSize = 9;
         List<SalesGoodsDTO> salesGoodsList = salesService.salesList(page, pageSize);
         int totalSalesCount = salesService.salesPageCount();
         int totalPages = (int) Math.ceil((double) totalSalesCount / pageSize);

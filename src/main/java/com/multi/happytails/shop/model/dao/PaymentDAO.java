@@ -25,4 +25,6 @@ public interface PaymentDAO {
     int updateRefundStatus(String imPortId);
 
     List<Payment> paymentList(String username);
+
+    int updatePartialRefundStatus(@Param("paymentNo") int paymentNo);;
 }

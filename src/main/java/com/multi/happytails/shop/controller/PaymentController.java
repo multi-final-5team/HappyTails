@@ -1,11 +1,13 @@
 package com.multi.happytails.shop.controller;
 
+import com.multi.happytails.api.payment.ApiKeys;
 import com.multi.happytails.member.model.dao.MemberDAO;
 import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.member.service.MemberService;
 import com.multi.happytails.shop.model.dto.*;
 import com.multi.happytails.shop.service.CartService;
 import com.multi.happytails.shop.service.PaymentService;
+import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
@@ -13,15 +15,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
+/**
+ * The type Payment controller.
+ */
 @Controller
 @RequestMapping("/payment")
 public class PaymentController {
@@ -30,19 +38,34 @@ public class PaymentController {
     private final PaymentService paymentService;
     private final MemberDAO memberDAO;
     private final MemberService memberService;
+    private final ApiKeys apiKeys;
 
-    public PaymentController(PaymentService paymentService, MemberDAO memberDAO, MemberService memberService, CartService cartService) {
+
+    /**
+     * Instantiates a new Payment controller.
+     *
+     * @param paymentService the payment service
+     * @param memberDAO      the member dao
+     * @param memberService  the member service
+     * @param cartService    the cart service
+     */
+    public PaymentController(PaymentService paymentService, MemberDAO memberDAO, MemberService memberService, CartService cartService, ApiKeys apiKeys) {
         this.paymentService = paymentService;
         this.memberDAO = memberDAO;
         this.memberService = memberService;
         this.cartService = cartService;
+        this.apiKeys = apiKeys;
     }
 
+
     /**
-     * 주문내역페이지 구성
+     * methodName : orderList
+     * author : Shin HyeonCheol
+     * description :
      *
-     * @param model 뷰단으로 데이터이동
-     * @return 주문내역페이지 열기
+     * @param model     the model
+     * @param principal the principal
+     * @return the string
      */
     @GetMapping("/orderlist")
     public String orderList(Model model, Principal principal) {
@@ -52,11 +75,15 @@ public class PaymentController {
         return "/payment/orderlist";
     }
 
+
     /**
-     * 주문 및 결제 페이지
+     * methodName : selectpaymentpage
+     * author : Shin HyeonCheol
+     * description :
      *
-     * @param model 뷰단으로 데이터 이동
-     * @return 결제페이지 열기
+     * @param model     the model
+     * @param principal the principal
+     * @return the string
      */
     @GetMapping("/payment")
     public String selectpaymentpage(Model model, Principal principal) {
@@ -70,6 +97,15 @@ public class PaymentController {
         return "/payment/payment";
     }
 
+    /**
+     * methodName : orderHistory
+     * author : Shin HyeonCheol
+     * description :
+     *
+     * @param model     the model
+     * @param principal the principal
+     * @return the string
+     */
     @RequestMapping("/paymentHistory")
     public String orderHistory(Model model, Principal principal) {
         String username = principal.getName();
@@ -79,25 +115,15 @@ public class PaymentController {
         return "/payment/PaymentHistory";
     }
 
-    @GetMapping("/payment2")
-    public String selectpaymentpage2(Model model, Principal principal) {
-        MemberDTO memberDTO = memberDAO.findMemberById(principal.getName());
-        String username = principal.getName();
-        PaymentpageDTO paymentpageDTO = paymentService.selectpaymentpage(username);
-        System.out.println(memberDTO + "==========================");
-        System.out.println(username + "==========================");
-        System.out.println(paymentpageDTO + "==========================");
-        model.addAttribute("paymentpageDTO", paymentpageDTO);
-        model.addAttribute("memberDTO", memberDTO);
-
-        return "/payment/payment";
-    }
 
     /**
-     * 결제검증 메서드
-     * 결제시 사용포인트 조회 및 결제내역 저장
-     * @param request 결제검증 dto
-     * @return 결제 검증 결과 전송
+     * methodName : verifyPayment
+     * author : Shin HyeonCheol
+     * description :
+     *
+     * @param request   the request
+     * @param principal the principal
+     * @return the response entity
      */
     @Transactional
     @PostMapping("/verifyPayment")
@@ -105,28 +131,25 @@ public class PaymentController {
         try {
             String username = principal.getName();
             List<CartDTO> cartItems = cartService.cartList(username);
-
-            PaymentDTO paymentDTO = new PaymentDTO();
-            paymentDTO.setUsername(username);
-            paymentDTO.setImPortId(request.getImPortId());
-
-            // Calculate total price from cart items
-            int totalPrice = cartItems.stream().mapToInt(CartDTO::totalPrice).sum();
-            paymentDTO.setPurchaseprice(totalPrice);
-
-            // Combine product information
-            String productInfo = cartItems.stream()
-                    .map(item -> item.getGoodsName() + " x " + item.getPurchaseQuantity())
-                    .collect(Collectors.joining(", "));
-            paymentDTO.setProductinfo(productInfo);
-
-            // Use the first item's name as the main product name
-            paymentDTO.setProductname(cartItems.get(0).getGoodsName() + (cartItems.size() > 1 ? " 외 " + (cartItems.size() - 1) + "건" : ""));
-
             // Verify payment
-            boolean verified = paymentService.verifyPayment(request, paymentDTO);
+            IamportClient client = new IamportClient(apiKeys.getIamportApiKey(), apiKeys.getIamportApiSecret());
+            IamportResponse<Payment> paymentResponse = client.paymentByImpUid(request.getImPortId());
+            BigDecimal actualAmount = paymentResponse.getResponse().getAmount();
+            BigDecimal requestedAmount = BigDecimal.valueOf(cartItems.stream().mapToInt(CartDTO::totalPrice).sum());
 
-            if (verified) {
+            if (actualAmount.compareTo(requestedAmount) == 0) {
+                // Create individual payment records for each item
+                for (CartDTO cartItem : cartItems) {
+                    PaymentDTO paymentDTO = new PaymentDTO();
+                    paymentDTO.setUsername(username);
+                    paymentDTO.setImPortId(request.getImPortId());
+                    paymentDTO.setPurchaseprice(cartItem.totalPrice());
+                    paymentDTO.setProductname(cartItem.getGoodsName());
+                    paymentDTO.setProductinfo(cartItem.getGoodsName() + " x " + cartItem.getPurchaseQuantity());
+
+                    paymentService.insertPayment(paymentDTO);
+                }
+
                 // Clear the cart after successful payment
                 cartService.clearCart(username);
                 return ResponseEntity.ok(Map.of("success", true, "message", "Payment verified successfully"));
@@ -138,11 +161,14 @@ public class PaymentController {
         }
     }
 
+
     /**
-     * 결제 취소 매서드
-     * 결제취소시 사용된 포인트 반환 및 실결제금액 반환
-     * @param cancelRequest 결제검증dto를 통한 결제취소 요청 데이터
-     * @return 결제취소에 대한 성공여부 반환
+     * methodName : cancelPayment
+     * author : Shin HyeonCheol
+     * description :
+     *
+     * @param cancelRequest the cancel request
+     * @return the response entity
      */
     @PostMapping("/cancel")
     public ResponseEntity<Map<String, Object>> cancelPayment(@RequestBody VerificationRequestDTO cancelRequest) {
@@ -165,4 +191,27 @@ public class PaymentController {
         }
     }
 
+    @PostMapping("/partialCancel")
+    public ResponseEntity<Map<String, Object>> partialCancelPayment(@RequestBody PartialCancelRequestDTO cancelRequest) {
+        try {
+            if (cancelRequest.getImPortId() == null || cancelRequest.getImPortId().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "취소 실패: 유효한 imPortId 값이 없습니다."));
+            }
+
+            IamportResponse<Payment> response = paymentService.partialCancelPayment(
+                    cancelRequest.getPaymentNo(),
+                    cancelRequest.getImPortId(),
+                    cancelRequest.getProductname(),
+                    cancelRequest.getPrice(),
+                    cancelRequest.getQuantity(),
+                    "고객 요청으로 인한 부분 취소"
+            );
+
+            return ResponseEntity.ok(Map.of("success", true, "message", "부분 결제가 성공적으로 취소되었습니다.", "data", response));
+        } catch (IamportResponseException | IOException e) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "부분 취소 실패: " + e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "부분 취소 중 오류 발생: " + e.getMessage()));
+        }
+    }
 }
