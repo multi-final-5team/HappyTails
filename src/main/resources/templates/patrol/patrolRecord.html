@@ -26,12 +26,24 @@
 
 </div>
 
+    <nav aria-label="Page navigation example">
+        <ul class="pagination pagination-lg justify-content-center" id="pageItems">
+
+        </ul>
+    </nav>
+
 </main>
 
 <menu th:replace="fragments/head :: footer"></menu>
 
 
 <script>
+    var urlParams = new URL(location.href).searchParams;
+    var page = urlParams.get('page');
+
+    var pageFirst;
+    var pageLast;
+    var totalPages;
 
 
     $(document).ready(function(){
@@ -39,8 +51,15 @@
         $.ajax({
         type:'get',
         url: "/patrolRecord/findAllPatrolRecord",
+        data : {
+		    page : page
+	    },
         success : function(data){
             console.log(data);
+
+            pageFirst = data.first;
+            pageLast = data.last;
+            totalPages = data.totalPages;
 
             var contentList = data.content;
 
@@ -70,6 +89,36 @@
 
                 $('#' + 'divbody' + index).append(
                     '<sub class="card-text">조회수: ' + contentList[index].viewcount + '</sub>'
+                );
+            }
+
+            if(!pageFirst){
+                pagePrevious = Number(page) - 1;
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=' + pagePrevious + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
+                );
+            }
+
+            for(let i = 0; i<page + 10; i++){
+	            if(i < totalPages){
+	                pageNext = Number(i) + 1;
+	                if(page != i){
+	                    $('#pageItems').append(
+                            '<li class="page-item"><a class="page-link"href="/patrolRecord/patrolRecord?page=' + i +'">' + pageNext + '</a></li>'
+                        );
+	                }
+	                else{
+	                    $('#pageItems').append(
+                            '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
+                        );
+	                }
+	            }
+            }
+
+            if(!pageLast){
+                pageNext = Number(page) + 1;
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=' + pageNext + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
                 );
             }
         },

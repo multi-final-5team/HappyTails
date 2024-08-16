@@ -342,7 +342,7 @@ public class PatrolRecordController {
 //        return list;
 //    }
 
-    @GetMapping(value="findAllPatrolRecord", produces = "application/json; charset=UTF-8")
+    @GetMapping(value="findAllPatrolRecord")
     @ResponseBody
     public Page<PrecordDTO> findAllPatrol(@PageableDefault(size = 10) Pageable pageable){
         PrecordDTO dto = new PrecordDTO();
@@ -351,13 +351,13 @@ public class PatrolRecordController {
 
         System.out.println("list >> " + list);
 
-        for(PrecordDTO content : list.getContent()){
-            MemberDTO memberDTO = memberService.findMemberByUserNo(content.getUserNo());
-
-            String userName = memberDTO.getName();
-
-            content.setUserId(userName);
-        }
+//        for(PrecordDTO content : list.getContent()){
+//            MemberDTO memberDTO = memberService.findMemberByUserNo(content.getUserNo());
+//
+//            String userName = memberDTO.getName();
+//
+//            content.setUserId(userName);
+//        }
 
         return list;
     }
