@@ -19,6 +19,7 @@ import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.member.service.MemberService;
 import com.multi.happytails.patrol.model.dto.*;
+import com.multi.happytails.patrol.pageable.service.PageService;
 import com.multi.happytails.patrol.service.PatrolPlaceService;
 import com.multi.happytails.patrol.service.PatrolRecordReplyService;
 import com.multi.happytails.patrol.service.PatrolRecordService;
@@ -30,6 +31,9 @@ import com.multi.happytails.upload.service.UploadService;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -66,6 +70,10 @@ public class PatrolRecordController {
 
     @Autowired
     ScoreService scoreService;
+
+    @Autowired
+    PageService pageService;
+
 
     /**
      * The Upload service.
@@ -317,18 +325,38 @@ public class PatrolRecordController {
     }
 
 
+//    @GetMapping(value="findAllPatrolRecord", produces = "application/json; charset=UTF-8")
+//    @ResponseBody
+//    public List<PrecordDTO> findAllPatrol(){
+//
+//        List<PrecordDTO> list = patrolRecordService.findAllPatrolRecord();
+//
+//        for(PrecordDTO dto : list){
+//            MemberDTO memberDTO = memberService.findMemberByUserNo(dto.getUserNo());
+//
+//            String userName = memberDTO.getName();
+//
+//            dto.setUserId(userName);
+//        }
+//
+//        return list;
+//    }
+
     @GetMapping(value="findAllPatrolRecord", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public List<PrecordDTO> findAllPatrol(){
+    public Page<PrecordDTO> findAllPatrol(@PageableDefault(size = 10) Pageable pageable){
+        PrecordDTO dto = new PrecordDTO();
 
-        List<PrecordDTO> list = patrolRecordService.findAllPatrolRecord();
+        Page<PrecordDTO> list = pageService.getListPrecord(dto,pageable);
 
-        for(PrecordDTO dto : list){
-            MemberDTO memberDTO = memberService.findMemberByUserNo(dto.getUserNo());
+        System.out.println("list >> " + list);
+
+        for(PrecordDTO content : list.getContent()){
+            MemberDTO memberDTO = memberService.findMemberByUserNo(content.getUserNo());
 
             String userName = memberDTO.getName();
 
-            dto.setUserId(userName);
+            content.setUserId(userName);
         }
 
         return list;

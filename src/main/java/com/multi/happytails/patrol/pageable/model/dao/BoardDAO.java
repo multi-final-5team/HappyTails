@@ -1,5 +1,6 @@
 package com.multi.happytails.patrol.pageable.model.dao;
 
+import com.multi.happytails.patrol.model.dto.PrecordDTO;
 import com.multi.happytails.patrol.model.dto.PrecordPlaceDTO;
 import com.multi.happytails.patrol.pageable.model.dto.RequestList;
 import org.apache.ibatis.annotations.Mapper;
@@ -21,7 +22,7 @@ import java.util.Map;
 @Mapper
 public interface BoardDAO {
 
-    List<Map<String, Object>> getListPlace(RequestList<?> requestList);
+    List<PrecordDTO> getListPrecord(RequestList<?> requestList);
 
-    int getListPlaceCount(PrecordPlaceDTO board);
+    int getListPrecordCount(PrecordDTO board);
 }

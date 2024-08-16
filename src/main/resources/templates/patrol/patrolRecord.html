@@ -40,35 +40,37 @@
         type:'get',
         url: "/patrolRecord/findAllPatrolRecord",
         success : function(data){
+            console.log(data);
 
-            for(let index in data){
+            var contentList = data.content;
+
+            for(let index in contentList){
 
                 $('#patrolRecordDiv').append(
-
                     $('<div>').prop({
                         id: 'precord' + index,
                         className: 'card'
-                        }).attr("onclick", "gopatrolRecord(" + data[index].precordNo + ")")
-                    );
+                        }).attr("onclick", "gopatrolRecord(" + contentList[index].precordNo + ")")
+                );
 
-                    $('#' + 'precord' + index).append(
-                        $('<div>').prop({
-                            id: 'divbody' + index,
-                            className: 'card-body'
-                        })
-                    );
+                $('#' + 'precord' + index).append(
+                    $('<div>').prop({
+                        id: 'divbody' + index,
+                        className: 'card-body'
+                    })
+                );
 
-                    $('#' + 'divbody' + index).append(
-                        '<b class="card-text">글제목: ' + data[index].title + '</b><br>'
-                    );
+                $('#' + 'divbody' + index).append(
+                    '<b class="card-text">글제목: ' + contentList[index].title + '</b><br>'
+                );
 
-                    $('#' + 'divbody' + index).append(
-                        '<sub class="card-text">글쓴이: ' + data[index].userId + '</sub><br>'
-                    );
+                $('#' + 'divbody' + index).append(
+                    '<sub class="card-text">글쓴이: ' + contentList[index].userId + '</sub><br>'
+                );
 
-                    $('#' + 'divbody' + index).append(
-                        '<sub class="card-text">조회수: ' + data[index].viewcount + '</sub>'
-                    );
+                $('#' + 'divbody' + index).append(
+                    '<sub class="card-text">조회수: ' + contentList[index].viewcount + '</sub>'
+                );
             }
         },
         error: function (xhr){

@@ -4,22 +4,35 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.multi.happytails.patrol.pageable.model.dao.BoardDAO">
 
-    <select id="getListPlace">
-        SELECT precord_place_no AS precordPlaceNo, precord_no AS precordNo, patrol_no AS patrolNo, precord_total AS precordTotal
-        FROM tb_precord_place
-        WHERE patrol_no = #{patrolNo}
-        OFFSET #{pageable.offset} ROWS FETCH NEXT #{pageable.pageSize} ROWS ONLY
+    <!--테스트 목록 데이터-->
+    <select id="getListPrecord"
+            parameterType="com.multi.happytails.patrol.pageable.model.dto.RequestList"
+            resultType="com.multi.happytails.patrol.model.dto.PrecordDTO">
+        SELECT precord_no AS precordNo, user_no AS userNo, title, content, viewcount
+        FROM tb_precord
+        <where>
+            <if test="data.title != null and data.title !='' ">
+                AND title LIKE '%'||#{data.title}||'%'
+            </if>
+        </where>
+        <!--ORDER BY 절 추가-->
+        <if test="pageable.sort != null and !pageable.sort.isEmpty()">
+            ORDER BY
+            <foreach collection="pageable.sort" item="order" separator=",">
+                ${order.property} ${order.direction}
+            </foreach>
+        </if>
+        <!--페이징 처리-->
+        LIMIT #{pageable.offset} , #{pageable.pageSize}
     </select>
 
-    <select id="getListPlaceCount" resultType="int">
-        SELECT COUNT(*) AS CNT
-        FROM BOARD
+    <!--테스트 목록 카운트 -->
+    <select id="getListPrecordCount" parameterType="com.multi.happytails.patrol.model.dto.PrecordDTO" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_precord
         <where>
-            <if test="title != null and title != ''">
-                AND TITLE LIKE '%' || #{title} || '%'
-            </if>
-            <if test="writer != null and writer != ''">
-                AND WRITER LIKE '%' || #{writer} || '%'
+            <if test="title != null and title !='' ">
+                AND title LIKE '%'||#{title}||'%'
             </if>
         </where>
     </select>
