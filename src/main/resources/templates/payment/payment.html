@@ -2,12 +2,12 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head}">
 
-<title>결제하기</title>
+
+    <title>결제하기</title>
 
 
 </head>
 <body>
-<menu th:replace="~{fragments/head :: menu}"></menu>
 <div class="container">
     <div class="main-content">
         <div class="left-section">
@@ -60,6 +60,7 @@
         </div>
     </div>
     <div class="price-info">
+
         <div class="price-row total-price">
             <span>총 결제금액</span>
             <p th:text="${#numbers.formatCurrency(#aggregates.sum(cartList.![price * purchaseQuantity]))} + '원'" id="amount"></p>
@@ -67,6 +68,7 @@
         <button class="order-button" onclick="mypayment()">결제하기</button>
     </div>
 </div>
+
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
 <!-- jQuery 라이브러리 로드 -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
@@ -77,11 +79,11 @@
 <!-- 최신 버전의 jQuery 라이브러리 로드 (보안 무결성 검사 포함) -->
 
 <script src="/js/payment/payment.js"></script>
+
 <script th:inline="javascript">
     // Thymeleaf를 통해 cartList 데이터를 JavaScript로 전달
     var originalPrice = /*[[${#aggregates.sum(cartList.![price * purchaseQuantity])}]]*/ 0;
 
 </script>
 </body>
-<footer th:replace="fragments/head :: footer"></footer>
 </html>

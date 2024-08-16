@@ -10,6 +10,14 @@
         <figure class="text-center">
             <h2>판매 상품 목록</h2>
         </figure>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <form action="/sales/search" method="get" class="d-flex align-items-center">
+                    <input type="text" name="keyword" class="form-control me-2" placeholder="제품명" aria-label="검색">
+                    <button type="submit" class="btn btn-success" style="white-space: nowrap;">검색</button>
+                </form>
+            </div>
+        </div>
         <div class="col-9 mt-3 tab-content">
             <div class="tab-pane fade show active" id="list-find">
                 <div class="row">
@@ -31,35 +39,28 @@
             </div>
         </div>
     </div>
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form action="/sales/search" method="get" class="d-flex align-items-center">
-                <input type="text" name="keyword" class="form-control me-2" placeholder="제품명" aria-label="검색">
-                <button type="submit" class="btn btn-success" style="white-space: nowrap;">검색</button>
-            </form>
-        </div>
-    </div>
+
     <br>
     <!-- 페이징 네비게이션 추가 -->
     <div class="d-flex justify-content-center">
         <nav aria-label="Page navigation">
             <ul class="pagination">
-                <!-- 현재 페이지가 1일 경우 이전 페이지 버튼을 비활성화, currentPage가 null일 경우 1로 설정 -->
-                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/sales/salesList(page=${currentPage != null ? currentPage - 1 : 1})}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
+<!--                &lt;!&ndash; 현재 페이지가 1일 경우 이전 페이지 버튼을 비활성화, currentPage가 null일 경우 1로 설정 &ndash;&gt;-->
+<!--                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
+<!--                    <a class="page-link" th:href="@{/sales/salesList(page=${currentPage != null ? currentPage - 1 : 1})}" aria-label="Previous">-->
+<!--                        <span aria-hidden="true">&laquo;</span>-->
+<!--                    </a>-->
+<!--                </li>-->
                 <!-- 페이지 번호 버튼들, totalPages가 null인 경우 기본값을 1로 설정 -->
                 <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages != null ? totalPages : 1)}" th:classappend="${i == currentPage} ? 'active'">
                     <a class="page-link" th:href="@{/sales/salesList(page=${i})}" th:text="${i}"></a>
                 </li>
-                <!-- 현재 페이지가 마지막 페이지일 경우 다음 페이지 버튼을 비활성화, currentPage가 null일 경우 1로 설정 -->
-                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                    <a class="page-link" th:href="@{/sales/salesList(page=${currentPage != null ? currentPage + 1 : 1})}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
+<!--                &lt;!&ndash; 현재 페이지가 마지막 페이지일 경우 다음 페이지 버튼을 비활성화, currentPage가 null일 경우 1로 설정 &ndash;&gt;-->
+<!--                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
+<!--                    <a class="page-link" th:href="@{/sales/salesList(page=${currentPage != null ? currentPage + 1 : 1})}" aria-label="Next">-->
+<!--                        <span aria-hidden="true">&raquo;</span>-->
+<!--                    </a>-->
+<!--                </li>-->
             </ul>
         </nav>
     </div>

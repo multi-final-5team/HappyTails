@@ -80,14 +80,17 @@ function mypayment() {
         async (rsp) => {
             if (rsp.success) {
                 try {
+                    // 장바구니 상품 정보를 서버로 전송
+                    const cartItems = getCartItems();
                     const { data } = await axios.post('/payment/verifyPayment', {
                         imPortId: rsp.imp_uid,
-                        amount: myAmount
+                        amount: myAmount,
+                        cartItems: cartItems
                     });
 
                     if (data.success) {
                         alert("결제 및 검증 성공");
-                        window.location.href = '/payment/orderlist';
+                        window.location.href = '/payment/paymentHistory';
                     } else {
                         // 검증 실패 시 결제 취소 로직 추가
                         await cancelPayment(rsp.imp_uid, myAmount);
@@ -106,14 +109,49 @@ function mypayment() {
     );
 }
 
+// 장바구니 상품 정보를 가져오는 함수
+function getCartItems() {
+    const cartItems = [];
+    const rows = document.querySelectorAll('.table-responsive tr');
+
+    rows.forEach((row, index) => {
+        if (index === 0) return; // 헤더 행 스킵
+
+        const columns = row.querySelectorAll('td');
+        if (columns.length >= 3) {
+            const item = {
+                goodsName: columns[0].textContent.trim(),
+                price: parseInt(columns[1].textContent.replace(/[^0-9]/g, '')),
+                quantity: parseInt(columns[2].textContent)
+            };
+            cartItems.push(item);
+        }
+    });
+
+    return cartItems;
+}
+
 async function cancelPayment(imPortId, amount) {
     try {
-        await axios.post('/payment/cancel', {
+        const response = await axios.post('/payment/cancel', {
             imPortId: imPortId,
             amount: amount
         });
-        console.log("결제 취소 성공");
+        console.log("결제 취소 성공:", response.data);
+        return response.data;
     } catch (error) {
         console.error("결제 취소 실패:", error);
+        throw error;
+    }
+}
+
+// 결제 정보 조회 함수
+async function getPaymentInfo(imPortId) {
+    try {
+        const response = await axios.get(`/payment/info/${imPortId}`);
+        return response.data;
+    } catch (error) {
+        console.error("결제 정보 조회 실패:", error);
+        throw error;
     }
 }

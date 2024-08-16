@@ -95,4 +95,49 @@ public class PaymentService {
     public List<Payment> paymentList(String username) {
         return paymentDAO.paymentList(username);
     }
+
+    @Transactional
+    public IamportResponse<Payment> partialCancelPayment(int paymentNo, String imPortId, String productname, BigDecimal price, int quantity, String reason)
+            throws IamportResponseException, IOException {
+        BigDecimal cancelAmount = price.multiply(BigDecimal.valueOf(quantity));
+
+        if (cancelAmount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("취소 금액은 0보다 커야 합니다.");
+        }
+
+        IamportClient client = new IamportClient(apiKeys.getIamportApiKey(), apiKeys.getIamportApiSecret());
+
+        // 결제 정보를 조회하여 취소 가능 여부 확인
+        IamportResponse<Payment> paymentResponse = client.paymentByImpUid(imPortId);
+        BigDecimal paidAmount = paymentResponse.getResponse().getAmount();
+        BigDecimal canceledAmount = paymentResponse.getResponse().getCancelAmount();
+        BigDecimal cancelableAmount = paidAmount.subtract(canceledAmount);
+
+        if (cancelableAmount.compareTo(cancelAmount) < 0) {
+            throw new IllegalArgumentException("취소 요청 금액이 취소 가능 금액보다 큽니다.");
+        }
+
+        CancelData cancelData = new CancelData(imPortId, false, cancelAmount);
+        cancelData.setChecksum(cancelAmount);
+        cancelData.setReason(reason);
+
+        // 포트원 API를 통한 실제 결제 취소
+        IamportResponse<Payment> cancelResponse = client.cancelPaymentByImpUid(cancelData);
+
+        // 취소가 성공한 경우에만 DB 업데이트
+        if (cancelResponse.getResponse().getStatus().equals("cancelled")) {
+            int updatedRows = paymentDAO.updatePartialRefundStatus(paymentNo);
+            if (updatedRows == 0) {
+                throw new RuntimeException("DB 업데이트 실패: 해당 payment_no에 대한 레코드가 없거나 이미 취소되었습니다.");
+            }
+        } else {
+            throw new RuntimeException("포트원 API를 통한 결제 취소 실패");
+        }
+
+        return cancelResponse;
+    }
+
+    public int updatePartialRefundStatus(int paymentNo) {
+        return paymentDAO.updatePartialRefundStatus(paymentNo);
+    }
 }
