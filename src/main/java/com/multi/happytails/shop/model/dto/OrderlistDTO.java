@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 @Data
 public class OrderlistDTO {
+    private int payment_no;
     private String username;
     private String productname;
     private String productinfo;
