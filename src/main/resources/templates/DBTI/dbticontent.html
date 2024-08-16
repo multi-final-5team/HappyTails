@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반려견 DBTI 테스트</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&family=Open+Sans:wght@400;700&family=Gaegu:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+            background-color: #FFF5E6;
+            color: #4D3300;
+            line-height: 1.6;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background-color: #FFFFFF;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #FF9966;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .question {
+            background-color: #FFF9F0;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .question p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        .options {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        .option {
+            flex: 1;
+        }
+        input[type="radio"] {
+            display: none;
+        }
+        label {
+            display: block;
+            background-color: #FFD699;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            text-align: center;
+            font-weight: 700;
+        }
+        input[type="radio"]:checked + label {
+            background-color: #FF9966;
+            color: white;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        button {
+            background-color: #FF9966;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Noto Sans KR', 'Open Sans', sans-serif;
+            font-weight: 700;
+            flex: 1;
+            margin: 0 10px;
+        }
+        button:hover {
+            background-color: #FF8C5A;
+            transform: scale(1.05);
+        }
+        button:disabled {
+            background-color: #FFD699;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #FFD699;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .progress {
+            width: 0;
+            height: 100%;
+            background-color: #FF9966;
+            transition: width 0.3s ease;
+        }
+        .result-container {
+            text-align: center;
+        }
+        .result-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .result-type {
+            font-family: 'Gaegu', cursive;
+            font-size: 24px;
+            color: #FF9966;
+            margin-bottom: 20px;
+        }
+        .result-description {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+        #retake-button {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="main-container">
+    <h1>DBTI 테스트</h1>
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+    <form id="survey-form">
+        <div id="question-container"></div>
+        <div class="button-container">
+            <button type="button" id="prev-button" disabled>이전</button>
+            <button type="button" id="next-button">다음</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // 질문
+   const questions = [
+       { text: "1. 우리 반려견은 자기가 사람인 줄 안다" },
+       { text: "2. 다른 개와 잘 어울린다" },
+       { text: "3. 반려견이 싫어하는 행동을 계속 하면 물려고 한다" },
+       { text: "4. 다른 강아지를 만나면 보호자 뒤로 숨으려고 한다" },
+       { text: "5. 우리 집에 다른 강아지가 올 수 있다" },
+       { text: "6. 어떤 낯선 곳에 가더라도 겁먹지 않고 냄새를 맡으며 탐색한다" },
+       { text: "7. 나의 반려견을 누구나 만질 수 있다" },
+       { text: "8. 다른 개와 장난감을 공유한다" },
+       { text: "9. 사람들을 보면 줄당김이 심하다" },
+       { text: "10. 간식을 손에 쥐고 있으면 흥분한다" },
+       { text: "11. 낯선 환경에서 부르면 간식이 있을 때만 온다" },
+       { text: "12. 다른 개와 놀고 있을 때 부르면 모른 척 한다" },
+       { text: "13. 보호자나 다른 개와 터그놀이를 한다" },
+       { text: "14. 냄새를 맡고 있을 때 불러도 계속 냄새를 맡는다" },
+       { text: "15. 마운팅을 자주 한다" },
+       { text: "16. 다른 강아지와 놀 때 먼저 놀자고 하거나 함께 뛰어다니며 노는 편이다" },
+       { text: "17. 보호자 옆에만 있는다 / 졸졸졸 따라다닌다" },
+       { text: "18. 땅에 떨어져 있는 음식을 주워 먹는다" },
+       { text: "19. 다른 강아지가 냄새를 맡으려고 하면 차분히 맡게 해준다" },
+       { text: "20. 잠 잘때 건드리면 다른 장소로 이동한다" },
+       { text: "21. 낯선 장소에서는 아무것도 먹지 않는다" },
+       { text: "22. 혼자 장난감을 가지고 노는 것을 좋아한다" },
+       { text: "23. 놀이에 쉽게 싫증낸다" },
+       { text: "24. 마운팅을 자주 한다" },
+       { text: "25. 자극에 쉽게 흥분한다" },
+       { text: "26. 외부에서 마킹을 많이 한다" },
+       { text: "27. 다른 강아지를 만나면 무조건 냄새를 맡으려고 한다" },
+       { text: "28. 장난감을 던지면 반응이 없다" },
+       { text: "29. 차 안에서 바깥을 보고 짖는다" },
+       { text: "30. 야외에서 반려견을 잠시 묶어놓으면 차분하게 기다린다" }
+   ];
+
+   let currentQuestionIndex = 0;
+   let answers = new Array(questions.length).fill(null);
+
+   function renderQuestion() {
+       const questionContainer = document.getElementById('question-container');
+       const question = questions[currentQuestionIndex];
+
+       questionContainer.innerHTML = `
+           <div class="question">
+               <p>${question.text}</p>
+               <div class="options">
+                   <div class="option">
+                       <input type="radio" id="yes-${currentQuestionIndex}" name="question${currentQuestionIndex}" value="예" ${answers[currentQuestionIndex] === '예' ? 'checked' : ''}>
+                       <label for="yes-${currentQuestionIndex}">예</label>
+                   </div>
+                   <div class="option">
+                       <input type="radio" id="no-${currentQuestionIndex}" name="question${currentQuestionIndex}" value="아니오" ${answers[currentQuestionIndex] === '아니오' ? 'checked' : ''}>
+                       <label for="no-${currentQuestionIndex}">아니오</label>
+                   </div>
+               </div>
+           </div>
+       `;
+
+       updateButtons();
+       updateProgressBar();
+   }
+
+   function updateButtons() {
+       const prevButton = document.getElementById('prev-button');
+       const nextButton = document.getElementById('next-button');
+
+       prevButton.disabled = currentQuestionIndex === 0;
+       nextButton.textContent = currentQuestionIndex === questions.length - 1 ? '제출하기' : '다음';
+   }
+
+   function updateProgressBar() {
+       const progress = document.getElementById('progress');
+       const percentage = ((currentQuestionIndex + 1) / questions.length) * 100;
+       progress.style.width = `${percentage}%`;
+   }
+
+   function saveAnswer() {
+       const selectedOption = document.querySelector(`input[name="question${currentQuestionIndex}"]:checked`);
+       if (selectedOption) {
+           answers[currentQuestionIndex] = selectedOption.value;
+       }
+   }
+
+   function displayResult(data) {
+       const mainContainer = document.getElementById('main-container');
+       mainContainer.innerHTML = `
+           <div class="result-container">
+               <h1>DBTI 결과</h1>
+               <img src="${data.imageUrl}" alt="Result Image" class="result-image">
+               <p class="result-type">우리 강아지의 DBTI 유형은 <strong>${data.personalityType}</strong>입니다.</p>
+               <p class="result-description">${data.description || 'DBTI 성향은 아래 링크에서 확인하실 수 있습니다.'}</p>
+                <a href="https://www.fordong.co.kr/introduction" target="_blank" class="result-link">DBTI 상세 설명보기</a>
+               <button id="retake-button">테스트 다시하기</button>
+           </div>
+       `;
+
+       document.getElementById('retake-button').addEventListener('click', () => {
+           location.reload();
+       });
+   }
+
+   function validateAnswers() {
+       const unansweredQuestions = [];
+       answers.forEach((answer, index) => {
+           if (answer === null) {
+               unansweredQuestions.push(index + 1);
+           }
+       });
+       return unansweredQuestions;
+   }
+
+   document.getElementById('next-button').addEventListener('click', () => {
+       saveAnswer();
+       if (currentQuestionIndex < questions.length - 1) {
+           currentQuestionIndex++;
+           renderQuestion();
+       } else {
+           const unansweredQuestions = validateAnswers();
+           if (unansweredQuestions.length > 0) {
+               alert(`다음 질문에 답변하지 않았습니다: ${unansweredQuestions.join(', ')}번을 확인 해주세요!`);
+               return;
+           }
+
+           const resultUrl = '/DBTI/result';
+
+           const answersMap = {};
+           answers.forEach((answer, index) => {
+               answersMap[index] = answer;
+           });
+
+           console.log("Sending data:", answersMap);
+
+           fetch(resultUrl, {
+               method: 'POST',
+               headers: {
+                   'Content-Type': 'application/json',
+               },
+               body: JSON.stringify(answersMap)
+           })
+           .then(response => {
+               if (!response.ok) {
+                   return response.json().then(errorData => {
+                       throw new Error(errorData.error || '서버 오류 발생');
+                   });
+               }
+               return response.json();
+           })
+           .then(data => {
+               console.log('Received data:', data);
+               if (data.personalityType && data.imageUrl) {
+                   displayResult(data);
+               } else {
+                   console.error('서버에서 예상한 데이터가 반환되지 않았습니다.');
+               }
+           })
+           .catch(error => {
+               console.error('Error:', error);
+               alert('문제가 발생했습니다: ' + error.message);
+           });
+       }
+   });
+
+   document.getElementById('prev-button').addEventListener('click', () => {
+       saveAnswer();
+       if (currentQuestionIndex > 0) {
+           currentQuestionIndex--;
+           renderQuestion();
+       }
+   });
+
+   renderQuestion();
+</script>
+</body>
+</html>

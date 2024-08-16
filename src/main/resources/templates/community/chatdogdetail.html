@@ -51,26 +51,21 @@
 
     <h3 class="mt-4">🐾 댓글 목록</h3>
     <ul class="reply-list mt-4" style="list-style-type: none; padding: 0;">
-        <li th:each="reply : ${reply}" class="comment-item">
+        <li th:each="reply : ${reply}" class="comment-item" th:data-reply-no="${reply.communityReplyNo}" th:data-reply-content="${reply.content}">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <p style="margin: 0;">
                     <strong th:text="${reply.writerId}">작성자</strong>:
-                    <span th:text="${reply.content}">내용</span>
+                    <span class="reply-content" th:text="${reply.content}">내용</span>
                 </p>
                 <div th:if="${#authentication.name == 'admin' or #authentication.name == reply.writerId}">
-                    <!-- 댓글 수정 페이지로 이동하는 버튼 -->
-                    <a th:href="@{/community/C/{foreignNo}/reply/update/{communityReplyNo}(foreignNo=${chatdog.chatdogNo}, communityReplyNo=${reply.communityReplyNo})}"
-                       class="btn btn-sm btn-blue">✏️ 수정</a>
-                    <!-- 댓글 삭제 폼 -->
-                    <form th:action="@{/community/C/{foreignNo}/reply/delete/{communityReplyNo}(foreignNo=${chatdog.chatdogNo}, communityReplyNo=${reply.communityReplyNo})}"
-                          method="post"
-                          class="comment-form"
-                          style="display: inline-block;"
-                          onsubmit="return confirm('댓글을 삭제하시겠어요?');">
-                        <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}"/>
-                        <button type="submit" class="btn btn-sm btn-danger">🗑️ 삭제</button>
-                    </form>
+                    <button class="btn btn-sm btn-blue reply-update-btn">✏️ 수정</button>
+                    <button class="btn btn-sm btn-danger reply-delete-btn">🗑️ 삭제</button>
                 </div>
+            </div>
+            <div class="reply-edit-form" style="display: none; margin-top: 10px;">
+                <input type="text" class="replyContent form-control" />
+                <button class="btn btn-sm btn-primary replyUpdateBtn">작성</button>
+                <button class="btn btn-sm btn-secondary replyUpdateClose">취소</button>
             </div>
         </li>
     </ul>
@@ -110,69 +105,93 @@
 </body>
 <footer th:replace="fragments/head :: footer"></footer>
 <script>
-    // 댓글 수정 버튼 Start
-       $('#tableDiv').on('click','.reply-update-btn',function(){
+    document.addEventListener('DOMContentLoaded', function() {
+        var images = document.getElementsByTagName('img');
+        for (var i = 0; i < images.length; i++) {
+            images[i].onerror = function() {
+                var parentDiv = this.closest('.col-md-4');
+                if (parentDiv) {
+                    parentDiv.remove();
+                } else {
+                    this.style.display = 'none';
+                }
+            }
+        }
+    });
 
-           let findDogContent = $(this).closest('tr').attr('data-reply-content');
-           let contentTd = $(this).closest('tr').find('td:nth-child(3)');
+    document.addEventListener('DOMContentLoaded', function() {
+        var foreignNo = $('input[name="chatdogNo"]').val();
 
-           let htmlStr = `
-               <input type="text" class="replyContent" value="`+findDogContent+`">
-               <input type="button" value="작성" class="replyUpdateBtn">
-               <input type="button" value="취소" class="replyUpdateClose">
-           `;
+        // 댓글 수정 버튼 클릭
+        $('.reply-list').on('click', '.reply-update-btn', function() {
+            var $commentItem = $(this).closest('.comment-item');
+            var replyContent = $commentItem.attr('data-reply-content');
+            var $editForm = $commentItem.find('.reply-edit-form');
 
-           contentTd.html(htmlStr);
+            $editForm.find('.replyContent').val(replyContent);
+            $editForm.show();
+            $(this).hide();
+        });
 
-       });
-       // 댓글 수정 버튼 End
+        // 댓글 수정 취소
+        $('.reply-list').on('click', '.replyUpdateClose', function() {
+            var $commentItem = $(this).closest('.comment-item');
+            var replyContent = $commentItem.attr('data-reply-content');
+            var $editForm = $commentItem.find('.reply-edit-form');
 
-       // 댓글 수정 취소 버튼 Start
-       $('#tableDiv').on('click','.replyUpdateClose',function() {
-           let contentTd = $(this).closest('tr').find('td:nth-child(3)');
-           let findDogContent = $(this).closest('tr').attr('data-reply-content');
+            $editForm.hide();
+            $commentItem.find('.reply-update-btn').show();
+        });
 
-           contentTd.html(findDogContent);
-       });
-       // 댓글 수정 취소 버튼 End
+        // 댓글 수정 제출
+        $('.reply-list').on('click', '.replyUpdateBtn', function() {
+            var $commentItem = $(this).closest('.comment-item');
+            var communityReplyNo = $commentItem.attr('data-reply-no');
+            var content = $commentItem.find('.replyContent').val();
 
-       // 댓글 수정 작성 버튼 Start
-       $('#tableDiv').on('click','.replyUpdateBtn',function() {
-           let findDogReplyNo = $(this).closest('tr').attr('data-reply-no');
-           let content = $(this).closest('tr').find('.replyContent').val();
+            if (!content.trim()) {
+                alert('댓글 내용을 입력해주세요.');
+                return;
+            }
 
-           let dataArr = [content];
+            if (confirm("수정 하시겠습니까?")) {
+                $.ajax({
+                    url: "/community/C/" + foreignNo + "/reply/update/" + communityReplyNo,
+                    method: 'POST',
+                    data: { content: content },
+                    success: function(result) {
+                        alert(result);
+                        $commentItem.attr('data-reply-content', content);
+                        $commentItem.find('.reply-content').text(content);
+                        $commentItem.find('.reply-edit-form').hide();
+                        $commentItem.find('.reply-update-btn').show();
+                    },
+                    error: function() {
+                        alert('댓글 수정에 실패했습니다. 다시 시도해주세요.');
+                    }
+                });
+            }
+        });
 
-           let result = handleNullInArray(dataArr);
+        // 댓글 삭제 버튼 클릭
+        $('.reply-list').on('click', '.reply-delete-btn', function() {
+            var $commentItem = $(this).closest('.comment-item');
+            var communityReplyNo = $commentItem.attr('data-reply-no');
 
-           if (result == 0) {
-               alert('값이 비어있습니다.');
-               return;
-           }
-
-           let formData = new FormData();
-
-           formData.append('findDogReplyNo',findDogReplyNo);
-           formData.append('content',content);
-
-
-           if (confirm("수정 하시겠습니까?")) {
-              $.ajax({
-                   url : "/finddog/replyUpdate",
-                   processData : false,
-                   contentType : false,
-                   type : 'POST',
-                   data : formData,
-                   success: function (result) {
-                       alert(result);
-                       location.reload();
-                   }
-               });
-           }
-
-
-       });
-       // 댓글 수정 작성 버튼 End
-
+            if (confirm('댓글을 삭제하시겠어요?')) {
+                $.ajax({
+                    url: "/community/L/" + foreignNo + "/reply/delete/" + communityReplyNo,
+                    method: 'POST',
+                    success: function(result) {
+                        alert(result);
+                        $commentItem.remove();
+                    },
+                    error: function() {
+                        alert('댓글 삭제에 실패했습니다. 다시 시도해주세요.');
+                    }
+                });
+            }
+        });
+    });
 </script>
 </html>

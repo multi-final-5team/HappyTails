@@ -28,7 +28,7 @@ public class ReplyService {
     }
 
     // 게시글 삭제할 때 댓글도 전체 삭제
-    public void replyDeleteAll(String communityCategoryCode, long foreignNo) {
+    public void replyDeleteAll(String communityCategoryCode, int foreignNo) {
         replyDAO.replyDeleteAll(communityCategoryCode, foreignNo);
     }
 

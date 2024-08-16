@@ -15,7 +15,7 @@ public interface ReplyDAO {
 
     List<ReplyDTO> selectReplyByForeignNo(String communityCategoryCode, int foreignNo);
 
-    void replyDeleteAll(String communityCategoryCode, Long foreignNo);
+    void replyDeleteAll(String communityCategoryCode, int foreignNo);
 
     ReplyDTO selectReplyById(int communityReplyNo);
 

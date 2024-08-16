@@ -8,6 +8,7 @@ import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -73,26 +74,43 @@ public class DogloveController {
 
     @GetMapping
     public String dogloveList(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "sort", defaultValue = "date") String sort,
             @RequestParam(value = "keyword", required = false) String keyword,
             Model model) {
 
-        List<DogloveDTO> dogloves;
-        if ("recommendCount".equals(sort)) {
-            dogloves = dogloveService.findAllSortedByRecommendation();
+        Page<DogloveDTO> doglovePage;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            doglovePage = dogloveService.dlsearch(keyword.trim(), page - 1, size, sort);
         } else {
-            dogloves = dogloveService.findAllSortedByDate();
+            // 검색어가 없는 경우
+            if ("recommendCount".equals(sort)) {
+                doglovePage = dogloveService.findAllSortedByRecommendation(page - 1, size);
+            } else {
+                doglovePage = dogloveService.findAllSortedByDate(page - 1, size);
+            }
         }
 
         Map<Long, List<UploadDto>> dogloveImages = new HashMap<>();
-        for (DogloveDTO doglove : dogloves) {
+        for (DogloveDTO doglove : doglovePage.getContent()) {
             List<UploadDto> imageFiles = uploadService.uploadSelect(IMAGE_CODE, doglove.getDogloveNo());
             dogloveImages.put(doglove.getDogloveNo(), imageFiles);
         }
+
+        // 로그 추가
+        System.out.println("Current Page: " + (doglovePage.getNumber() + 1));
+        System.out.println("Total Pages: " + doglovePage.getTotalPages());
+        System.out.println("Total Items: " + doglovePage.getTotalElements());
+
         model.addAttribute("keyword", keyword);
-        model.addAttribute("dogloves", dogloves);
+        model.addAttribute("dogloves", doglovePage.getContent());
         model.addAttribute("dogloveImages", dogloveImages);
         model.addAttribute("sort", sort);
+        model.addAttribute("currentPage", doglovePage.getNumber() + 1);
+        model.addAttribute("totalPages", doglovePage.getTotalPages());
+        model.addAttribute("totalItems", doglovePage.getTotalElements());
 
         return "community/doglovelist";
     }
@@ -158,7 +176,7 @@ public class DogloveController {
     @PostMapping
     public String create(@ModelAttribute DogloveDTO dogloveDTO,
                          @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles,
-                         Principal principal, Model model) {
+                         Principal principal) {
 
         String userId = principal.getName();
         dogloveDTO.setUserId(userId);
@@ -166,13 +184,6 @@ public class DogloveController {
         //게시판 카테고리 코드
         dogloveDTO.setCategoryCode(categoryCode);
         dogloveDTO.setCreateTime(LocalDateTime.now());
-
-        if (dogloveDTO.getTitle() == null || dogloveDTO.getTitle().trim().isEmpty() ||
-                dogloveDTO.getContent() == null || dogloveDTO.getContent().trim().isEmpty()) {
-            model.addAttribute("errorMessage", "제목과 내용은 필수 입력 항목입니다.");
-            return "community/doglovecreate";
-        }
-
 
         UploadDto uploadDto = new UploadDto();
         uploadDto.setForeignNo(dogloveService.dogloveInsert(dogloveDTO));
@@ -198,7 +209,7 @@ public class DogloveController {
 
         dogloveService.delete(dogloveNo);
 
-        replyService.replyDeleteAll("L", dogloveNo);
+        replyService.replyDeleteAll("L", Math.toIntExact(dogloveNo));
 
         List<UploadDto> uploadDtos = uploadService.uploadSelect(IMAGE_CODE, dogloveNo);
 
@@ -306,24 +317,6 @@ public class DogloveController {
         dogloveService.dgRecommendCount(dogloveNo, userId);
         redirectAttributes.addAttribute("dogloveNo", dogloveNo);
         return "redirect:/community/doglove/{dogloveNo}";
-    }
-
-    @GetMapping("/search")
-    public String search(@RequestParam("keyword") String keyword, Model model) {
-        List<DogloveDTO> results;
-
-        if (keyword == null || keyword.trim().isEmpty()) {
-            // 공백만 입력된 경우 전체 데이터를 검색
-            results = dogloveService.findAllSortedByDate();
-        } else {
-            // 유효한 검색어가 있는 경우 해당 키워드로 검색
-            results = dogloveService.search(keyword.trim());
-        }
-
-        model.addAttribute("dogloves", results);
-        model.addAttribute("keyword", keyword);
-
-        return "community/doglovelist";
     }
 
 }

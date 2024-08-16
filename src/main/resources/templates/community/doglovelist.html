@@ -4,23 +4,9 @@
     <meta charset="UTF-8">
     <title>내 새꾸 자랑 게시판 목록</title>
     <style>
-        body {
-            font-family: 'Gaegu', cursive;
-            background-color: #FFF5EE;
-            background-image: url('paw-pattern.png');
-        }
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: 0.3s;
-            background-color: white;
-        }
-        .card:hover {
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-        }
-        .btn {
-            border-radius: 20px;
-        }
+        .badge-number {
+        color: black;
+}
     </style>
 </head>
 <body class="container mt-5">
@@ -29,28 +15,28 @@
 <h1 class="mb-4 text-center">🐾 내 새꾸 자랑 게시판 🐾</h1>
 <h3 class="mb-4 text-center">우리 아이의 사랑스러운 순간들을 자랑하시개! 🐶</h3>
 
-<!-- 추천순/최신순 / 새 글 작성  -->
+<!-- 추천순/최신순 / 새 글 작성 -->
 <div class="d-flex justify-content-between mb-3">
     <div>
         <form action="/community/doglove" method="get" class="d-inline me-2">
             <input type="hidden" name="sort" value="date"/>
+            <input type="hidden" name="keyword" th:value="${keyword}"/>
             <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'date' ? '🐶 최신순(현재)' : '🐶 최신순'}"></button>
         </form>
         <form action="/community/doglove" method="get" class="d-inline">
             <input type="hidden" name="sort" value="recommendCount"/>
+            <input type="hidden" name="keyword" th:value="${keyword}"/>
             <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'recommendCount' ? '❤️ 추천순(현재)' : '❤️ 추천순'}"></button>
         </form>
     </div>
-    <!-- 검색 폼 추가 -->
-    <div class="mb-4">
-        <form action="/community/doglove/search" method="get" class="d-flex">
-            <input type="text" name="keyword" class="form-control me-2" placeholder="제목을 입력하세요" aria-label="검색">
-            <button type="submit" class="btn btn-outline-success">🔍</button>
-        </form>
-    </div>
+    <!-- 검색 -->
+    <form action="/community/doglove" method="get" class="d-flex">
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="text" name="keyword" class="form-control me-2" placeholder="제목을 입력하세요" aria-label="검색" th:value="${keyword}">
+        <button type="submit" class="btn btn-outline-success">🔎</button>
+    </form>
     <div>
         <a href="/community/doglove/create" onclick="return checkLogin()" class="btn btn-primary btn-sm me-2">🦴 새 글 작성하기</a>
-
     </div>
 </div>
 
@@ -58,25 +44,49 @@
 <div class="row">
     <div class="col-md-4 mb-4" th:each="doglove : ${dogloves}">
         <div class="card">
-            <div class="card-body">
-                <p class="card-text"><small class="text-muted">게시글 번호: <span class="badge bg-secondary" th:text="${doglove.dogloveNo}"></span></small></p>
-                <div th:if="${dogloveImages != null and dogloveImages.get(doglove.dogloveNo) != null and !dogloveImages.get(doglove.dogloveNo).empty}" class="mb-3">
-                    <img th:src="@{/images/L/{file}(file=${dogloveImages.get(doglove.dogloveNo)[0].storedFileName})}" class="img-fluid rounded" alt="대표 이미지">
+            <a th:href="@{/community/doglove/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}">
+                <div th:if="${dogloveImages != null and dogloveImages.get(doglove.dogloveNo) != null and !dogloveImages.get(doglove.dogloveNo).empty}">
+                    <img th:src="@{/images/L/{file}(file=${dogloveImages.get(doglove.dogloveNo)[0].storedFileName})}" class="card-img-top" alt="대표 이미지">
                 </div>
-                <h5 class="card-title" th:text="${doglove.title}"></h5>
+            </a>
+            <div class="card-body">
+                <p class="card-text"><small class="text-muted">게시글 번호: <span class="badge-number" th:text="${doglove.dogloveNo}"></span></small></p>
+                <a th:href="@{/community/doglove/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}" class="card-title h5" th:text="${doglove.title}"></a>
                 <h6 class="card-subtitle mb-2 text-muted" th:text="${doglove.userId}"></h6>
                 <p class="card-text" th:text="${#strings.abbreviate(doglove.content, 50)}"></p>
                 <p class="card-text"><small class="text-muted" th:text="${#temporals.format(doglove.createTime, 'yyyy-MM-dd')}"></small></p>
-                <a th:href="@{/community/doglove/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}" class="btn btn-sm btn-outline-primary">자세히 보기</a>
                 <span class="badge bg-primary float-end" th:text="${doglove.recommendCount + ' ❤️'}"></span>
                 <div th:if="${#authentication.name == 'admin'}" class="mt-2">
-
-                    <a th:href="@{/doglove/delete/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}" class="btn btn-sm btn-danger" onclick="return confirmDelete();" >삭제</a>
+                    <a th:href="@{/doglove/delete/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}" class="btn btn-sm btn-danger" onclick="return confirmDelete();">삭제</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- 페이징 부분 -->
+<div class="d-flex justify-content-center">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/community/doglove(page=${currentPage - 1}, sort=${sort}, keyword=${keyword})}" aria-label="Previous" th:if="${currentPage > 1}">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+                <span class="page-link" th:if="${currentPage == 1}">&laquo;</span>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/community/doglove(page=${i}, sort=${sort}, keyword=${keyword})}" th:text="${i}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/community/doglove(page=${currentPage + 1}, sort=${sort}, keyword=${keyword})}" aria-label="Next" th:if="${currentPage < totalPages}">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+                <span class="page-link" th:if="${currentPage == totalPages}">&raquo;</span>
+            </li>
+        </ul>
+    </nav>
+</div>
+
 
 </body>
 <footer th:replace="fragments/head :: footer"></footer>
@@ -84,5 +94,7 @@
     function confirmDelete() {
         return confirm("삭제하시겠습니까?");
     }
+
 </script>
+
 </html>
