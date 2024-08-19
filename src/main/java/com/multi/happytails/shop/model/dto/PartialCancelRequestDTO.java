@@ -2,8 +2,6 @@ package com.multi.happytails.shop.model.dto;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
-
 /**
  * packageName    : com.multi.happytails.shop.model.dto
  * fileName       : PartialCancelRequestDTO
@@ -20,6 +18,6 @@ public class PartialCancelRequestDTO {
     private int paymentNo;
     private String imPortId;
     private String productname;
-    private BigDecimal price;
+    private int price;
     private int quantity;
 }

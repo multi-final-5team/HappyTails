@@ -1,14 +1,6 @@
 package com.multi.happytails.main.service;
 
-import com.multi.happytails.main.dto.RssNewsDTO;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * packageName    : com.multi.happytails.main.service

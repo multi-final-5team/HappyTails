@@ -107,7 +107,6 @@
         SELECT *
         FROM TB_SALES_GOODS
         ORDER BY RAND()
-            LIMIT 3
+        LIMIT 3
     </select>
-
 </mapper>

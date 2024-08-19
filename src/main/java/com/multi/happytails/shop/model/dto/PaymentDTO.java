@@ -16,6 +16,8 @@ public class PaymentDTO {
     private Timestamp date_created;
     private String imPortId;
     private String refund;
+    private Timestamp refund_date;
+    private String delivery_code;
 
     private List<CartDTO> cartItems;
 

@@ -49,8 +49,8 @@ public class PaymentService {
         return paymentDAO.selectOrders(memberName);
     }
 
-    public int updateRefundStatus(String imPortId) {
-        return paymentDAO.updateRefundStatus(imPortId);
+    public int updateRefundStatus(int paymentNo) {
+        return paymentDAO.updateRefundStatus(paymentNo);
     }
 
     public boolean verifyPayment(VerificationRequestDTO request, PaymentDTO paymentDTO) throws IamportResponseException, IOException {
@@ -71,7 +71,7 @@ public class PaymentService {
         return false;
     }
 
-    public IamportResponse<Payment> cancelPayment(String imPortId, BigDecimal requestAmount, String reason)
+    public IamportResponse<Payment> cancelPayment(int paymentNo, String imPortId, BigDecimal requestAmount, String reason)
             throws IamportResponseException, IOException {
         IamportClient client = new IamportClient(apiKeys.getIamportApiKey(), apiKeys.getIamportApiSecret());
 
@@ -85,11 +85,29 @@ public class PaymentService {
             throw new IllegalArgumentException("취소 요청 금액이 취소 가능 금액보다 큽니다.");
         }
 
-        CancelData cancelData = new CancelData(imPortId, true);
-        cancelData.setChecksum(requestAmount);
+        // paymentNo를 이용하여 해당 주문의 정보를 데이터베이스에서 확인
+        PaymentDTO payment = paymentDAO.getPaymentByNo(paymentNo);
+        if (payment == null || !payment.getImPortId().equals(imPortId)) {
+            throw new IllegalArgumentException("유효하지 않은 주문 정보입니다.");
+        }
+
+        CancelData cancelData = new CancelData(imPortId, true, requestAmount);
         cancelData.setReason(reason);
 
-        return client.cancelPaymentByImpUid(cancelData);
+        IamportResponse<Payment> response = client.cancelPaymentByImpUid(cancelData);
+
+        // 취소 성공 시 DB 업데이트
+        if (response.getResponse().getCancelAmount().compareTo(BigDecimal.ZERO) > 0) {
+            if (response.getResponse().getCancelAmount().compareTo(paidAmount) == 0) {
+                // 전체 취소
+                paymentDAO.updateRefundStatus(paymentNo);
+            } else {
+                // 부분 취소
+                paymentDAO.updatePartialRefundStatus(paymentNo);
+            }
+        }
+
+        return response;
     }
 
     public List<Payment> paymentList(String username) {
@@ -97,11 +115,11 @@ public class PaymentService {
     }
 
     @Transactional
-    public IamportResponse<Payment> partialCancelPayment(int paymentNo, String imPortId, String productname, BigDecimal price, int quantity, String reason)
+    public IamportResponse<Payment> partialCancelPayment(int paymentNo, String imPortId, String productname, int price, int quantity, String reason)
             throws IamportResponseException, IOException {
-        BigDecimal cancelAmount = price.multiply(BigDecimal.valueOf(quantity));
+        int cancelAmount = price * quantity;
 
-        if (cancelAmount.compareTo(BigDecimal.ZERO) <= 0) {
+        if (cancelAmount <= 0) {
             throw new IllegalArgumentException("취소 금액은 0보다 커야 합니다.");
         }
 
@@ -109,16 +127,16 @@ public class PaymentService {
 
         // 결제 정보를 조회하여 취소 가능 여부 확인
         IamportResponse<Payment> paymentResponse = client.paymentByImpUid(imPortId);
-        BigDecimal paidAmount = paymentResponse.getResponse().getAmount();
-        BigDecimal canceledAmount = paymentResponse.getResponse().getCancelAmount();
-        BigDecimal cancelableAmount = paidAmount.subtract(canceledAmount);
+        int paidAmount = paymentResponse.getResponse().getAmount().intValue();
+        int canceledAmount = paymentResponse.getResponse().getCancelAmount().intValue();
+        int cancelableAmount = paidAmount - canceledAmount;
 
-        if (cancelableAmount.compareTo(cancelAmount) < 0) {
+        if (cancelableAmount < cancelAmount) {
             throw new IllegalArgumentException("취소 요청 금액이 취소 가능 금액보다 큽니다.");
         }
 
-        CancelData cancelData = new CancelData(imPortId, false, cancelAmount);
-        cancelData.setChecksum(cancelAmount);
+        CancelData cancelData = new CancelData(imPortId, false, BigDecimal.valueOf(cancelAmount));
+        cancelData.setChecksum(BigDecimal.valueOf(cancelAmount));
         cancelData.setReason(reason);
 
         // 포트원 API를 통한 실제 결제 취소
@@ -137,7 +155,12 @@ public class PaymentService {
         return cancelResponse;
     }
 
-    public int updatePartialRefundStatus(int paymentNo) {
-        return paymentDAO.updatePartialRefundStatus(paymentNo);
+
+    public void updateDelivery(int paymentNo) {
+        paymentDAO.updateDelivery(paymentNo);
+    }
+
+    public void deliveryState(int paymentNo, String deliveryCode) {
+        paymentDAO.deliveryState(paymentNo, deliveryCode);
     }
 }

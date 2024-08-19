@@ -13,6 +13,7 @@ public class OrderlistDTO {
     private Timestamp date_created;
     private int purchaseprice;
     private String imPortId;
+    private String delivery_code;
 
     private String refund;
     private String refund_date;

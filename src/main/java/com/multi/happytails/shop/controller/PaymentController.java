@@ -15,14 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -173,17 +171,20 @@ public class PaymentController {
     @PostMapping("/cancel")
     public ResponseEntity<Map<String, Object>> cancelPayment(@RequestBody VerificationRequestDTO cancelRequest) {
         try {
-            if (cancelRequest.getImPortId() == null || cancelRequest.getImPortId().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "취소 실패: 유효한 imPortId 값이 없습니다."));
+            if (cancelRequest.getPaymentNo() == 0 || cancelRequest.getImPortId() == null || cancelRequest.getImPortId().isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "취소 실패: 유효한 paymentNo 또는 imPortId 값이 없습니다."));
             }
 
+            BigDecimal cancelAmount = new BigDecimal(cancelRequest.getAmount().toString());
+
             IamportResponse<Payment> response = paymentService.cancelPayment(
+                    cancelRequest.getPaymentNo(),
                     cancelRequest.getImPortId(),
-                    cancelRequest.getAmount(),
+                    cancelAmount,
                     "고객 요청으로 인한 취소"
             );
 
-            paymentService.updateRefundStatus(cancelRequest.getImPortId());
+            paymentService.updateRefundStatus(cancelRequest.getPaymentNo());
 
             return ResponseEntity.ok(Map.of("success", true, "message", "결제가 성공적으로 취소되었습니다.", "data", response));
         } catch (IamportResponseException | IOException e) {
@@ -193,12 +194,14 @@ public class PaymentController {
 
     @PostMapping("/partialCancel")
     public ResponseEntity<Map<String, Object>> partialCancelPayment(@RequestBody PartialCancelRequestDTO cancelRequest) {
+        Map<String, Object> response = new HashMap<>();
+
         try {
             if (cancelRequest.getImPortId() == null || cancelRequest.getImPortId().isEmpty()) {
-                return ResponseEntity.badRequest().body(Map.of("success", false, "message", "취소 실패: 유효한 imPortId 값이 없습니다."));
+                throw new IllegalArgumentException("취소 실패: 유효한 imPortId 값이 없습니다.");
             }
 
-            IamportResponse<Payment> response = paymentService.partialCancelPayment(
+            IamportResponse<Payment> paymentResponse = paymentService.partialCancelPayment(
                     cancelRequest.getPaymentNo(),
                     cancelRequest.getImPortId(),
                     cancelRequest.getProductname(),
@@ -207,11 +210,44 @@ public class PaymentController {
                     "고객 요청으로 인한 부분 취소"
             );
 
-            return ResponseEntity.ok(Map.of("success", true, "message", "부분 결제가 성공적으로 취소되었습니다.", "data", response));
-        } catch (IamportResponseException | IOException e) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "부분 취소 실패: " + e.getMessage()));
+            response.put("success", true);
+            response.put("message", "부분 결제가 성공적으로 취소되었습니다.");
+            response.put("data", paymentResponse);
+
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "부분 취소 중 오류 발생: " + e.getMessage()));
+            response.put("success", false);
+            response.put("message", "부분 취소 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
         }
+    }
+
+    @RequestMapping("/paymentUpdateDelivery")
+    public String paymentUpdateDelivery(@RequestParam("payment_no") int payment_no) {
+
+        paymentService.updateDelivery(payment_no);
+
+        return "/payment/PaymentHistory";
+    }
+
+    @PostMapping("/updateDeliveryCode")
+    @ResponseBody
+    public String updateDeliveryCode(@RequestParam("paymentNo") int paymentNo,
+                                     @RequestParam("deliveryCode") String deliveryCode) {
+        paymentService.deliveryState(paymentNo, deliveryCode);
+        return "Success";
+    }
+
+    @GetMapping("/deliveryStatusPopup")
+    public String showDeliveryStatusPopup(@RequestParam("paymentNo") Long paymentNo,
+                                          @RequestParam("deliveryCode") String deliveryCode,
+                                          Model model) {
+        model.addAttribute("paymentNo", paymentNo);
+        model.addAttribute("deliveryCode", deliveryCode);
+        return "/payment/deliveryStatusPopup"; // 팝업 창 HTML 파일 이름
     }
 }

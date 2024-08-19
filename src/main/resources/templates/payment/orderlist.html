@@ -1,58 +1,80 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>판매 내역</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/js/payment/orderlist.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="/css/orderlist.css">
 </head>
-
 <body>
 <div class="container">
     <h1>판매 내역</h1>
 
     <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="검색">
+        <input type="text" id="searchInput" placeholder="상품명 검색">
         <button id="searchButton">검색</button>
     </div>
 
     <div>
-        주문한 상품 개수: <span id="totalItemsCount">0</span>개
+        <p>주문한 상품 개수: <span id="totalItemsCount">0</span>개</p>
     </div>
 
     <div th:if="${not #lists.isEmpty(orderList)}">
         <div class="order-item" th:each="order : ${orderList}" th:data-username="${order.username}">
             <div class="order-info">
                 <div class="order-details">
-                    <p th:text="${#dates.format(order.date_created, 'yyyy-MM-dd')}"></p>
                     <h3 th:text="${order.productname}"></h3>
                     <p th:text="${order.productinfo}"></p>
-                    <br><br>
-                    <p th:text="'가격: ' + ${order.purchaseprice} + '원'"></p>
+                    <p th:text="${#dates.format(order.date_created, 'yyyy-MM-dd HH:mm:ss')}"></p>
+                    <p th:text="${#numbers.formatDecimal(order.purchaseprice, 0, 'COMMA', 0, 'POINT')} + '원'"></p>
+                    <p th:text="${order.delivery_code}"></p>
                 </div>
             </div>
+            <button type="button" class="btn btn-primary delivery-status-btn"
+                    th:data-payment-no="${order.payment_no}"
+                    th:data-delivery-code="${order.delivery_code}">
+                배송 상태 변경
+            </button>
+
             <div class="order-actions">
-                <button class="partial-cancel-btn"
+                <button class="cancel-button"
                         th:data-payment-no="${order.payment_no}"
                         th:data-imp-uid="${order.imPortId}"
-                        th:data-productname="${order.productname}"
-                        th:data-price="${order.purchaseprice}"
-                        th:data-quantity="1">
-                    부분 취소
-                </button>
+                        th:data-amount="${order.purchaseprice}">주문 취소하기</button>
             </div>
         </div>
     </div>
 
     <div th:if="${#lists.isEmpty(orderList)}">
-        주문 정보가 없습니다.
+        <p>주문 정보가 없습니다.</p>
     </div>
 
-    <div class="pagination"></div>
+    <div class="pagination">
+        <!-- 페이지네이션은 JavaScript에서 동적으로 생성됩니다 -->
+    </div>
 </div>
+
+<script src="/js/payment/orderlist.js"></script>
+
+<!-- JavaScript 코드 -->
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var buttons = document.querySelectorAll('.delivery-status-btn');
+        buttons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var paymentNo = this.getAttribute('data-payment-no');
+                var deliveryCode = this.getAttribute('data-delivery-code');
+                openPopup(paymentNo, deliveryCode);
+            });
+        });
+    });
+
+    function openPopup(paymentNo, deliveryCode) {
+        var url = `/payment/deliveryStatusPopup?paymentNo=${encodeURIComponent(paymentNo)}&deliveryCode=${encodeURIComponent(deliveryCode)}`;
+        var name = "배송 상태 변경";
+        var options = "width=500,height=300,top=100,left=100";
+        window.open(url, name, options);
+    }
+</script>
 
 </body>
 </html>
