@@ -14,14 +14,19 @@ public class Dog4CutsService {
     @Autowired
     Dog4CutsDAO dog4CutsDAO;
 
-    public int dog4CutsInsert(int userNo) {
+    public int dog4CutsInsert(Dog4CutsDTO dog4CutsDTO) {
 
-        return dog4CutsDAO.dog4CutsInsert(userNo);
+        return dog4CutsDAO.dog4CutsInsert(dog4CutsDTO);
     }
 
     public Dog4CutsDTO findOneDog4CutsNum(int userNo){
 
         return dog4CutsDAO.findOneDog4CutsNum(userNo);
+    }
+
+    public List<Dog4CutsDTO> findPublicDog4Cuts() {
+
+        return dog4CutsDAO.findPublicDog4Cuts();
     }
 
     public List<Dog4CutsDTO> findAllDog4Cuts() {
@@ -39,8 +44,14 @@ public class Dog4CutsService {
         return dog4CutsDAO.dog4CutsDelete(dog4CutsDTO);
     }
 
+    public int changePublicDog4Cuts(Dog4CutsDTO dog4CutsDTO){
+
+        return dog4CutsDAO.changePublicDog4Cuts(dog4CutsDTO);
+    }
+
     public List<Dog4CutsDTO> findDog4CutsBySearch(int searchNo) {
 
         return dog4CutsDAO.findDog4CutsBySearch(searchNo);
     }
+
 }

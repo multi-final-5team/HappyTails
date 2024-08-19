@@ -4,20 +4,28 @@
     <title>메인페이지</title>
 
 </head>
+
+<style>
+    #carouselDog4cuts{
+        width:60%;
+        height:40%;
+    }
+</style>
+
 <body>
 <link href="/css/main/chat.css" rel="stylesheet">
 <menu th:replace="~{fragments/head :: menu}"></menu>
 <main class="container mt-5">
     <div class="d-flex justify-content-center">
-        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+        <div id="carouselDog4cuts" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner" id="dog4cutImgDiv">
 
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselDog4cuts" data-bs-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Previous</span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselDog4cuts" data-bs-slide="next">
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Next</span>
             </button>
@@ -235,47 +243,47 @@
     });
 
     $(document).ready(function(){
-    //견생네컷 조회
-    $.ajax({
-        type:'get',
-        url: "/dog4cuts/findAllDog4Cuts",
-        success : function(dto){
-            var data = dto.list;
-            var imgs = dto.uploadDtos;
+        //견생네컷 조회
+        $.ajax({
+            type:'get',
+            url: "/dog4cuts/findPublicDog4Cuts",
+            success : function(dto){
+                var data = dto.list;
+                var imgs = dto.uploadDtos;
 
-            for(let index in data){
-                var img;
-                for(let indexImg in imgs){
-                    if(imgs[indexImg].foreignNo == data[index].dog4cutsNo){
-                        img = imgs[indexImg].storedFileName;
+                for(let index in data){
+                    var img;
+                    for(let indexImg in imgs){
+                        if(imgs[indexImg].foreignNo == data[index].dog4cutsNo){
+                            img = imgs[indexImg].storedFileName;
+                        }
                     }
-                }
 
-                if(index == 0){
-                    $('#dog4cutImgDiv').append(
-                        $('<div>').prop({
-                            id: 'dog4cuts' + index,
-                            className: 'carousel-item active'
-                        }).attr("onclick", "")
+                    if(index == 0){
+                        $('#dog4cutImgDiv').append(
+                            $('<div>').prop({
+                                id: 'dog4cuts' + index,
+                                className: 'carousel-item active'
+                            }).attr("onclick", "")
+                        );
+                    }
+                    else{
+                        $('#dog4cutImgDiv').append(
+                            $('<div>').prop({
+                                id: 'dog4cuts' + index,
+                                className: 'carousel-item'
+                            }).attr("onclick", "")
+                        );
+                    }
+
+                    $('#dog4cuts' + index).append(
+                        '<img src="/images/X/' + img + '" class="d-block w-100 h-100">'
                     );
                 }
-                else{
-                    $('#dog4cutImgDiv').append(
-                        $('<div>').prop({
-                            id: 'dog4cuts' + index,
-                            className: 'carousel-item'
-                        }).attr("onclick", "")
-                    );
-                }
-
-                $('#dog4cuts' + index).append(
-                    '<img src="/images/X/' + img + '" class="d-block w-100">'
-                );
+            },
+            error: function (xhr){
+                console.log(xhr);
             }
-        },
-        error: function (xhr){
-            console.log(xhr);
-        }
         }); // $.ajax()
     });
 </script>

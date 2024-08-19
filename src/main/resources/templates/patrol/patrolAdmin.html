@@ -9,8 +9,16 @@
 
 <style>
     .card{
-        width: 18rem;
+        width: 45%;
+        margin: 2.5%;
     }
+
+    #patroldiv{
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
 </style>
 
 <body class="container mt-5">
@@ -18,8 +26,6 @@
 <menu th:replace="fragments/head :: menu"></menu>
 
 <main>
-
-    <menu th:replace="fragments/head :: footer"></menu>
 
 <h1 class="mb-4">순찰대 관리</h1>
 
@@ -32,52 +38,48 @@
 
 </div>
 
-</main>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination pagination-lg justify-content-center" id="pageItems">
+
+        </ul>
+    </nav>
 
 
-<script>
+    <script>
+        var urlParams = new URL(location.href).searchParams;
+        var page = urlParams.get('page');
+
+        var pageFirst;
+        var pageLast;
+        var totalPages;
+        var totalElements;
 
 
     $(document).ready(function(){
 
-        findAllPatrol();
-
-        $('#goPatrolInsertBtn').click(function(){
-            location.href = "/patrol/patrolinsert";
-        });
-    });
-
-    function gopatrolAdmin() {
-         location.href = "/patrol/patrolAdmin;
-    }
-
-    function deletepatrol(patrolno) {
-
-        $.ajax({
-            type:'post',
-            url: "/patrol/patrolDelete",
-            data: {patrolNo : patrolno},
-            success : function(data){
-                gopatrolAdmin();
-            },
-            error: function (xhr){
-                console.log(xhr);
-            }
-        }); // $.ajax()
-    }
-
-    function findAllPatrol() {
         $.ajax({
         type:'get',
         url: "/patrol/findAllPatrol",
+        data : {
+		    page : page
+	    },
         success : function(dto){
-            var data = dto.list;
             var imgs = dto.uploadDtos;
+            var data = dto.list;
 
-            for(let index in data){
+            console.log(data);
+
+            pageFirst = data.first;
+            pageLast = data.last;
+            totalPages = data.totalPages;
+            totalElements = data.totalElements;
+
+            var contentList = data.content;
+
+            for(let index in contentList){
                 var img;
                  for(let indexImg in imgs){
-                    if(imgs[indexImg].foreignNo == data[index].patrolNo){
+                    if(imgs[indexImg].foreignNo == contentList[index].patrolNo){
                         img = imgs[indexImg].storedFileName;
                     }
                  }
@@ -87,7 +89,7 @@
                     $('<div>').prop({
                         id: 'patrol' + index,
                         className: 'card'
-                        }).attr("onclick", "")
+                        }).attr("onclick", "gopatrol(" + contentList[index].patrolNo + ")")
                     );
 
                     $('#' + 'patrol' + index).append(
@@ -109,15 +111,15 @@
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '<b class="card-text">강아지 이름: ' + data[index].name + '</b><br>'
+                        '<b class="card-text">강아지 이름: ' + contentList[index].name + '</b><br>'
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '<sub class="card-text">강아지 나이:' + data[index].age + '</sub><br>'
+                        '<sub class="card-text">강아지 나이:' + contentList[index].age + '</sub><br>'
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '<sub class="card-text">품종:' + data[index].breed + '</sub>'
+                        '<sub class="card-text">품종:' + contentList[index].breed + '</sub>'
                     );
 
                     $('#' + 'patrol' + index).append(
@@ -128,16 +130,112 @@
                     );
 
                     $('#' + 'divbtn' + index).append(
-                        '<button class="" id="btnDelete' + index + '" name="btnDelete' + index + '" onclick="deletepatrol(' + data[index].patrolNo + ')">삭제</button>'
+                        '<button class="" id="btnDelete' + index + '" name="btnDelete' + index + '" onclick="deletepatrol(' + contentList[index].patrolNo + ')">삭제</button>'
                     );
+            }
+
+            if(page > 9){
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/admin/patrolAdmin?page=0">&#166;&laquo;</a></li>'
+                );
+            }
+
+            if(!pageFirst){
+                pagePrevious = Number(page) - 1;
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/admin/patrolAdmin?page=' + pagePrevious + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
+                );
+            }
+
+
+            if(page > 9){
+                pageStart = parseInt( page / 10 ) * 10;
+                for(let i = pageStart; i< pageStart + 10; i++){
+	                if(i < totalPages){
+	                    pageNext = Number(i) + 1;
+	                    if(page != i){
+	                        $('#pageItems').append(
+                                '<li class="page-item"><a   class="page-link"href="/admin/patrolAdmin?page=' + i +'">' + pageNext +  '</a></li>'
+                            );
+	                    }
+	                    else{
+	                        $('#pageItems').append(
+                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
+                            );
+	                    }
+	                }
+                }
+            }
+            else{
+                for(let i = 0; i<10; i++){
+	                if(i < totalPages){
+	                    pageNext = Number(i) + 1;
+	                    if(page != i){
+	                        $('#pageItems').append(
+                                '<li class="page-item"><a   class="page-link"href="/admin/patrolAdmin?page=' + i +'">' + pageNext +  '</a></li>'
+                            );
+	                    }
+	                    else{
+	                        $('#pageItems').append(
+                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
+                            );
+	                    }
+	                }
+                }
+            }
+
+
+            if(!pageLast){
+                pageNext = Number(page) + 1;
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/admin/patrolAdmin?page=' + pageNext + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
+                );
+            }
+
+            pageT = parseInt( page / 10 ) * 10;
+            totalPagesT = parseInt( totalPages / 10 ) * 10;
+
+            endTarget = Number(totalPagesT);
+
+            if((totalPages > 10)&&(pageT != totalPagesT)){
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/admin/patrolAdmin?page=' + endTarget + '">&raquo;&#166;</a></li>'
+                );
             }
         },
         error: function (xhr){
             console.log(xhr);
         }
         }); // $.ajax()
+
+        $('#goPatrolInsertBtn').click(function(){
+            location.href = "/patrol/patrolinsert";
+        });
+
+    });
+
+    function gopatrolAdmin() {
+             location.href = "/admin/patrolAdmin";
+        }
+
+    function deletepatrol(patrolno) {
+
+        $.ajax({
+                type:'post',
+                url: "/patrol/patrolDelete",
+                data: {patrolNo : patrolno},
+                success : function(data){
+                    gopatrolAdmin();
+                },
+                error: function (xhr){
+                    console.log(xhr);
+                }
+        }); // $.ajax()
     }
-</script>
+    </script>
+</main>
+
+<menu th:replace="fragments/head :: footer"></menu>
 
 </body>
 </html>

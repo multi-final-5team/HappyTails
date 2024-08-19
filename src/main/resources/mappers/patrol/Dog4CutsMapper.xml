@@ -6,8 +6,8 @@
 
     <insert id="dog4CutsInsert">
         INSERT INTO tb_dog4cuts
-        (user_no)
-        VALUES(#{userNo});
+        (user_no , publicstate)
+        VALUES(#{userNo}, #{publicstate});
     </insert>
 
     <select id="findOneDog4CutsNum">
@@ -19,14 +19,23 @@
     </select>
 
     <select id="findAllDog4Cuts">
-        SELECT dog4cuts_no AS dog4cutsNo, user_no AS userNo, createtime
+        SELECT dog4cuts_no AS dog4cutsNo, user_no AS userNo, createtime , publicstate
         FROM tb_dog4cuts
+    </select>
+
+    <select id="findPublicDog4Cuts">
+        SELECT dog4cuts_no AS dog4cutsNo, user_no AS userNo, createtime , publicstate
+        FROM tb_dog4cuts
+        WHERE publicstate = 'F'
+        ORDER BY dog4cuts_no DESC
+        LIMIT 5
     </select>
 
     <select id="findAllDog4CutsByUserNo">
         SELECT dog4cuts_no AS dog4cutsNo, user_no AS userNo, createtime
         FROM tb_dog4cuts
         WHERE user_no = #{userNo}
+
     </select>
 
     <select id="findDog4CutsBySearch">
@@ -39,6 +48,12 @@
         DELETE FROM tb_dog4cuts
         WHERE dog4cuts_no=  #{dog4cutsNo} AND user_no = #{userNo}
     </delete>
+
+    <update id="changePublicDog4Cuts">
+        UPDATE tb_dog4cuts
+        SET publicstate= #{publicstate}
+        WHERE dog4cuts_no= #{dog4cutsNo};
+    </update>
 
 
 </mapper>

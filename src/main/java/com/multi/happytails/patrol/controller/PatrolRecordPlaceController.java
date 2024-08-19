@@ -4,12 +4,17 @@ package com.multi.happytails.patrol.controller;
 
 import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.patrol.model.dao.PatrolPlaceDAO;
+import com.multi.happytails.patrol.model.dto.PrecordDTO;
 import com.multi.happytails.patrol.model.dto.PrecordPlaceDTO;
 import com.multi.happytails.patrol.model.dto.PrecordPlaceHistoryDTO;
 import com.multi.happytails.patrol.model.dto.PlacePointListDTO;
+import com.multi.happytails.patrol.pageable.service.PageService;
 import com.multi.happytails.patrol.service.PatrolPlaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +42,10 @@ public class PatrolRecordPlaceController {
 
     @Autowired
     PatrolPlaceService patrolPlaceService;
+
+    @Autowired
+    PageService pageService;
+
 
     @RequestMapping("patrolRecordPlace")
     public String patrolRecordPlace(){
@@ -82,12 +91,18 @@ public class PatrolRecordPlaceController {
     }
 
     @GetMapping("findAllPlace")
-    public String findAllPlace(Model model, @AuthenticationPrincipal CustomUser customUser) throws Exception {
+    @ResponseBody
+    public Page<PrecordPlaceDTO> findAllPlace( @AuthenticationPrincipal CustomUser customUser, @PageableDefault(size = 10) Pageable pageable) throws Exception {
         int patrolNo = patrolPlaceService.findPatrolNo((int) customUser.getNo());
 
-        List<PrecordPlaceDTO> list = patrolPlaceService.findAllPrecordPlace(patrolNo);
-        model.addAttribute("placeList", list);
-        return "patrol/patrolRecordPlace::#placeTbody";
+        PrecordPlaceDTO precordPlaceDTO = new PrecordPlaceDTO();
+
+        precordPlaceDTO.setPatrolNo(patrolNo);
+
+
+        Page<PrecordPlaceDTO> list = pageService.getListPrecordPlace(precordPlaceDTO,pageable);
+
+        return list;
     }
 
     @PostMapping("deletePlace")

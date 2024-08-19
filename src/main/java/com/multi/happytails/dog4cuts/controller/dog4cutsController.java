@@ -3,16 +3,22 @@ package com.multi.happytails.dog4cuts.controller;
 import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.dog4cuts.model.dto.Dog4CutsDTO;
 import com.multi.happytails.dog4cuts.model.dto.Dog4CutsImgDTO;
+import com.multi.happytails.dog4cuts.model.dto.Dog4CutsImgPagingDTO;
 import com.multi.happytails.dog4cuts.service.Dog4CutsService;
 import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.member.service.MemberService;
 import com.multi.happytails.patrol.model.dto.PatrolDTO;
 import com.multi.happytails.patrol.model.dto.PatrolImgDTO;
+import com.multi.happytails.patrol.model.dto.PrecordDTO;
+import com.multi.happytails.patrol.pageable.service.PageService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import org.apache.catalina.util.StringUtil;
 import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,6 +53,9 @@ public class dog4cutsController {
     @Autowired
     MemberService memberService;
 
+    @Autowired
+    PageService pageService;
+
     @RequestMapping("dog4cutsview")
     public void dog4cutsview(){
 
@@ -58,10 +67,20 @@ public class dog4cutsController {
     }
 
     @PostMapping("dog4CutsInsert")
-    public String dog4CutsInsert(@RequestParam(value="file") MultipartFile[] file, @AuthenticationPrincipal CustomUser customUser) {
+    public String dog4CutsInsert(@RequestParam(value="file") MultipartFile[] file, @AuthenticationPrincipal CustomUser customUser, @RequestParam(value = "publicstate",required = false) char publicstate) {
         System.out.println(file[0]);
 
-        dog4CutsService.dog4CutsInsert((int) customUser.getNo());
+        Dog4CutsDTO dog4CutsDTO = new Dog4CutsDTO();
+        dog4CutsDTO.setUserNo((int) customUser.getNo());
+
+        if(publicstate == 'F'){
+            dog4CutsDTO.setPublicstate('F');
+        }
+        else {
+            dog4CutsDTO.setPublicstate('N');
+        }
+
+        dog4CutsService.dog4CutsInsert(dog4CutsDTO);
 
         Dog4CutsDTO target = dog4CutsService.findOneDog4CutsNum((int) customUser.getNo());
 
@@ -114,14 +133,14 @@ public class dog4cutsController {
         return dto;
     }
 
-    @GetMapping(value="findAllDog4CutsByUserNo", produces = "application/json; charset=UTF-8")
+    @GetMapping(value="findPublicDog4Cuts")
     @ResponseBody
-    public Dog4CutsImgDTO findAllDog4CutsByUserNo(@AuthenticationPrincipal CustomUser customUser){
+    public Dog4CutsImgDTO findPublicDog4Cuts(Model model){
 
         List<UploadDto> uploadDtos = new ArrayList<>();
 
 
-        List<Dog4CutsDTO> list = dog4CutsService.findAllDog4CutsByUserNo((int) customUser.getNo());
+        List<Dog4CutsDTO> list = dog4CutsService.findPublicDog4Cuts();
 
         List<Integer> dog4cutsNoList = new ArrayList<>();
 
@@ -141,6 +160,43 @@ public class dog4cutsController {
         }
 
         Dog4CutsImgDTO dto = new Dog4CutsImgDTO();
+
+        dto.setUploadDtos(uploadDtos);
+        dto.setList(list);
+
+
+        return dto;
+    }
+
+    @GetMapping(value="findAllDog4CutsByUserNo")
+    @ResponseBody
+    public Dog4CutsImgPagingDTO findAllDog4CutsByUserNo(@AuthenticationPrincipal CustomUser customUser, @PageableDefault(size = 10) Pageable pageable){
+
+        List<UploadDto> uploadDtos = new ArrayList<>();
+
+        Dog4CutsDTO dog4CutsDTO = new Dog4CutsDTO();
+        dog4CutsDTO.setUserNo((int) customUser.getNo());
+
+        Page<Dog4CutsDTO> list = pageService.getListDog4Cuts(dog4CutsDTO,pageable);
+
+        List<Integer> dog4cutsNoList = new ArrayList<>();
+
+        for (int i = 0; i < list.getContent().size(); i++) {
+            dog4cutsNoList.add(list.getContent().get(i).getDog4cutsNo());
+            list.getContent().get(i).setUserId(memberService.findMemberByUserNo(list.getContent().get(i).getUserNo()).getId());
+        }
+
+
+
+        for (int dog4CutsNo : dog4cutsNoList){
+            List<UploadDto> pageIngs = uploadService.uploadSelect("X",dog4CutsNo);
+
+            if (!pageIngs.isEmpty()) {
+                uploadDtos.addAll(pageIngs);
+            }
+        }
+
+        Dog4CutsImgPagingDTO dto = new Dog4CutsImgPagingDTO();
 
         dto.setUploadDtos(uploadDtos);
         dto.setList(list);
@@ -200,6 +256,14 @@ public class dog4cutsController {
         }
 
         int result = dog4CutsService.dog4CutsDelete(dog4CutsDTO);
+
+        return "dog4cuts/dog4cutsview";
+    }
+
+    @PostMapping("changePublicDog4Cuts")
+    public String changePublicDog4Cuts(Dog4CutsDTO dog4CutsDTO){
+
+        int result = dog4CutsService.changePublicDog4Cuts(dog4CutsDTO);
 
         return "dog4cuts/dog4cutsview";
     }

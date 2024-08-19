@@ -19,7 +19,7 @@ import java.util.List;
 @Mapper
 public interface Dog4CutsDAO {
 
-    int dog4CutsInsert(int userNo);
+    int dog4CutsInsert(Dog4CutsDTO dog4CutsDTO);
 
     Dog4CutsDTO findOneDog4CutsNum(int userNo);
 
@@ -30,4 +30,9 @@ public interface Dog4CutsDAO {
     int dog4CutsDelete(Dog4CutsDTO dog4CutsDTO);
 
     List<Dog4CutsDTO> findDog4CutsBySearch(int searchNo);
+
+    List<Dog4CutsDTO> findPublicDog4Cuts();
+
+    int changePublicDog4Cuts(Dog4CutsDTO dog4CutsDTO);
+
 }

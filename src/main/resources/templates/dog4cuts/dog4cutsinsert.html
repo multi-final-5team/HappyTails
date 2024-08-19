@@ -143,9 +143,19 @@
         </div>
     </div>
 
-    <button id="downloadButton">다운로드</button>
+    <div class="d-flex" style="margin: 3%;">
+        <div>
+            <button id="downloadButton">다운로드</button>
+        </div>
+        &emsp;
+        <div>
+            <button id="saveToServerButton">업로드</button>
+            <br>
+            <label style="font-size : 1.2em;">견생네컷 공개</label>
+            <input type="checkbox" id="publicCheck" name="publicCheck" value="F">
+        </div>
 
-    <button id="saveToServerButton">업로드</button>
+    </div>
 
 </main>
 
@@ -179,9 +189,11 @@
             $sticker.css("position", "absolute");
             $sticker.css("left", x + "px");
             $sticker.css("top", y + "px");
+            $sticker.css("z-index", "1");
 
             if(targetTag == "img"){
                 $sticker.appendTo(e.target.parentElement);
+                console.log(e.target.parentElement);
             }
             else{
                 $sticker.appendTo(e.target);
@@ -201,6 +213,15 @@
 
     saveToServerButton.addEventListener('click', () => {
         if(inputCheck()){
+            public = '';
+
+            checked = $("input[name='publicCheck']:checked").length
+            if(checked > 0){
+                public = 'F';
+            }
+            else{
+                public = 'N';
+            }
 
             html2canvas(captureDiv).then(canvas => {
             var imgDataUrl = canvas.toDataURL('image/jpg');
@@ -214,6 +235,7 @@
             const fileName = 'canvas_img_' + new Date().getMilliseconds() + '.jpg'; // 임시 파일명
             var formdata = new FormData();	// formData 생성
             formdata.append("file", file , fileName);	// file data 추가
+            formdata.append("publicstate", public);
 
             $.ajax({
                 type : 'post',

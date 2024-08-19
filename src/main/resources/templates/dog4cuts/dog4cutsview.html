@@ -34,10 +34,12 @@
     }
 
     .divbtn{
+        display: flex;
         position: absolute;
 
         top: 80%;
-        left: 80%;
+        left: 70%;
+        width: 30%;
     }
 
 
@@ -66,6 +68,12 @@
 
     </div>
 
+    <nav aria-label="Page navigation example">
+        <ul class="pagination pagination-lg justify-content-center" id="pageItems">
+
+        </ul>
+    </nav>
+
 </main>
 
 <menu th:replace="fragments/head :: footer"></menu>
@@ -73,19 +81,43 @@
 <script th:inline="javascript">
     var username = [[${#authentication.name}]];
 
+    var urlParams = new URL(location.href).searchParams;
+    var page = urlParams.get('page');
+
+    var pageFirst;
+    var pageLast;
+    var totalPages;
+    var totalElements;
+
+    var N = 'N';
+    var F = 'F';
+
     $(document).ready(function(){
 
         $.ajax({
         type:'get',
         url: "/dog4cuts/findAllDog4CutsByUserNo",
+        data : {
+		    page : page
+	    },
         success : function(dto){
             var data = dto.list;
             var imgs = dto.uploadDtos;
 
-            for(let index in data){
+            console.log(data);
+
+            pageFirst = data.first;
+            pageLast = data.last;
+            totalPages = data.totalPages;
+            totalElements = data.totalElements;
+
+            var contentList = data.content;
+
+
+            for(let index in contentList){
                 var img;
                  for(let indexImg in imgs){
-                    if(imgs[indexImg].foreignNo == data[index].dog4cutsNo){
+                    if(imgs[indexImg].foreignNo == contentList[index].dog4cutsNo){
                         img = imgs[indexImg].storedFileName;
                     }
                  }
@@ -106,8 +138,19 @@
                     );
 
                     $('#' + 'divContent' + index).append(
-                        '<b class="card-text">' + data[index].createtime + '</b>'
+                        '<b class="card-text">' + contentList[index].createtime + '</b>'
                     );
+
+                    if(contentList[index].publicstate == 'F'){
+                        $('#' + 'divContent' + index).append(
+                            '<b class="card-text" style="margin-left:60%;">공개</b>'
+                        );
+                    }
+                    else{
+                        $('#' + 'divContent' + index).append(
+                            '<b class="card-text" style="margin-left:60%;">비공개</b>'
+                        );
+                    }
 
                     $('#' + 'divContent' + index).append(
                         $('<div>').prop({
@@ -127,11 +170,84 @@
                         })
                     );
 
-                    if(username == data[index].userId){
+                    if(username == contentList[index].userId){
                         $('#divbtn' + index).append(
-                        '<button class="btn btn-danger" onclick="deleteDog4Cuts(' + data[index].dog4cutsNo + ')">삭제</button>'
+                            '<button class="btn btn-info" onclick="changePublicDog4Cuts(' + contentList[index].dog4cutsNo + ',' + contentList[index].publicstate + ')">공개설정</button>'
+                        );
+                        $('#divbtn' + index).append(
+                        '<button class="btn btn-danger" onclick="deleteDog4Cuts(' + contentList[index].dog4cutsNo + ')">삭제</button>'
                         );
                     }
+            }
+
+            //페이징 시작
+            if(page > 9){
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/dog4cuts/dog4cutsview?page=0">&#166;&laquo;</a></li>'
+                );
+            }
+
+            if(!pageFirst){
+                pagePrevious = Number(page) - 1;
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/dog4cuts/dog4cutsview?page=' + pagePrevious + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
+                );
+            }
+
+
+            if(page > 9){
+                pageStart = parseInt( page / 10 ) * 10;
+                for(let i = pageStart; i< pageStart + 10; i++){
+	                if(i < totalPages){
+	                    pageNext = Number(i) + 1;
+	                    if(page != i){
+	                        $('#pageItems').append(
+                                '<li class="page-item"><a   class="page-link"href="/dog4cuts/dog4cutsview?page=' + i +'">' + pageNext +  '</a></li>'
+                            );
+	                    }
+	                    else{
+	                        $('#pageItems').append(
+                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
+                            );
+	                    }
+	                }
+                }
+            }
+            else{
+                for(let i = 0; i<10; i++){
+	                if(i < totalPages){
+	                    pageNext = Number(i) + 1;
+	                    if(page != i){
+	                        $('#pageItems').append(
+                                '<li class="page-item"><a   class="page-link"href="/dog4cuts/dog4cutsview?page=' + i +'">' + pageNext +  '</a></li>'
+                            );
+	                    }
+	                    else{
+	                        $('#pageItems').append(
+                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
+                            );
+	                    }
+	                }
+                }
+            }
+
+
+            if(!pageLast){
+                pageNext = Number(page) + 1;
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/dog4cuts/dog4cutsview?page=' + pageNext + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
+                );
+            }
+
+            pageT = parseInt( page / 10 ) * 10;
+            totalPagesT = parseInt( totalPages / 10 ) * 10;
+
+            endTarget = Number(totalPagesT);
+
+            if((totalPages > 10)&&(pageT != totalPagesT)){
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/dog4cuts/dog4cutsview?page=' + endTarget + '">&raquo;&#166;</a></li>'
+                );
             }
         },
         error: function (xhr){
@@ -140,6 +256,29 @@
         }); // $.ajax()
 
     });
+
+    function changePublicDog4Cuts(dog4cutsNo , publicstate) {
+        state = '';
+        if(publicstate == 'N'){
+            state = 'F';
+        }
+        else{
+            state = 'N';
+        }
+        $.ajax({
+            type:'post',
+            url: "/dog4cuts/changePublicDog4Cuts",
+            data: {"dog4cutsNo" : dog4cutsNo,
+                   "publicstate": state
+                  },
+            success : function(data){
+                location.replace("/dog4cuts/dog4cutsview");
+            },
+            error: function (xhr){
+                console.log(xhr);
+            }
+        }); // $.ajax()
+    }
 
     function deleteDog4Cuts(dog4cutsNo) {
         $.ajax({
