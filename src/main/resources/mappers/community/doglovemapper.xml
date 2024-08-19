@@ -113,4 +113,17 @@
         ORDER BY RAND(UNIX_TIMESTAMP(CURDATE()) DIV 86400)
         LIMIT 5
     </select>
+
+    <select id="getSortedByRecommendation">
+        SELECT
+            USER_ID AS userId,
+            SUM(RECOMMEND_COUNT) AS totalCount
+        FROM
+            TB_DOGLOVE
+        GROUP BY
+            USER_ID
+        ORDER BY
+            totalCount DESC
+            LIMIT 10
+    </select>
 </mapper>

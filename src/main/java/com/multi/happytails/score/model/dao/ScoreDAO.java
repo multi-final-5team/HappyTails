@@ -2,6 +2,7 @@ package com.multi.happytails.score.model.dao;
 
 import com.multi.happytails.score.model.dto.ScoreDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -33,4 +34,6 @@ public interface ScoreDAO {
     int scoreDelete(int no);
 
     List<ScoreDTO> findPatrolRank();
+
+    List<ScoreDTO> getSortedByPoliceScore(@Param("sort") String sort);
 }

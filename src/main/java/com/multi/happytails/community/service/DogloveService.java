@@ -71,7 +71,9 @@ public class DogloveService {
         return dogloveDAO.mainDogLoveList();
     }
 
-
+    public List<DogloveDTO> getSortedByRecommendation(String sort) {
+        return dogloveDAO.getSortedByRecommendation(sort);
+    }
 }
 
 

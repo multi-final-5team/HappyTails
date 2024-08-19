@@ -59,4 +59,8 @@ public class ScoreService {
 
         return scoreDAO.findPatrolRank();
     }
+
+    public List<ScoreDTO> getSortedByPoliceScore(String sort) {
+        return scoreDAO.getSortedByPoliceScore(sort);
+    }
 }

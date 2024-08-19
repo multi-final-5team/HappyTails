@@ -31,5 +31,5 @@ public interface DogloveDAO {
 
     List<DogloveDTO> mainDogLoveList();
 
-
+    List<DogloveDTO> getSortedByRecommendation(@Param("sort") String sort);
 }

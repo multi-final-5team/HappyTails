@@ -11,25 +11,27 @@
 </head>
 <body>
 <menu th:replace="~{fragments/head :: menu}"></menu>
-<main class="container mt-5">
-    <h1 class="text-center mb-5">아이디 찾기</h1>
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-4 mx-auto">
-            <form id="findUserIdForm">
-                <div class="mb-3">
-                    <label for="name" class="form-label">이름</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+<main>
+    <div class="container mt-5">
+        <h1 class="text-center mb-5">아이디 찾기</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4 mx-auto">
+                <form id="findUserIdForm">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">이름</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">이메일</label>
+                        <input type="email" class="form-control" id="email" name="email" required placeholder="example@domain.com">
+                        <div id="emailError" class="text-danger"></div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">아이디 찾기</button>
+                </form>
+                <div id="result" class="mt-3 text-center" style="display: none;"></div>
+                <div class="text-center mt-3">
+                    <a href="/member/login">취소</a>
                 </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">이메일</label>
-                    <input type="email" class="form-control" id="email" name="email" required placeholder="example@domain.com">
-                    <div id="emailError" class="text-danger"></div>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">아이디 찾기</button>
-            </form>
-            <div id="result" class="mt-3 text-center" style="display: none;"></div>
-            <div class="text-center mt-3">
-                <a href="/member/login">취소</a>
             </div>
         </div>
     </div>
