@@ -102,4 +102,11 @@
         SELECT * FROM TB_SALES_GOODS
         WHERE GOODS_NAME LIKE CONCAT('%', #{keyword}, '%')
     </select>
+
+    <select id="getRandomProducts" resultMap="salesGoodsResultMap">
+        SELECT *
+        FROM TB_SALES_GOODS
+        ORDER BY RAND()
+        LIMIT 3
+    </select>
 </mapper>

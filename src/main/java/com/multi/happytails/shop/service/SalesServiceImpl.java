@@ -1,6 +1,5 @@
 package com.multi.happytails.shop.service;
 
-import com.multi.happytails.community.model.dto.DogloveDTO;
 import com.multi.happytails.shop.model.dao.SalesGoodsDAO;
 import com.multi.happytails.shop.model.dto.SalesGoodsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,4 +70,11 @@ public class SalesServiceImpl implements SalesService {
     public List<SalesGoodsDTO> search(String keyword) {
         return salesGoodsDAO.search(keyword);
     }
+
+    @Override
+    public List<SalesGoodsDTO> getRandomProducts() {
+        return salesGoodsDAO.getRandomProducts();
+    }
+
+
 }
