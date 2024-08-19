@@ -32,7 +32,7 @@ public class ReplyService {
         replyDAO.replyDeleteAll(communityCategoryCode, foreignNo);
     }
 
-    public boolean replyWriter(int communityReplyNo, String writerId) {
+    public boolean isReplyWriter(int communityReplyNo, String writerId) {
         ReplyDTO reply = replyDAO.selectReplyById(communityReplyNo);
         return reply != null && reply.getWriterId().equals(writerId);
     }
@@ -47,6 +47,7 @@ public class ReplyService {
 
         replyDAO.updateReply(communityReplyNo, content);
     }
+
 }
 
 

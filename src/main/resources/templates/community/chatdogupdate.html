@@ -43,7 +43,7 @@
             </div>
             <div class="mb-3">
                 <label for="imageInput" class="form-label">새 이미지 추가</label>
-                <input type="file" id="imageInput" name="imageFiles" multiple class="form-control">
+                <input type="file" id="imageInput" name="imageFiles" multiple class="form-control" accept="image/*">
             </div>
             <div id="imgContainer" class="img-container">
                 <div id="imgAddDiv" class="row g-2">
@@ -118,6 +118,8 @@
                     reader.readAsDataURL(file);
                 } else {
                     alert('이미지 파일을 선택해주세요');
+                    imageFiles = imageFiles.filter(f => f !== file);
+
                 }
             }
             $(this).val('');

@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head">
-    <meta charset="UTF-8">
     <title>떠들개 상세 페이지</title>
     <style>
-        /* 깨진 이미지 아이콘 숨기기 */
         img[src=""], img:not([src]) {
             display: none;
         }
@@ -51,15 +49,21 @@
 
     <h3 class="mt-4">🐾 댓글 목록</h3>
     <ul class="reply-list mt-4" style="list-style-type: none; padding: 0;">
-        <li th:each="reply : ${reply}" class="comment-item" th:data-reply-no="${reply.communityReplyNo}" th:data-reply-content="${reply.content}">
+        <li th:each="reply : ${reply}" class="comment-item"
+            th:data-reply-no="${reply.communityReplyNo}"
+            th:data-reply-content="${reply.content}"
+            th:data-is-author="${#authentication.name == reply.writerId}">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <p style="margin: 0;">
                     <strong th:text="${reply.writerId}">작성자</strong>:
                     <span class="reply-content" th:text="${reply.content}">내용</span>
                 </p>
-                <div th:if="${#authentication.name == 'admin' or #authentication.name == reply.writerId}">
-                    <button class="btn btn-sm btn-blue reply-update-btn">✏️ 수정</button>
-                    <button class="btn btn-sm btn-danger reply-delete-btn">🗑️ 삭제</button>
+                <div>
+                    <!-- 관리자 또는 작성자에게 버튼 표시 -->
+                    <th:block th:if="${#authentication.name == 'admin' || #authentication.name == reply.writerId}">
+                        <button th:if="${#authentication.name == reply.writerId}" class="btn btn-sm btn-blue reply-update-btn">✏️ 수정</button>
+                        <button class="btn btn-sm btn-danger reply-delete-btn">🗑️ 삭제</button>
+                    </th:block>
                 </div>
             </div>
             <div class="reply-edit-form" style="display: none; margin-top: 10px;">
@@ -69,6 +73,7 @@
             </div>
         </li>
     </ul>
+
 
     <div class="d-flex justify-content-between mt-4">
         <a href="/community/chatdog" class="btn btn-secondary">🏠 목록으로</a>
@@ -87,111 +92,133 @@
     </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var images = document.getElementsByTagName('img');
-        for (var i = 0; i < images.length; i++) {
-            images[i].onerror = function() {
-                // 이미지 요소의 부모 요소(div)를 찾아 제거
-                var parentDiv = this.closest('.col-md-4');
-                if (parentDiv) {
-                    parentDiv.remove();
-                } else {
-                    this.style.display = 'none';
+        document.addEventListener('DOMContentLoaded', function() {
+            var images = document.getElementsByTagName('img');
+            for (var i = 0; i < images.length; i++) {
+                images[i].onerror = function() {
+                    var parentDiv = this.closest('.col-md-4');
+                    if (parentDiv) {
+                        parentDiv.remove();
+                    } else {
+                        this.style.display = 'none';
+                    }
                 }
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var foreignNo = $('input[name="chatdogNo"]').val();
+
+            // 댓글 수정 버튼 클릭
+            $('.reply-list').on('click', '.reply-update-btn', function() {
+                var $commentItem = $(this).closest('.comment-item');
+                var replyContent = $commentItem.attr('data-reply-content');
+                var $editForm = $commentItem.find('.reply-edit-form');
+
+                $editForm.find('.replyContent').val(replyContent);
+                $editForm.show();
+                $(this).hide();
+            });
+
+            // 댓글 수정 취소
+            $('.reply-list').on('click', '.replyUpdateClose', function() {
+                var $commentItem = $(this).closest('.comment-item');
+                var replyContent = $commentItem.attr('data-reply-content');
+                var $editForm = $commentItem.find('.reply-edit-form');
+
+                $editForm.hide();
+                $commentItem.find('.reply-update-btn').show();
+            });
+
+            // 댓글 수정 제출
+            $('.reply-list').on('click', '.replyUpdateBtn', function() {
+                var $commentItem = $(this).closest('.comment-item');
+                var communityReplyNo = $commentItem.attr('data-reply-no');
+                var content = $commentItem.find('.replyContent').val();
+
+                if (!content.trim()) {
+                    alert('댓글 내용을 입력해주세요.');
+                    return;
+                }
+
+                if (confirm("수정 하시겠습니까?")) {
+                    $.ajax({
+                        url: "/community/C/" + foreignNo + "/reply/update/" + communityReplyNo,
+                        method: 'POST',
+                        data: { content: content },
+                        success: function(result) {
+                            alert(result);
+                            $commentItem.attr('data-reply-content', content);
+                            $commentItem.find('.reply-content').text(content);
+                            $commentItem.find('.reply-edit-form').hide();
+                            $commentItem.find('.reply-update-btn').show();
+                        },
+                        error: function() {
+                            alert('댓글 수정에 실패했습니다. 다시 시도해주세요.');
+                        }
+                    });
+                }
+            });
+
+    $('.reply-list').on('click', '.reply-delete-btn', function() {
+        var $commentItem = $(this).closest('.comment-item');
+        var communityReplyNo = $commentItem.attr('data-reply-no');
+        var isAuthor = $commentItem.attr('data-is-author') === 'true';
+
+        if (confirm('댓글을 삭제하시겠어요?')) {
+            $.ajax({
+                url: "/community/C/" + foreignNo + "/reply/delete/" + communityReplyNo,
+                method: 'POST',
+                dataType: 'json',
+                data: { isAuthor: isAuthor },
+                success: function(result) {
+                    if (result.success) {
+                        $commentItem.remove();
+                        alert(result.message);
+                    } else {
+                        alert(result.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', xhr.responseText);
+                    alert('댓글 삭제 중 오류가 발생했습니다. 다시 시도해주세요.');
+                }
+            });
         }
     });
+
+    // 관리자 댓글 삭제 버튼 클릭 (기존 코드 유지)
+    $('.reply-list').on('click', '.admin-reply-delete-btn', function() {
+        var $commentItem = $(this).closest('.comment-item');
+        var communityReplyNo = $commentItem.attr('data-reply-no');
+
+        if (confirm('관리자 권한으로 이 댓글을 삭제하시겠습니까?')) {
+            $.ajax({
+                url: "/community/C/" + foreignNo + "/reply/delete/" + communityReplyNo,
+                method: 'POST',
+                dataType: 'json',
+                headers: {
+                    'X-ADMIN-ACTION': 'true'  // 관리자 액션임을 나타내는 헤더
+                },
+                success: function(result) {
+                    if (result.success) {
+                        $commentItem.remove();
+                        alert(result.message);
+                    } else {
+                        alert(result.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error:', xhr.responseText);
+                    alert('댓글 삭제 중 오류가 발생했습니다. 다시 시도해주세요.');
+                }
+            });
+        }
+    });
+});
+</script>
+
+
 </script>
 </body>
-<footer th:replace="fragments/head :: footer"></footer>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var images = document.getElementsByTagName('img');
-        for (var i = 0; i < images.length; i++) {
-            images[i].onerror = function() {
-                var parentDiv = this.closest('.col-md-4');
-                if (parentDiv) {
-                    parentDiv.remove();
-                } else {
-                    this.style.display = 'none';
-                }
-            }
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var foreignNo = $('input[name="chatdogNo"]').val();
-
-        // 댓글 수정 버튼 클릭
-        $('.reply-list').on('click', '.reply-update-btn', function() {
-            var $commentItem = $(this).closest('.comment-item');
-            var replyContent = $commentItem.attr('data-reply-content');
-            var $editForm = $commentItem.find('.reply-edit-form');
-
-            $editForm.find('.replyContent').val(replyContent);
-            $editForm.show();
-            $(this).hide();
-        });
-
-        // 댓글 수정 취소
-        $('.reply-list').on('click', '.replyUpdateClose', function() {
-            var $commentItem = $(this).closest('.comment-item');
-            var replyContent = $commentItem.attr('data-reply-content');
-            var $editForm = $commentItem.find('.reply-edit-form');
-
-            $editForm.hide();
-            $commentItem.find('.reply-update-btn').show();
-        });
-
-        // 댓글 수정 제출
-        $('.reply-list').on('click', '.replyUpdateBtn', function() {
-            var $commentItem = $(this).closest('.comment-item');
-            var communityReplyNo = $commentItem.attr('data-reply-no');
-            var content = $commentItem.find('.replyContent').val();
-
-            if (!content.trim()) {
-                alert('댓글 내용을 입력해주세요.');
-                return;
-            }
-
-            if (confirm("수정 하시겠습니까?")) {
-                $.ajax({
-                    url: "/community/C/" + foreignNo + "/reply/update/" + communityReplyNo,
-                    method: 'POST',
-                    data: { content: content },
-                    success: function(result) {
-                        alert(result);
-                        $commentItem.attr('data-reply-content', content);
-                        $commentItem.find('.reply-content').text(content);
-                        $commentItem.find('.reply-edit-form').hide();
-                        $commentItem.find('.reply-update-btn').show();
-                    },
-                    error: function() {
-                        alert('댓글 수정에 실패했습니다. 다시 시도해주세요.');
-                    }
-                });
-            }
-        });
-
-        // 댓글 삭제 버튼 클릭
-        $('.reply-list').on('click', '.reply-delete-btn', function() {
-            var $commentItem = $(this).closest('.comment-item');
-            var communityReplyNo = $commentItem.attr('data-reply-no');
-
-            if (confirm('댓글을 삭제하시겠어요?')) {
-                $.ajax({
-                    url: "/community/L/" + foreignNo + "/reply/delete/" + communityReplyNo,
-                    method: 'POST',
-                    success: function(result) {
-                        alert(result);
-                        $commentItem.remove();
-                    },
-                    error: function() {
-                        alert('댓글 삭제에 실패했습니다. 다시 시도해주세요.');
-                    }
-                });
-            }
-        });
-    });
-</script>
 </html>

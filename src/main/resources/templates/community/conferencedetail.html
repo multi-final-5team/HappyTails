@@ -129,7 +129,6 @@
         var images = document.getElementsByTagName('img');
         for (var i = 0; i < images.length; i++) {
             images[i].onerror = function() {
-                // 이미지 요소의 부모 요소(div)를 찾아 제거
                 var parentDiv = this.closest('.col-md-4');
                 if (parentDiv) {
                     parentDiv.remove();
@@ -160,24 +159,59 @@
    document.addEventListener('DOMContentLoaded', function() {
     var foreignNo = $('input[name="conferenceNo"]').val();
 
+
     // 댓글 수정 버튼 클릭
     $('.reply-list').on('click', '.reply-update-btn', function() {
         var $commentItem = $(this).closest('.comment-item');
-        var writerId = $commentItem.find('strong').text();
-        var currentUser = /* 현재 로그인한 사용자의 ID를 가져오는 로직 */;
-
-        if (currentUser !== writerId) {
-            alert('댓글 작성자만 수정할 수 있습니다.');
-            return;
-        }
-
         var replyContent = $commentItem.attr('data-reply-content');
         var $editForm = $commentItem.find('.reply-edit-form');
 
-        $editForm.find('.replyContent').val(replyContent);
-        $editForm.show();
-        $(this).hide();
-    });
+            $editForm.find('.replyContent').val(replyContent);
+            $editForm.show();
+            $(this).hide();
+        });
+
+        // 댓글 수정 취소
+        $('.reply-list').on('click', '.replyUpdateClose', function() {
+            var $commentItem = $(this).closest('.comment-item');
+            var replyContent = $commentItem.attr('data-reply-content');
+            var $editForm = $commentItem.find('.reply-edit-form');
+
+            $editForm.hide();
+            $commentItem.find('.reply-update-btn').show();
+        });
+
+        // 댓글 수정 제출
+        $('.reply-list').on('click', '.replyUpdateBtn', function() {
+            var $commentItem = $(this).closest('.comment-item');
+            var communityReplyNo = $commentItem.attr('data-reply-no');
+            var content = $commentItem.find('.replyContent').val();
+
+            if (!content.trim()) {
+                alert('댓글 내용을 입력해주세요.');
+                return;
+            }
+
+            if (confirm("수정 하시겠습니까?")) {
+                $.ajax({
+                    url: "/community/O/" + foreignNo + "/reply/update/" + communityReplyNo,
+                    method: 'POST',
+
+                    data: { content: content },
+                    success: function(result) {
+                        alert(result);
+                        $commentItem.attr('data-reply-content', content);
+                        $commentItem.find('.reply-content').text(content);
+                        $commentItem.find('.reply-edit-form').hide();
+                        $commentItem.find('.reply-update-btn').show();
+                    },
+                    error: function() {
+                        alert('댓글 수정에 실패했습니다. 다시 시도해주세요.');
+                    }
+                });
+            }
+        });
+
 
     // 댓글 삭제 버튼 클릭
     $('.reply-list').on('click', '.reply-delete-btn', function() {
@@ -194,7 +228,7 @@
 
         if (confirm('댓글을 삭제하시겠어요?')) {
             $.ajax({
-                url: "/community/L/" + foreignNo + "/reply/delete/" + communityReplyNo,
+                url: "/community/O/" + foreignNo + "/reply/delete/" + communityReplyNo,
                 method: 'POST',
                 success: function(result) {
                     alert(result);
@@ -205,27 +239,6 @@
                 }
             });
         }
-    });
-
-        // 댓글 삭제 버튼 클릭
-        $('.reply-list').on('click', '.reply-delete-btn', function() {
-            var $commentItem = $(this).closest('.comment-item');
-            var communityReplyNo = $commentItem.attr('data-reply-no');
-
-            if (confirm('댓글을 삭제하시겠어요?')) {
-                $.ajax({
-                    url: "/community/L/" + foreignNo + "/reply/delete/" + communityReplyNo,
-                    method: 'POST',
-                    success: function(result) {
-                        alert(result);
-                        $commentItem.remove();
-                    },
-                    error: function() {
-                        alert('댓글 삭제에 실패했습니다. 다시 시도해주세요.');
-                    }
-                });
-            }
-        });
     });
 </script>
 </html>
