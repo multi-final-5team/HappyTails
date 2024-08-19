@@ -22,9 +22,15 @@ public interface PaymentDAO {
 
     PaymentDTO getPaymentDetails(String imPortId);
 
-    int updateRefundStatus(String imPortId);
+    int updateRefundStatus(@Param("paymentNo") int paymentNo);
 
     List<Payment> paymentList(String username);
 
-    int updatePartialRefundStatus(@Param("paymentNo") int paymentNo);;
+    int updatePartialRefundStatus(@Param("paymentNo") int paymentNo);
+
+    PaymentDTO getPaymentByNo(int paymentNo);
+
+    void updateDelivery(int paymentNo);
+
+    void deliveryState(@Param("paymentNo") int paymentNo, @Param("delivery_code")String deliveryCode);
 }

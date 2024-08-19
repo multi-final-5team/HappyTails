@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>배송 상태 변경</title>
+    <link rel="stylesheet" href="/css/popup.css">
+</head>
+<body>
+<div class="container">
+    <h1>배송 상태 변경</h1>
+    <form id="updateDeliveryForm">
+        <div class="form-group">
+            <label for="deliveryCodeSelect">배송 상태</label>
+            <select class="form-control" id="deliveryCodeSelect" name="deliveryCode">
+                <option value="P" th:selected="${deliveryCode == 'P'}">배송 준비</option>
+                <option value="D" th:selected="${deliveryCode == 'D'}">배송 중</option>
+                <option value="S" th:selected="${deliveryCode == 'S'}">배송 완료</option>
+                <option value="C" th:selected="${deliveryCode == 'C'}">환불 대기</option>
+                <option value="R" th:selected="${deliveryCode == 'R'}">환불 완료</option>
+            </select>
+        </div>
+        <input type="hidden" id="paymentNo" name="paymentNo" th:value="${paymentNo}">
+        <button type="button" class="btn btn-primary" onclick="saveDeliveryCode()">저장</button>
+    </form>
+</div>
+
+<script>
+    // 배송 상태 저장 함수
+    function saveDeliveryCode() {
+        var paymentNo = document.getElementById('paymentNo').value;
+        var deliveryCode = document.getElementById('deliveryCodeSelect').value;
+
+        // 서버로 데이터 전송 (예제에서는 POST 요청)
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/payment/updateDeliveryCode", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                alert('배송 상태가 업데이트되었습니다.');
+                window.opener.location.reload(); // 부모 창 새로고침
+                window.close(); // 팝업 창 닫기
+            }
+        };
+        xhr.send("paymentNo=" + paymentNo + "&deliveryCode=" + deliveryCode);
+    }
+</script>
+</body>
+</html>

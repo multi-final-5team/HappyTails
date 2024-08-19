@@ -3,60 +3,49 @@
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        .image-container::after {
-            display: none;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        input {
-            padding: 10px;
-            width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #ff9999;
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #ff6666;
-        }
-        .certificate {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            border: 2px solid #ff9999;
-            border-radius: 10px;
-            background-color: #fff5f5;
-        }
-        .certificate h4 {
-            margin-top: 0;
-        }
-    </style>
 </head>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
 <div class="container">
-    <h1>댕댕이 등록증 만들기</h1>
-    <h3>동물 등록 번호를 간편하게 조회하고 댕댕이 등록증을 만들어보세요!</h3>
+    <h1>댕댕이 신분증 만들기</h1>
+    <h3>동물 등록 번호로 간편하게 조회하고 댕댕이 신분증을 만들어보세요!</h3>
+    <h3>동물 등록 번호가 없다면? 우리 댕댕이를 위해 직접 작성해보세요!</h3>
 
-    <div class="form-group">
-        <input type="text" id="dogRegNo" placeholder="동물등록번호" required>
+    <div class="tab-container">
+        <button onclick="showTab('api')">API 조회</button>
+        <button onclick="showTab('manual')">직접 만들기</button>
     </div>
-    <div class="form-group">
-        <input type="text" id="ownerNm" placeholder="견주 이름" required>
-    </div>
-    <button onclick="lookUp()">조회</button>
 
-    <div id="certificate" class="certificate">
+    <div id="apiForm">
+        <div class="form-group">
+            <input type="text" id="dogRegNo" placeholder="동물등록번호" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="ownerNm" placeholder="견주 이름" required>
+        </div>
+        <button onclick="lookUp()">조회</button>
+    </div>
+
+    <div id="manualForm" style="display: none;">
+        <div class="form-group">
+            <input type="text" id="manualDogRegNo" placeholder="동물등록번호" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="manualDogNm" placeholder="강아지 이름" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="manualKindNm" placeholder="품종" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="manualSexNm" placeholder="성별" required>
+        </div>
+        <div class="form-group">
+            <input type="text" id="manualNeuterYn" placeholder="중성화 여부 (Y/N)" required>
+        </div>
+        <button onclick="createManualCertificate()">등록증 만들기</button>
+    </div>
+
+    <div id="certificate" style="display: none;">
         <h4>댕댕이 등록증</h4>
         <p><strong>이름:</strong> <span id="dogNm"></span></p>
         <p><strong>등록 번호:</strong> <span id="dogRegNoDisplay"></span></p>
@@ -67,7 +56,14 @@
         <button id="createCertificateBtn" onclick="createCertificate()" disabled>신분증 만들기</button>
     </div>
 </div>
+<footer th:replace="fragments/head :: footer"></footer>
+
 <script>
+    function showTab(tabName) {
+        document.getElementById('apiForm').style.display = tabName === 'api' ? 'block' : 'none';
+        document.getElementById('manualForm').style.display = tabName === 'manual' ? 'block' : 'none';
+    }
+
     function lookUp() {
         var dogRegNo = document.getElementById('dogRegNo').value;
         var ownerNm = document.getElementById('ownerNm').value;
@@ -111,8 +107,30 @@
         xhr.send();
     }
 
+    function createManualCertificate() {
+        var dogRegNo = document.getElementById('manualDogRegNo').value;
+        var dogNm = document.getElementById('manualDogNm').value;
+        var kindNm = document.getElementById('manualKindNm').value;
+        var sexNm = document.getElementById('manualSexNm').value;
+        var neuterYn = document.getElementById('manualNeuterYn').value;
+
+        if (!dogRegNo || !dogNm || !kindNm || !sexNm || !neuterYn) {
+            alert('모든 항목을 입력해 주세요.');
+            return;
+        }
+
+        document.getElementById('dogNm').innerText = dogNm;
+        document.getElementById('dogRegNoDisplay').innerText = dogRegNo;
+        document.getElementById('kindNm').innerText = kindNm;
+        document.getElementById('sexNm').innerText = sexNm;
+        document.getElementById('neuterYn').innerText = neuterYn;
+
+        document.getElementById('certificate').style.display = 'block';
+        document.getElementById('createCertificateBtn').disabled = false;
+    }
+
     function saveDogNum() {
-        var dogRegNo = document.getElementById('dogRegNo').value;
+        var dogRegNo = document.getElementById('dogRegNoDisplay').innerText;
         var dogNm = document.getElementById('dogNm').innerText;
         var kindNm = document.getElementById('kindNm').innerText;
         var sexNm = document.getElementById('sexNm').innerText;
@@ -132,7 +150,7 @@
         .then(response => response.text())
         .then(message => {
             alert(message);
-            document.getElementById('createCertificateBtn').disabled = false; // 버튼 활성화
+            document.getElementById('createCertificateBtn').disabled = false;
         })
         .catch(error => alert('저장 실패: ' + error));
     }
@@ -153,6 +171,11 @@
 
         window.location.href = url;
     }
+    function checkRegNoLength(input) {
+    if (input.value.length >= 15) {
+        alert("동물등록번호는 최대 15자까지 입력 가능합니다.");
+    }
+}
 </script>
 </body>
 </html>

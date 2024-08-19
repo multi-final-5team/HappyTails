@@ -24,6 +24,7 @@
         <result column="date_created" property="date_created"/>
         <result column="purchaseprice" property="purchaseprice"/>
         <result column="im_port_id" property="imPortId"/>
+        <result column="delivery_code" property="delivery_code"/>
     </resultMap>
 
     <resultMap id="memberResultMap" type="com.multi.happytails.member.model.dto.MemberDTO">
@@ -71,7 +72,15 @@
     </insert>
 
     <select id="selectOrders" resultMap="OrderlistResultMap">
-        SELECT * FROM payment
+        SELECT payment_no, username, productname, productinfo, date_created, purchaseprice, im_port_id,
+            CASE delivery_code
+                WHEN 'P' THEN '배송 준비'
+                WHEN 'D' THEN '배송 중'
+                WHEN 'S' THEN '배송 완료'
+                WHEN 'C' THEN '환불 대기'
+                WHEN 'S' THEN '환불 완료'
+            END AS delivery_code
+        FROM payment
         WHERE refund = 'N'
           AND username = #{id}
         ORDER BY date_created DESC
@@ -107,6 +116,8 @@
         <result property="date_created" column="date_created"/>
         <result property="refund" column="refund"/>
         <result property="imPortId" column="im_port_id"/>
+        <result property="refund_date" column="refund_date"/>
+        <result property="delivery_code" column="delivery_code"/>
         <collection property="cartItems" ofType="com.multi.happytails.shop.model.dto.CartDTO">
             <result property="goodsNo" column="goods_no"/>
             <result property="goodsName" column="goods_name"/>
@@ -125,8 +136,8 @@
     <update id="updateRefundStatus" parameterType="com.multi.happytails.shop.model.dto.OrderlistDTO">
         UPDATE payment
         SET refund = 'Y',
-            refund_date = NOW()
-        WHERE im_port_id = #{imPortId}
+        refund_date = NOW()
+        WHERE payment_no = #{paymentNo}
     </update>
 
     <select id="paymentList" resultMap="paymentDetailsResultMap">
@@ -138,6 +149,26 @@
         UPDATE payment
         SET refund = 'Y',
         refund_date = NOW()
+        WHERE payment_no = #{paymentNo}
+    </update>
+
+    <select id="getPaymentByNo" resultMap="paymentDetailsResultMap">
+        SELECT *
+        FROM payment
+        WHERE payment_no = #{paymentNo}
+    </select>
+
+    <update id="updateDelivery" parameterType="com.multi.happytails.shop.model.dto.PaymentDTO">
+        UPDATE PAYMENT
+        SET
+        DELIVERY_CODE = 'C'
+        WHERE
+        PAYMENT_NO = #{payment_no}
+    </update>
+
+    <update id="deliveryState">
+        UPDATE payment
+        SET delivery_code = #{delivery_code}
         WHERE payment_no = #{paymentNo}
     </update>
 </mapper>

@@ -1,47 +1,9 @@
-// 전역 변수 선언
 let currentPage = 1;
 const itemsPerPage = 3;
 let filteredOrders = [];
 let totalItems = 0;
 
-// DOM이 로드된 후 실행될 함수
-document.addEventListener('DOMContentLoaded', function() {
-    // 검색 버튼 이벤트 리스너 추가
-    document.getElementById('searchButton').addEventListener('click', searchOrders);
-    document.getElementById('searchInput').addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-            searchOrders();
-        }
-    });
-
-    // 주문 취소 버튼에 이벤트 리스너 추가
-    document.querySelectorAll('.cancel-button').forEach(button => {
-        button.addEventListener('click', function() {
-            const imPortId = this.getAttribute('data-imp-uid');
-            const amount = this.getAttribute('data-amount');
-            cancelOrder(imPortId, amount);
-        });
-    });
-
-    // 부분 취소 버튼에 이벤트 리스너 추가
-    const partialCancelButtons = document.querySelectorAll('.partial-cancel-btn');
-    partialCancelButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const paymentNo = parseInt(this.dataset.paymentNo);
-            const imPortId = this.dataset.impUid;
-            const productname = this.dataset.productname;
-            const price = parseFloat(this.dataset.price);
-            const quantity = parseInt(this.dataset.quantity);
-            partialCancelPayment(paymentNo, imPortId, productname, price, quantity);
-        });
-    });
-
-    updateTotalItemsCount();
-    displayPage(currentPage);
-    updatePagination();
-});
-
-function cancelOrder(imPortId, amount) {
+function cancelOrder(paymentNo, imPortId, amount) {
     if (confirm('정말로 주문을 취소하시겠습니까?')) {
         fetch('/payment/cancel', {
             method: 'POST',
@@ -49,6 +11,7 @@ function cancelOrder(imPortId, amount) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
+                paymentNo: paymentNo,
                 imPortId: imPortId,
                 amount: parseFloat(amount)
             }),
@@ -66,30 +29,6 @@ function cancelOrder(imPortId, amount) {
                 console.error('Error:', error);
                 alert('주문 취소 중 오류가 발생했습니다.');
             });
-    }
-}
-
-async function partialCancelPayment(paymentNo, imPortId, productname, price, quantity) {
-    if (confirm(`${productname} 상품의 결제를 취소하시겠습니까?`)) {
-        try {
-            const response = await axios.post('/payment/partialCancel', {
-                paymentNo: paymentNo,
-                imPortId: imPortId,
-                productname: productname,
-                price: price,
-                quantity: quantity
-            });
-
-            if (response.data.success) {
-                alert("부분 취소가 성공적으로 처리되었습니다.");
-                location.reload(); // 페이지 새로고침
-            } else {
-                alert("부분 취소 처리 중 오류가 발생했습니다: " + response.data.message);
-            }
-        } catch (error) {
-            console.error("부분 취소 처리 중 오류 발생:", error);
-            alert("부분 취소 처리 중 오류가 발생했습니다.");
-        }
     }
 }
 
@@ -178,3 +117,29 @@ function updatePagination() {
     };
     paginationElement.appendChild(nextButton);
 }
+
+function initEventListeners() {
+    document.getElementById('searchButton').addEventListener('click', searchOrders);
+    document.getElementById('searchInput').addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            searchOrders();
+        }
+    });
+
+    // 주문 취소 버튼에 이벤트 리스너 추가
+    document.querySelectorAll('.cancel-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const paymentNo = this.getAttribute('data-payment-no');
+            const imPortId = this.getAttribute('data-imp-uid');
+            const amount = this.getAttribute('data-amount');
+            cancelOrder(paymentNo, imPortId, amount);
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initEventListeners();
+    updateTotalItemsCount();
+    displayPage(currentPage);
+    updatePagination();
+});
