@@ -5,9 +5,9 @@
     <title>떠들개 글쓰기</title>
     <style>
         .img-preview {
-            width: 150px; /* 원하는 너비로 설정 */
-            height: 150px; /* 원하는 높이로 설정 */
-            object-fit: cover; /* 이미지 비율을 유지하며 크기에 맞게 조정 */
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -32,9 +32,10 @@
                 <input type="file" id="imageInput" multiple class="form-control">
             </div>
             <div id="imgAddDiv" class="row g-2">
-                <!-- 이미지 미리보기 -->
             </div>
-            <button type="submit" class="btn btn-primary mt-3" onsubmit="return confirm('게시글을 저장할까요?');">저장하기</button>
+            <div class="text-end mt-3">
+                <button type="submit" class="btn btn-primary" onsubmit="return confirm('게시글을 저장할까요?');">저장하기</button>
+            </div>
         </form>
     </div>
 </div>
@@ -84,8 +85,6 @@
                imageFiles.forEach(file => {
                    formData.append('imageFiles', file);
                });
-
-
          $.ajax({
                    url: "/community/chatdog",
                    processData: false,
@@ -102,6 +101,7 @@
                });
            });
        });
+
 </script>
 <footer th:replace="fragments/head :: footer"></footer>
 </html>

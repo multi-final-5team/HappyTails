@@ -81,7 +81,7 @@ public class dog4cutsController {
 
     @GetMapping(value="findAllDog4Cuts", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public Dog4CutsImgDTO findAllDog4Cuts(Model model , @AuthenticationPrincipal CustomUser customUser){
+    public Dog4CutsImgDTO findAllDog4Cuts(Model model){
 
         List<UploadDto> uploadDtos = new ArrayList<>();
 

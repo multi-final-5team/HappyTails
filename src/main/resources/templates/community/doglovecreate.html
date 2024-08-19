@@ -5,9 +5,9 @@
     <title>내 새꾸 자랑 글쓰기</title>
     <style>
         .img-preview {
-          width: 150px; /* 원하는 너비로 설정 */
-          height: 150px; /* 원하는 높이로 설정 */
-          object-fit: cover; /* 이미지 비율을 유지하며 크기에 맞게 조정 */
+          width: 150px;
+          height: 150px;
+          object-fit: cover;
       }
     </style>
 </head>
@@ -32,15 +32,15 @@
                 <input type="file" id="imageInput" multiple class="form-control">
             </div>
             <div id="imgAddDiv" class="row g-2">
-                <!-- 이미지 미리보기 -->
             </div>
-            <button type="submit" class="btn btn-primary mt-3" onsubmit="return confirm('게시글을 저장할까요?');">저장하기</button>
+            <div class="text-end mt-3">
+                <button type="submit" class="btn btn-primary" onsubmit="return confirm('게시글을 저장할까요?');">저장하기</button>
+            </div>
         </form>
     </div>
 </div>
 
 <a href="/community/doglove" class="btn btn-secondary mt-3">🏠 목록으로</a>
-
 </body>
 <script>
     $(document).ready(function() {
@@ -75,16 +75,22 @@
             formData.append('title', title);
             formData.append('content', content);
 
+            // 제목과 내용이 비어 있는지 확인
             if (title.trim() === '' || content.trim() === '') {
-            alert('제목과 내용은 필수 입력 항목입니다.');
-            return;
+                alert('제목과 내용은 필수 입력 항목입니다.');
+                return;
+            }
+            //내 새꾸 자랑에만
+            if (imageFiles.length === 0) {
+                alert('이미지는 필수 첨부입니다.');
+                return;
             }
 
             imageFiles.forEach(file => {
                 formData.append('imageFiles', file);
             });
 
-      $.ajax({
+            $.ajax({
                 url: "/community/doglove",
                 processData: false,
                 contentType: false,
@@ -102,5 +108,4 @@
     });
 </script>
 <footer th:replace="fragments/head :: footer"></footer>
-
 </html>

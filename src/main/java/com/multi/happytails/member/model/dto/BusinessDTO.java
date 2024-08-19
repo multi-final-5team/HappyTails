@@ -15,5 +15,6 @@ public class BusinessDTO {
     private String businessTel;    // 대표 번호
     private String businessNumber; // 사업자 번호(유니크)
     private String businessAddress;   // 업장주소
+    private String businessRegistrationFlag;    // 사업자 등록 상태 여부
 
 }

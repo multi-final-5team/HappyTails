@@ -143,69 +143,89 @@
 </body>
 <footer th:replace="fragments/head :: footer"></footer>
 <script>
-    // 댓글 수정 버튼 Start
-       $('#tableDiv').on('click','.reply-update-btn',function(){
+    document.addEventListener('DOMContentLoaded', function() {
+        var images = document.getElementsByTagName('img');
+        for (var i = 0; i < images.length; i++) {
+            images[i].onerror = function() {
+                var parentDiv = this.closest('.col-md-4');
+                if (parentDiv) {
+                    parentDiv.remove();
+                } else {
+                    this.style.display = 'none';
+                }
+            }
+        }
+    });
 
-           let findDogContent = $(this).closest('tr').attr('data-reply-content');
-           let contentTd = $(this).closest('tr').find('td:nth-child(3)');
+   document.addEventListener('DOMContentLoaded', function() {
+    var foreignNo = $('input[name="conferenceNo"]').val();
 
-           let htmlStr = `
-               <input type="text" class="replyContent" value="`+findDogContent+`">
-               <input type="button" value="작성" class="replyUpdateBtn">
-               <input type="button" value="취소" class="replyUpdateClose">
-           `;
+    // 댓글 수정 버튼 클릭
+    $('.reply-list').on('click', '.reply-update-btn', function() {
+        var $commentItem = $(this).closest('.comment-item');
+        var writerId = $commentItem.find('strong').text();
+        var currentUser = /* 현재 로그인한 사용자의 ID를 가져오는 로직 */;
 
-           contentTd.html(htmlStr);
+        if (currentUser !== writerId) {
+            alert('댓글 작성자만 수정할 수 있습니다.');
+            return;
+        }
 
-       });
-       // 댓글 수정 버튼 End
+        var replyContent = $commentItem.attr('data-reply-content');
+        var $editForm = $commentItem.find('.reply-edit-form');
 
-       // 댓글 수정 취소 버튼 Start
-       $('#tableDiv').on('click','.replyUpdateClose',function() {
-           let contentTd = $(this).closest('tr').find('td:nth-child(3)');
-           let findDogContent = $(this).closest('tr').attr('data-reply-content');
+        $editForm.find('.replyContent').val(replyContent);
+        $editForm.show();
+        $(this).hide();
+    });
 
-           contentTd.html(findDogContent);
-       });
-       // 댓글 수정 취소 버튼 End
+    // 댓글 삭제 버튼 클릭
+    $('.reply-list').on('click', '.reply-delete-btn', function() {
+        var $commentItem = $(this).closest('.comment-item');
+        var communityReplyNo = $commentItem.attr('data-reply-no');
+        var writerId = $commentItem.find('strong').text();
+        var currentUser = /* 현재 로그인한 사용자의 ID를 가져오는 로직 */;
+        var isAdmin = /* 현재 사용자가 관리자인지 확인하는 로직 */;
 
-       // 댓글 수정 작성 버튼 Start
-       $('#tableDiv').on('click','.replyUpdateBtn',function() {
-           let findDogReplyNo = $(this).closest('tr').attr('data-reply-no');
-           let content = $(this).closest('tr').find('.replyContent').val();
+        if (currentUser !== writerId && !isAdmin) {
+            alert('댓글 작성자나 관리자만 삭제할 수 있습니다.');
+            return;
+        }
 
-           let dataArr = [content];
+        if (confirm('댓글을 삭제하시겠어요?')) {
+            $.ajax({
+                url: "/community/L/" + foreignNo + "/reply/delete/" + communityReplyNo,
+                method: 'POST',
+                success: function(result) {
+                    alert(result);
+                    $commentItem.remove();
+                },
+                error: function() {
+                    alert('댓글 삭제에 실패했습니다. 다시 시도해주세요.');
+                }
+            });
+        }
+    });
 
-           let result = handleNullInArray(dataArr);
+        // 댓글 삭제 버튼 클릭
+        $('.reply-list').on('click', '.reply-delete-btn', function() {
+            var $commentItem = $(this).closest('.comment-item');
+            var communityReplyNo = $commentItem.attr('data-reply-no');
 
-           if (result == 0) {
-               alert('값이 비어있습니다.');
-               return;
-           }
-
-           let formData = new FormData();
-
-           formData.append('findDogReplyNo',findDogReplyNo);
-           formData.append('content',content);
-
-
-           if (confirm("수정 하시겠습니까?")) {
-              $.ajax({
-                   url : "/finddog/replyUpdate",
-                   processData : false,
-                   contentType : false,
-                   type : 'POST',
-                   data : formData,
-                   success: function (result) {
-                       alert(result);
-                       location.reload();
-                   }
-               });
-           }
-
-
-       });
-       // 댓글 수정 작성 버튼 End
-
+            if (confirm('댓글을 삭제하시겠어요?')) {
+                $.ajax({
+                    url: "/community/L/" + foreignNo + "/reply/delete/" + communityReplyNo,
+                    method: 'POST',
+                    success: function(result) {
+                        alert(result);
+                        $commentItem.remove();
+                    },
+                    error: function() {
+                        alert('댓글 삭제에 실패했습니다. 다시 시도해주세요.');
+                    }
+                });
+            }
+        });
+    });
 </script>
 </html>

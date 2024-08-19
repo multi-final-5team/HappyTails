@@ -97,6 +97,5 @@ public interface SalesService {
 
     List<SalesGoodsDTO> search(String keyword);
 
-
     List<SalesGoodsDTO> getRandomProducts();
 }

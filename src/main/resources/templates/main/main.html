@@ -30,32 +30,32 @@
             <div class="col">
                 <table class="table table-sm">
                     <thead>
-                    <tr>
-                        <h2>이 달의 인기글 (추천수)</h2>
-                    </tr>
+                        <tr>
+                            <h2>이 달의 인기글 (추천수)</h2>
+                        </tr>
                     </thead>
                     <tbody>
-                    <th:block th:each="chatDogDTO, stat : ${chatDogUpList}">
-                        <tr>
-                            <th:block th:if="${chatDogStoredImages.get(stat.index)} != ''">
-                                <td>
-                                    <img th:src="@{/images/C/{file}(file=${chatDogStoredImages.get(stat.index)})}" alt="Main-logo" width="100px" height="100px">
+                        <th:block th:each="chatDogDTO, stat : ${chatDogUpList}">
+                            <tr>
+                                <th:block th:if="${chatDogStoredImages.get(stat.index)} != ''">
+                                    <td>
+                                        <img th:src="@{/images/C/{file}(file=${chatDogStoredImages.get(stat.index)})}" alt="Main-logo" width="100px" height="100px">
+                                    </td>
+                                </th:block>
+                                <th:block th:if="${chatDogStoredImages.get(stat.index)} == ''">
+                                    <td>
+                                        <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="100px" height="100px">
+                                    </td>
+                                </th:block>
+                                <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
+                                    <!--                            14px 0px 0px 0px;">-->
+                                    <a th:href="@{/community/chatdog/{chatdogNo}(chatdogNo=${chatDogDTO.chatdogNo})}">
+                                        <p th:text="${chatDogDTO.title}"></p>
+                                    </a>
+                                    <p th:text="${chatDogDTO.userId}"></p>
                                 </td>
-                            </th:block>
-                            <th:block th:if="${chatDogStoredImages.get(stat.index)} == ''">
-                                <td>
-                                    <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="100px" height="100px">
-                                </td>
-                            </th:block>
-                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">
-                                <!--                            14px 0px 0px 0px;">-->
-                                <a th:href="@{/community/chatdog/{chatdogNo}(chatdogNo=${chatDogDTO.chatdogNo})}">
-                                    <p th:text="${chatDogDTO.title}"></p>
-                                </a>
-                                <p th:text="${chatDogDTO.userId}"></p>
-                            </td>
-                        </tr>
-                    </th:block>
+                            </tr>
+                        </th:block>
 
                     </tbody>
                 </table>
@@ -79,29 +79,29 @@
                     </div>
                 </div>
 
-                <!--                <table class="table table-sm">-->
-                <!--                    <thead>-->
-                <!--                        <tr>-->
-                <!--                            <h2>뉴스</h2>-->
-                <!--                        </tr>-->
-                <!--                    </thead>-->
-                <!--                    <tbody th:each="item, stat  : ${rssNews}" th:if="${stat.index < 5}" >-->
-                <!--                        <tr>-->
+<!--                <table class="table table-sm">-->
+<!--                    <thead>-->
+<!--                        <tr>-->
+<!--                            <h2>뉴스</h2>-->
+<!--                        </tr>-->
+<!--                    </thead>-->
+<!--                    <tbody th:each="item, stat  : ${rssNews}" th:if="${stat.index < 5}" >-->
+<!--                        <tr>-->
 
-                <!--                            <td>-->
-                <!--                                <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="100px">-->
-                <!--                            </td>-->
-                <!--                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">-->
-                <!--                                &lt;!&ndash;                            14px 0px 0px 0px;">&ndash;&gt;-->
-                <!--                                <a th:href="${item.link}">-->
-                <!--                                <p th:text="${item.title}"></p>-->
-                <!--                                </a>-->
-                <!--                                <p th:text="${item.pubDate}"></p>-->
-                <!--                            </td>-->
-                <!--                        </tr>-->
+<!--                            <td>-->
+<!--                                <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="Main-logo" width="100px">-->
+<!--                            </td>-->
+<!--                            <td class="d-flex flex-column justify-content-center align-items-center" style="height: 110px; margin: auto;">-->
+<!--                                &lt;!&ndash;                            14px 0px 0px 0px;">&ndash;&gt;-->
+<!--                                <a th:href="${item.link}">-->
+<!--                                <p th:text="${item.title}"></p>-->
+<!--                                </a>-->
+<!--                                <p th:text="${item.pubDate}"></p>-->
+<!--                            </td>-->
+<!--                        </tr>-->
 
-                <!--                    </tbody>-->
-                <!--                </table>-->
+<!--                    </tbody>-->
+<!--                </table>-->
             </div>
         </div>
         <br>

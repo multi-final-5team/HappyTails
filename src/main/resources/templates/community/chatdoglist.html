@@ -9,17 +9,14 @@
             background-color: #FFF5EE;
             background-image: url('paw-pattern.png');
         }
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: 0.3s;
-            background-color: white;
-        }
-        .card:hover {
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        .table th, .table td {
+            vertical-align: middle;
         }
         .btn {
             border-radius: 20px;
+        }
+        .text-muted {
+            color: #6c757d;
         }
     </style>
 </head>
@@ -29,51 +26,81 @@
 <h1 class="mb-4 text-center">🐾 떠들개 게시판 🐾</h1>
 <h3 class="mb-4 text-center">견주들과 자유롭게 얘기하시개! 🐶</h3>
 
-<!-- 추천순/최신순 / 새 글 작성  -->
+<!-- 추천순/최신순 / 새 글 작성 -->
 <div class="d-flex justify-content-between mb-3">
     <div>
         <form action="/community/chatdog" method="get" class="d-inline me-2">
             <input type="hidden" name="sort" value="date"/>
+            <input type="hidden" name="keyword" th:value="${keyword}"/>
             <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'date' ? '🐶 최신순(현재)' : '🐶 최신순'}"></button>
         </form>
         <form action="/community/chatdog" method="get" class="d-inline">
             <input type="hidden" name="sort" value="recommendCount"/>
+            <input type="hidden" name="keyword" th:value="${keyword}"/>
             <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'recommendCount' ? '❤️ 추천순(현재)' : '❤️ 추천순'}"></button>
         </form>
     </div>
-    <!-- 검색 폼 추가 -->
-    <div class="mb-4">
-        <form action="/community/chatdog/search" method="get" class="d-flex">
-            <input type="text" name="keyword" class="form-control me-2" placeholder="제목을 입력하세요" aria-label="검색">
-            <button type="submit" class="btn btn-outline-success">🔎</button>
-        </form>
-    </div>
+    <!-- 검색 -->
+    <form action="/community/chatdog" method="get" class="d-flex">
+        <input type="hidden" name="sort" th:value="${sort}">
+        <input type="text" name="keyword" class="form-control me-2" placeholder="제목을 입력하세요" aria-label="검색" th:value="${keyword}">
+        <button type="submit" class="btn btn-outline-success">🔎</button>
+    </form>
     <div>
         <a href="/community/chatdog/create" onclick="return checkLogin()" class="btn btn-primary btn-sm me-2">🦴 새 글 작성하기</a>
     </div>
 </div>
 
-<!-- 게시글 목록 (카드 형식) -->
-<div class="row">
-    <div class="col-md-4 mb-4" th:each="chatdog : ${chatdog}">
-        <div class="card">
-            <div class="card-body">
-                <p class="card-text"><small class="text-muted">게시글 번호: <span class="badge bg-secondary" th:text="${chatdog.chatdogNo}"></span></small></p>
-                <div th:if="${chatdogImages != null and chatdogImages.get(chatdog.chatdogNo) != null and !chatdogImages.get(chatdog.chatdogNo).empty}" class="mb-3">
-                    <img th:src="@{/images/C/{file}(file=${chatdogImages.get(chatdog.chatdogNo)[0].storedFileName})}" class="img-fluid rounded" alt="대표 이미지">
-                </div>
-                <h5 class="card-title" th:text="${chatdog.title}"></h5>
-                <h6 class="card-subtitle mb-2 text-muted" th:text="${chatdog.userId}"></h6>
-                <p class="card-text" th:text="${#strings.abbreviate(chatdog.content, 50)}"></p>
-                <p class="card-text"><small class="text-muted" th:text="${#temporals.format(chatdog.createTime, 'yyyy-MM-dd')}"></small></p>
-                <a th:href="@{/community/chatdog/{chatdogNo}(chatdogNo=${chatdog.chatdogNo})}" class="btn btn-sm btn-outline-primary">자세히 보기</a>
-                <span class="badge bg-primary float-end" th:text="${chatdog.recommendCount + ' ❤️'}"></span>
-                <div th:if="${#authentication.name == 'admin'}" class="mt-2">
-                    <a th:href="@{/chatdog/delete/{chatdogNo}(chatdogNo=${chatdog.chatdogNo})}" class="btn btn-sm btn-danger"  onclick="return confirmDelete();" >삭제</a>
-                </div>
+<!-- 게시글 목록 (테이블 형식) -->
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th> </th>
+        <th>제목</th>
+        <th>작성자</th>
+        <th>내용</th>
+        <th>작성일</th>
+        <th>추천수</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="chatdog : ${chatdog}">
+        <td th:text="${chatdog.chatdogNo}"></td>
+        <td>
+            <a th:href="@{/community/chatdog/{chatdogNo}(chatdogNo=${chatdog.chatdogNo})}" th:text="${chatdog.title}"></a>
+        </td>
+        <td th:text="${chatdog.userId}"></td>
+        <td th:text="${#strings.abbreviate(chatdog.content, 50)}"></td>
+        <td th:text="${#temporals.format(chatdog.createTime, 'yyyy-MM-dd')}"></td>
+        <td th:text="${chatdog.recommendCount + ' ❤️'}"></td>
+        <td>
+            <div th:if="${#authentication.name == 'admin'}" class="mt-2">
+                <a th:href="@{/chatdog/delete/{chatdogNo}(chatdogNo=${chatdog.chatdogNo})}" class="btn btn-sm btn-danger" onclick="return confirmDelete();">삭제</a>
             </div>
-        </div>
-    </div>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- 페이징 부분 -->
+<div class="d-flex justify-content-center">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/community/chatdog(page=${currentPage - 1}, sort=${sort}, keyword=${keyword})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/community/chatdog(page=${i}, sort=${sort}, keyword=${keyword})}" th:text="${i}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/community/chatdog(page=${currentPage + 1}, sort=${sort}, keyword=${keyword})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 </body>

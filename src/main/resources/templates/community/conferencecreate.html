@@ -33,16 +33,17 @@
                 <input type="file" id="imageInput" multiple class="form-control">
             </div>
             <div id="imgAddDiv" class="row g-2">
-                <!-- 이미지 미리보기 -->
             </div>
-            <button type="submit" class="btn btn-primary mt-3" onsubmit="return confirm('게시글을 저장할까요?');">저장하기</button>
+            <div class="text-end mt-3">
+                <button type="submit" class="btn btn-primary" onsubmit="return confirm('게시글을 저장할까요?');">저장하기</button>
+            </div>
         </form>
     </div>
 </div>
 
 <a href="/community/conference" class="btn btn-secondary mt-3">🏠 목록으로</a>
 
-</body></body>
+</body>
 <script>
     $(document).ready(function() {
         let imageFiles = [];

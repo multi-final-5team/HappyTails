@@ -1,5 +1,9 @@
 package com.multi.happytails.main.service;
 
+import com.multi.happytails.main.dto.RssNewsDTO;
+
+import java.util.List;
+
 /**
  * packageName    : com.multi.happytails.main.service
  * fileName       : MainService

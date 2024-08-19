@@ -2,8 +2,10 @@ package com.multi.happytails.community.service;
 
 import com.multi.happytails.community.model.dao.ChatDogDAO;
 import com.multi.happytails.community.model.dto.ChatDogDTO;
-import com.multi.happytails.community.reply.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,23 +16,24 @@ public class ChatDogService {
     private static final String CATEGORY_CODE = "CHATDOG_CODE";
 
     @Autowired
-    private ReplyService replyService;
+    private ChatDogDAO chatdogDAO;
 
-
-    @Autowired
-    private static ChatDogDAO chatdogDAO;
-
-    public ChatDogService(ChatDogDAO chatdogDAO) { this.chatdogDAO = chatdogDAO; }
-
-    public static List<ChatDogDTO> findAllSortedByDate() {
-        return chatdogDAO.findAll("date");
+    public ChatDogService(ChatDogDAO chatdogDAO) {
+        this.chatdogDAO = chatdogDAO;
     }
 
-    public List<ChatDogDTO> findAllSortedByRecommendation() {
-        return chatdogDAO.findAll("recommendCount");
+    public Page<ChatDogDTO> findAllSortedByDate(int page, int size) {
+        List<ChatDogDTO> chatdog = chatdogDAO.findAll("date", page * size, size);
+        long total = chatdogDAO.countAll();
+        return new PageImpl<>(chatdog, PageRequest.of(page, size), total);
     }
 
-    public ChatDogDTO findById(Long chatdogNo) {
+    public Page<ChatDogDTO> findAllSortedByRecommendation(int page, int size) {
+        List<ChatDogDTO> chatdog = chatdogDAO.findAll("recommendCount", page * size, size);
+        long total = chatdogDAO.countAll();
+        return new PageImpl<>(chatdog, PageRequest.of(page, size), total);    }
+
+    public ChatDogDTO findById(long chatdogNo) {
         return chatdogDAO.findById(chatdogNo);
     }
 
@@ -40,25 +43,34 @@ public class ChatDogService {
         return chatdogDAO.getCurrentChatDogNo();
     }
 
-    public void cdcommendCount(Long chatdogNo, String userId) {
+    public void cdcommendCount(long chatdogNo, String userId) {
         chatdogDAO.cdcommendCount(chatdogNo);
     }
 
-    public List<ChatDogDTO>search(String keyword) {
-        return chatdogDAO.search(keyword);
-    }
-
-    public void delete(Long chatdogNo) {
+    public void delete(long chatdogNo) {
         chatdogDAO.delete(chatdogNo);
     }
-
 
     public int update(ChatDogDTO chatDogDTO) {
         return chatdogDAO.update(chatDogDTO);
 
     }
 
+    public Page<ChatDogDTO> cdsearch(String keyword, int page, int size, String sort) {
+        List<ChatDogDTO> searchResults = chatdogDAO.cdsearch(keyword, sort, page * size, size);
+        long total = chatdogDAO.countChatdogSearch(keyword);
+        return new PageImpl<>(searchResults, PageRequest.of(page, size), total);
+    }
+
+
+
+
+
+
+
     public List<ChatDogDTO> mainChatDogList() {
         return chatdogDAO.mainChatDogList();
     }
+
+
 }
