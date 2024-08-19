@@ -18,10 +18,8 @@ package com.multi.happytails.patrol.controller;
 import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.member.service.MemberService;
-import com.multi.happytails.patrol.model.dto.OnePatrolImgDTO;
-import com.multi.happytails.patrol.model.dto.PatrolDTO;
-import com.multi.happytails.patrol.model.dto.PatrolImgDTO;
-import com.multi.happytails.patrol.model.dto.PrecordPlaceDTO;
+import com.multi.happytails.patrol.model.dto.*;
+import com.multi.happytails.patrol.pageable.service.PageService;
 import com.multi.happytails.patrol.service.PatrolService;
 import com.multi.happytails.score.model.dto.ScoreDTO;
 import com.multi.happytails.score.service.ScoreService;
@@ -29,6 +27,9 @@ import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -65,6 +66,9 @@ public class PatrolController {
 
     @Autowired
     ScoreService scoreService;
+
+    @Autowired
+    PageService pageService;
 
     /**
      * methodName : patrol
@@ -156,17 +160,18 @@ public class PatrolController {
      */
     @GetMapping(value="findAllPatrol", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public PatrolImgDTO findAllPatrol(){
+    public PatrolImgDTO findAllPatrol(@PageableDefault(size = 10) Pageable pageable){
 
         List<UploadDto> uploadDtos = new ArrayList<>();
 
+        PatrolDTO patrolDTO = new PatrolDTO();
 
-        List<PatrolDTO> list = patrolService.findAllPatrol();
+        Page<PatrolDTO> list = pageService.getListPatrol(patrolDTO,pageable);
 
         List<Integer> patrolNoList = new ArrayList<>();
 
-        for (int i = 0; i < list.size(); i++) {
-            patrolNoList.add(list.get(i).getPatrolNo());
+        for (int i = 0; i < list.getContent().size(); i++) {
+            patrolNoList.add(list.getContent().get(i).getPatrolNo());
         }
 
 

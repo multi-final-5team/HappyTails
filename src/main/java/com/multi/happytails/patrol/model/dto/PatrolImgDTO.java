@@ -14,6 +14,7 @@ package com.multi.happytails.patrol.model.dto;
 
 import com.multi.happytails.upload.model.dto.UploadDto;
 import lombok.Data;
+import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,5 +22,5 @@ import java.util.List;
 @Data
 public class PatrolImgDTO {
     List<UploadDto> uploadDtos;
-    List<PatrolDTO> list;;
+    Page<PatrolDTO> list;;
 }

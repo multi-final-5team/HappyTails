@@ -351,13 +351,13 @@ public class PatrolRecordController {
 
         System.out.println("list >> " + list);
 
-//        for(PrecordDTO content : list.getContent()){
-//            MemberDTO memberDTO = memberService.findMemberByUserNo(content.getUserNo());
-//
-//            String userName = memberDTO.getName();
-//
-//            content.setUserId(userName);
-//        }
+        for(PrecordDTO content : list.getContent()){
+            MemberDTO memberDTO = memberService.findMemberByUserNo(content.getUserNo());
+
+            String userName = memberDTO.getName();
+
+            content.setUserId(userName);
+        }
 
         return list;
     }

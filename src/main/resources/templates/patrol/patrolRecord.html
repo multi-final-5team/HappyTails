@@ -44,6 +44,7 @@
     var pageFirst;
     var pageLast;
     var totalPages;
+    var totalElements;
 
 
     $(document).ready(function(){
@@ -60,6 +61,7 @@
             pageFirst = data.first;
             pageLast = data.last;
             totalPages = data.totalPages;
+            totalElements = data.totalElements;
 
             var contentList = data.content;
 
@@ -92,6 +94,12 @@
                 );
             }
 
+            if(page > 9){
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=0">&#166;&laquo;</a></li>'
+                );
+            }
+
             if(!pageFirst){
                 pagePrevious = Number(page) - 1;
                 $('#pageItems').append(
@@ -99,21 +107,43 @@
                 );
             }
 
-            for(let i = 0; i<page + 10; i++){
-	            if(i < totalPages){
-	                pageNext = Number(i) + 1;
-	                if(page != i){
-	                    $('#pageItems').append(
-                            '<li class="page-item"><a class="page-link"href="/patrolRecord/patrolRecord?page=' + i +'">' + pageNext + '</a></li>'
-                        );
+
+            if(page > 9){
+                pageStart = parseInt( page / 10 ) * 10;
+                for(let i = pageStart; i< pageStart + 10; i++){
+	                if(i < totalPages){
+	                    pageNext = Number(i) + 1;
+	                    if(page != i){
+	                        $('#pageItems').append(
+                                '<li class="page-item"><a   class="page-link"href="/patrolRecord/patrolRecord?page=' + i +'">' + pageNext +  '</a></li>'
+                            );
+	                    }
+	                    else{
+	                        $('#pageItems').append(
+                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
+                            );
+	                    }
 	                }
-	                else{
-	                    $('#pageItems').append(
-                            '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
-                        );
-	                }
-	            }
+                }
             }
+            else{
+                for(let i = 0; i<10; i++){
+	                if(i < totalPages){
+	                    pageNext = Number(i) + 1;
+	                    if(page != i){
+	                        $('#pageItems').append(
+                                '<li class="page-item"><a   class="page-link"href="/patrolRecord/patrolRecord?page=' + i +'">' + pageNext +  '</a></li>'
+                            );
+	                    }
+	                    else{
+	                        $('#pageItems').append(
+                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
+                            );
+	                    }
+	                }
+                }
+            }
+
 
             if(!pageLast){
                 pageNext = Number(page) + 1;
@@ -121,6 +151,18 @@
                     '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=' + pageNext + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
                 );
             }
+
+            pageT = parseInt( page / 10 ) * 10;
+            totalPagesT = parseInt( totalPages / 10 ) * 10;
+
+            endTarget = Number(totalPagesT);
+
+            if((totalPages > 10)&&(pageT != totalPagesT)){
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=' + endTarget + '">&raquo;&#166;</a></li>'
+                );
+            }
+
         },
         error: function (xhr){
             console.log(xhr);

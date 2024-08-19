@@ -24,7 +24,10 @@ public class AdminController {
     @RequestMapping("/tables2")
     public void test() {}
 
-    @RequestMapping("/tables1")
-    public void tables1() {}
+    @RequestMapping("/patrolAdmin")
+    public void patrolAdmin() {}
+
+    @RequestMapping("/patrolRecordAdmin")
+    public void patrolRecordAdmin() {}
 
 }

@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.multi.happytails.patrol.pageable.model.dao.BoardDAO">
 
-    <!--테스트 목록 데이터-->
+    <!-- 순찰일지 목록 데이터-->
     <select id="getListPrecord"
             parameterType="com.multi.happytails.patrol.pageable.model.dto.RequestList"
             resultType="com.multi.happytails.patrol.model.dto.PrecordDTO">
@@ -26,7 +26,7 @@
         LIMIT #{pageable.offset} , #{pageable.pageSize}
     </select>
 
-    <!--테스트 목록 카운트 -->
+    <!-- 순찰일지 목록 카운트 -->
     <select id="getListPrecordCount" parameterType="com.multi.happytails.patrol.model.dto.PrecordDTO" resultType="int">
         SELECT COUNT(*)
         FROM tb_precord
@@ -35,6 +35,85 @@
                 AND title LIKE '%'||#{title}||'%'
             </if>
         </where>
+    </select>
+
+
+
+    <!-- 순찰대 페이징 -->
+    <select id="getListPatrol"
+            parameterType="com.multi.happytails.patrol.pageable.model.dto.RequestList"
+            resultType="com.multi.happytails.patrol.model.dto.PatrolDTO">
+        SELECT patrol_no AS patrolNo, user_no AS userNo, name, age, breed, location
+        FROM tb_patrol
+        <!--ORDER BY 절 추가-->
+        <if test="pageable.sort != null and !pageable.sort.isEmpty()">
+            ORDER BY
+            <foreach collection="pageable.sort" item="order" separator=",">
+                ${order.property} ${order.direction}
+            </foreach>
+        </if>
+        <!--페이징 처리-->
+        LIMIT #{pageable.offset} , #{pageable.pageSize}
+    </select>
+
+    <!-- 순찰대 목록 카운트 -->
+    <select id="getListPatrolCount" parameterType="com.multi.happytails.patrol.model.dto.PatrolDTO" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_patrol
+    </select>
+
+
+
+    <!-- 순찰경로 페이징 -->
+    <select id="getListPrecordPlace"
+            parameterType="com.multi.happytails.patrol.pageable.model.dto.RequestList"
+            resultType="com.multi.happytails.patrol.model.dto.PrecordPlaceDTO">
+        SELECT precord_place_no AS precordPlaceNo, precord_no AS precordNo, patrol_no AS patrolNo, precord_total AS precordTotal
+        FROM tb_precord_place
+        WHERE patrol_no = #{data.patrolNo}
+        <!--ORDER BY 절 추가-->
+        <if test="pageable.sort != null and !pageable.sort.isEmpty()">
+            ORDER BY
+            <foreach collection="pageable.sort" item="order" separator=",">
+                ${order.property} ${order.direction}
+            </foreach>
+        </if>
+        <!--페이징 처리-->
+        LIMIT #{pageable.offset} , #{pageable.pageSize}
+    </select>
+
+    <!-- 순찰경로 목록 카운트 -->
+    <select id="getListPrecordPlaceCount" parameterType="com.multi.happytails.patrol.model.dto.PrecordPlaceDTO" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_precord_place
+        WHERE patrol_no = #{patrolNo}
+    </select>
+
+
+
+    <!-- 견생네컷 페이징 -->
+    <select id="getListDog4Cuts"
+            parameterType="com.multi.happytails.patrol.pageable.model.dto.RequestList"
+            resultType="com.multi.happytails.dog4cuts.model.dto.Dog4CutsDTO">
+        SELECT dog4cuts_no AS dog4cutsNo, user_no AS userNo, createtime , publicstate
+        FROM tb_dog4cuts
+        WHERE user_no = #{data.userNo}
+        <!--ORDER BY 절 추가-->
+        <if test="pageable.sort != null and !pageable.sort.isEmpty()">
+            ORDER BY
+            <foreach collection="pageable.sort" item="order" separator=",">
+                ${order.property} ${order.direction}
+            </foreach>
+        </if>
+        <!--페이징 처리-->
+        LIMIT #{pageable.offset} , #{pageable.pageSize}
+    </select>
+
+    <!-- 견생네컷 목록 카운트 -->
+    <select id="getListDog4CutsCount" parameterType="com.multi.happytails.dog4cuts.model.dto.Dog4CutsDTO" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_dog4cuts
+        WHERE user_no = #{userNo}
     </select>
 
 </mapper>
