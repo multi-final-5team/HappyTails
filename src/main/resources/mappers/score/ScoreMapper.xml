@@ -48,5 +48,12 @@
         WHERE no = #{no};
     </delete>
 
+    <select id="getSortedByPoliceScore">
+        SELECT s.*, m.USER_ID
+        FROM TB_SCORE s
+                 LEFT JOIN TB_USERS m ON s.USER_NO = m.USER_NO
+        ORDER BY s.POLICE_SCORE DESC
+            LIMIT 10
+    </select>
 
 </mapper>
