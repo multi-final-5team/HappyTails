@@ -6,11 +6,13 @@ import com.multi.happytails.community.reply.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/community")
@@ -44,36 +46,43 @@ public class ReplyController {
 
 
     @PostMapping("/{communityCategoryCode}/{foreignNo}/reply/delete/{communityReplyNo}")
-    public String deleteReply(@PathVariable String communityCategoryCode,
-                              @PathVariable int foreignNo,
-                              @PathVariable int communityReplyNo,
-                              Principal principal) {
+    @ResponseBody
+    public ResponseEntity<?> deleteUserReply(@PathVariable String communityCategoryCode,
+                                             @PathVariable int foreignNo,
+                                             @PathVariable int communityReplyNo,
+                                             Authentication authentication) {
 
-        String writerId;
-        if (principal instanceof UserDetails) {
-            writerId = ((UserDetails) principal).getUsername();
-        } else {
-            writerId = principal.getName();
+        Map<String, Object> response = new HashMap<>();
+
+        if (authentication == null) {
+            response.put("success", false);
+            response.put("message", "인증되지 않은 사용자입니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
-        if (replyService.replyWriter(communityReplyNo, writerId)) {
-            replyService.deleteReply(communityReplyNo);
-        }
+        String currentUserId = authentication.getName();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-        return "redirect:/community/" + getRedirectUrl(communityCategoryCode) + "/" + foreignNo;
+        try {
+            // 댓글 작성자 확인 또는 관리자 권한 확인
+            if (replyService.isReplyWriter(communityReplyNo, currentUserId) || isAdmin) {
+                replyService.deleteReply(communityReplyNo);
+                response.put("success", true);
+                response.put("message", "댓글이 성공적으로 삭제되었습니다.");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("success", false);
+                response.put("message", "댓글 삭제 권한이 없습니다.");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "댓글 삭제 중 오류가 발생했습니다: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
-   /* // 댓글 수정 처리
-    @PostMapping("/{communityCategoryCode}/{foreignNo}/reply/update/{communityReplyNo}")
-    public String updateReply(
-            @PathVariable String communityCategoryCode,
-            @PathVariable Long foreignNo,
-            @PathVariable int communityReplyNo,
-            @RequestParam String content) {
-
-        replyService.updateReply(communityReplyNo, content);
-        return "redirect:/community/" + getRedirectUrl(communityCategoryCode) + "/" + foreignNo;
-    }*/
 
     @PostMapping("/{communityCategoryCode}/{foreignNo}/reply/update/{communityReplyNo}")
     @ResponseBody
