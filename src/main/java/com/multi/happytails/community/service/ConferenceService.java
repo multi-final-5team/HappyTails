@@ -2,8 +2,10 @@ package com.multi.happytails.community.service;
 
 import com.multi.happytails.community.model.dao.ConferenceDAO;
 import com.multi.happytails.community.model.dto.ConferenceDTO;
-import com.multi.happytails.community.reply.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,23 +16,25 @@ public class ConferenceService {
     private static final String CATEGORY_CODE = "CONFERENCE_CODE";
 
     @Autowired
-    private ReplyService replyService;
-
-
-    @Autowired
     private ConferenceDAO conferenceDAO;
 
-    public ConferenceService(ConferenceDAO conferenceDAO) { this.conferenceDAO = conferenceDAO; }
-
-    public List<ConferenceDTO> findAllSortedByDate() {
-        return conferenceDAO.findAll("date");
+    public ConferenceService(ConferenceDAO conferenceDAO) {
+        this.conferenceDAO = conferenceDAO;
     }
 
-    public List<ConferenceDTO> findAllSortedByRecommendation() {
-        return conferenceDAO.findAll("recommendCount");
+    public Page<ConferenceDTO> findAllSortedByDate(int page, int size) {
+        List<ConferenceDTO> conferences = conferenceDAO.findAll("date", page * size, size);
+        long total = conferenceDAO.countAll();
+        return new PageImpl<>(conferences, PageRequest.of(page, size), total);
     }
 
-    public ConferenceDTO findById(Long conferenceNo) {
+    public Page<ConferenceDTO> findAllSortedByRecommendation(int page, int size) {
+        List<ConferenceDTO> conferences = conferenceDAO.findAll("recommendCount", page * size, size);
+        long total = conferenceDAO.countAll();
+        return new PageImpl<>(conferences, PageRequest.of(page, size), total);
+    }
+
+    public ConferenceDTO findById(long conferenceNo) {
         return conferenceDAO.findById(conferenceNo);
     }
 
@@ -40,20 +44,23 @@ public class ConferenceService {
         return conferenceDAO.getCurrenConferenceNo();
     }
 
-    public void cfcommendCount(Long conferenceNo, String userId) { conferenceDAO.cfcommendCount(conferenceNo);
+    public void cfcommendCount(long conferenceNo, String userId) {
+        conferenceDAO.cfcommendCount(conferenceNo);
     }
 
-    public List<ConferenceDTO>cfsearch(String keyword) {
-        return conferenceDAO.cfsearch(keyword);
-    }
-
-    public void delete(Long conferenceNo) {
+    public void delete(long conferenceNo) {
         conferenceDAO.delete(conferenceNo);
     }
-
 
     public int update(ConferenceDTO conferenceDTO) {
         return conferenceDAO.update(conferenceDTO);
 
     }
+
+    public Page<ConferenceDTO> cfsearch(String keyword, int page, int size, String sort) {
+        List<ConferenceDTO> searchResults = conferenceDAO.cfsearch(keyword, sort, page * size, size);
+        long total = conferenceDAO.countConferenceSearch(keyword);
+        return new PageImpl<>(searchResults, PageRequest.of(page, size), total);
+    }
+
 }

@@ -8,6 +8,7 @@ import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,9 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/community/chatdog")
@@ -42,27 +41,31 @@ public class ChatDogController {
 
     @GetMapping
     public String chatDogList(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
             @RequestParam(value = "sort", defaultValue = "date") String sort,
             @RequestParam(value = "keyword", required = false) String keyword,
             Model model) {
 
-        List<ChatDogDTO> chatdogs;
-        if ("recommendCount".equals(sort)) {
-            chatdogs = chatDogService.findAllSortedByRecommendation();
-        } else {
-            chatdogs = chatDogService.findAllSortedByDate();
-        }
+        Page<ChatDogDTO> chatdogPage;
 
-        Map<Long, List<UploadDto>> chatdogImages = new HashMap<>();
-        for (ChatDogDTO chatdog : chatdogs) {
-            List<UploadDto> imageFiles = uploadService.uploadSelect(IMAGE_CODE, chatdog.getChatdogNo());
-            chatdogImages.put(chatdog.getChatdogNo(), imageFiles);
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            chatdogPage = chatDogService.cdsearch(keyword.trim(), page - 1, size, sort);
+        } else {
+            // 검색어가 없는 경우
+            if ("recommendCount".equals(sort)) {
+                chatdogPage = chatDogService.findAllSortedByRecommendation(page - 1, size);
+            } else {
+                chatdogPage = chatDogService.findAllSortedByDate(page - 1, size);
+            }
         }
 
         model.addAttribute("keyword", keyword);
-        model.addAttribute("chatdog", chatdogs);
-        model.addAttribute("chatdogImages", chatdogImages);
+        model.addAttribute("chatdog", chatdogPage.getContent());
         model.addAttribute("sort", sort);
+        model.addAttribute("currentPage", chatdogPage.getNumber() + 1);
+        model.addAttribute("totalPages", chatdogPage.getTotalPages());
+        model.addAttribute("totalItems", chatdogPage.getTotalElements());
 
         return "community/chatdoglist";
     }
@@ -144,7 +147,7 @@ public class ChatDogController {
 
         chatDogService.delete(chatdogNo);
 
-        replyService.replyDeleteAll("C", chatdogNo);
+        replyService.replyDeleteAll("C", Math.toIntExact(chatdogNo));
 
         List<UploadDto> uploadDtos = uploadService.uploadSelect(IMAGE_CODE, chatdogNo);
 
@@ -243,23 +246,6 @@ public class ChatDogController {
         chatDogService.cdcommendCount(chatdogNo, userId);
         redirectAttributes.addAttribute("chatdogNo", chatdogNo);
         return "redirect:/community/chatdog/{chatdogNo}";
-    }
-
-    @GetMapping("/search")
-    public String search(@RequestParam("keyword") String keyword, Model model) {
-        List<ChatDogDTO> results;
-
-        if (keyword == null || keyword.trim().isEmpty()) {
-            results = chatDogService.findAllSortedByDate();
-        } else {
-            results = chatDogService.search(keyword.trim());
-        }
-
-
-        model.addAttribute("chatdog", results);
-        model.addAttribute("keyword", keyword);
-
-        return "community/chatdoglist";
     }
 
 }

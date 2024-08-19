@@ -5,7 +5,7 @@
 
 <mapper namespace="com.multi.happytails.community.model.dao.DogloveDAO">
 
-    <select id="findAll" parameterType="String" resultType="com.multi.happytails.community.model.dto.DogloveDTO">
+    <select id="findAll" parameterType="map" resultType="com.multi.happytails.community.model.dto.DogloveDTO">
         SELECT
         DOGLOVE_NO AS dogloveNo,
         USER_ID AS userId,
@@ -17,15 +17,19 @@
         RECOMMEND_COUNT AS recommendCount
         FROM TB_DOGLOVE
         <choose>
-            <when test="parameter == 'recommendCount'">
+            <when test="sortOrder == 'recommendCount'">
                 ORDER BY RECOMMEND_COUNT DESC
             </when>
             <otherwise>
                 ORDER BY CREATETIME DESC
             </otherwise>
         </choose>
+        LIMIT #{offset}, #{limit}
     </select>
 
+    <select id="countAll" resultType="long">
+        SELECT COUNT(*) FROM TB_CONFERENCE
+    </select>
 
     <update id="dgRecommendCount">
         UPDATE TB_DOGLOVE
@@ -77,8 +81,24 @@
         LIMIT 1
     </select>
 
-    <select id="search" parameterType="String" resultType="com.multi.happytails.community.model.dto.DogloveDTO">
-        SELECT * FROM TB_DOGLOVE
+    <select id="dlsearch" parameterType="map" resultType="com.multi.happytails.community.model.dto.DogloveDTO">
+        SELECT *
+        FROM TB_DOGLOVE
+        WHERE TITLE LIKE CONCAT('%', #{keyword}, '%')
+        <choose>
+            <when test="sort == 'recommendCount'">
+                ORDER BY RECOMMEND_COUNT DESC
+            </when>
+            <otherwise>
+                ORDER BY CREATETIME DESC
+            </otherwise>
+        </choose>
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="countDogloveSearch" parameterType="string" resultType="long">
+        SELECT COUNT(*)
+        FROM TB_DOGLOVE
         WHERE TITLE LIKE CONCAT('%', #{keyword}, '%')
     </select>
 

@@ -14,7 +14,7 @@ public class DogloveDTO {
     private String content;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
-    private Integer recommendCount;
+    private int recommendCount;
     private String categoryCode;
 
 }
