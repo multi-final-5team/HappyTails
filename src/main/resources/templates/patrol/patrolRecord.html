@@ -7,11 +7,13 @@
 
 </head>
 
-<body class="container mt-5">
+<body>
 
 <menu th:replace="fragments/head :: menu"></menu>
 
 <main>
+
+    <div class="container mt-5">
 
 <h1 class="mb-4">순찰일지</h1>
 
@@ -21,6 +23,8 @@
     </div>
 
     <button class="btn btn-primary" id="goPatrolRecordInsertBtn" sec:authorize="isAuthenticated()">생성</button>
+
+    <button class="btn btn-info" id="" name="" onclick="goPatrolRecordMain()">전체목록</button>
 
 <div id="patrolRecordDiv">
 
@@ -32,6 +36,8 @@
         </ul>
     </nav>
 
+    </div>
+
 </main>
 
 <menu th:replace="fragments/head :: footer"></menu>
@@ -40,6 +46,7 @@
 <script>
     var urlParams = new URL(location.href).searchParams;
     var page = urlParams.get('page');
+    var title = urlParams.get('title');
 
     var pageFirst;
     var pageLast;
@@ -49,6 +56,30 @@
 
     $(document).ready(function(){
 
+        if(title != null){
+            $('#searchinput').val(title);
+            search();
+        }
+        else{
+            normal();
+        }
+
+
+
+        $('#goPatrolRecordInsertBtn').click(function(){
+            location.href = "/patrolRecord/patrolRecordInsert";
+        });
+    });
+
+    function gopatrolRecord(precordNo) {
+        location.href = "/patrolRecord/patrolRecordView?precordNo="+precordNo;
+    }
+
+    function goPatrolRecordMain() {
+        location.href = "/patrolRecord/patrolRecord";
+    }
+
+    function normal(){
         $.ajax({
         type:'get',
         url: "/patrolRecord/findAllPatrolRecord",
@@ -168,62 +199,150 @@
             console.log(xhr);
         }
         }); // $.ajax()
-
-        $('#goPatrolRecordInsertBtn').click(function(){
-            location.href = "/patrolRecord/patrolRecordInsert";
-        });
-    });
-
-    function gopatrolRecord(precordNo) {
-        location.href = "/patrolRecord/patrolRecordView?precordNo="+precordNo;
     }
 
     function search(){
-            var searchword = $('#searchinput').val();
 
-            $.ajax({
-                url:"/patrolRecord/findRecordBySearch",
-                data: {searchword : searchword},
-                success: function (data){
-                $('#patrolRecordDiv').empty();
+        if($('#searchinput').val().length != 0){
+            if(title != $('#searchinput').val()){
+                page = 0;
+                title = $('#searchinput').val();
+                location.href = "/patrolRecord/patrolRecord?page=0" + "&title="+ title;
+            }
+            else{
+                title = $('#searchinput').val();
+            }
+        }
+        else{
+            alert("검색어를 입력해주세요");
+        }
 
 
-                for(let index in data){
+
+        $.ajax({
+        type:'get',
+        url: "/patrolRecord/findAllPatrolRecord",
+        data : {
+		    "page" : page,
+		    "title" : title
+	    },
+        success : function(data){
+            console.log(data);
+
+            pageFirst = data.first;
+            pageLast = data.last;
+            totalPages = data.totalPages;
+            totalElements = data.totalElements;
+
+            var contentList = data.content;
+
+            $('#patrolRecordDiv').empty();
+            $('#pageItems').empty();
+
+            for(let index in contentList){
 
                 $('#patrolRecordDiv').append(
-
                     $('<div>').prop({
                         id: 'precord' + index,
                         className: 'card'
-                        }).attr("onclick", "gopatrolRecord(" + data[index].precordNo + ")")
-                    );
+                        }).attr("onclick", "gopatrolRecord(" + contentList[index].precordNo + ")")
+                );
 
-                    $('#' + 'precord' + index).append(
-                        $('<div>').prop({
-                            id: 'divbody' + index,
-                            className: 'card-body'
-                        })
-                    );
+                $('#' + 'precord' + index).append(
+                    $('<div>').prop({
+                        id: 'divbody' + index,
+                        className: 'card-body'
+                    })
+                );
 
-                    $('#' + 'divbody' + index).append(
-                        '<b class="card-text">글제목: ' + data[index].title + '</b><br>'
-                    );
+                $('#' + 'divbody' + index).append(
+                    '<b class="card-text">글제목: ' + contentList[index].title + '</b><br>'
+                );
 
-                    $('#' + 'divbody' + index).append(
-                        '<sub class="card-text">글쓴이: ' + data[index].userNo + '</sub><br>'
-                    );
+                $('#' + 'divbody' + index).append(
+                    '<sub class="card-text">글쓴이: ' + contentList[index].userId + '</sub><br>'
+                );
 
-                    $('#' + 'divbody' + index).append(
-                        '<sub class="card-text">조회수: ' + data[index].viewcount + '</sub>'
-                    );
+                $('#' + 'divbody' + index).append(
+                    '<sub class="card-text">조회수: ' + contentList[index].viewcount + '</sub>'
+                );
             }
 
-                },
-                error: function (xhr){
-                    console.log(xhr);
+            if(page > 9){
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=0' + '&title='+ title + '">&#166;&laquo;</a></li>'
+                );
+            }
+
+            if(!pageFirst){
+                pagePrevious = Number(page) - 1;
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=' + pagePrevious + '&title=' + title + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
+                );
+            }
+
+
+            if(page > 9){
+                pageStart = parseInt( page / 10 ) * 10;
+                for(let i = pageStart; i< pageStart + 10; i++){
+	                if(i < totalPages){
+	                    pageNext = Number(i) + 1;
+	                    if(page != i){
+	                        $('#pageItems').append(
+                                '<li class="page-item"><a   class="page-link"href="/patrolRecord/patrolRecord?page=' + i +'&title=' + title + '">' + pageNext +  '</a></li>'
+                            );
+	                    }
+	                    else{
+	                        $('#pageItems').append(
+                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
+                            );
+	                    }
+	                }
                 }
-            })
+            }
+            else{
+                for(let i = 0; i<10; i++){
+	                if(i < totalPages){
+	                    pageNext = Number(i) + 1;
+	                    if(page != i){
+	                        $('#pageItems').append(
+                                '<li class="page-item"><a   class="page-link"href="/patrolRecord/patrolRecord?page=' + i +'&title=' + title + '">' + pageNext +  '</a></li>'
+                            );
+	                    }
+	                    else{
+	                        $('#pageItems').append(
+                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
+                            );
+	                    }
+	                }
+                }
+            }
+
+
+            if(!pageLast){
+                pageNext = Number(page) + 1;
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=' + pageNext + '&title=' + title + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
+                );
+            }
+
+            pageT = parseInt( page / 10 ) * 10;
+            totalPagesT = parseInt( totalPages / 10 ) * 10;
+
+            endTarget = Number(totalPagesT);
+
+            if((totalPages > 10)&&(pageT != totalPagesT)){
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=' + endTarget + '&title=' + title + '">&raquo;&#166;</a></li>'
+                );
+            }
+
+        },
+        error: function (xhr){
+            console.log(xhr);
         }
+        }); // $.ajax()
+    }
 </script>
 
 </body>

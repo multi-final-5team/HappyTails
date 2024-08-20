@@ -1,11 +1,18 @@
 package com.multi.happytails.member.service;
 
 
+import com.multi.happytails.dog4cuts.model.dto.Dog4CutsDTO;
 import com.multi.happytails.member.model.dao.MemberDAO;
 import com.multi.happytails.member.model.dto.MemberDTO;
+import com.multi.happytails.patrol.pageable.model.dto.RequestList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class MemberService {
@@ -66,5 +73,23 @@ public class MemberService {
 
     public MemberDTO findMemberByEmail(String email) {
         return memberDAO.findMemberByEmail(email);
+    }
+
+    public Page<MemberDTO> findAllMember(MemberDTO memberDTO, Pageable pageable){
+        // 빌더 패턴으로 data, pageable 파라미터에 데이터 주입
+        RequestList<?> requestList = RequestList.builder()
+                .data(memberDTO)
+                .pageable(pageable)
+                .build();
+
+        List<MemberDTO> content = memberDAO.getListMember(requestList);
+        int total = memberDAO.getListMemberCount(memberDTO);
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    public int updateMemberRole(MemberDTO memberDTO) {
+
+        return memberDAO.updateMemberRole(memberDTO);
     }
 }

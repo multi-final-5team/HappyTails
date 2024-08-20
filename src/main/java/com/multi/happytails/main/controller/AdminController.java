@@ -127,6 +127,10 @@ public class AdminController {
         return "/admin/dogLoveAdmin";
     }
 
+
+    @RequestMapping("/memberRoleAdmin")
+    public void memberRoleAdmin() {}
+
     @RequestMapping("/chatdogAdmin")
     public String chatdogAdmin(
             @RequestParam(value = "page", defaultValue = "1") int page,
@@ -188,4 +192,5 @@ public class AdminController {
 
         return "/admin/conferenceAdmin";
     }
+
 }

@@ -143,4 +143,42 @@
         WHERE USER_EMAIL = #{email}
     </select>
 
+    <update id="updateMemberRole">
+        UPDATE tb_users
+        SET USER_ROLE= #{role}
+        WHERE USER_NO= #{no}
+    </update>
+
+    <!-- 회원목록 페이징 -->
+    <select id="getListMember"
+            parameterType="com.multi.happytails.patrol.pageable.model.dto.RequestList"
+            resultMap="memberResultMap">
+        SELECT USER_NO, USER_ID, USER_PASSWORD, USER_NAME, USER_NICKNAME, USER_AGE, USER_GENDER, USER_TEL, USER_SIGNUP_DATE, USER_DELETE_ACCOUNT_FLAG, USER_ROLE, USER_EMAIL, USER_SIGNUP_PATH_FLAG
+        FROM tb_users
+        <where>
+            <if test="data.id != null and data.id !='' ">
+                AND title LIKE CONCAT('%' , #{data.id} , '%')
+            </if>
+        </where>
+        <!--ORDER BY 절 추가-->
+        <if test="pageable.sort != null and !pageable.sort.isEmpty()">
+            ORDER BY
+            <foreach collection="pageable.sort" item="order" separator=",">
+                ${order.property} ${order.direction}
+            </foreach>
+        </if>
+        <!--페이징 처리-->
+        LIMIT #{pageable.offset} , #{pageable.pageSize}
+    </select>
+
+    <!-- 회원 목록 카운트 -->
+    <select id="getListMemberCount" parameterType="com.multi.happytails.member.model.dto.MemberDTO" resultType="int">
+        SELECT COUNT(*)
+        FROM tb_users
+        <where>
+            <if test="id != null and id !='' ">
+                AND title LIKE CONCAT('%' , #{id} , '%')
+            </if>
+        </where>
+    </select>
 </mapper>
