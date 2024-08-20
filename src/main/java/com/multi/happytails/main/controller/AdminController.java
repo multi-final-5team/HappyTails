@@ -6,6 +6,7 @@ import com.multi.happytails.community.model.dto.DogloveDTO;
 import com.multi.happytails.community.service.ChatDogService;
 import com.multi.happytails.community.service.ConferenceService;
 import com.multi.happytails.community.service.DogloveService;
+import com.multi.happytails.finddog.service.FindDogService;
 import com.multi.happytails.shop.model.dto.SalesGoodsDTO;
 import com.multi.happytails.shop.service.SalesService;
 import com.multi.happytails.upload.model.dto.UploadDto;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -47,10 +49,14 @@ public class AdminController {
     private DogloveService dogloveService;
 
     @Autowired
+    private FindDogService findDogService;
+
+    @Autowired
     private ChatDogService chatDogService;
 
     @Autowired
     private ConferenceService conferenceService;
+
 
     @RequestMapping("/index")
     public String adminMain(Principal principal) {
@@ -62,6 +68,9 @@ public class AdminController {
 
     @RequestMapping("/tables2")
     public void test() {}
+
+    @RequestMapping("/tables4")
+    public void test2() {}
 
     @RequestMapping("/patrolAdmin")
     public void patrolAdmin() {}
@@ -127,7 +136,11 @@ public class AdminController {
         return "/admin/dogLoveAdmin";
     }
 
-
+    @GetMapping("/findDogAdmin")
+    public void findDogAdmin(Model model) {
+        model.addAttribute("findDogList",findDogService.findDogList());
+    }
+  
     @RequestMapping("/memberRoleAdmin")
     public void memberRoleAdmin() {}
 

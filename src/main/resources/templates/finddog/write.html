@@ -17,6 +17,7 @@
                         <label for="title" class="form-label">제목</label>
                         <input type="text" class="form-control" name="title" id="title">
                     </div>
+                    <div class="row">
 
                     <div class="form-group mb-3 w-25">
                         <label for="category" class="form-label">카테고리</label>
@@ -25,12 +26,23 @@
                             <option value="M">유기의심공유</option>
                         </select>
                     </div>
-
-                    <div class="form-group mb-3 w-25">
-                        <label for="breed" class="form-label">품종</label>
-                        <input type="text" class="form-control" name="breed" id="breed">
+                        <div class="form-group mb-3 w-50 ms-5">
+                            <label for="lostTime" class="form-label">시간</label>
+                            <input type="datetime-local" class="form-control" name="lostTime" id="lostTime">
+                        </div>
                     </div>
 
+                        <div class="row">
+
+                        <div class="form-group mb-3 w-25">
+                            <label for="dogName" class="form-label">강아지 이름</label>
+                            <input type="text" class="form-control" name="dogName" id="dogName">
+                        </div>
+                        <div class="form-group mb-3 w-25 ms-5">
+                            <label for="breed" class="form-label">품종</label>
+                            <input type="text" class="form-control" name="breed" id="breed">
+                        </div>
+                    </div>
 
                     <div class="mb-3">
                         <label for="content" class="form-label">내용</label>
@@ -71,6 +83,7 @@
 <!-- 스크립트 -->
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3410cbe0e56cd0dca8e1c3bc13dec0a4&libraries=services"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.0.0/luxon.min.js"></script>
 <script src="/js/help/function.js"></script>
 <script>
 
@@ -255,8 +268,10 @@
         let content = $('#content').val();
         let category = $('#category').val();
         let breed = $('#breed').val();
+        let lostTime = $('#lostTime').val();
+        let dogName = $('#dogName').val();
 
-        let dataArr = [title,content,category,breed,latitude,longitude, area];
+        let dataArr = [title,content,category,breed,latitude,longitude, area, lostTime, dogName];
 
         let result = handleNullInArray(dataArr);
 
@@ -264,6 +279,10 @@
             alert('값이 비어있습니다.');
             return;
         }
+
+        let lostTimeFormat = luxon.DateTime.fromISO(lostTime).toFormat('yyyy-MM-dd HH:mm:ss');
+
+        console.log(lostTimeFormat);
 
         let formData = new FormData();
         formData.append('title',title);
@@ -273,10 +292,13 @@
         formData.append('latitude',latitude);
         formData.append('longitude',longitude);
         formData.append('area',area);
+        formData.append('lostTime',lostTimeFormat);
+        formData.append('dogName',dogName);
 
         for (let i = 0; i < imageFiles.length;i++) {
             formData.append('imageFiles',imageFiles[i]);
         }
+
         $.ajax({
             url : "/finddog/write",
             processData : false,
@@ -288,6 +310,7 @@
                 location.href="/finddog/main";
             }
         });
+
     });
     // 폼 서브밋 End
 

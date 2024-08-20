@@ -33,4 +33,6 @@ public class FindDogDto {
     private String breed;
     private Date createDate;
     private char category;
+    private String dogName;
+    private String lostTime;
 }
