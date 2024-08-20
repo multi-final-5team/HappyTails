@@ -11,11 +11,13 @@
         }
     </style>
 </head>
-<body class="container mt-5">
+<body>
 <menu th:replace="fragments/head :: menu"></menu>
+<main>
 
 <h1 class="mb-4 text-center">내 새꾸 자랑 상세 페이지</h1>
 <h3 class="mb-4 text-center">우리 아이의 사랑스러운 순간들을 자랑하시개! 🐶</h3>
+<div class="container">
 
 <div class="card mb-4">
     <div class="card-body">
@@ -51,47 +53,51 @@
         <input type="hidden" name="dogloveNo" th:value="${doglove.dogloveNo}"/>
     </form>
 
-<h3 class="mt-4">🐾 댓글 목록</h3>
-<ul class="reply-list mt-4" style="list-style-type: none; padding: 0;">
-    <li th:each="reply : ${reply}" class="comment-item" th:data-reply-no="${reply.communityReplyNo}" th:data-reply-content="${reply.content}">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <p style="margin: 0;">
-                <strong th:text="${reply.writerId}">작성자</strong>:
-                <span class="reply-content" th:text="${reply.content}">내용</span>
-            </p>
-            <div th:if="${#authentication.name == 'admin' or #authentication.name == reply.writerId}">
-                <button class="btn btn-sm btn-blue reply-update-btn">✏️ 수정</button>
-                <button class="btn btn-sm btn-danger reply-delete-btn">🗑️ 삭제</button>
+    <h3 class="mt-4">🐾 댓글 목록</h3>
+    <ul class="reply-list mt-4" style="list-style-type: none; padding: 0;">
+        <li th:each="reply : ${reply}" class="comment-item" th:data-reply-no="${reply.communityReplyNo}" th:data-reply-content="${reply.content}">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <p style="margin: 0;">
+                    <strong th:text="${reply.writerId}">작성자</strong>:
+                    <span class="reply-content" th:text="${reply.content}">내용</span>
+                </p>
+                <div>
+                    <button th:if="${#authentication.name == reply.writerId}" class="btn btn-sm btn-blue reply-update-btn">✏️ 수정</button>
+                    <button th:if="${#authentication.name == 'admin' or #authentication.name == reply.writerId}" class="btn btn-sm btn-danger reply-delete-btn">🗑️ 삭제</button>
+                </div>
             </div>
-        </div>
-        <div class="reply-edit-form" style="display: none; margin-top: 10px;">
-            <input type="text" class="replyContent form-control" />
-            <button class="btn btn-sm btn-primary replyUpdateBtn">작성</button>
-            <button class="btn btn-sm btn-secondary replyUpdateClose">취소</button>
-        </div>
-    </li>
-</ul>
-
+            <div class="reply-edit-form" style="display: none; margin-top: 10px;">
+                <input type="text" class="replyContent form-control" />
+                <button class="btn btn-sm btn-primary replyUpdateBtn">작성</button>
+                <button class="btn btn-sm btn-secondary replyUpdateClose">취소</button>
+            </div>
+        </li>
+    </ul>
     <div class="d-flex justify-content-between mt-4">
-        <a href="/community/doglove" class="btn btn-secondary">🏠 목록으로</a>
-        <div>
+
+        <div style="margin-bottom: 20px;">
             <div th:if="${#authentication.name == doglove.userId}" class="d-inline-block me-2">
                 <a th:href="@{/community/doglove/update/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}"
-                   class="btn btn-info">✏️ 게시글 수정</a>
-                <form th:action="@{/community/doglove/delete}" method="post" class="d-inline-block"
+                   class="btn btn-info me-2" style="margin-right: 10px;">✏️ 게시글 수정</a>
+                <form th:action="@{/community/doglove/delete}" method="post" class="d-inline-block me-2"
                       onsubmit="return confirm('게시글을 삭제하시겠어요?');">
                     <input type="hidden" name="dogloveNo" th:value="${doglove.dogloveNo}">
                     <button type="submit" class="btn btn-danger">🗑️ 게시글 삭제</button>
                 </form>
             </div>
-            <a href="/community/doglove/create" class="btn btn-primary">✍새 글 작성</a>
         </div>
+
+        <div style="margin-bottom: 20px;">
+            <a href="/community/doglove" class="btn btn-secondary me-2" style="margin-right: 10px;">🏠 목록으로</a>
+            <a href="/community/doglove/create" class="btn btn-primary" style="margin-right: 10px;">✍ 새 글 작성</a>
+        </div>
+
     </div>
 
-</div>
-</body>
-<footer th:replace="fragments/head :: footer"></footer>
 
+</div>
+
+</div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var images = document.getElementsByTagName('img');
@@ -171,16 +177,29 @@
                     url: "/community/L/" + foreignNo + "/reply/delete/" + communityReplyNo,
                     method: 'POST',
                     success: function(result) {
-                        alert(result);
+                        if (typeof result === 'object') {
+                            alert(result.message || '댓글이 성공적으로 삭제되었습니다.');
+                        } else {
+                            alert(result || '댓글이 성공적으로 삭제되었습니다.');
+                        }
                         $commentItem.remove();
                     },
-                    error: function() {
-                        alert('댓글 삭제에 실패했습니다. 다시 시도해주세요.');
+                    error: function(xhr, status, error) {
+                        var errorMessage = '댓글 삭제에 실패했습니다.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage += ' 오류: ' + xhr.responseJSON.message;
+                        } else if (xhr.responseText) {
+                            errorMessage += ' 오류: ' + xhr.responseText;
+                        }
+                        alert(errorMessage);
                     }
                 });
             }
         });
     });
 </script>
+</script>
+</main>
 </body>
+<footer th:replace="fragments/head :: footer"></footer>
 </html>

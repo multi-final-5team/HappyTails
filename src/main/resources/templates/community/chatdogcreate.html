@@ -11,14 +11,15 @@
         }
     </style>
 </head>
-<body class="container mt-5">
+<body>
 <menu th:replace="fragments/head :: menu"></menu>
+<main>
 
 <h1 class="mb-4 text-center">🐾 떠들개 게시글 작성 🐾</h1>
 <h3 class="mb-4 text-center">견주들과 자유롭게 얘기하시개! 🐶</h3>
-
-<div class="card">
-    <div class="card-body">
+    <div class="container">
+        <div class="card">
+        <div class="card-body">
         <form id="submitForm" action="/community/chatdog" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="title" class="form-label">🏷️ 제목:</label>
@@ -37,13 +38,13 @@
                 <button type="submit" class="btn btn-primary" onsubmit="return confirm('게시글을 저장할까요?');">저장하기</button>
             </div>
         </form>
-    </div>
+            <a href="/community/chatdog" class="btn btn-secondary mt-3">🏠 목록으로</a>
+
+        </div>
+
+     </div>
+
 </div>
-
-<a href="/community/chatdog" class="btn btn-secondary mt-3">🏠 목록으로</a>
-<footer th:replace="fragments/head :: footer"></footer>
-
-</body>
 <script>
     $(document).ready(function() {
            let imageFiles = [];
@@ -105,4 +106,7 @@
        });
 
 </script>
+</main>
+</body>
+<footer th:replace="fragments/head :: footer"></footer>
 </html>
