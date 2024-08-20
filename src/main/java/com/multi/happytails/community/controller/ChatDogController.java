@@ -118,8 +118,8 @@ public class ChatDogController {
 
         if (chatDogDTO.getTitle() == null || chatDogDTO.getTitle().trim().isEmpty() ||
                 chatDogDTO.getContent() == null || chatDogDTO.getContent().trim().isEmpty()) {
-            model.addAttribute("errorMessage", "제목과 내용은 필수 입력 항목입니다.");
-            return "community/chatdogcreate"; //
+            model.addAttribute("errorMessage");
+            return "community/chatdogcreate";
         }
         UploadDto uploadDto = new UploadDto();
         uploadDto.setForeignNo(chatDogService.insert(chatDogDTO));
@@ -160,7 +160,8 @@ public class ChatDogController {
     }
 
     @GetMapping("/update/{chatdogNo}")
-    public String updateForm(@PathVariable Long chatdogNo, Model model, Principal principal ) {
+    public String updateForm(@PathVariable Long chatdogNo,
+                             Model model, Principal principal ) {
         if (principal == null) {
             return "redirect:/member/login";
         }
@@ -177,6 +178,7 @@ public class ChatDogController {
         model.addAttribute("uploadDtos", uploadDtos);
 
 
+
         return "community/chatdogupdate";
     }
 
@@ -187,7 +189,7 @@ public class ChatDogController {
                          @RequestParam(value = "imageUpdateFiles") @Nullable List<MultipartFile> imageUpdateFiles,
                          @RequestParam(value = "imageDeleteImageNo") @Nullable List<Long> imageDeleteImageNo,
                          @RequestParam(value = "imageUpdateImageNo") @Nullable List<Long> imageUpdateImageNo,
-                         Principal principal) {
+                         Principal principal, Model model) {
 
         String userId = principal.getName();
 
@@ -195,6 +197,12 @@ public class ChatDogController {
         ChatDogDTO chatdog = chatDogService.findById(chatdogNo);
         if (chatdog == null || !chatdog.getUserId().equals(userId)) {
             return "redirect:/community/chatdog";
+        }
+        //빈 문자열일 때 수정 x
+        if (chatDogDTO.getTitle() == null || chatDogDTO.getTitle().trim().isEmpty() ||
+                chatDogDTO.getContent() == null || chatDogDTO.getContent().trim().isEmpty()) {
+            model.addAttribute("errorMessage", "제목과 내용은 필수 입력 항목입니다.");
+            return "community/chatdogcupdate"; //
         }
 
         int result = chatDogService.update(chatDogDTO);

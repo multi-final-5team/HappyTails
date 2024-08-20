@@ -11,11 +11,13 @@
       }
     </style>
 </head>
-<body class="container mt-5">
+<body>
 <menu th:replace="fragments/head :: menu"></menu>
+<main>
 
 <h1 class="mb-4 text-center">🐾 내 새꾸 자랑하기 게시글 작성 🐾</h1>
 <h3 class="mb-4 text-center">우리 아이의 사랑스러운 순간들을 자랑하시개! 🐶</h3>
+ <div class="container">
 
 <div class="card">
     <div class="card-body">
@@ -29,7 +31,7 @@
             </div>
             <div class="mb-3">
                 <label for="imageInput" class="form-label">사진:</label>
-                <input type="file" id="imageInput" multiple class="form-control" accept="image/*">
+                <input type="file" id="imageInput" name="imageFiles" multiple class="form-control" accept="image/*">
             </div>
             <div id="imgAddDiv" class="row g-2">
             </div>
@@ -37,11 +39,11 @@
                 <button type="submit" class="btn btn-primary" onsubmit="return confirm('게시글을 저장할까요?');">저장하기</button>
             </div>
         </form>
+        <a href="/community/doglove" class="btn btn-secondary mt-3">🏠 목록으로</a>
     </div>
-</div>
 
-<a href="/community/doglove" class="btn btn-secondary mt-3">🏠 목록으로</a>
-</body>
+</div>
+</div>
 <script>
     $(document).ready(function() {
         let imageFiles = [];
@@ -109,5 +111,7 @@
         });
     });
 </script>
+</main>
+</body>
 <footer th:replace="fragments/head :: footer"></footer>
 </html>

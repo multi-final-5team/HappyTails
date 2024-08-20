@@ -4,12 +4,17 @@ import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.authentication.model.service.AuthenticationService;
 import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.member.service.MemberService;
+import com.multi.happytails.patrol.model.dto.PrecordDTO;
+import com.multi.happytails.patrol.pageable.service.PageService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,6 +47,9 @@ public class MemberController {
     @Autowired
     private AuthenticationService authenticationService;
 
+    @Autowired
+    PageService pageService;
+
 
     @RequestMapping("/login")
     public void login() {
@@ -67,6 +75,9 @@ public class MemberController {
         String nickname = kakaoData.get("nickname");
         String gender = kakaoData.get("gender");
         String tel = kakaoData.get("tel");
+        String profileImage = kakaoData.get("profile_image");
+
+        System.out.println(kakaoData);
 
         MemberDTO existingMember = memberService.findMemberByEmail(email);
 
@@ -82,13 +93,21 @@ public class MemberController {
         memberDTO.setName(name);
         memberDTO.setNickname(nickname);
         memberDTO.setGender("male".equals(gender) ? "M" : "F");
-        memberDTO.setTel(tel != null ? tel.replaceAll("[^0-9]", "").substring(0, Math.min(tel.length(), 30)) : null);
+        memberDTO.setTel(tel);
         memberDTO.setSignupPathFlag('K');
         memberDTO.setRole("ROLE_MEMBER");
 
         if (existingMember == null) {
             // 새 회원 등록
             memberService.insertMember(memberDTO);
+            MemberDTO newMember = memberService.findMemberById(memberDTO.getId());
+            UploadDto uploadDto = new UploadDto();
+            uploadDto.setForeignNo(newMember.getNo());
+            uploadDto.setCategoryCode("P");
+            uploadDto.setImageName(profileImage);
+
+            uploadService.uploadInsert(uploadDto);
+
         } else {
             // 기존 카카오 회원 정보 업데이트
             memberService.updateMember(existingMember.getId(), memberDTO);
@@ -268,6 +287,9 @@ public class MemberController {
         MemberDTO member = memberService.findMemberById(customUser.getId());
         List<UploadDto> profileImages = uploadService.uploadSelect("P", member.getNo());
 
+        System.out.println(profileImages);
+        System.out.println(member);
+
         model.addAttribute("member", member);
         model.addAttribute("profileImage", profileImages.isEmpty() ? null : profileImages.get(0));
 
@@ -310,5 +332,34 @@ public class MemberController {
             return ResponseEntity.ok().body("계정이 성공적으로 삭제되었습니다.");
         }
         return ResponseEntity.badRequest().body("계정 삭제에 실패했습니다.");
+    }
+
+    @GetMapping(value="findAllMember")
+    @ResponseBody
+    public Page<MemberDTO> findAllPatrol(MemberDTO memberDTO, @PageableDefault(size = 10) Pageable pageable){
+
+        Page<MemberDTO> list = memberService.findAllMember(memberDTO,pageable);
+
+        System.out.println("list >> " + list);
+
+        return list;
+    }
+
+    @PostMapping(value="updateMemberRole")
+    @ResponseBody
+    public String updateMemberRole(@RequestParam("no") int no, @RequestParam("role") String role){
+
+        System.out.println("no >>" + no + " , role >>" + role);
+
+        MemberDTO memberDTO = new MemberDTO();
+
+        memberDTO.setNo(no);
+        memberDTO.setRole(role);
+
+        System.out.println("memberDTO >> " + memberDTO);
+
+        memberService.updateMemberRole(memberDTO);
+
+        return "/admin/memberRoleAdmin";
     }
 }

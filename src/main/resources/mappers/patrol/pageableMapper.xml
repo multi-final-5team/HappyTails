@@ -12,7 +12,7 @@
         FROM tb_precord
         <where>
             <if test="data.title != null and data.title !='' ">
-                AND title LIKE '%'||#{data.title}||'%'
+                AND title LIKE CONCAT('%' , #{data.title} , '%')
             </if>
         </where>
         <!--ORDER BY 절 추가-->
@@ -32,7 +32,7 @@
         FROM tb_precord
         <where>
             <if test="title != null and title !='' ">
-                AND title LIKE '%'||#{title}||'%'
+                AND title LIKE CONCAT('%' , #{title} , '%')
             </if>
         </where>
     </select>

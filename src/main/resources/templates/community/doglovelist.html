@@ -9,11 +9,12 @@
 }
     </style>
 </head>
-<body class="container mt-5">
+<body>
 <menu th:replace="fragments/head :: menu"></menu>
-
+<main>
 <h1 class="mb-4 text-center">🐾 내 새꾸 자랑 게시판 🐾</h1>
 <h3 class="mb-4 text-center">우리 아이의 사랑스러운 순간들을 자랑하시개! 🐶</h3>
+    <div class="container">
 
 <!-- 추천순/최신순 / 새 글 작성 -->
 <div class="d-flex justify-content-between mb-3">
@@ -86,15 +87,14 @@
         </ul>
     </nav>
 </div>
-
-
-</body>
-<footer th:replace="fragments/head :: footer"></footer>
+    </div>
 <script>
     function confirmDelete() {
         return confirm("삭제하시겠습니까?");
     }
 
 </script>
-
+</main>
+</body>
+<footer th:replace="fragments/head :: footer"></footer>
 </html>

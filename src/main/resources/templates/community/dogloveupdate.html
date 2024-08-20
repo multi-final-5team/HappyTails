@@ -20,16 +20,18 @@
         }
     </style>
 </head>
-<body class="container mt-5">
+<body>
 <menu th:replace="fragments/head :: menu"></menu>
+<main>
 
 <h1 class="mb-4 text-center">🐾 내 새꾸 자랑 게시글 수정 🐾</h1>
+<div class="container">
 
 <div class="card">
     <div class="card-body">
         <form id="updateForm" th:action="@{/community/doglove/update/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="dogloveNo" th:value="${doglove.dogloveNo}"/>
-            <button type="submit" class="btn btn-primary" id="createBtn" onclick="return confirm('수정 하시겠습니까?');">게시글 수정</button>
+            <button type="submit" class="btn btn-primary" id="createBtn" onclick="return confirm('수정 하시겠습니까?');" style="position: absolute; top: 10px; right: 10px;">게시글 수정</button>
 
             <div class="mb-3">
                 <label for="title" class="form-label">🐶 제목:</label>
@@ -60,10 +62,12 @@
             </div>
             <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
         </form>
+        <div>
+            <a href="/community/doglove" class="btn btn-secondary mt-3" style="float: right;">🏠 목록으로</a>
+        </div>
     </div>
 </div>
-
-<a href="/community/doglove" class="btn btn-secondary mt-3">🏠 목록으로</a>
+</div>
 <script>
     let dogloveNo = [[${doglove.dogloveNo}]];
 
@@ -157,7 +161,7 @@
                     location.href = "/community/doglove";
                 },
                 error: function(xhr, status, error) {
-                    alert("게시글 수정에 실패했습니다. 다시 시도해주세요.");
+                    alert("게시글 수정에 실패했습니다. 제목과 내용을 기입해주세요.");
                     console.error(xhr.responseText);
                 }
             });
@@ -235,7 +239,7 @@
         logImageState();
     });
 </script>
+</main>
 </body>
 <footer th:replace="fragments/head :: footer"></footer>
 </html>
-<

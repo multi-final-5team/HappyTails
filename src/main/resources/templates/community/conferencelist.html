@@ -11,11 +11,13 @@
 
     </style>
 </head>
-<body class="container mt-5">
+<body>
 <menu th:replace="fragments/head :: menu"></menu>
+<main>
 
 <h1 class="mb-4 text-center">🐾 집사 회의 게시판 🐾</h1>
 <h3 class="mb-4 text-center">견주들만의 고민을 공유하시개! 🐶</h3>
+<div class="container">
 
 <!-- 추천순/최신순 / 새 글 작성 -->
 <div class="d-flex justify-content-between mb-3">
@@ -96,12 +98,13 @@
     </nav>
 </div>
 
-
-</body>
+</div>
 <footer th:replace="fragments/head :: footer"></footer>
 <script>
     function confirmDelete() {
         return confirm("삭제하시겠습니까?");
     }
 </script>
+</main>
+</body>
 </html>

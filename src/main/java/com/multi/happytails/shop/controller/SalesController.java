@@ -190,7 +190,9 @@ public class SalesController {
      * @return the string
      */
     @GetMapping("/selectGoods")
-    public String selectGoods(@RequestParam("no") int no, Principal principal , Model model) {
+    public String selectGoods(@RequestParam("no") int no,
+//                              Principal principal ,
+                              Model model) {
 
         SalesGoodsDTO salesGoodsDTO = new SalesGoodsDTO();
         salesGoodsDTO.setNo(no);
@@ -214,7 +216,7 @@ public class SalesController {
         //==========================
         model.addAttribute("reviewList", reviewList);
         model.addAttribute("goodsNo", no);
-        model.addAttribute("principalName", principal.getName());
+//        model.addAttribute("principalName", principal.getName());
         return "sales/salesDetails";
     }
     //Read
@@ -380,6 +382,13 @@ public class SalesController {
         model.addAttribute("salesGoodsList", results);
 
         return "sales/salesList";
+    }
+
+    @GetMapping("/reviewPopup")
+    public String reviewPopup(@RequestParam("goodsNo") int goodsNo,
+                                          Model model) {
+        model.addAttribute("goodsNo", goodsNo);
+        return "/sales/reviewPopup"; // 팝업 창 HTML 파일 이름
     }
 
 // PostMan

@@ -344,10 +344,10 @@ public class PatrolRecordController {
 
     @GetMapping(value="findAllPatrolRecord")
     @ResponseBody
-    public Page<PrecordDTO> findAllPatrol(@PageableDefault(size = 10) Pageable pageable){
-        PrecordDTO dto = new PrecordDTO();
+    public Page<PrecordDTO> findAllPatrol(PrecordDTO precordDTO,@PageableDefault(size = 10) Pageable pageable){
+        System.out.println("findAllPatrol PrecordDTO>> " + precordDTO);
 
-        Page<PrecordDTO> list = pageService.getListPrecord(dto,pageable);
+        Page<PrecordDTO> list = pageService.getListPrecord(precordDTO,pageable);
 
         System.out.println("list >> " + list);
 

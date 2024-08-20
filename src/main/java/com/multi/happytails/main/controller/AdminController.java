@@ -1,6 +1,10 @@
 package com.multi.happytails.main.controller;
 
+import com.multi.happytails.community.model.dto.ChatDogDTO;
+import com.multi.happytails.community.model.dto.ConferenceDTO;
 import com.multi.happytails.community.model.dto.DogloveDTO;
+import com.multi.happytails.community.service.ChatDogService;
+import com.multi.happytails.community.service.ConferenceService;
 import com.multi.happytails.community.service.DogloveService;
 import com.multi.happytails.finddog.service.FindDogService;
 import com.multi.happytails.shop.model.dto.SalesGoodsDTO;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,8 +51,20 @@ public class AdminController {
     @Autowired
     private FindDogService findDogService;
 
+    @Autowired
+    private ChatDogService chatDogService;
+
+    @Autowired
+    private ConferenceService conferenceService;
+
+
     @RequestMapping("/index")
-    public void adminMain() {}
+    public String adminMain(Principal principal) {
+        if (principal == null || !principal.getName().equals("admin")) {
+            return "redirect:/member/login";
+        }
+        return "/admin/index";
+    }
 
     @RequestMapping("/tables2")
     public void test() {}
@@ -63,7 +80,7 @@ public class AdminController {
 
     @RequestMapping("/salesListAdmin")
     public String salesListAdmin(@RequestParam(name = "page", defaultValue = "1") int page, Model model) {
-        int pageSize = 10;
+        int pageSize = 88888888;
         List<SalesGoodsDTO> salesGoodsList = salesService.salesList(page, pageSize);
         int totalSalesCount = salesService.salesPageCount();
         int totalPages = (int) Math.ceil((double) totalSalesCount / pageSize);
@@ -85,7 +102,7 @@ public class AdminController {
 
     @RequestMapping("/dogLoveAdmin")
     public String dogLoveAdmin(  @RequestParam(value = "page", defaultValue = "1") int page,
-                                 @RequestParam(value = "size", defaultValue = "10") int size,
+                                 @RequestParam(value = "size", defaultValue = "99") int size,
                                  @RequestParam(value = "sort", defaultValue = "date") String sort,
                                  @RequestParam(value = "keyword", required = false) String keyword,
                                  Model model) {
@@ -119,10 +136,74 @@ public class AdminController {
         return "/admin/dogLoveAdmin";
     }
 
-
     @GetMapping("/findDogAdmin")
     public void findDogAdmin(Model model) {
         model.addAttribute("findDogList",findDogService.findDogList());
+    }
+  
+    @RequestMapping("/memberRoleAdmin")
+    public void memberRoleAdmin() {}
+
+    @RequestMapping("/chatdogAdmin")
+    public String chatdogAdmin(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "99") int size,
+            @RequestParam(value = "sort", defaultValue = "date") String sort,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            Model model) {
+
+        Page<ChatDogDTO> chatdogPage;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            chatdogPage = chatDogService.cdsearch(keyword.trim(), page - 1, size, sort);
+        } else {
+            // 검색어가 없는 경우
+            if ("recommendCount".equals(sort)) {
+                chatdogPage = chatDogService.findAllSortedByRecommendation(page - 1, size);
+            } else {
+                chatdogPage = chatDogService.findAllSortedByDate(page - 1, size);
+            }
+        }
+
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("chatdog", chatdogPage.getContent());
+        model.addAttribute("sort", sort);
+        model.addAttribute("currentPage", chatdogPage.getNumber() + 1);
+        model.addAttribute("totalPages", chatdogPage.getTotalPages());
+        model.addAttribute("totalItems", chatdogPage.getTotalElements());
+
+        return "/admin/chatdogAdmin";
+    }
+
+    @RequestMapping("/conferenceAdmin")
+    public String conferenceAdmin(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "99") int size,
+            @RequestParam(value = "sort", defaultValue = "date") String sort,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            Model model) {
+
+        Page<ConferenceDTO> conferencePage;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            conferencePage = conferenceService.cfsearch(keyword.trim(), page - 1, size, sort);
+        } else {
+            // 검색어가 없는 경우
+            if ("recommendCount".equals(sort)) {
+                conferencePage = conferenceService.findAllSortedByRecommendation(page - 1, size);
+            } else {
+                conferencePage = conferenceService.findAllSortedByDate(page - 1, size);
+            }
+        }
+
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("conference", conferencePage.getContent());
+        model.addAttribute("sort", sort);
+        model.addAttribute("currentPage", conferencePage.getNumber() + 1);
+        model.addAttribute("totalPages", conferencePage.getTotalPages());
+        model.addAttribute("totalItems", conferencePage.getTotalElements());
+
+        return "/admin/conferenceAdmin";
     }
 
 }

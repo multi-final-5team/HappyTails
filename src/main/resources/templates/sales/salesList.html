@@ -22,16 +22,17 @@
             <div class="tab-pane fade show active" id="list-find">
                 <div class="row">
                     <th:block th:each="salesGoods : ${salesGoodsList}">
-                        <div class="col-md-4 mb-4 d-flex align-items-stretch listRow">
+                        <div class="col-md-4 mb-4 d-flex align-items-stretch listRow" th:data-no="${salesGoods.no}">
                             <div class="card" style="width: 100%;">
                                 <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}" class="card-body">
                                     <img th:src="@{/images/S/{file}(file=${salesGoodsMap[salesGoods.no][0].storedFileName})}" alt="대표 이미지" class="card-img-top" width="300" height="200">
                                 </div>
-                                <a th:href="@{/sales/selectGoods(no=${salesGoods.no})}"
-                                   th:text="${salesGoods.name}"
-                                   class="text-decoration-none"></a>
-                                <p th:text="${#numbers.formatCurrency(salesGoods.price)}"></p>
-                                <span th:text="'#' + ${salesGoods.categoryCode}"></span>
+                                <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}" class="card-body">
+                                <h5 class="card-title" th:text="${salesGoods.name}">
+                                </h5>
+                                <p class="card-text"th:text="${#numbers.formatCurrency(salesGoods.price)}"> </p>
+                                <p class="card-text"th:text="'#' + ${salesGoods.categoryCode}"> </p>
+                                </div>
                             </div>
                         </div>
                     </th:block>
@@ -65,9 +66,15 @@
         </nav>
     </div>
 </main>
-<footer>
+<script>
+$(".listRow").on("click",function(){
+let DataNo = $(this).attr('data-no');
+console.log(DataNo);
+location.href='/sales/selectGoods?no='+DataNo;
+});
+</script>
+<!--th:href="@{/sales/selectGoods(no=${salesGoods.no})}"-->
 
-</footer>
 </body>
 <footer th:replace="fragments/head :: footer"></footer>
 </html>

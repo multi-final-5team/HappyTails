@@ -117,7 +117,7 @@ public class ConferenceController {
         if (conferenceDTO.getTitle() == null || conferenceDTO.getTitle().trim().isEmpty() ||
                 conferenceDTO.getContent() == null || conferenceDTO.getContent().trim().isEmpty()) {
             model.addAttribute("errorMessage", "제목과 내용은 필수 입력 항목입니다.");
-            return "community/conferencecreate"; //
+            return "community/conferencecreate";
         }
 
         uploadDto.setCategoryCode(IMAGE_CODE); // 이미지 카테고리 코드
@@ -165,6 +165,9 @@ public class ConferenceController {
         if (conference == null || !conference.getUserId().equals(userId)) {
             return "redirect:/community/conference";
         }
+
+
+
         List<UploadDto> uploadDtos = uploadService.uploadSelect(IMAGE_CODE, conferenceNo);
 
         model.addAttribute("conference", conference);
@@ -182,7 +185,7 @@ public class ConferenceController {
                          @RequestParam(value = "imageUpdateFiles") @Nullable List<MultipartFile> imageUpdateFiles,
                          @RequestParam(value = "imageDeleteImageNo") @Nullable List<Long> imageDeleteImageNo,
                          @RequestParam(value = "imageUpdateImageNo") @Nullable List<Long> imageUpdateImageNo,
-                         Principal principal) {
+                         Principal principal, Model model) {
 
         String userId = principal.getName();
 
@@ -190,6 +193,12 @@ public class ConferenceController {
         ConferenceDTO conference = conferenceService.findById(conferenceNo);
         if (conference == null || !conference.getUserId().equals(userId)) {
             return "redirect:/community/conference";
+        }
+
+        if (conferenceDTO.getTitle() == null || conferenceDTO.getTitle().trim().isEmpty() ||
+                conferenceDTO.getContent() == null || conferenceDTO.getContent().trim().isEmpty()) {
+            model.addAttribute("errorMessage");
+            return "community/conferenceupdate";
         }
 
         int result = conferenceService.update(conferenceDTO);
