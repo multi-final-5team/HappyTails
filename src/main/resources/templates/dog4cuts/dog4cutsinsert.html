@@ -67,11 +67,13 @@
 
 </style>
 
-<body class="container mt-5">
+<body>
 
 <menu th:replace="fragments/head :: menu"></menu>
 
 <main>
+
+    <div class="container mt-5">
 
     <h1 class="mb-4">견생네컷 생성</h1>
 
@@ -157,6 +159,8 @@
 
     </div>
 
+
+    </div>
 </main>
 
 <menu th:replace="fragments/head :: footer"></menu>
@@ -180,7 +184,6 @@
 
         console.log(e.target.nodeName.toLowerCase());
         var targetTag = e.target.nodeName.toLowerCase();
-
         if(stickerFlag == 1){
             x = e.offsetX - 50;
             y = e.offsetY - 50;
@@ -190,10 +193,10 @@
             $sticker.css("left", x + "px");
             $sticker.css("top", y + "px");
             $sticker.css("z-index", "1");
+            $sticker.css("pointer-events", "none"); //클릭 이벤트 타겟에서 제외
 
             if(targetTag == "img"){
                 $sticker.appendTo(e.target.parentElement);
-                console.log(e.target.parentElement);
             }
             else{
                 $sticker.appendTo(e.target);
@@ -202,6 +205,8 @@
             stickerFlag = 0;
         }
     });
+
+
 
     downloadButton.addEventListener('click', () => {
         if(inputCheck()){

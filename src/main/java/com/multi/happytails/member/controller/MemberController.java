@@ -4,12 +4,17 @@ import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.authentication.model.service.AuthenticationService;
 import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.member.service.MemberService;
+import com.multi.happytails.patrol.model.dto.PrecordDTO;
+import com.multi.happytails.patrol.pageable.service.PageService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,6 +46,9 @@ public class MemberController {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    PageService pageService;
 
 
     @RequestMapping("/login")
@@ -310,5 +318,34 @@ public class MemberController {
             return ResponseEntity.ok().body("계정이 성공적으로 삭제되었습니다.");
         }
         return ResponseEntity.badRequest().body("계정 삭제에 실패했습니다.");
+    }
+
+    @GetMapping(value="findAllMember")
+    @ResponseBody
+    public Page<MemberDTO> findAllPatrol(MemberDTO memberDTO, @PageableDefault(size = 10) Pageable pageable){
+
+        Page<MemberDTO> list = memberService.findAllMember(memberDTO,pageable);
+
+        System.out.println("list >> " + list);
+
+        return list;
+    }
+
+    @PostMapping(value="updateMemberRole")
+    @ResponseBody
+    public String updateMemberRole(@RequestParam("no") int no, @RequestParam("role") String role){
+
+        System.out.println("no >>" + no + " , role >>" + role);
+
+        MemberDTO memberDTO = new MemberDTO();
+
+        memberDTO.setNo(no);
+        memberDTO.setRole(role);
+
+        System.out.println("memberDTO >> " + memberDTO);
+
+        memberService.updateMemberRole(memberDTO);
+
+        return "/admin/memberRoleAdmin";
     }
 }

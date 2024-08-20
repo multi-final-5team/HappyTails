@@ -110,4 +110,7 @@ public class AdminController {
 
         return "/admin/dogLoveAdmin";
     }
+
+    @RequestMapping("/memberRoleAdmin")
+    public void memberRoleAdmin() {}
 }

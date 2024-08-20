@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/index :: head}">
+    <meta charset="UTF-8">
+    <title>관리</title>
+</head>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<body class="sb-nav-fixed">
+<menu th:replace="~{admin/index :: headDiv}"></menu>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">Tables</h1>
+            <div class="card mb-4">
+                <div class="card-body">
+                    유저 권한 설정
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    유저 권한 설정
+                </div>
+                <div class="card-body">
+                    <table id=""  class="table">
+                        <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>아이디</th>
+                            <th>이름</th>
+                            <th>가입일</th>
+                            <th>권한</th>
+                            <th>관리</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="tableTbody" class="table-group-divider">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination pagination-lg justify-content-center" id="pageItems">
+
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    var urlParams = new URL(location.href).searchParams;
+    var page = urlParams.get('page');
+
+    var id = urlParams.get('id');
+
+
+    var pageFirst;
+    var pageLast;
+    var totalPages;
+    var totalElements;
+
+    $(document).ready(function(){
+
+        findMember();
+
+    }); // ready()
+
+    function findMember(){
+        if(page  == null){
+            page = 0;
+        }
+
+        var url = "/admin/memberRoleAdmin?page=";
+
+        if((id != null)&&(id != '')){
+            url = "/admin/memberRoleAdmin?id=" + id + "&page=";
+        }
+
+        console.log(url);
+
+        $.ajax({
+            url:"/member/findAllMember",
+            data : {
+		        page : page
+	        },
+            success: function (data){
+
+            console.log(data);
+
+            pageFirst = data.first;
+            pageLast = data.last;
+            totalPages = data.totalPages;
+            totalElements = data.totalElements;
+
+            var contentList = data.content;
+
+            let placeInfo="";
+
+            for(let i=0;i<contentList.length;i++){
+                target = JSON.stringify(contentList[i]);
+                placeInfo+="<tr>";
+                placeInfo+="<td>"+contentList[i].no+"</td>";
+                placeInfo+="<td>"+contentList[i].id+"</td>";
+                placeInfo+="<td>"+contentList[i].name+"</td>";
+                placeInfo+="<td>"+contentList[i].signupDate+"</td>";
+                placeInfo+="<td>"+contentList[i].role+"</td>";
+                placeInfo+="<td>" + "<button onclick='changeRole(" + target + ")' class='btn btn-primary'>권한변경</button>" + "</td>"
+                placeInfo+="</tr>";
+
+            }
+
+            $("#tableTbody").html(placeInfo);
+
+            //페이징 시작
+            if(page > 9){
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="' + url + '0">&#166;&laquo;</a></li>'
+                );
+            }
+
+            if(!pageFirst){
+                pagePrevious = Number(page) - 1;
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="' + url + pagePrevious + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
+                );
+            }
+
+
+            if(page > 9){
+                pageStart = parseInt( page / 10 ) * 10;
+                for(let i = pageStart; i< pageStart + 10; i++){
+	                if(i < totalPages){
+	                    pageNext = Number(i) + 1;
+	                    if(page != i){
+	                        $('#pageItems').append(
+                                '<li class="page-item"><a   class="page-link"href="' + url + i +'">' + pageNext +  '</a></li>'
+                            );
+	                    }
+	                    else{
+	                        $('#pageItems').append(
+                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
+                            );
+	                    }
+	                }
+                }
+            }
+            else{
+                for(let i = 0; i<10; i++){
+	                if(i < totalPages){
+	                    pageNext = Number(i) + 1;
+	                    if(page != i){
+	                        $('#pageItems').append(
+                                '<li class="page-item"><a   class="page-link"href="' + url + i +'">' + pageNext +  '</a></li>'
+                            );
+	                    }
+	                    else{
+	                        $('#pageItems').append(
+                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
+                            );
+	                    }
+	                }
+                }
+            }
+
+
+            if(!pageLast){
+                pageNext = Number(page) + 1;
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="' + url + pageNext + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
+                );
+            }
+
+            pageT = parseInt( page / 10 ) * 10;
+            totalPagesT = parseInt( totalPages / 10 ) * 10;
+
+            endTarget = Number(totalPagesT);
+
+            if((totalPages > 10)&&(pageT != totalPagesT)){
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="' + url + endTarget + '">&raquo;&#166;</a></li>'
+                );
+            }
+
+            },
+            error: function (xhr){
+               console.log(xhr);
+            }
+        })
+    }
+
+    function changeRole(member) {
+        if(member.role == "ROLE_ADMIN"){
+            member.role = "ROLE_MEMBER";
+        }
+        else if(member.role == "ROLE_MEMBER"){
+            member.role = "ROLE_ADMIN";
+        }
+
+        no = member.no;
+
+        role = member.role
+
+        console.log(no);
+
+        console.log(role);
+
+        $.ajax({
+            url:"/member/updateMemberRole",
+            type: "POST",
+            data: {
+		        no : no,
+		        role : role
+	        },
+            success: function (data){
+                $("#pageItems").empty();
+                findMember();
+            },
+            error: function (xhr){
+                console.log(xhr);
+            }
+        })
+    }
+</script>
+
+</body>
+</html>
