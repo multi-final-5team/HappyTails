@@ -18,6 +18,7 @@ import lombok.Data;
 public class ScoreDTO {
     private int no;
     private int userNo;
+    private String userId;
     private int policeScore;
     private int policeScoreMonth;
     private int recommend;
