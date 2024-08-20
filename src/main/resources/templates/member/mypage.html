@@ -16,8 +16,8 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-4 mx-auto text-center">
-                <img th:if="${profileImage != null and profileImage.storedFileName != null}"
-                     th:src="@{/images/P/{file}(file=${profileImage.storedFileName})}"
+                <img th:if="${profileImage} != null and ${profileImage.storedFileName} != null and ${member.signupPathFlag} == 'W'"
+                th:src="@{/images/P/{file}(file=${profileImage.storedFileName})}"
                      alt="profile"
                      class="profile-image"
                      style="width: 150px;
@@ -28,6 +28,20 @@
                 padding: 5px;
                 border: 2px solid #fff;
                 box-sizing: border-box;">
+
+                <img th:if="${profileImage} != null and ${profileImage.storedFileName} != null and ${member.signupPathFlag} == 'K'"
+                     th:src="${profileImage.storedFileName}"
+                     alt="profile"
+                     class="profile-image"
+                     style="width: 150px;
+                height: 150px;
+                border-radius: 50%;
+                object-fit: cover;
+                box-shadow: 0 0 10px rgba(0,0,0,0.2);
+                padding: 5px;
+                border: 2px solid #fff;
+                box-sizing: border-box;">
+
                 <h3 id="name" class="mb-4"></h3>
                 <div class="d-grid gap-2">
                     <button id="purchase-history" class="btn btn-primary">구매 목록</button>
