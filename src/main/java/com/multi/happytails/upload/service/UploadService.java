@@ -34,9 +34,19 @@ public class UploadService {
     // uploadDto.setFile(file); uploadDto.setCategoryCode(categoryCode); uploadDto.setForeignNo(foreignNo);
     // uploadService.uploadInsert(uploadDto);
     public int uploadInsert(UploadDto uploadDto) {
-        UploadDto uploadDto1 = createUploadImage(uploadDto);
+        String fileNameFlag = "";
 
-        return uploadMapper.uploadInsert(uploadDto1);
+        if(uploadDto.getImageName() != null && !uploadDto.getImageName().isEmpty()) {
+            fileNameFlag = uploadDto.getImageName().substring(0,9);
+        }
+
+        if (fileNameFlag.equals("http://t1")) {
+            uploadDto.setStoredFileName(uploadDto.getImageName());
+            return uploadMapper.uploadInsert(uploadDto);
+        } else {
+            UploadDto uploadDto1 = createUploadImage(uploadDto);
+            return uploadMapper.uploadInsert(uploadDto1);
+        }
     }
 
     // 해당 게시글의 저장된 이미지 Dto를 받아옴
