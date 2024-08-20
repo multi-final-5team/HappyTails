@@ -13,5 +13,6 @@ public class PaymentpageDTO {
     private Timestamp date_created;
     private int productprice;
     private String imPortId;
+    private int GoodsNo;
 
 }

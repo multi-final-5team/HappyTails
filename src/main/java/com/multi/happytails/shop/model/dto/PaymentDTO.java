@@ -18,6 +18,9 @@ public class PaymentDTO {
     private String refund;
     private Timestamp refund_date;
     private String delivery_code;
+    private int goodsNo;
+    private String delivery_man;
+    private int invoice_number;
 
     private List<CartDTO> cartItems;
 

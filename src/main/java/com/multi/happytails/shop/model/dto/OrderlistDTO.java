@@ -14,6 +14,9 @@ public class OrderlistDTO {
     private int purchaseprice;
     private String imPortId;
     private String delivery_code;
+    private int GoodsNo;
+    private String delivery_man;
+    private int invoice_number;
 
     private String refund;
     private String refund_date;

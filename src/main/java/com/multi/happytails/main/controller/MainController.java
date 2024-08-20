@@ -73,6 +73,13 @@ public class MainController {
         //멍샵
         List<SalesGoodsDTO> randomProducts = salesService.getRandomProducts();
 
+        Map<Integer, List<UploadDto>> salesGoodsMap = new HashMap<>();
+
+        for (SalesGoodsDTO SalesGoods : randomProducts) {
+            int goodsNo = SalesGoods.getNo();
+            salesGoodsMap.put(goodsNo, uploadService.uploadSelect("S", goodsNo));
+        }
+
         //내 새끼 자랑 (최신글 5개)
         List<DogloveDTO> dogloveDTOS = dogloveService.mainDogLoveList();
 
@@ -92,6 +99,8 @@ public class MainController {
         // 화면 전송
 //        model.addAttribute("rssNews", rssNews);
         model.addAttribute("randomProducts", randomProducts);
+        model.addAttribute("salesGoodsMap", salesGoodsMap);
+
         model.addAttribute("chatDogUpList", chatDogUpList);
         model.addAttribute("chatDogStoredImages", chatDogStoredImages);
         model.addAttribute("dogLoveStoredImages", dogLoveStoredImages);

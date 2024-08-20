@@ -26,32 +26,43 @@
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
 <div class="container my-5">
-    <h1 class="mb-4">상품 상세 정보</h1>
     <div class="card mb-4">
         <div class="card-body">
-            <div class="card mx-auto" style="width: 50%; min-width: 300px;">
-                <div class="card-body  text-center">
-                    <h2 class="card-title" th:text="${salesDetails.name}">상품명</h2>
-                    <h6 class="card-subtitle mb-2 text-muted" th:text="'카테고리: ' + ${salesDetails.categoryCode}">카테고리 코드</h6>
-                    <p class="card-text"><strong>주소:</strong> <span th:text="${salesDetails.address}">주소</span></p>
-                    <div th:if="${uploadDtoList != null && !uploadDtoList.isEmpty()}" class="mb-4">
-                        <img th:src="@{/images/S/{file}(file=${uploadDtoList[0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="407" height="407">
-                        <p class="card-text"><strong>가격:</strong> <span th:text="${#numbers.formatCurrency(salesDetails.price)}">가격</span></p>
-                        <form action="/cart/insertCart" method="post">
-                            <input type="hidden" id="goodsNo1" name="goodsNo" th:value="${goodsNo}">
-                            <div>
-                                <label for="purchaseQuantity">수량 </label>
-                                <input type="number" id="purchaseQuantity" name="purchaseQuantity" min="1" required>
-                            </div>
-                            <div>
-                                <button type="submit">장바구니 추가</button>
-                            </div>
-                        </form>
+            <div class="row">
+                <div class="col-md-6">
+                    <div th:if="${uploadDtoList != null && !uploadDtoList.isEmpty()}" class="mb-4 text-end">
+                        <img th:src="@{/images/S/{file}(file=${uploadDtoList[0].storedFileName})}"
+                             alt="대표 이미지"
+                             class="img-fluid rounded"
+                             style="max-width: 407px; max-height: 407px; width: auto; height: auto; object-fit: contain;">
                     </div>
+                </div>
+
+                <!-- 오른쪽 열: 상품 정보 -->
+                <div class="col-md-6">
+                    <h2 th:text="${salesDetails.name}" class="mb-3">상품명</h2>
+                    <h6 class="text-muted mb-3" th:text="'카테고리: ' + ${salesDetails.categoryCode}">카테고리 코드</h6>
+                    <p><strong>주소:</strong> <span th:text="${salesDetails.address}">주소</span></p>
+                    <p class="h4 mb-4"><strong>가격:</strong> <span th:text="${#numbers.formatCurrency(salesDetails.price)}">가격</span></p>
+
+                    <form action="/cart/insertCart" method="post" class="mb-3">
+                        <input type="hidden" id="goodsNo1" name="goodsNo" th:value="${goodsNo}">
+                        <div class="form-group">
+                            <label for="purchaseQuantity">수량</label>
+                            <input type="number" id="purchaseQuantity" name="purchaseQuantity" min="1" value="1" required class="form-control" style="max-width: 100px;">
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-3">장바구니 추가</button>
+                    </form>
+
+                    <!-- 추가 정보나 설명을 여기에 넣을 수 있습니다 -->
+                    <p class="mt-4">
+                        <small class="text-muted">
+                            <span th:text="${salesDetails.content}">상세 설명</span>
+                        </small>
+                    </p>
                 </div>
             </div>
                 <div class="text-center">
-                <p class="card-text"><strong>상세 설명:</strong> <span th:text="${salesDetails.content}">상세 설명</span></p>
                 <h3>상세 이미지</h3>
                     <div th:each="uploadDto, iterStat : ${uploadDtoList}" th:if="${iterStat.index > 0}" class="col">
                         <img th:src="@{/images/S/{file}(file=${uploadDto.storedFileName})}" alt="상세 이미지" class="img-fluid" width="780px" height="980px">
@@ -92,111 +103,111 @@
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-body">
-                <h3 class="card-title">리뷰 작성</h3>
-                <form id="insertForm" enctype="multipart/form-data">
-                    <input type="hidden" id="goodsNo" name="goodsNo" th:value="${goodsNo}">
+<!--        <div class="card">-->
+<!--            <div class="card-body">-->
+<!--                <h3 class="card-title">리뷰 작성</h3>-->
+<!--                <form id="insertForm" enctype="multipart/form-data">-->
+<!--                    <input type="hidden" id="goodsNo" name="goodsNo" th:value="${goodsNo}">-->
 
-                    <div class="mb-3">
-                        <label for="starRating" class="form-label">별점:</label>
-                        <div class="star-rating">
-<!--                            <input type="radio" id="star1" name="starRating" value="1"><label for="star1">&#9733;</label>-->
-<!--                            <input type="radio" id="star2" name="starRating" value="2"><label for="star2">&#9733; &#9733;</label>-->
-<!--                            <input type="radio" id="star3" name="starRating" value="3"><label for="star3">&#9733; &#9733; &#9733;</label>-->
-<!--                            <input type="radio" id="star4" name="starRating" value="4"><label for="star4">&#9733; &#9733; &#9733; &#9733;</label>-->
-<!--                            <input type="radio" id="star5" name="starRating" value="5" required><label for="star5">&#9733; &#9733; &#9733; &#9733; &#9733;</label>-->
-                            <input type="radio" id="star1" name="starRating" value="1"><label for="star1">1점</label>
-                            <input type="radio" id="star2" name="starRating" value="2"><label for="star2">2점</label>
-                            <input type="radio" id="star3" name="starRating" value="3"><label for="star3">3점</label>
-                            <input type="radio" id="star4" name="starRating" value="4"><label for="star4">4점</label>
-                            <input type="radio" id="star5" name="starRating" value="5" required><label for="star5">5점</label>
-                        </div>
-                    </div>
+<!--                    <div class="mb-3">-->
+<!--                        <label for="starRating" class="form-label">별점:</label>-->
+<!--                        <div class="star-rating">-->
+<!--&lt;!&ndash;                            <input type="radio" id="star1" name="starRating" value="1"><label for="star1">&#9733;</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <input type="radio" id="star2" name="starRating" value="2"><label for="star2">&#9733; &#9733;</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <input type="radio" id="star3" name="starRating" value="3"><label for="star3">&#9733; &#9733; &#9733;</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <input type="radio" id="star4" name="starRating" value="4"><label for="star4">&#9733; &#9733; &#9733; &#9733;</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <input type="radio" id="star5" name="starRating" value="5" required><label for="star5">&#9733; &#9733; &#9733; &#9733; &#9733;</label>&ndash;&gt;-->
+<!--                            <input type="radio" id="star1" name="starRating" value="1"><label for="star1">1점</label>-->
+<!--                            <input type="radio" id="star2" name="starRating" value="2"><label for="star2">2점</label>-->
+<!--                            <input type="radio" id="star3" name="starRating" value="3"><label for="star3">3점</label>-->
+<!--                            <input type="radio" id="star4" name="starRating" value="4"><label for="star4">4점</label>-->
+<!--                            <input type="radio" id="star5" name="starRating" value="5" required><label for="star5">5점</label>-->
+<!--                        </div>-->
+<!--                    </div>-->
 
-                    <div class="mb-3">
-                        <label for="imageInput" class="form-label">이미지 첨부:</label>
-                        <input type="file" class="form-control" id="imageInput" multiple>
-                        <div id="imgAddDiv" class="d-flex flex-wrap mt-2"></div>
-                    </div>
+<!--                    <div class="mb-3">-->
+<!--                        <label for="imageInput" class="form-label">이미지 첨부:</label>-->
+<!--                        <input type="file" class="form-control" id="imageInput" multiple>-->
+<!--                        <div id="imgAddDiv" class="d-flex flex-wrap mt-2"></div>-->
+<!--                    </div>-->
 
-                    <div class="mb-3">
-                        <label for="content" class="form-label">리뷰 내용:</label>
-                        <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
-                    </div>
+<!--                    <div class="mb-3">-->
+<!--                        <label for="content" class="form-label">리뷰 내용:</label>-->
+<!--                        <textarea class="form-control" id="content" name="content" rows="3" required></textarea>-->
+<!--                    </div>-->
 
-                    <button type="submit" class="btn btn-primary">리뷰 등록</button>
-                </form>
-            </div>
-        </div>
+<!--                    <button type="submit" class="btn btn-primary">리뷰 등록</button>-->
+<!--                </form>-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
 </div>
 
 
 
-<script>
-    $(document).ready(function() {
-        let imageFiles = [];
+<!--<script>-->
+<!--    $(document).ready(function() {-->
+<!--        let imageFiles = [];-->
 
-        $('#imageInput').on('change', function(event) {
-            const files = event.target.files;
-            imageFiles = [];
+<!--        $('#imageInput').on('change', function(event) {-->
+<!--            const files = event.target.files;-->
+<!--            imageFiles = [];-->
 
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        $('#imgAddDiv').append('<img src="' + e.target.result + '" alt="Selected Image" class="img-thumbnail m-1" style="width: 100px; height: 100px;">');
-                    }
-                    imageFiles.push(file);
-                    reader.readAsDataURL(file);
-                } else {
-                    alert('이미지 파일을 선택해주세요');
-                }
-            }
-        });
+<!--            for (let i = 0; i < files.length; i++) {-->
+<!--                const file = files[i];-->
+<!--                if (file && file.type.startsWith('image/')) {-->
+<!--                    const reader = new FileReader();-->
+<!--                    reader.onload = function(e) {-->
+<!--                        $('#imgAddDiv').append('<img src="' + e.target.result + '" alt="Selected Image" class="img-thumbnail m-1" style="width: 100px; height: 100px;">');-->
+<!--                    }-->
+<!--                    imageFiles.push(file);-->
+<!--                    reader.readAsDataURL(file);-->
+<!--                } else {-->
+<!--                    alert('이미지 파일을 선택해주세요');-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
 
-        $('#insertForm').submit(function(event){
-            event.preventDefault();
-            let formData = new FormData();
+<!--        $('#insertForm').submit(function(event){-->
+<!--            event.preventDefault();-->
+<!--            let formData = new FormData();-->
 
-            formData.append('goodsNo', $('#goodsNo').val());
-            formData.append('starRating', $('input[name="starRating"]:checked').val());
-            formData.append('content', $('#content').val());
+<!--            formData.append('goodsNo', $('#goodsNo').val());-->
+<!--            formData.append('starRating', $('input[name="starRating"]:checked').val());-->
+<!--            formData.append('content', $('#content').val());-->
 
-            for (let i = 0; i < imageFiles.length; i++) {
-                formData.append('imageFiles', imageFiles[i]);
-            }
+<!--            for (let i = 0; i < imageFiles.length; i++) {-->
+<!--                formData.append('imageFiles', imageFiles[i]);-->
+<!--            }-->
 
-            $.ajax({
-                url : "/review/insertReview",
-                processData : false,
-                contentType : false,
-                type : 'POST',
-                data : formData,
-                success : function(data) {
-                    alert('리뷰가 성공적으로 등록되었습니다.');
-                    window.location.href = '/sales/salesList';
-                },
-                error: function(xhr, status, error) {
-                    alert('리뷰 등록에 실패했습니다. 다시 시도해주세요.');
-                }
-            });
-        });
-    });
+<!--            $.ajax({-->
+<!--                url : "/review/insertReview",-->
+<!--                processData : false,-->
+<!--                contentType : false,-->
+<!--                type : 'POST',-->
+<!--                data : formData,-->
+<!--                success : function(data) {-->
+<!--                    alert('리뷰가 성공적으로 등록되었습니다.');-->
+<!--                    window.location.href = '/sales/salesList';-->
+<!--                },-->
+<!--                error: function(xhr, status, error) {-->
+<!--                    alert('리뷰 등록에 실패했습니다. 다시 시도해주세요.');-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
+<!--    });-->
 
-   function openUpdatePopup(reviewNo) {
-        var popupWidth = 600;
-        var popupHeight = 400;
-        var left = (screen.width - popupWidth) / 2;
-        var top = (screen.height - popupHeight) / 2;
+<!--   function openUpdatePopup(reviewNo) {-->
+<!--        var popupWidth = 600;-->
+<!--        var popupHeight = 400;-->
+<!--        var left = (screen.width - popupWidth) / 2;-->
+<!--        var top = (screen.height - popupHeight) / 2;-->
 
-        var url = '/review/updateReview?reviewNo=' + reviewNo;
-        window.open(url, '리뷰 수정', 'width=' + popupWidth + ', height=' + popupHeight + ', top=' + top + ', left=' + left + ', scrollbars=yes');
-    }
+<!--        var url = '/review/updateReview?reviewNo=' + reviewNo;-->
+<!--        window.open(url, '리뷰 수정', 'width=' + popupWidth + ', height=' + popupHeight + ', top=' + top + ', left=' + left + ', scrollbars=yes');-->
+<!--    }-->
 
-</script>
+<!--</script>-->
 </body>
 <footer th:replace="fragments/head :: footer"></footer>
 </html>

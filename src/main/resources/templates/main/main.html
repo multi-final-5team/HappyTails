@@ -74,16 +74,20 @@
                         <h3>오늘의 추천 상품</h3>
                     </div>
                     <div class="col-md-4 mb-4 d-flex align-items-stretch" th:each="randomProducts : ${randomProducts}">
+                        <th:block th:each="randomProducts : ${randomProducts}">
                         <div class="card" style="width: 100%;">
-                            <!--                            <div class="card-body" th:if="${salesGoodsMap[randomGoods.no] != null and salesGoodsMap[randomGoods.no].size() > 0}">-->
-                            <!--                                <img th:src="${salesGoodsMap[randomGoods.no][0].filePath}" class="card-img-top" alt="상품 이미지">-->
-                            <!--                            </div>-->
+
+                            <div th:if="${salesGoodsMap[randomProducts.no].size() > 0}" class="card-body">
+                                <img th:src="@{/images/S/{file}(file=${salesGoodsMap[randomProducts.no][0].storedFileName})}" alt="대표 이미지" class="card-img-top" width="300" height="200">
+                            </div>
+
                             <div class="card-body">
                                 <h5 class="card-title">
                                     <a class="text-decoration-none" th:href="@{/sales/selectGoods(no=${randomProducts.no})}" th:text="${randomProducts.name}"></a>
                                 </h5>
                             </div>
                         </div>
+                        </th:block>
                     </div>
                 </div>
 

@@ -38,11 +38,20 @@
                             <th th:text="${paymentHistory.productinfo}"></th>
                             <th th:text="'가격: ' + ${paymentHistory.purchaseprice} + '원'"></th>
                             <th th:text="${#dates.format(paymentHistory.date_created, 'yyyy-MM-dd')}"></th>
-                            <th th:text="${paymentHistory.refund == 'Y' ? '환불 상품' : '결제 상품'}"></th>
-                            <th><a th:href="@{/payment/paymentUpdateDelivery(payment_no=${paymentHistory.payment_no})}"
+                            <th th:text="${paymentHistory.delivery_code}"></th>
+                            <th>
+                                <a th:if="${paymentHistory.delivery_code != '환불 대기' and paymentHistory.delivery_code != '환불 완료'}"
+                                        th:href="@{/payment/paymentUpdateDelivery(payment_no=${paymentHistory.payment_no})}"
                                class="btn btn-success">
-                                환불 신청
-                            </a></th>
+                                환불 신청</a>
+
+                                <button
+                                    th:if="${paymentHistory.delivery_code != '환불 대기' and paymentHistory.delivery_code != '환불 완료'}"
+                                    type="button" class="btn btn-primary delivery-status-btn"
+                                    th:data-payment-no="${paymentHistory.goodsNo}">
+                                    리뷰 작성
+                                </button>
+                            </th>
                         </tr>
                         <tr th:if="${#lists.isEmpty(paymentHistory)}">
                             주문 정보가 없습니다.
@@ -61,6 +70,26 @@
         <div class="pagination"></div>
     </div>
 </main>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var buttons = document.querySelectorAll('.delivery-status-btn');
+        buttons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var goodsNo = this.getAttribute('data-payment-no');
+                openPopup(goodsNo);
+            });
+        });
+    });
+
+    function openPopup(goodsNo) {
+        var url = `/sales/reviewPopup?goodsNo=${encodeURIComponent(goodsNo)}`;
+        var name = "배송 상태 변경";
+        var options = "width=500,height=300,top=100,left=100";
+        window.open(url, name, options);
+    }
+</script>
+
 </body>
 <footer th:replace="fragments/head :: footer"></footer>
 </html>
