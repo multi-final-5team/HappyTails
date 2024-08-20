@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>리뷰 작성</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="card">
+    <div class="card-body">
+        <h3 class="card-title">리뷰 작성</h3>
+        <form id="insertForm" enctype="multipart/form-data">
+            <input type="hidden" id="goodsNo" name="goodsNo" th:value="${goodsNo}">
+
+            <div class="mb-3">
+                <label for="starRating" class="form-label">별점:</label>
+                <div class="star-rating">
+                    <input type="radio" id="star1" name="starRating" value="1"><label for="star1">1점</label>
+                    <input type="radio" id="star2" name="starRating" value="2"><label for="star2">2점</label>
+                    <input type="radio" id="star3" name="starRating" value="3"><label for="star3">3점</label>
+                    <input type="radio" id="star4" name="starRating" value="4"><label for="star4">4점</label>
+                    <input type="radio" id="star5" name="starRating" value="5" required><label for="star5">5점</label>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="imageInput" class="form-label">이미지 첨부:</label>
+                <input type="file" class="form-control" id="imageInput" multiple>
+                <div id="imgAddDiv" class="d-flex flex-wrap mt-2"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="content" class="form-label">리뷰 내용:</label>
+                <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">리뷰 등록</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+    $(document).ready(function() {
+        let imageFiles = [];
+
+        $('#imageInput').on('change', function(event) {
+            const files = event.target.files;
+            imageFiles = [];
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#imgAddDiv').append('<img src="' + e.target.result + '" alt="Selected Image" class="img-thumbnail m-1" style="width: 100px; height: 100px;">');
+                    }
+                    imageFiles.push(file);
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('이미지 파일을 선택해주세요');
+                }
+            }
+        });
+
+        $('#insertForm').submit(function(event){
+            event.preventDefault();
+            let formData = new FormData();
+
+            formData.append('goodsNo', $('#goodsNo').val());
+            formData.append('starRating', $('input[name="starRating"]:checked').val());
+            formData.append('content', $('#content').val());
+
+            for (let i = 0; i < imageFiles.length; i++) {
+                formData.append('imageFiles', imageFiles[i]);
+            }
+
+            $.ajax({
+                url : "/review/insertReview",
+                processData : false,
+                contentType : false,
+                type : 'POST',
+                data : formData,
+                success : function(data) {
+                    alert('리뷰가 성공적으로 등록되었습니다.');
+                    window.close();
+                },
+                error: function(xhr, status, error) {
+                    alert('리뷰 등록에 실패했습니다. 다시 시도해주세요.');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

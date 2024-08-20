@@ -41,12 +41,12 @@
         }
     </style>
 </head>
-<body class="container mt-5">
+<body>
 <menu th:replace="fragments/head :: menu"></menu>
-
+<main>
 <h1 class="mb-4 text-center">🐾 집사 회의 게시글 상세 페이지 🐾</h1>
 <h3 class="mb-4 text-center">견주들만의 고민을 공유하시개! 🐶</h3>
-
+ <div class="container">
 <div class="card mb-4">
     <div class="card-body">
         <h2 class="card-title">🐶 <strong>제목 : </strong> <span th:text="${conference.title}"></span></h2>
@@ -83,47 +83,45 @@
 
     <h3 class="mt-4">🐾 댓글 목록</h3>
     <ul class="reply-list mt-4" style="list-style-type: none; padding: 0;">
-        <li th:each="reply : ${reply}" class="comment-item">
+        <li th:each="reply : ${reply}" class="comment-item" th:data-reply-no="${reply.communityReplyNo}" th:data-reply-content="${reply.content}">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <p style="margin: 0;">
                     <strong th:text="${reply.writerId}">작성자</strong>:
-                    <span th:text="${reply.content}">내용</span>
+                    <span class="reply-content" th:text="${reply.content}">내용</span>
                 </p>
-                <div th:if="${#authentication.name == 'admin' or #authentication.name == reply.writerId}">
-                    <!-- 댓글 수정 페이지로 이동하는 버튼 -->
-                    <a th:href="@{/community/O/{foreignNo}/reply/update/{communityReplyNo}(foreignNo=${conference.conferenceNo}, communityReplyNo=${reply.communityReplyNo})}"
-                       class="btn btn-sm btn-blue">✏️ 수정</a>
-                    <!-- 댓글 삭제 폼 -->
-                    <form th:action="@{/community/O/{foreignNo}/reply/delete/{communityReplyNo}(foreignNo=${conference.conferenceNo}, communityReplyNo=${reply.communityReplyNo})}"
-                          method="post"
-                          class="comment-form"
-                          style="display: inline-block;"
-                          onsubmit="return confirm('댓글을 삭제하시겠어요?');">
-                        <input type="hidden" name="communityReplyNo" th:value="${reply.communityReplyNo}"/>
-                        <button type="submit" class="btn btn-sm btn-danger">🗑️ 삭제</button>
-                    </form>
+                <div>
+                    <button th:if="${#authentication.name == reply.writerId}" class="btn btn-sm btn-blue reply-update-btn">✏️ 수정</button>
+                    <button th:if="${#authentication.name == 'admin' or #authentication.name == reply.writerId}" class="btn btn-sm btn-danger reply-delete-btn">🗑️ 삭제</button>
                 </div>
+            </div>
+            <div class="reply-edit-form" style="display: none; margin-top: 10px;">
+                <input type="text" class="replyContent form-control" />
+                <button class="btn btn-sm btn-primary replyUpdateBtn">작성</button>
+                <button class="btn btn-sm btn-secondary replyUpdateClose">취소</button>
             </div>
         </li>
     </ul>
 
     <div class="d-flex justify-content-between mt-4">
-        <a href="/community/conference" class="btn btn-secondary">🏠 목록으로</a>
-        <div>
+
+        <div style="margin-bottom: 20px;">
             <div th:if="${#authentication.name == conference.userId}" class="d-inline-block me-2">
                 <a th:href="@{/community/conference/update/{conferenceNo}(conferenceNo=${conference.conferenceNo})}"
-                   class="btn btn-info">✏️ 게시글 수정</a>
-                <form th:action="@{/community/conference/delete}" method="post" class="d-inline-block"
+                   class="btn btn-info me-2" style="margin-right: 10px;" >✏️ 게시글 수정</a>
+                <form th:action="@{/community/conference/delete}" method="post" class="d-inline-block me-2"
                       onsubmit="return confirm('게시글을 삭제하시겠어요?');">
                     <input type="hidden" name="conferenceNo" th:value="${conference.conferenceNo}">
                     <button type="submit" class="btn btn-danger">🗑️ 게시글 삭제</button>
                 </form>
             </div>
-            <a href="/community/conferenceNo/create" class="btn btn-primary">✍새 글 작성</a>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <a href="/community/conference" class="btn btn-secondary me-2" style="margin-right: 10px;">🏠 목록으로</a>
+            <a href="/community/conferenceNo/create" class="btn btn-primary" style="margin-right: 10px;">✍ 새 글 작성</a>
         </div>
     </div>
 </div>
-
+ </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var images = document.getElementsByTagName('img');
@@ -139,8 +137,6 @@
         }
     });
 </script>
-</body>
-<footer th:replace="fragments/head :: footer"></footer>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var images = document.getElementsByTagName('img');
@@ -213,32 +209,38 @@
         });
 
 
-    // 댓글 삭제 버튼 클릭
-    $('.reply-list').on('click', '.reply-delete-btn', function() {
-        var $commentItem = $(this).closest('.comment-item');
-        var communityReplyNo = $commentItem.attr('data-reply-no');
-        var writerId = $commentItem.find('strong').text();
-        var currentUser = /* 현재 로그인한 사용자의 ID를 가져오는 로직 */;
-        var isAdmin = /* 현재 사용자가 관리자인지 확인하는 로직 */;
+        // 댓글 삭제 버튼 클릭
+        $('.reply-list').on('click', '.reply-delete-btn', function() {
+            var $commentItem = $(this).closest('.comment-item');
+            var communityReplyNo = $commentItem.attr('data-reply-no');
 
-        if (currentUser !== writerId && !isAdmin) {
-            alert('댓글 작성자나 관리자만 삭제할 수 있습니다.');
-            return;
-        }
-
-        if (confirm('댓글을 삭제하시겠어요?')) {
-            $.ajax({
-                url: "/community/O/" + foreignNo + "/reply/delete/" + communityReplyNo,
-                method: 'POST',
-                success: function(result) {
-                    alert(result);
-                    $commentItem.remove();
-                },
-                error: function() {
-                    alert('댓글 삭제에 실패했습니다. 다시 시도해주세요.');
-                }
-            });
-        }
+            if (confirm('댓글을 삭제하시겠어요?')) {
+                $.ajax({
+                    url: "/community/O/" + foreignNo + "/reply/delete/" + communityReplyNo,
+                    method: 'POST',
+                    success: function(result) {
+                        if (typeof result === 'object') {
+                            alert(result.message || '댓글이 성공적으로 삭제되었습니다.');
+                        } else {
+                            alert(result || '댓글이 성공적으로 삭제되었습니다.');
+                        }
+                        $commentItem.remove();
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage = '댓글 삭제에 실패했습니다.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage += ' 오류: ' + xhr.responseJSON.message;
+                        } else if (xhr.responseText) {
+                            errorMessage += ' 오류: ' + xhr.responseText;
+                        }
+                        alert(errorMessage);
+                    }
+                });
+            }
+        });
     });
 </script>
+</main>
+</body>
+<footer th:replace="fragments/head :: footer"></footer>
 </html>
