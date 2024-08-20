@@ -20,4 +20,5 @@ public class PartialCancelRequestDTO {
     private String productname;
     private int price;
     private int quantity;
+    private int GoodsNo;
 }

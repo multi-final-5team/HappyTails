@@ -24,6 +24,7 @@
         <result column="date_created" property="date_created"/>
         <result column="purchaseprice" property="purchaseprice"/>
         <result column="im_port_id" property="imPortId"/>
+        <result column="goodsNo" property="goodsNo"/>
         <result column="delivery_code" property="delivery_code"/>
     </resultMap>
 
@@ -59,7 +60,9 @@
         productprice,
         purchaseprice,
         date_created,
-        im_port_id
+        im_port_id,
+        DELIVERY_CODE,
+        goodsNo
         ) VALUES (
         #{username},
         #{productname},
@@ -67,22 +70,23 @@
         #{productprice},
         #{purchaseprice},
         NOW(),  <!-- 현재 시간을 자동으로 삽입 -->
-        #{imPortId}
+        #{imPortId},
+        'P',
+        #{goodsNo}
         )
     </insert>
 
     <select id="selectOrders" resultMap="OrderlistResultMap">
-        SELECT payment_no, username, productname, productinfo, date_created, purchaseprice, im_port_id,
+        SELECT payment_no, username, productname, productinfo, date_created, purchaseprice, im_port_id, goodsNo, invoice_number, delivery_man,
             CASE delivery_code
                 WHEN 'P' THEN '배송 준비'
                 WHEN 'D' THEN '배송 중'
                 WHEN 'S' THEN '배송 완료'
                 WHEN 'C' THEN '환불 대기'
-                WHEN 'S' THEN '환불 완료'
+                WHEN 'R' THEN '환불 완료'
             END AS delivery_code
         FROM payment
-        WHERE refund = 'N'
-          AND username = #{id}
+        WHERE username = #{id}
         ORDER BY date_created DESC
     </select>
 
@@ -118,6 +122,9 @@
         <result property="imPortId" column="im_port_id"/>
         <result property="refund_date" column="refund_date"/>
         <result property="delivery_code" column="delivery_code"/>
+        <result property="goodsNo" column="goodsNo"/>
+        <result property="invoice_number" column="invoice_number"/>
+        <result property="delivery_man" column="delivery_man"/>
         <collection property="cartItems" ofType="com.multi.happytails.shop.model.dto.CartDTO">
             <result property="goodsNo" column="goods_no"/>
             <result property="goodsName" column="goods_name"/>
@@ -136,12 +143,21 @@
     <update id="updateRefundStatus" parameterType="com.multi.happytails.shop.model.dto.OrderlistDTO">
         UPDATE payment
         SET refund = 'Y',
-        refund_date = NOW()
+        refund_date = NOW(),
+        delivery_code = 'R'
         WHERE payment_no = #{paymentNo}
     </update>
 
     <select id="paymentList" resultMap="paymentDetailsResultMap">
-        SELECT * FROM payment
+        SELECT payment_no, username, productname, productinfo, date_created, purchaseprice, im_port_id, goodsNo,  invoice_number, delivery_man,
+        CASE delivery_code
+        WHEN 'P' THEN '배송 준비'
+        WHEN 'D' THEN '배송 중'
+        WHEN 'S' THEN '배송 완료'
+        WHEN 'C' THEN '환불 대기'
+        WHEN 'S' THEN '환불 완료'
+        END AS delivery_code
+        FROM payment
         WHERE username = #{username}
     </select>
 
@@ -170,5 +186,19 @@
         UPDATE payment
         SET delivery_code = #{delivery_code}
         WHERE payment_no = #{paymentNo}
+    </update>
+
+    <update id="insertDelivery" parameterType="com.multi.happytails.shop.model.dto.PaymentDTO">
+        UPDATE payment
+        SET delivery_man = #{delivery_man},
+        invoice_number = #{invoice_number},
+        DELIVERY_CODE = 'D'
+        WHERE payment_no = #{payment_no}
+    </update>
+
+    <update id="stateSuccess" parameterType="com.multi.happytails.shop.model.dto.PaymentDTO">
+        UPDATE payment
+        SET delivery_code = 'S'
+        WHERE payment_no = #{payment_no}
     </update>
 </mapper>

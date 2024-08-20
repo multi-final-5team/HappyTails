@@ -33,4 +33,8 @@ public interface PaymentDAO {
     void updateDelivery(int paymentNo);
 
     void deliveryState(@Param("paymentNo") int paymentNo, @Param("delivery_code")String deliveryCode);
+
+    void insertDelivery(PaymentDTO paymentDTO);
+
+    void stateSuccess(int paymentNo);
 }

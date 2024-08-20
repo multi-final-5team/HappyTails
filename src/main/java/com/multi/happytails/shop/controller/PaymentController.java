@@ -11,6 +11,7 @@ import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -142,6 +143,7 @@ public class PaymentController {
                     paymentDTO.setUsername(username);
                     paymentDTO.setImPortId(request.getImPortId());
                     paymentDTO.setPurchaseprice(cartItem.totalPrice());
+                    paymentDTO.setGoodsNo(cartItem.getGoodsNo());
                     paymentDTO.setProductname(cartItem.getGoodsName());
                     paymentDTO.setProductinfo(cartItem.getGoodsName() + " x " + cartItem.getPurchaseQuantity());
 
@@ -231,7 +233,7 @@ public class PaymentController {
 
         paymentService.updateDelivery(payment_no);
 
-        return "/payment/PaymentHistory";
+        return "redirect:/payment/paymentHistory";
     }
 
     @PostMapping("/updateDeliveryCode")
@@ -243,11 +245,48 @@ public class PaymentController {
     }
 
     @GetMapping("/deliveryStatusPopup")
-    public String showDeliveryStatusPopup(@RequestParam("paymentNo") Long paymentNo,
+    public String showDeliveryStatusPopup(@RequestParam("paymentNo") int paymentNo,
                                           @RequestParam("deliveryCode") String deliveryCode,
                                           Model model) {
         model.addAttribute("paymentNo", paymentNo);
         model.addAttribute("deliveryCode", deliveryCode);
         return "/payment/deliveryStatusPopup"; // 팝업 창 HTML 파일 이름
+    }
+
+    @GetMapping("/deliveryPopup")
+    public String deliveryPopup(@RequestParam("payment_no") int payment_no,
+                              Model model) {
+        model.addAttribute("payment_no", payment_no);
+        return "/payment/deliveryPopup"; // 팝업 창 HTML 파일 이름
+    }
+
+    @PostMapping("/insertDelivery")
+    @ResponseBody
+    public ResponseEntity<?> insertDelivery(@RequestParam("payment_no") int payment_no,
+                                            @RequestParam("invoice_number") int invoice_number,
+                                            @RequestParam("delivery_man") String delivery_man) {
+
+        try {
+            PaymentDTO paymentDTO = new PaymentDTO();
+            paymentDTO.setPayment_no(payment_no);
+            paymentDTO.setInvoice_number(invoice_number);
+            paymentDTO.setDelivery_man(delivery_man);
+
+            paymentService.insertDelivery(paymentDTO);
+
+            return ResponseEntity.ok("송장 정보가 성공적으로 등록되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("송장 정보 등록 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/success")
+    @ResponseBody
+    public String paymentSuccess (@RequestParam("paymentNo") int paymentNo){
+        System.out.println(paymentNo);
+
+        paymentService.stateSuccess(paymentNo);
+        return "배송 상태 변경에 성공하였습니다.";
     }
 }

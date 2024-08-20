@@ -163,4 +163,12 @@ public class PaymentService {
     public void deliveryState(int paymentNo, String deliveryCode) {
         paymentDAO.deliveryState(paymentNo, deliveryCode);
     }
+
+    public void insertDelivery(PaymentDTO paymentDTO) {
+        paymentDAO.insertDelivery(paymentDTO);
+    }
+
+    public void stateSuccess(int paymentNo) {
+        paymentDAO.stateSuccess(paymentNo);
+    }
 }

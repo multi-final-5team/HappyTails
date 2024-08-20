@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>판매 내역</title>
-    <link rel="stylesheet" href="/css/orderlist.css">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}">
+
+
+    <title>결제하기</title>
+
+
 </head>
 <body>
+<menu th:replace="fragments/head :: menu"></menu>
+<main>
 <div class="container">
     <h1>판매 내역</h1>
 
@@ -21,25 +25,45 @@
     <div th:if="${not #lists.isEmpty(orderList)}">
         <div class="order-item" th:each="order : ${orderList}" th:data-username="${order.username}">
             <div class="order-info">
-                <div class="order-details">
+                <div class="order-details d-flex flex-wrap justify-content-between">
                     <h3 th:text="${order.productname}"></h3>
                     <p th:text="${order.productinfo}"></p>
                     <p th:text="${#dates.format(order.date_created, 'yyyy-MM-dd HH:mm:ss')}"></p>
                     <p th:text="${#numbers.formatDecimal(order.purchaseprice, 0, 'COMMA', 0, 'POINT')} + '원'"></p>
-                    <p th:text="${order.delivery_code}"></p>
-                </div>
-            </div>
-            <button type="button" class="btn btn-primary delivery-status-btn"
-                    th:data-payment-no="${order.payment_no}"
-                    th:data-delivery-code="${order.delivery_code}">
-                배송 상태 변경
-            </button>
+                    <p th:text="${order.delivery_code == '환불 대기' ? '환불 신청' : order.delivery_code}"
+                       th:classappend="${order.delivery_code == '환불 대기'} ? 'text-danger' : ''"></p>
 
-            <div class="order-actions">
-                <button class="cancel-button"
-                        th:data-payment-no="${order.payment_no}"
-                        th:data-imp-uid="${order.imPortId}"
-                        th:data-amount="${order.purchaseprice}">주문 취소하기</button>
+                    <div class="order-actions">
+                        <button class="cancel-button"
+                                th:data-payment-no="${order.payment_no}"
+                                th:data-imp-uid="${order.imPortId}"
+                                th:data-amount="${order.purchaseprice}">주문 취소하기</button>
+                    </div>
+
+                    <button
+                            th:if="${order.delivery_code == '배송 준비'}"
+                            type="button"
+                            class="btn btn-primary delivery-btn"
+                            th:data-payment-no="${order.payment_no}">
+                        송장 등록
+                    </button>
+
+                    <button
+                            th:if="${order.delivery_code == '배송 중'}"
+                            type="button"
+                            class="btn btn-primary success-btn"
+                            id="success-btn"
+                            th:data-payment-no="${order.payment_no}">
+                        배송 완료
+                    </button>
+
+<!--                    <button type="button" class="btn btn-primary delivery-status-btn"-->
+<!--                            th:data-payment-no="${order.payment_no}"-->
+<!--                            th:data-delivery-code="${order.delivery_code}">-->
+<!--                        배송 상태 변경-->
+<!--                    </button>-->
+
+                </div>
             </div>
         </div>
     </div>
@@ -52,6 +76,7 @@
         <!-- 페이지네이션은 JavaScript에서 동적으로 생성됩니다 -->
     </div>
 </div>
+</main>
 
 <script src="/js/payment/orderlist.js"></script>
 
@@ -76,5 +101,42 @@
     }
 </script>
 
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var buttons = document.querySelectorAll('.delivery-btn');
+        buttons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var payment_no = this.getAttribute('data-payment-no');
+                openPopup(payment_no);
+            });
+        });
+    });
+
+    function openPopup(payment_no) {
+        var url = `/payment/deliveryPopup?payment_no=${encodeURIComponent(payment_no)}`;
+        var name = "송장 등록";
+        var options = "width=500,height=300,top=100,left=100";
+        window.open(url, name, options);
+    }
+</script>
+
+<script th:inline="javascript">
+    $('#success-btn').click(function(){
+
+    var paymentNo = $(this).attr('data-payment-no');
+
+    $.ajax({
+        url : "/payment/success",
+        type : 'POST',
+        data: { paymentNo: paymentNo },
+        success : function(result) {
+            alert(result);
+            location.href = "/payment/orderlist";
+        }
+    });
+});
+</script>
+
 </body>
+<footer th:replace="fragments/head :: footer"></footer>
 </html>
