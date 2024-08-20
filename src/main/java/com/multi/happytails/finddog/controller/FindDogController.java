@@ -1,5 +1,6 @@
 package com.multi.happytails.finddog.controller;
 
+import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.finddog.model.dto.FindDogDto;
 import com.multi.happytails.finddog.model.dto.FindDogReplyDto;
 import com.multi.happytails.finddog.service.FindDogService;
@@ -10,6 +11,7 @@ import com.multi.happytails.upload.service.UploadService;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +46,16 @@ public class FindDogController {
     final String UPLOAD_FINDDOG_CODE = "F";
 
 
+    @GetMapping("/print")
+    public void print(@RequestParam("findDogNo") long findDogNo, @AuthenticationPrincipal CustomUser customUser, Model model) {
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_FINDDOG_CODE, findDogNo);
+        FindDogDto findDogDto = findDogService.findDogDetail(findDogNo);
+
+        model.addAttribute("uploadDtos", uploadDtos);
+        model.addAttribute("findDogDto", findDogDto);
+        model.addAttribute("tel", customUser.getTel());
+    }
+
     @GetMapping("/main")
     public void main() {}
 
@@ -76,8 +88,6 @@ public class FindDogController {
     public String findDogWrite(@ModelAttribute FindDogDto findDogDto, @RequestParam(value = "imageFiles") @Nullable List<MultipartFile> imageFiles, Principal principal) {
 
         findDogDto.setWriterId(principal.getName());
-
-        System.out.println(findDogDto);
 
         long inquiryNo = findDogService.findDogInsert(findDogDto);
 

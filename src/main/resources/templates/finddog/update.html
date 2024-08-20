@@ -18,9 +18,22 @@
                         <input type="text" class="form-control" name="title" id="title" th:value="${findDogDto.title}">
                     </div>
 
-                    <div class="form-group mb-3 w-25">
-                        <label for="breed" class="form-label">품종</label>
-                        <input type="text" class="form-control" name="breed" id="breed" th:value="${findDogDto.breed}">
+                    <div class="form-group mb-3 w-50">
+                        <label for="lostTime" class="form-label">시간</label>
+                        <input type="datetime-local" class="form-control" name="lostTime" id="lostTime" th:value="${findDogDto.lostTime}">
+                    </div>
+                    <div class="row">
+
+                        <div class="form-group mb-3 w-25">
+                            <label for="breed" class="form-label">품종</label>
+                            <input type="text" class="form-control" name="breed" id="breed" th:value="${findDogDto.breed}">
+                        </div>
+
+
+                        <div class="form-group mb-3 w-25 ms-5">
+                            <label for="breed" class="form-label">강아지 이름</label>
+                            <input type="text" class="form-control" name="dogName" id="dogName" th:value="${findDogDto.content}">
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -310,10 +323,12 @@
         let title = $('#title').val();
         let content = $('#content').val();
         let breed = $('#breed').val();
+        let lostTime = $('#lostTime').val();
+        let dogName = $('#dogName').val();
 
         let formData = new FormData();
 
-        let dataArr = [title, content, breed];
+        let dataArr = [title, content, breed, lostTime, dogName];
 
         let result = handleNullInArray(dataArr);
 
@@ -325,6 +340,8 @@
         formData.append('title',title);
         formData.append('content',content);
         formData.append('breed',breed);
+        formData.append('lostTime',lostTime);
+        formData.append('dogName',dogName);
 
         if (area != null && area != '') {
             formData.append('latitude',latitude);
@@ -364,6 +381,13 @@
         });
     });
     // 폼 서브밋 End
+
+        $('#testI').click(function(){
+        let lostTime = $('#lostTime').val();
+        let dogName = $('#dogName').val();
+
+        console.log(lostTime + '---' + dogName);
+    });
 </script>
 </body>
 </html>

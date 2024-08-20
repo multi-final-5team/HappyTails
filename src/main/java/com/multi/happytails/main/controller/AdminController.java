@@ -2,6 +2,7 @@ package com.multi.happytails.main.controller;
 
 import com.multi.happytails.community.model.dto.DogloveDTO;
 import com.multi.happytails.community.service.DogloveService;
+import com.multi.happytails.finddog.service.FindDogService;
 import com.multi.happytails.shop.model.dto.SalesGoodsDTO;
 import com.multi.happytails.shop.service.SalesService;
 import com.multi.happytails.upload.model.dto.UploadDto;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -41,11 +43,17 @@ public class AdminController {
     @Autowired
     private DogloveService dogloveService;
 
+    @Autowired
+    private FindDogService findDogService;
+
     @RequestMapping("/index")
     public void adminMain() {}
 
     @RequestMapping("/tables2")
     public void test() {}
+
+    @RequestMapping("/tables4")
+    public void test2() {}
 
     @RequestMapping("/patrolAdmin")
     public void patrolAdmin() {}
@@ -110,4 +118,11 @@ public class AdminController {
 
         return "/admin/dogLoveAdmin";
     }
+
+
+    @GetMapping("/findDogAdmin")
+    public void findDogAdmin(Model model) {
+        model.addAttribute("findDogList",findDogService.findDogList());
+    }
+
 }

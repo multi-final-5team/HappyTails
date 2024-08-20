@@ -4,8 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.multi.happytails.finddog.model.dao.FindDogMapper">
     <insert id="findDogInsert">
-        INSERT INTO TB_FINDDOG (CATEGORY, WRITER_ID, TITLE, CONTENT, LATITUDE, LONGITUDE, AREA, BREED)
-        VALUES (#{category}, #{writerId}, #{title}, #{content}, #{latitude}, #{longitude}, #{area}, #{breed})
+        INSERT INTO TB_FINDDOG (CATEGORY, WRITER_ID, TITLE, CONTENT, LATITUDE, LONGITUDE, AREA, BREED, LOST_TIME, DOG_NAME)
+        VALUES (#{category}, #{writerId}, #{title}, #{content}, #{latitude}, #{longitude}, #{area}, #{breed}, #{lostTime}, #{dogName})
     </insert>
 
     <select id="getCurrentFindDogNo">
@@ -80,7 +80,9 @@
                               BREED = #{breed},
                               AREA = #{area},
                               LATITUDE = #{latitude},
-                              LONGITUDE = #{longitude}
+                              LONGITUDE = #{longitude},
+                              LOST_TIME = #{lostTime},
+                              DOG_NAME = #{dogName}
         WHERE FINDDOG_NO = #{findDogNo}
     </update>
 
@@ -108,4 +110,8 @@
             CONTENT = #{content}
         WHERE FINDDOG_REPLY_NO = #{findDogReplyNo}
     </update>
+
+    <select id="findDogList">
+        SELECT * FROM TB_FINDDOG
+    </select>
 </mapper>

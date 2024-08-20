@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>잃어버린 강아지를 찾습니다</title>
+    <style>
+        body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        overflow: auto;
+        }
+
+        .flyer {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 210mm; /* A4 용지의 너비 */
+            height: auto;
+            padding: 20mm; /* A4용지의 여백 */
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        h1 {
+            color: #d9534f;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .dog-photo img {
+            border-radius: 10px;
+            width: 80%; /* 이미지 크기 줄임 */
+            height: auto;
+            max-height: 100mm; /* 사진의 최대 높이 조정 */
+            object-fit: cover;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .dog-info {
+            text-align: left;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .dog-info h2 {
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .dog-info p {
+            margin: 5px 0;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .contact-info h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .contact-info p {
+            color: #555;
+            font-size: 16px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="flyer">
+    <h1>잃어버린 강아지를 찾습니다!</h1>
+    <div class="dog-photo">
+        <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="잃어버린 강아지 사진">
+    </div>
+    <div class="dog-info">
+        <h2>강아지 정보</h2>
+        <strong>이름:</strong> <p th:text="${findDogDto.dogName}"></p>
+        <strong>내용:</strong>
+        <pre th:text="${findDogDto.content}"></pre>
+        <strong>장소:</strong> <p th:text="${findDogDto.area}"></p>
+        <strong>시간:</strong> <p th:text="${findDogDto.lostTime}"></p>
+    </div>
+    <div class="contact-info">
+        <h3>연락처</h3>
+        <p th:text="'전화: ' + ${tel}"></p>
+    </div>
+</div>
+</body>
+</html>

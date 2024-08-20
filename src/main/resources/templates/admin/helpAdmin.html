@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/index :: head}">
+    <meta charset="UTF-8">
+    <title>관리</title>
+</head>
+<body class="sb-nav-fixed">
+<menu th:replace="~{admin/index :: headDiv}"></menu>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">고객센터 관리</h1>
+            <div class="card mb-4">
+                <div class="card-body" id="dd">
+                    자주묻는 질문, 1:1문의를 관리하는 부분 입니다.
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    고객센터
+                </div>
+                <div class="card-body">
+                    <table id="datatablesSimple">
+                        <thead>
+                        <tr>
+                            <th>게시글 번호</th>
+                            <th>제목</th>
+                            <th>작성자</th>
+                            <th>카테고리</th>
+                            <th>장소</th>
+                            <th>삭제</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>게시글 번호</th>
+                            <th>제목</th>
+                            <th>작성자</th>
+                            <th>카테고리</th>
+                            <th>장소</th>
+                            <th>삭제</th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        <th:block th:each="findDog : ${findDogList}">
+                            <tr class="findList">
+                                <td th:text="${findDog.findDogNo}"></td>
+                                <td><a th:href="@{'/finddog/detail?findDogNo=' + ${findDog.findDogNo}}" th:text="${findDog.title}"></a></td>
+                                <td th:text="${findDog.writerId}"></td>
+                                <td th:text="${findDog.category}"></td>
+                                <td th:text="${findDog.area}"></td>
+                                <td><input type="button" class="deleteBtn" value="삭제" th:data-find-dog-no="${findDog.findDogNo}"></td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script>
+    $(document).ready(function() {
+       $('.deleteBtn').click(function(){
+            $.ajax({
+                url : "/finddog/delete",
+                type : 'POST',
+                data: { findDogNo: $(this).attr('data-find-dog-no') },
+                success : function(result) {
+                    alert(result);
+                    location.reload();
+                }
+            });
+        });
+   });
+</script>
+</body>
+</html>

@@ -71,4 +71,8 @@ public class FindDogService {
     public int findDogReplyUpdate(FindDogReplyDto findDogReplyDto) {
         return findDogMapper.findDogReplyUpdate(findDogReplyDto);
     }
+
+    public List<FindDogDto> findDogList() {
+        return findDogMapper.findDogList();
+    }
 }
