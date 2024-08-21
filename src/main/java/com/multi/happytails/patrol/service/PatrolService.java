@@ -34,8 +34,8 @@ public class PatrolService {
         return patrolDAO.findAllPatrol();
     }
 
-    public PatrolDTO findOnePatrol(int userNo, String name) {
-        return patrolDAO.findOnePatrol(userNo, name);
+    public PatrolDTO findOnePatrol(int userNo) {
+        return patrolDAO.findOnePatrol(userNo);
     }
 
     public PatrolDTO findOnePatrolByPatrolNo(int patrolNo) {

@@ -21,7 +21,7 @@
 
     <div class="container mt-5">
 
-<h1 class="mb-4">순찰일지 작성</h1>
+<h1 class="mb-4 text-center">순찰일지 작성</h1>
 
     <div class="bg-white border rounded d-flex justify-content-center">
         <form action="makePrecord" method="post" enctype="multipart/form-data" id="formId">
@@ -65,11 +65,14 @@
         $.ajax({
                 url:"/patrolRecord/findNonSelectedPrecourdPlace",
                 success: function (data){
+                    console.log(data);
+
                     const $precordPlace = $("#precordPlace");
 
                     for(let index in data){
-                        $precordPlace.append($("<option>").val(data[index].precordPlaceNo).text(data[index].precordPlaceNo + "번 기록"))
-
+                        if(!isNaN(data[index].precordPlaceNo)){
+                            $precordPlace.append($("<option>").val(data[index].precordPlaceNo).text(data[index].precordPlaceNo + "번 기록"))
+                        }
                     }
                 },
                 error: function (xhr){

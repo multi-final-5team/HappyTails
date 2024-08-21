@@ -19,7 +19,8 @@
     <select id="findOnePatrol">
         SELECT patrol_no AS patrolNo, user_no AS userNo, name, age, breed, location
         FROM tb_patrol
-        WHERE user_no = #{userNo} AND name = #{name}
+        WHERE user_no = #{userNo}
+        LIMIT 1
     </select>
 
     <select id="findOnePatrolByPatrolNo">

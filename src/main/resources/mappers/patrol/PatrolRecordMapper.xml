@@ -9,6 +9,12 @@
         FROM tb_precord;
     </select>
 
+    <select id="findAllPatrolRecordByUserNo">
+        SELECT precord_no AS precordNo, user_no AS userNo, title, content, viewcount
+        FROM tb_precord
+        WHERE user_no = #{userNo}
+    </select>
+
     <select id="findPrecordBySearch">
         SELECT precord_no AS precordNo, user_no AS userNo, title, content, viewcount
         FROM tb_precord
