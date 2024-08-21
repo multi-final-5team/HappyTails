@@ -11,54 +11,62 @@
 
 </style>
 
-<body class="container mt-5">
+<body>
 
 <menu th:replace="~{fragments/head :: menu}"></menu>
 
 <main>
-    <h1 class="mb-4">명예의 전당</h1>
 
-    <div class="mb-3">
-        <a class="btn btn-primary me-2" th:href="@{/honor(category='doglove', sort=${sort})}">내새꾸자랑 추천순</a>
-        <a class="btn btn-primary" th:href="@{/honor(category='police', sort=${sort})}">순찰대 명예 등급 순위</a>
-    </div>
+<br>
 
-    <div id="rankingDiv">
-        <table class="table">
-            <thead>
-            <tr>
-                <th>랭킹</th>
-                <th>이름</th>
-                <th th:if="${category == 'doglove'}">추천 수</th>
-                <th th:if="${category == 'police'}">점수</th>
-                <th th:if="${category == 'police'}">계급</th>
-            </tr>
-            </thead>
-            <tbody id="rankTbody" class="table-group-divider">
-            <tr th:each="item, itemStat : ${ranking}">
-                <td th:text="${itemStat.count}"></td>
-<!--                <td th:text="${category == 'doglove' ? item.userId : item.id}"></td>-->
-                <td th:text="${item.userId}"></td>
-                <td th:if="${category == 'doglove'}" th:text="${item.totalCount}"></td>
-                <td th:if="${category == 'police'}" th:text="${item.policeScore}"></td>
-                <td th:if="${category == 'police'}">
+<h1 class="mb-4 text-center">🐾 명예의 전당 🐾</h1>
+<h3 class="mb-4 text-center">소중한 기록의 순간들을 자랑하시개! 🐶</h3>
 
-                    <span th:if="${item.policeScore > 6600}" th:text="치안총감"></span>
-                    <span th:if="${item.policeScore > 5500 and item.policeScore <= 6600}" th:text="치안정감"></span>
-                    <span th:if="${item.policeScore > 4500 and item.policeScore <= 5500}" th:text="치안감"></span>
-                    <span th:if="${item.policeScore > 3600 and item.policeScore <= 4500}" th:text="경무관"></span>
-                    <span th:if="${item.policeScore > 2800 and item.policeScore <= 3600}" th:text="총경"></span>
-                    <span th:if="${item.policeScore > 2100 and item.policeScore <= 2800}" th:text="경정"></span>
-                    <span th:if="${item.policeScore > 1500 and item.policeScore <= 2100}" th:text="경감"></span>
-                    <span th:if="${item.policeScore > 1000 and item.policeScore <= 1500}" th:text="경위"></span>
-                    <span th:if="${item.policeScore > 600 and item.policeScore <= 1000}" th:text="경사"></span>
-                    <span th:if="${item.policeScore > 300 and item.policeScore <= 600}" th:text="경장"></span>
-                    <span th:if="${item.policeScore > 100 and item.policeScore <= 300}" th:text="순경"></span>
-                    <span th:if="${item.policeScore <= 100}" th:text="신입"></span>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="container mt-5">
+        <h1 class="mb-4"></h1>
+
+        <div class="mb-3">
+            <a class="btn btn-primary me-2" th:href="@{/honor(category='doglove', sort=${sort})}">내새꾸자랑 추천순</a>
+            <a class="btn btn-primary" th:href="@{/honor(category='police', sort=${sort})}">순찰대 명예 등급 순위</a>
+        </div>
+
+        <div id="rankingDiv">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>랭킹</th>
+                    <th>이름</th>
+                    <th th:if="${category == 'doglove'}">추천 수</th>
+                    <th th:if="${category == 'police'}">점수</th>
+                    <th th:if="${category == 'police'}">계급</th>
+                </tr>
+                </thead>
+                <tbody id="rankTbody" class="table-group-divider">
+                <tr th:each="item, itemStat : ${ranking}">
+                    <td th:text="${itemStat.count}"></td>
+    <!--                <td th:text="${category == 'doglove' ? item.userId : item.id}"></td>-->
+                    <td th:text="${item.userId}"></td>
+                    <td th:if="${category == 'doglove'}" th:text="${item.totalCount}"></td>
+                    <td th:if="${category == 'police'}" th:text="${item.policeScore}"></td>
+                    <td th:if="${category == 'police'}">
+
+                        <span th:if="${item.policeScore > 6600}" th:text="치안총감"></span>
+                        <span th:if="${item.policeScore > 5500 and item.policeScore <= 6600}" th:text="치안정감"></span>
+                        <span th:if="${item.policeScore > 4500 and item.policeScore <= 5500}" th:text="치안감"></span>
+                        <span th:if="${item.policeScore > 3600 and item.policeScore <= 4500}" th:text="경무관"></span>
+                        <span th:if="${item.policeScore > 2800 and item.policeScore <= 3600}" th:text="총경"></span>
+                        <span th:if="${item.policeScore > 2100 and item.policeScore <= 2800}" th:text="경정"></span>
+                        <span th:if="${item.policeScore > 1500 and item.policeScore <= 2100}" th:text="경감"></span>
+                        <span th:if="${item.policeScore > 1000 and item.policeScore <= 1500}" th:text="경위"></span>
+                        <span th:if="${item.policeScore > 600 and item.policeScore <= 1000}" th:text="경사"></span>
+                        <span th:if="${item.policeScore > 300 and item.policeScore <= 600}" th:text="경장"></span>
+                        <span th:if="${item.policeScore > 100 and item.policeScore <= 300}" th:text="순경"></span>
+                        <span th:if="${item.policeScore <= 100}" th:text="신입"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </main>
 

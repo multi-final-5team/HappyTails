@@ -37,7 +37,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/member/mypage").authenticated()
                         .requestMatchers("/member/kakaoLogin").permitAll()
                         .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/error/**").permitAll()
-//                        .requestMatchers("/admin/**").hasRole("ROLE_ADMIN")
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
 //                        .requestMatchers("/subadmin/**").hasRole("ROLE_SUB_ADMIN")
                         .anyRequest().permitAll()
                 );
