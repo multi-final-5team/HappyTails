@@ -12,6 +12,7 @@
         <result column="BUSINESS_NUMBER" property="businessNumber" />
         <result column="BUSINESS_ADDRESS" property="businessAddress" />
         <result column="BUSINESS_REGISTRATION_FLAG" property="businessRegistrationFlag" />
+        <result column="CREATE_DATE" property="createDate" />
     </resultMap>
 
     <insert id="insertBusiness">
@@ -31,4 +32,14 @@
             #{businessRegistrationFlag}
         )
     </insert>
+
+    <select id="getAllBusinesses" resultMap="businessResultMap">
+        SELECT * FROM TB_BUSINESS ORDER BY BUSINESS_NO DESC
+    </select>
+
+    <update id="updateBusinessRegistrationFlag">
+        UPDATE TB_BUSINESS
+        SET BUSINESS_REGISTRATION_FLAG = #{flag}
+        WHERE BUSINESS_NO = #{businessNo}
+    </update>
 </mapper>
