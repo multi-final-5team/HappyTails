@@ -15,12 +15,17 @@
 
     <div class="container mt-5">
 
-<h1 class="mb-4">순찰일지</h1>
+        <h1 class="mb-4 text-center">순찰일지</h1>
+        <h5 class="mb-4 text-center">시설물 파손이나 주취자 신고 등 방범 활동을 기록해주세요</h5>
 
-    <div style="width: 30%;margin-left:auto;display: flex;">
-        <input class="form-control" type="text" id="searchinput" style="width: 70%;">
-        <button class="btn btn-info" id="btnserch" onclick="search()" style="width: 30%;">검색</button>
-    </div>
+        <div style="width: 40%;margin-left:auto;display: flex;">
+            <select class="form-select" id="targetSelect" name="targetSelect" style="width: 30%">
+                <option value="selectId" selected>아이디</option>
+                <option value="selectTitle">제목</option>
+            </select>
+            <input class="form-control" type="text" id="searchinput" style="width: 40%;">
+            <button class="btn btn-primary" id="btnserch" onclick="search()" style="width: 30%;">검색</button>
+        </div>
 
     <button class="btn btn-primary" id="goPatrolRecordInsertBtn" sec:authorize="isAuthenticated()">생성</button>
 
@@ -46,7 +51,9 @@
 <script>
     var urlParams = new URL(location.href).searchParams;
     var page = urlParams.get('page');
+
     var title = urlParams.get('title');
+    var userId = urlParams.get('userId');
 
     var pageFirst;
     var pageLast;
@@ -58,12 +65,12 @@
 
         if(title != null){
             $('#searchinput').val(title);
-            search();
         }
-        else{
-            normal();
+        if(userId != null){
+            $('#searchinput').val(userId);
         }
 
+        search();
 
 
         $('#goPatrolRecordInsertBtn').click(function(){
@@ -79,152 +86,60 @@
         location.href = "/patrolRecord/patrolRecord";
     }
 
-    function normal(){
-        $.ajax({
-        type:'get',
-        url: "/patrolRecord/findAllPatrolRecord",
-        data : {
-		    page : page
-	    },
-        success : function(data){
-            console.log(data);
-
-            pageFirst = data.first;
-            pageLast = data.last;
-            totalPages = data.totalPages;
-            totalElements = data.totalElements;
-
-            var contentList = data.content;
-
-            for(let index in contentList){
-
-                $('#patrolRecordDiv').append(
-                    $('<div>').prop({
-                        id: 'precord' + index,
-                        className: 'card'
-                        }).attr("onclick", "gopatrolRecord(" + contentList[index].precordNo + ")")
-                );
-
-                $('#' + 'precord' + index).append(
-                    $('<div>').prop({
-                        id: 'divbody' + index,
-                        className: 'card-body'
-                    })
-                );
-
-                $('#' + 'divbody' + index).append(
-                    '<b class="card-text">글제목: ' + contentList[index].title + '</b><br>'
-                );
-
-                $('#' + 'divbody' + index).append(
-                    '<sub class="card-text">글쓴이: ' + contentList[index].userId + '</sub><br>'
-                );
-
-                $('#' + 'divbody' + index).append(
-                    '<sub class="card-text">조회수: ' + contentList[index].viewcount + '</sub>'
-                );
-            }
-
-            if(page > 9){
-                $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=0">&#166;&laquo;</a></li>'
-                );
-            }
-
-            if(!pageFirst){
-                pagePrevious = Number(page) - 1;
-                $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=' + pagePrevious + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
-                );
-            }
-
-
-            if(page > 9){
-                pageStart = parseInt( page / 10 ) * 10;
-                for(let i = pageStart; i< pageStart + 10; i++){
-	                if(i < totalPages){
-	                    pageNext = Number(i) + 1;
-	                    if(page != i){
-	                        $('#pageItems').append(
-                                '<li class="page-item"><a   class="page-link"href="/patrolRecord/patrolRecord?page=' + i +'">' + pageNext +  '</a></li>'
-                            );
-	                    }
-	                    else{
-	                        $('#pageItems').append(
-                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
-                            );
-	                    }
-	                }
-                }
-            }
-            else{
-                for(let i = 0; i<10; i++){
-	                if(i < totalPages){
-	                    pageNext = Number(i) + 1;
-	                    if(page != i){
-	                        $('#pageItems').append(
-                                '<li class="page-item"><a   class="page-link"href="/patrolRecord/patrolRecord?page=' + i +'">' + pageNext +  '</a></li>'
-                            );
-	                    }
-	                    else{
-	                        $('#pageItems').append(
-                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
-                            );
-	                    }
-	                }
-                }
-            }
-
-
-            if(!pageLast){
-                pageNext = Number(page) + 1;
-                $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=' + pageNext + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
-                );
-            }
-
-            pageT = parseInt( page / 10 ) * 10;
-            totalPagesT = parseInt( totalPages / 10 ) * 10;
-
-            endTarget = Number(totalPagesT);
-
-            if((totalPages > 10)&&(pageT != totalPagesT)){
-                $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=' + endTarget + '">&raquo;&#166;</a></li>'
-                );
-            }
-
-        },
-        error: function (xhr){
-            console.log(xhr);
-        }
-        }); // $.ajax()
-    }
-
     function search(){
 
-        if($('#searchinput').val().length != 0){
-            if(title != $('#searchinput').val()){
-                page = 0;
-                title = $('#searchinput').val();
-                location.href = "/patrolRecord/patrolRecord?page=0" + "&title="+ title;
-            }
-            else{
-                title = $('#searchinput').val();
-            }
-        }
-        else{
-            alert("검색어를 입력해주세요");
+        if(page  == null){
+            page = 0;
         }
 
+        var url = "/patrolRecord/patrolRecord?size=10";
 
+        var select = $('#targetSelect').val();
+
+        if(select == "selectId"){
+            title = null;
+            if($('#searchinput').val().length != 0){
+                if(userId != $('#searchinput').val()){
+                    page = 0;
+                    userId = $('#searchinput').val();
+                }
+                else{
+                    userId = $('#searchinput').val();
+                }
+
+                if((userId != null)&&(userId != '')){
+                    url = url + "&userId=" + userId;
+                }
+            }
+        }
+        else if(select == "selectTitle"){
+            userId = null;
+            if($('#searchinput').val().length != 0){
+                if(title != $('#searchinput').val()){
+                    page = 0;
+                    title = $('#searchinput').val();
+                }
+                else{
+                    title = $('#searchinput').val();
+                }
+
+                if((title != null)&&(title != '')){
+                    url = url + "&title=" + title;
+                }
+            }
+        }
+
+        url = url + "&page=";
+
+        console.log(url);
 
         $.ajax({
         type:'get',
         url: "/patrolRecord/findAllPatrolRecord",
         data : {
 		    "page" : page,
-		    "title" : title
+		    "title" : title,
+		    "userId" : userId
 	    },
         success : function(data){
             console.log(data);
@@ -270,14 +185,14 @@
 
             if(page > 9){
                 $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=0' + '&title='+ title + '">&#166;&laquo;</a></li>'
+                    '<li class="page-item"><a class="page-link" href="' + url + '0">&#166;&laquo;</a></li>'
                 );
             }
 
             if(!pageFirst){
                 pagePrevious = Number(page) - 1;
                 $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=' + pagePrevious + '&title=' + title + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
+                    '<li class="page-item"><a class="page-link" href="' + url + pagePrevious + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
                 );
             }
 
@@ -289,7 +204,7 @@
 	                    pageNext = Number(i) + 1;
 	                    if(page != i){
 	                        $('#pageItems').append(
-                                '<li class="page-item"><a   class="page-link"href="/patrolRecord/patrolRecord?page=' + i +'&title=' + title + '">' + pageNext +  '</a></li>'
+                                '<li class="page-item"><a   class="page-link"href="' + url + i + '">' + pageNext +  '</a></li>'
                             );
 	                    }
 	                    else{
@@ -306,7 +221,7 @@
 	                    pageNext = Number(i) + 1;
 	                    if(page != i){
 	                        $('#pageItems').append(
-                                '<li class="page-item"><a   class="page-link"href="/patrolRecord/patrolRecord?page=' + i +'&title=' + title + '">' + pageNext +  '</a></li>'
+                                '<li class="page-item"><a   class="page-link"href="' + url + i  + '">' + pageNext +  '</a></li>'
                             );
 	                    }
 	                    else{
@@ -322,7 +237,7 @@
             if(!pageLast){
                 pageNext = Number(page) + 1;
                 $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=' + pageNext + '&title=' + title + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
+                    '<li class="page-item"><a class="page-link" href="' + url + pageNext + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
                 );
             }
 
@@ -333,7 +248,7 @@
 
             if((totalPages > 10)&&(pageT != totalPagesT)){
                 $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/patrolRecord/patrolRecord?page=' + endTarget + '&title=' + title + '">&raquo;&#166;</a></li>'
+                    '<li class="page-item"><a class="page-link" href="' + url + endTarget + '">&raquo;&#166;</a></li>'
                 );
             }
 

@@ -14,6 +14,9 @@
             <if test="data.title != null and data.title !='' ">
                 AND title LIKE CONCAT('%' , #{data.title} , '%')
             </if>
+            <if test="data.userNo != null and data.userNo !='' ">
+                AND user_no = #{data.userNo}
+            </if>
         </where>
         <!--ORDER BY 절 추가-->
         <if test="pageable.sort != null and !pageable.sort.isEmpty()">
@@ -33,6 +36,9 @@
         <where>
             <if test="title != null and title !='' ">
                 AND title LIKE CONCAT('%' , #{title} , '%')
+            </if>
+            <if test="userNo != null and userNo !='' ">
+                AND user_no = #{userNo}
             </if>
         </where>
     </select>

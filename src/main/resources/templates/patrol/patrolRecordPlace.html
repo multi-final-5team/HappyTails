@@ -16,7 +16,8 @@
 
 
 
-    <h1 class="mb-4">순찰경로 조회</h1>
+        <h1 class="mb-4 text-center">순찰경로 조회</h1>
+        <h5 class="mb-4 text-center">우리 아이의 발자취를 기록해보세요</h5>
 
     <button class="btn btn-primary" id="goPatrolRecordPlaceInsert" sec:authorize="isAuthenticated()">생성</button>
 
@@ -95,6 +96,8 @@
             totalElements = data.totalElements;
 
             var contentList = data.content;
+
+            $('#pageItems').empty();
 
             let placeInfo="";
 

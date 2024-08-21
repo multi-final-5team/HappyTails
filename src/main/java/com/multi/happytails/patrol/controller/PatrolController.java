@@ -18,8 +18,12 @@ package com.multi.happytails.patrol.controller;
 import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.member.service.MemberService;
+import com.multi.happytails.patrol.model.dao.PatrolPlaceDAO;
 import com.multi.happytails.patrol.model.dto.*;
 import com.multi.happytails.patrol.pageable.service.PageService;
+import com.multi.happytails.patrol.service.PatrolPlaceService;
+import com.multi.happytails.patrol.service.PatrolRecordReplyService;
+import com.multi.happytails.patrol.service.PatrolRecordService;
 import com.multi.happytails.patrol.service.PatrolService;
 import com.multi.happytails.score.model.dto.ScoreDTO;
 import com.multi.happytails.score.service.ScoreService;
@@ -54,6 +58,15 @@ public class PatrolController {
      */
     @Autowired
     PatrolService patrolService;
+
+    @Autowired
+    PatrolRecordService patrolRecordService;
+
+    @Autowired
+    PatrolPlaceService patrolPlaceService;
+
+    @Autowired
+    PatrolRecordReplyService patrolRecordReplyService;
 
     /**
      * The Upload service.
@@ -130,20 +143,25 @@ public class PatrolController {
 
         System.out.println("유저넘버 >>>> " + (int)customUser.getNo());
 
+        PatrolDTO check = patrolService.findOnePatrol((int)customUser.getNo());
 
-        patrolService.patrolInsert(patrolDTO);
-        PatrolDTO target = patrolService.findOnePatrol(patrolDTO.getUserNo() , patrolDTO.getName());
+        System.out.println("check >>>> " + check);
 
-        System.out.println("target >>>> " + target);
+        if(check == null){
+            patrolService.patrolInsert(patrolDTO);
+            PatrolDTO target = patrolService.findOnePatrol(patrolDTO.getUserNo());
 
-        if (imageFiles != null) {
-            UploadDto uploadDto = new UploadDto();
-            uploadDto.setForeignNo(target.getPatrolNo());
-            uploadDto.setCategoryCode("Z");
+            System.out.println("target >>>> " + target);
 
-            for (int i = 0; i < imageFiles.size(); i++) {
-                uploadDto.setFile(imageFiles.get(i));
-                uploadService.uploadInsert(uploadDto);
+            if (imageFiles != null) {
+                UploadDto uploadDto = new UploadDto();
+                uploadDto.setForeignNo(target.getPatrolNo());
+                uploadDto.setCategoryCode("Z");
+
+                for (int i = 0; i < imageFiles.size(); i++) {
+                    uploadDto.setFile(imageFiles.get(i));
+                    uploadService.uploadInsert(uploadDto);
+                }
             }
         }
 
@@ -288,9 +306,26 @@ public class PatrolController {
 
         patrolDTO.setUserNo((int)customUser.getNo());
 
+        List<PrecordDTO> list = patrolRecordService.findAllPatrolRecordByUserNo((int)customUser.getNo());
 
+        List<PrecordPlaceDTO> placeDTOList = patrolPlaceService.findAllPrecordPlace(patrolDTO.getPatrolNo());
 
+        //기존 순찰기록 삭제
+        for (int i = 0; i < placeDTOList.size(); i++) {
+            patrolPlaceService.precordPlaceHistoryDelete(placeDTOList.get(i).getPrecordPlaceNo());
 
+            patrolPlaceService.deletePlace(placeDTOList.get(i));
+        }
+        
+        //기존 순찰일지 삭제
+        for (int i = 0; i < list.size(); i++) {
+            //순찰일지 댓글 삭제
+            patrolRecordReplyService.repleyDeleteByPrecordNo(list.get(i).getPrecordNo());
+
+            patrolRecordService.patrolRecordDelete(list.get(i));
+        }
+
+        //이미지 삭제
         List<UploadDto> pageIngs = uploadService.uploadSelect("Z",patrolDTO.getPatrolNo());
 
         if (!pageIngs.isEmpty()) {

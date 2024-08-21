@@ -25,7 +25,7 @@ public interface PatrolDAO {
 
     List<PatrolDTO> findAllPatrol();
 
-    PatrolDTO findOnePatrol(@Param("userNo") int userNo,@Param("name") String name);
+    PatrolDTO findOnePatrol(@Param("userNo") int userNo);
 
     PatrolDTO findOnePatrolByPatrolNo(int parolNo);
 
