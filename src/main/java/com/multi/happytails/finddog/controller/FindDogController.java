@@ -49,9 +49,14 @@ public class FindDogController {
     @GetMapping("/print")
     public void print(@RequestParam("findDogNo") long findDogNo, @AuthenticationPrincipal CustomUser customUser, Model model) {
         List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_FINDDOG_CODE, findDogNo);
+
+        if (!uploadDtos.isEmpty()) {
+            model.addAttribute("storedFileName", uploadDtos.get(0).getStoredFileName());
+        }
+
         FindDogDto findDogDto = findDogService.findDogDetail(findDogNo);
 
-        model.addAttribute("uploadDtos", uploadDtos);
+
         model.addAttribute("findDogDto", findDogDto);
         model.addAttribute("tel", customUser.getTel());
     }

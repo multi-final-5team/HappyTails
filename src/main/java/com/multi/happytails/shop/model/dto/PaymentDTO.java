@@ -48,4 +48,3 @@ public class PaymentDTO {
                 (cartItems.size() > 1 ? " 외 " + (cartItems.size() - 1) + "건" : "");
     }
 }
-

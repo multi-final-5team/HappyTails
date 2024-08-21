@@ -183,6 +183,8 @@ public class PaymentController {
                         paymentDTO.setProductinfo(cartItem.getGoodsName());
                         paymentDTO.setAddress(request.getAddress());
                         paymentDTO.setRequest(request.getRequest());
+                        System.out.println(request.getAddress() + "-----------------------주소");
+                        System.out.println(request.getRequest() + "-----------------------요청사항");
 
                         paymentService.insertPayment(paymentDTO);
                     }
@@ -300,7 +302,7 @@ public class PaymentController {
 
     @GetMapping("/deliveryPopup")
     public String deliveryPopup(@RequestParam("payment_no") int payment_no,
-                              Model model) {
+                                Model model) {
         model.addAttribute("payment_no", payment_no);
         return "/payment/deliveryPopup"; // 팝업 창 HTML 파일 이름
     }
