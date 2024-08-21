@@ -7,6 +7,7 @@ import com.multi.happytails.upload.service.UploadService;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -167,6 +168,23 @@ public class ReviewController {
     }
     // Delete
 
+    @GetMapping("/reviewUpdatePopup")
+    public String updateForm(@RequestParam("goodsNo") int goodsNo
+            , Model model, Principal principal){
+        String id = principal.getName();
+        ReviewDTO reviewDetails = reviewService.selectReview(id, goodsNo);
+
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_INQUIRY_CODE, goodsNo);
+        System.out.println(uploadDtos + " ===============================================");
+        System.out.println(reviewDetails);
+        System.out.println(id);
+        System.out.println(goodsNo);
+
+        model.addAttribute("uploadDtos", uploadDtos);
+        model.addAttribute("reviewDetails", reviewDetails);
+
+        return "sales/reviewUpdatePopup";
+    }
 
     //PosetMan
 

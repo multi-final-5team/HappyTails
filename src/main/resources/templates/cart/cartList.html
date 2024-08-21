@@ -38,26 +38,83 @@
                                    th:text="${cartList.goodsName}"
                                    class="text-decoration-none"></a>
                             </td>
-                            <td th:text="${#numbers.formatCurrency(cartList.price)}" class="price"></td>
-                            <td th:text="${cartList.purchaseQuantity}" class="purchaseQuantity"></td>
+                            <td th:text="${#numbers.formatCurrency(cartList.price)}" class="price" th:data-price="${cartList.price}"></td>
+                            <td>
+                                <input type="number" th:value="${cartList.purchaseQuantity}"
+                                       class="form-control purchaseQuantity"
+                                       min="1"
+                                       th:data-goods-no="${cartList.goodsNo}"
+                                       th:data-no="${cartList.no}"
+                                       style="width: 70px;">
+                            </td>
                         </tr>
                         </tbody>
                     </table>
                     <br>
                     <div class="card mx-auto" style="width: 50%; min-width: 300px;">
-                        <div class="card-body  text-center">
+                        <div class="card-body text-center">
                             <p>예상 결제 금액</p>
-                            <p th:text="${#numbers.formatCurrency(#aggregates.sum(cartList.![price * purchaseQuantity]) ?: 0)} + '원'" id="amount"></p>
+                            <p id="totalAmount"></p>
                             <p><a href="/payment/payment" class="btn btn-primary">결제하기</a></p>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
-
 </main>
+
+<script>
+
+$('.purchaseQuantity').change(function(){
+let purchaseQuantity = $(this).val();
+let no = $(this).attr('data-no');
+$.ajax({
+            url : "/cart/updateCart",
+            type : 'POST',
+            data: { purchaseQuantity : purchaseQuantity, no : no},
+            success : function(data) {
+
+            }
+        });
+});
+
+// 총액을 계산하고 표시하는 함수
+function updateTotalAmount() {
+    let total = 0;
+    const rows = document.querySelectorAll('tbody tr');
+
+    rows.forEach(row => {
+        const priceElement = row.querySelector('.price');
+        const quantityInput = row.querySelector('.purchaseQuantity');
+
+        if (priceElement && quantityInput) {
+            const price = parseFloat(priceElement.getAttribute('data-price'));
+            const quantity = parseInt(quantityInput.value);
+
+            total += price * quantity;
+        }
+    });
+
+    // 총액을 표시
+    const totalAmountElement = document.getElementById('totalAmount');
+    if (totalAmountElement) {
+        totalAmountElement.textContent = new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(total);
+    }
+}
+
+// 페이지 로드 시 초기 총액 계산
+document.addEventListener('DOMContentLoaded', () => {
+    updateTotalAmount();
+
+    // 수량 입력 필드에 이벤트 리스너 추가
+    document.querySelectorAll('.purchaseQuantity').forEach(input => {
+        input.addEventListener('change', updateTotalAmount);
+    });
+});
+</script>
+
+
 
 </body>
 <footer th:replace="fragments/head :: footer"></footer>

@@ -21,6 +21,8 @@ public class PaymentDTO {
     private int goodsNo;
     private String delivery_man;
     private int invoice_number;
+    private String address;
+    private String request;
 
     private List<CartDTO> cartItems;
 

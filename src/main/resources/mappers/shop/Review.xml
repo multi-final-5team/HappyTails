@@ -42,11 +42,21 @@
         ORDER BY REVIEW_NO DESC
     </select>
 
+    <select id="selectReview">
+        SELECT * FROM TB_REVIEW
+        WHERE GOODS_NO = #{goodsNo} AND ID = #{id}
+    </select>
 
     <select id="getReviewNo">
         SELECT REVIEW_NO
         FROM TB_REVIEW
         ORDER BY REVIEW_NO DESC
         LIMIT 1
+    </select>
+
+    <select id="hasUserReviewed" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM TB_REVIEW
+        WHERE ID = #{id} AND GOODS_NO = #{goodsNo}
     </select>
 </mapper>

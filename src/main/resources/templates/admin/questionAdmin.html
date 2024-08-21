@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/index :: head}">
+    <meta charset="UTF-8">
+    <title>관리</title>
+</head>
+<body class="sb-nav-fixed">
+<menu th:replace="~{admin/index :: headDiv}"></menu>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">고객센터 관리</h1>
+            <div class="card mb-4">
+                <div class="card-body" id="dd">
+                    자주묻는 질문을 관리하는 페이지 입니다.
+                </div>
+            </div>
+            <input type="button" class="btn btn-primary mb-3" id="questionWriteModalOn" value="작성">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    고객센터
+                </div>
+                <div class="card-body">
+                    <table id="datatablesSimple">
+                        <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>카테고리</th>
+                            <th>질문</th>
+                            <th>수정</th>
+                            <th>삭제</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>번호</th>
+                            <th>카테고리</th>
+                            <th>질문</th>
+                            <th>수정</th>
+                            <th>삭제</th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        <th:block th:each="question : ${questionList}">
+                            <tr class="questionList">
+                                <td th:text="${question.questionNo}"></td>
+                                <td th:text="${question.categoryName}"></td>
+                                <td th:text="${question.questionContent}"></td>
+                                <td><input type="button" class="btn btn-success updateBtn" value="수정" th:data-question-no="${question.questionNo}" th:data-question-content="${question.questionContent}" th:data-answer-content="${question.answerContent}" th:data-help-category="${question.helpCategoryCode}"></td>
+                                <td><input type="button" class="btn btn-danger deleteBtn" value="삭제" th:data-question-no="${question.questionNo}"></td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- 자주묻는질문 수정 Modal -->
+<div class="modal fade" id="updateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">자주묻는질문 작성</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <input type="hidden" id="updateQuestionNo">
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="writeCategory" class="form-label">카테고리</label>
+                    <select class="form-select form-select-sm category" id="updateCategory">
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="writeQuestion" class="form-label">질문</label>
+                    <input type="text" class="form-control" id="updateQuestion">
+                </div>
+                <div class="mb-3">
+                    <label for="writeAnswer" class="form-label">답변</label>
+                    <textarea class="form-control" id="updateAnswer" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="updateModalClose">닫기</button>
+                <button type="button" class="btn btn-primary" id="questionUpdateBtn">저장</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 자주묻는질문 작성 Modal -->
+<div class="modal fade" id="writeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">자주묻는질문 작성</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="writeCategory" class="form-label">카테고리</label>
+                    <select class="form-select form-select-sm category" id="writeCategory">
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="writeQuestion" class="form-label">질문</label>
+                    <input type="text" class="form-control" id="writeQuestion">
+                </div>
+                <div class="mb-3">
+                    <label for="writeAnswer" class="form-label">답변</label>
+                    <textarea class="form-control" id="writeAnswer" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="writeModalClose">닫기</button>
+                <button type="button" class="btn btn-primary" id="questionCreateBtn">저장</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/help/function.js"></script>
+<script>
+    $(document).ready(function() {
+       $('.deleteBtn').click(function(){
+            $.ajax({
+                url : "/admin/question/delete",
+                type : 'POST',
+                data: { questionNo: $(this).attr('data-question-no') },
+                success : function(result) {
+                    alert(result);
+                    location.reload();
+                }
+            });
+        });
+
+        // 카테고리 불러오기 Start
+        $("#writeCategory").html('');
+        $("#updateCategory").html('');
+        $.ajax({
+            type : "GET",
+            url : "/help/getCategory",
+            dataType : "json",
+            success : function(result) {
+                for (var i = 0 ; i < result.length; i++) {
+                    let htmlStr = `
+                            <option value='`+result[i].helpCategoryCode+`'>`+result[i].categoryName+`</option>
+                        `;
+                    $('#writeCategory').append(htmlStr);
+                    $('#updateCategory').append(htmlStr);
+                }
+            }
+        });
+        // 카테고리 불러오기 End
+
+        // 자주묻는질문 작성 버튼 Click Start
+        $("#questionCreateBtn").click(function(){
+
+            let formData = new FormData();
+
+            formData.append("helpCategoryCode", $('#writeCategory').val());
+            formData.append("questionContent", $('#writeQuestion').val());
+            formData.append("answerContent", $('#writeAnswer').val());
+
+            let dataArr = [$('#writeCategory').val(), $('#writeQuestion').val(), $('#writeAnswer').val()];
+
+            let result = handleNullInArray(dataArr);
+
+            if (result == 0) {
+                alert('값이 비어있습니다.');
+                return;
+            }
+
+            $.ajax({
+                url : "/admin/question/write",
+                processData : false,
+                contentType : false,
+                type : 'POST',
+                data : formData,
+                success : function(result) {
+                    alert(result);
+                    location.reload();
+                }
+            });
+        });
+        // 자주묻는질문 작성 버튼 Click End
+
+     // 자주묻는질문 작성 모달 Start
+    $("#questionWriteModalOn").on("click",function(){
+        $("#writeModal").modal('show');
+    });
+    // 자주묻는질문 작성 모달 End
+
+    // 자주묻는 질문 수정 modal On 버튼 Start
+    $('.updateBtn').on('click',function(){
+
+        let questionNo = $(this).attr('data-question-no');
+        let questionContent = $(this).attr('data-question-content');
+        let answerContent = $(this).attr('data-answer-content');
+        let helpCategoryCode = $(this).attr('data-help-category');
+
+        $('#updateQuestionNo').val(questionNo);
+        $('#updateCategory').val(helpCategoryCode);
+        $('#updateQuestion').val(questionContent);
+        $('#updateAnswer').val(answerContent);
+
+        $("#updateModal").modal('show');
+    });
+    // 자주묻는 질문 수정 modal On 버튼 End
+
+    // 자주묻는 질문 수정 버튼 Start
+    $('#questionUpdateBtn').click(function(){
+
+        let formData = new FormData();
+
+        let questionNo = $('#updateQuestionNo').val();
+        let helpCategoryCode = $('#updateCategory').val();
+        let questionContent = $('#updateQuestion').val();
+        let answerContent = $('#updateAnswer').val();
+
+        let dataArr = [helpCategoryCode, questionContent, answerContent];
+
+        let result = handleNullInArray(dataArr);
+
+        if (result == 0) {
+            alert('값이 비어있습니다.');
+            return;
+        }
+
+        formData.append('questionNo', questionNo);
+        formData.append('helpCategoryCode', helpCategoryCode);
+        formData.append('questionContent', questionContent);
+        formData.append('answerContent', answerContent);
+
+        $.ajax({
+            url: "/admin/question/update",
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (result) {
+                alert(result);
+                location.reload();
+            }
+        });
+    });
+    // 자주묻는 질문 수정 버튼 End
+   });
+</script>
+</body>
+</html>

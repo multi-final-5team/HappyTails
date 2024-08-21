@@ -250,7 +250,7 @@ public class DogloveController {
                          @RequestParam(value = "imageUpdateFiles") @Nullable List<MultipartFile> imageUpdateFiles,
                          @RequestParam(value = "imageDeleteImageNo") @Nullable List<Long> imageDeleteImageNo,
                          @RequestParam(value = "imageUpdateImageNo") @Nullable List<Long> imageUpdateImageNo,
-                         Principal principal) {
+                         Principal principal,Model model) {
 
         String userId = principal.getName();
 
@@ -259,6 +259,14 @@ public class DogloveController {
         if (doglove == null || !doglove.getUserId().equals(userId)) {
             return "redirect:/community/doglove";
         }
+
+        //빈 문자열일 때 수정 x
+        if (dogloveDTO.getTitle() == null || dogloveDTO.getTitle().trim().isEmpty() ||
+                dogloveDTO.getContent() == null || dogloveDTO.getContent().trim().isEmpty()) {
+            model.addAttribute("errorMessage");
+            return "community/chatdogcupdate";
+        }
+
         int result = dogloveService.update(dogloveDTO);
 
         if (result == 1) {

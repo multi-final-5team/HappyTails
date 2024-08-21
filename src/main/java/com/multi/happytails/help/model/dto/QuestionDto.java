@@ -13,4 +13,5 @@ public class QuestionDto {
     private String helpCategoryCode;
     private String questionContent;
     private String answerContent;
+    private String categoryName;
 }

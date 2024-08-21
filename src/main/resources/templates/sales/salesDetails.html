@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/head :: head">
 
     <style>
@@ -45,7 +46,7 @@
                     <p><strong>주소:</strong> <span th:text="${salesDetails.address}">주소</span></p>
                     <p class="h4 mb-4"><strong>가격:</strong> <span th:text="${#numbers.formatCurrency(salesDetails.price)}">가격</span></p>
 
-                    <form action="/cart/insertCart" method="post" class="mb-3">
+                    <form action="/cart/insertCart" method="post" class="mb-3" sec:authorize="isAuthenticated()">
                         <input type="hidden" id="goodsNo1" name="goodsNo" th:value="${goodsNo}">
                         <div class="form-group">
                             <label for="purchaseQuantity">수량</label>

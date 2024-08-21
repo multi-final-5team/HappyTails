@@ -44,4 +44,6 @@ public interface HelpMapper {
     int questionDelete(long questionNo);
 
     int questionUpdate(QuestionDto questionDto);
+
+    List<InquiryDto> inquiryList();
 }

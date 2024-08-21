@@ -7,6 +7,7 @@ import com.multi.happytails.community.service.ChatDogService;
 import com.multi.happytails.community.service.ConferenceService;
 import com.multi.happytails.community.service.DogloveService;
 import com.multi.happytails.finddog.service.FindDogService;
+import com.multi.happytails.help.service.HelpService;
 import com.multi.happytails.shop.model.dto.SalesGoodsDTO;
 import com.multi.happytails.shop.service.SalesService;
 import com.multi.happytails.upload.model.dto.UploadDto;
@@ -56,6 +57,9 @@ public class AdminController {
 
     @Autowired
     private ConferenceService conferenceService;
+
+    @Autowired
+    private HelpService helpService;
 
 
     @RequestMapping("/index")
@@ -204,6 +208,16 @@ public class AdminController {
         model.addAttribute("totalItems", conferencePage.getTotalElements());
 
         return "/admin/conferenceAdmin";
+    }
+
+    @GetMapping("/questionAdmin")
+    public void questionAdminPage(Model model) {
+        model.addAttribute("questionList",helpService.questionList(null));
+    }
+
+    @GetMapping("/inquiryAdmin")
+    public void inquiryAdminPage(Model model) {
+        model.addAttribute("inquiryList",helpService.inquiryList());
     }
 
 }

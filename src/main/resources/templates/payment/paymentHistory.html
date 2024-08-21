@@ -3,6 +3,7 @@
 <head th:replace="~{fragments/head :: head}">
     <title>구매 상품 목록</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
     <style>
         .table-img {
             width: 50px;
@@ -15,81 +16,96 @@
 <body>
 <menu th:replace="~{fragments/head :: menu}"></menu>
 <main>
-    <div class="container  my-5">
-
+    <div class="container my-5">
         <figure class="text-center">
-            <h2>구매 상품 목록</h2>
+            <h2 id="구매-상품-목록">구매 상품 목록</h2>
         </figure>
-        <div th:if="${not #lists.isEmpty(paymentHistory)}" class="card shadow">
+
+        <div class="card shadow" th:if="${not #lists.isEmpty(paymentHistory)}">
             <div class="card-body paymentHistory-item">
                 <div class="paymentHistory-info table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="paymentHistoryTable">
                         <thead class="table-dark">
                         <tr>
                             <th>구매 상품</th>
                             <th>결제 금액</th>
                             <th>결제일</th>
-                            <th>배송 상태</th>
-                            <th></th>
+                            <th> </th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr  th:each="paymentHistory : ${paymentHistory}" th:data-username="${paymentHistory.username}">
-                            <th th:text="${paymentHistory.productinfo}"></th>
-                            <th th:text="'가격: ' + ${paymentHistory.purchaseprice} + '원'"></th>
-                            <th th:text="${#dates.format(paymentHistory.date_created, 'yyyy-MM-dd')}"></th>
-                            <th th:text="${paymentHistory.delivery_code}"></th>
-                            <th>
-                                <a th:if="${paymentHistory.delivery_code != '환불 대기' and paymentHistory.delivery_code != '환불 완료'}"
-                                        th:href="@{/payment/paymentUpdateDelivery(payment_no=${paymentHistory.payment_no})}"
-                               class="btn btn-success">
-                                환불 신청</a>
-
-                                <button
-                                    th:if="${paymentHistory.delivery_code != '환불 대기' and paymentHistory.delivery_code != '환불 완료'}"
-                                    type="button" class="btn btn-primary delivery-status-btn"
-                                    th:data-payment-no="${paymentHistory.goodsNo}">
-                                    리뷰 작성
-                                </button>
-                            </th>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(paymentHistory)}">
-                            주문 정보가 없습니다.
-                        </tr>
+                        <!-- JavaScript will populate this -->
                         </tbody>
                     </table>
-                </div>
-                <div class="paymentHistory-actions">
-
                 </div>
             </div>
         </div>
 
-
-
-        <div class="pagination"></div>
+        <div th:if="${#lists.isEmpty(paymentHistory)}">
+            <p>주문 정보가 없습니다.</p>
+        </div>
     </div>
 </main>
 
 <script th:inline="javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        var buttons = document.querySelectorAll('.delivery-status-btn');
-        buttons.forEach(function(button) {
-            button.addEventListener('click', function() {
-                var goodsNo = this.getAttribute('data-payment-no');
-                openPopup(goodsNo);
-            });
+    /*<![CDATA[*/
+    const paymentHistory = /*[[${paymentHistory}]]*/ [];
+
+    function groupBy(list, keyGetter) {
+        const map = new Map();
+        list.forEach((item) => {
+            const key = keyGetter(item);
+            const collection = map.get(key);
+            if (!collection) {
+                map.set(key, [item]);
+            } else {
+                collection.push(item);
+            }
         });
-    });
-
-    function openPopup(goodsNo) {
-        var url = `/sales/reviewPopup?goodsNo=${encodeURIComponent(goodsNo)}`;
-        var name = "배송 상태 변경";
-        var options = "width=500,height=300,top=100,left=100";
-        window.open(url, name, options);
+        return map;
     }
-</script>
 
+    function formatDateToISO(dateString) {
+        const date = new Date(dateString);
+        return date.toISOString();
+    }
+
+    function groupAndDisplayPaymentHistory() {
+        let groupedPayments;
+        if (typeof _ !== 'undefined') {
+            groupedPayments = _.groupBy(paymentHistory, item => item.imPortId + '_' + item.date_created);
+        } else {
+            console.warn('Lodash is not available. Using fallback grouping method.');
+            groupedPayments = groupBy(paymentHistory, item => item.imPortId + '_' + item.date_created);
+        }
+
+        const tableBody = document.querySelector('#paymentHistoryTable tbody');
+        tableBody.innerHTML = '';
+
+        Array.from(groupedPayments.values()).forEach(group => {
+            const firstItem = group[0];
+            const additionalItems = group.length - 1;
+            const totalPurchasePrice = group.reduce((sum, item) => sum + item.purchaseprice, 0);
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+
+                    <p>
+                        ${firstItem.productname}${additionalItems > 0 ? ` 외 ${additionalItems}개` : ''}
+                    </p>
+                </td>
+                <td>${new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(totalPurchasePrice)}</td>
+                <td>${new Date(firstItem.date_created).toLocaleString('ko-KR')}</td>
+
+                <td><a href="/payment/paymentHistoryDetails?imPortId=${firstItem.imPortId}">상세보기</></td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', groupAndDisplayPaymentHistory);
+    /*]]>*/
+</script>
 </body>
-<footer th:replace="fragments/head :: footer"></footer>
 </html>

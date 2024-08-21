@@ -29,6 +29,10 @@ public class HelpService {
         return helpMapper.questionList(categoryCode);
     }
 
+    public List<InquiryDto> inquiryList() {
+        return helpMapper.inquiryList();
+    }
+
     public int questionListCount(PageDto pageDto, Map<String,Object> searchMap) {
         return helpMapper.questionListCount(pageDto, searchMap);
     }

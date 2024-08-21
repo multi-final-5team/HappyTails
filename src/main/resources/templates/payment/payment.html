@@ -12,7 +12,7 @@
             <form>
                 <div class="mb-3">
                     <label for="name" class="form-label">구매자 성함</label>
-                    <input th:value="${memberDTO.id}" type="text" class="form-control" id="name" required>
+                    <input th:value="${memberDTO.name}" type="text" class="form-control" id="name" required>
                 </div>
                 <div class="mb-3">
                     <label for="phone" class="form-label">연락처</label>
@@ -26,6 +26,8 @@
                     <label for="request" class="form-label">배송시 요청사항</label>
                     <textarea class="form-control" id="request" rows="3"></textarea>
                 </div>
+                    <label for="email" class="form-label" >이메일</label>
+                    <input th:value="${memberDTO.email}" type="text" class="form-control" id="email" required>
             </form>
         </div>
 

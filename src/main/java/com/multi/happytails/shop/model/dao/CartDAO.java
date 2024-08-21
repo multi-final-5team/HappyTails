@@ -2,6 +2,7 @@ package com.multi.happytails.shop.model.dao;
 
 import com.multi.happytails.shop.model.dto.CartDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface CartDAO {
     List<CartDTO> cartList(String id);
 
     void clearCart(String username);
+
+    void updateCart(@Param("purchaseQuantity") int purchaseQuantity, @Param("no") int no);
 }
