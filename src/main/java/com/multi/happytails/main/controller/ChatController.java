@@ -1,5 +1,6 @@
 package com.multi.happytails.main.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.multi.happytails.main.service.ClovaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -26,13 +27,13 @@ public class ChatController {
 
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic/dog")
-    public String sendMessage(@Payload String chatMessage) {
+    public JsonNode sendMessage(@Payload String chatMessage) throws Exception {
         try {
-            System.out.printf(clovaService.processMessage(chatMessage));
             return clovaService.processMessage(chatMessage);
         } catch (Exception e) {
             // 로깅 추가
-            return "죄송합니다. 오류가 발생했습니다: " + e.getMessage();
+            e.printStackTrace();
+            return clovaService.processMessage(chatMessage);
         }
     }
 
