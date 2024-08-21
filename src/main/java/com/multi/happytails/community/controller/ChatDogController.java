@@ -201,8 +201,8 @@ public class ChatDogController {
         //빈 문자열일 때 수정 x
         if (chatDogDTO.getTitle() == null || chatDogDTO.getTitle().trim().isEmpty() ||
                 chatDogDTO.getContent() == null || chatDogDTO.getContent().trim().isEmpty()) {
-            model.addAttribute("errorMessage", "제목과 내용은 필수 입력 항목입니다.");
-            return "community/chatdogcupdate"; //
+            model.addAttribute("errorMessage");
+            return "community/chatdogcupdate";
         }
 
         int result = chatDogService.update(chatDogDTO);

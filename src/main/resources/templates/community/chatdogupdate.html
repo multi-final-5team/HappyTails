@@ -28,11 +28,10 @@
 <div class="container">
 <div class="card">
     <div class="card-body">
+
         <form id="updateForm" th:action="@{/community/chatdog/update/{chatdogNo}(chatdogNo=${chatdog.chatdogNo})}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="chatdogNo" th:value="${chatdog.chatdogNo}"/>
-            <div class="mb-3 d-flex justify-content-between">
-
-                <button type="submit" class="btn btn-primary" id="createBtn" onclick="return confirm('수정 하시겠습니까?');" style="position: absolute; top: 10px; right: 10px;">게시글 수정</button>
+            <button type="submit" class="btn btn-primary" id="createBtn" onclick="return confirm('수정 하시겠습니까?');" style="position: absolute; top: 10px; right: 10px;">게시글 수정</button>
             <div class="mb-3">
                 <label for="title" class="form-label">🐶 제목:</label>
                 <input type="text" id="title" name="title" class="form-control" th:value="${chatdog.title}" required>
@@ -242,6 +241,7 @@
     });
 </script>
 </main>
+
 </body>
 <footer th:replace="fragments/head :: footer"></footer>
 </html>
