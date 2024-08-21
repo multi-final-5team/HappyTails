@@ -23,4 +23,6 @@ public interface CartService {
     List<CartDTO> cartList(String id);
 
     void clearCart(String username);
+
+    void updateCart(int purchaseQuantity, int no);
 }

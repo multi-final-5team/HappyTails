@@ -1,6 +1,7 @@
 package com.multi.happytails.shop.service;
 
 import com.multi.happytails.shop.model.dto.ReviewDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -60,4 +61,8 @@ public interface ReviewService {
      */
     int getReviewNo();
 
+    Boolean hasUserReviewed(@Param("id") String id, @Param("goodsNo") int goodsNo);
+
+
+    ReviewDTO selectReview(String id, int goodsNo);
 }
