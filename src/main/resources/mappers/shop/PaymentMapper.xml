@@ -64,7 +64,7 @@
         DELIVERY_CODE,
         goodsNo,
         address,
-        request,
+        request
         ) VALUES (
         #{username},
         #{productname},
@@ -76,7 +76,7 @@
         'P',
         #{goodsNo},
         #{address},
-        #{request},
+        #{request}
         )
     </insert>
 

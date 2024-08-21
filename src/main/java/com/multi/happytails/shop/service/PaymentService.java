@@ -168,8 +168,8 @@ public class PaymentService {
         paymentDAO.insertDelivery(paymentDTO);
     }
 
-    public void stateSuccess(int paymentNo) {
-        paymentDAO.stateSuccess(paymentNo);
+    public void stateSuccess(int payment_no) {
+        paymentDAO.stateSuccess(payment_no);
     }
 
     public List<PaymentDTO> paymentHistoryDetails(String username, String imPortId) {

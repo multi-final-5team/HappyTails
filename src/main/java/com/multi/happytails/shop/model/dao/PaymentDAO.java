@@ -36,7 +36,7 @@ public interface PaymentDAO {
 
     void insertDelivery(PaymentDTO paymentDTO);
 
-    void stateSuccess(int paymentNo);
+    void stateSuccess(int payment_no);
 
     List<PaymentDTO> paymentHistoryDetails(@Param("username") String username, @Param("imPortId") String imPortId);
 
