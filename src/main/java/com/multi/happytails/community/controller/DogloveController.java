@@ -99,11 +99,6 @@ public class DogloveController {
             dogloveImages.put(doglove.getDogloveNo(), imageFiles);
         }
 
-        // 로그 추가
-        System.out.println("Current Page: " + (doglovePage.getNumber() + 1));
-        System.out.println("Total Pages: " + doglovePage.getTotalPages());
-        System.out.println("Total Items: " + doglovePage.getTotalElements());
-
         model.addAttribute("keyword", keyword);
         model.addAttribute("dogloves", doglovePage.getContent());
         model.addAttribute("dogloveImages", dogloveImages);
