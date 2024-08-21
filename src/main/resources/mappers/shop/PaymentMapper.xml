@@ -64,7 +64,7 @@
         DELIVERY_CODE,
         goodsNo,
         address,
-        request,
+        request
         ) VALUES (
         #{username},
         #{productname},
@@ -76,7 +76,7 @@
         'P',
         #{goodsNo},
         #{address},
-        #{request},
+        #{request}
         )
     </insert>
 
@@ -236,4 +236,5 @@
         FROM payment
         WHERE username = #{username} AND im_port_id = #{imPortId}
     </select>
+
 </mapper>

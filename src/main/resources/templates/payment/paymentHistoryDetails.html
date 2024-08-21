@@ -69,7 +69,7 @@
                                 </button>
 
 
-                                <a th:if="${paymentHistory.delivery_code != '구매 완료' AND paymentHistory.delivery_code != '환불 대기' and paymentHistory.delivery_code != '환불 완료'}"
+                                <a th:if="${paymentHistory.delivery_code == '배송 완료'}"
                                    th:href="@{/payment/paymentPurchaseDelivery(payment_no=${paymentHistory.payment_no})}"
                                    class="btn btn-success">
                                     구입 확정</a>

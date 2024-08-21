@@ -328,10 +328,12 @@ public class PaymentController {
 
     @PostMapping("/success")
     @ResponseBody
-    public String paymentSuccess (@RequestParam("paymentNo") int paymentNo){
-        System.out.println(paymentNo);
+    public String paymentSuccess (@RequestBody Map<String, Integer> payload) {
+        int payment_no = payload.get("payment_no");
 
-        paymentService.stateSuccess(paymentNo);
+        paymentService.stateSuccess(payment_no);
         return "배송 상태 변경에 성공하였습니다.";
+
+
     }
 }
