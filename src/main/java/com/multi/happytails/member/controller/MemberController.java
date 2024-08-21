@@ -4,7 +4,6 @@ import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.authentication.model.service.AuthenticationService;
 import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.member.service.MemberService;
-import com.multi.happytails.patrol.model.dto.PrecordDTO;
 import com.multi.happytails.patrol.pageable.service.PageService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
@@ -332,6 +331,25 @@ public class MemberController {
             return ResponseEntity.ok().body("계정이 성공적으로 삭제되었습니다.");
         }
         return ResponseEntity.badRequest().body("계정 삭제에 실패했습니다.");
+    }
+
+    @PostMapping("/recoverAccount")
+    @ResponseBody
+    public ResponseEntity<?> recoverAccount(@RequestParam("username") String username) {
+        try {
+            memberService.recoverAccount(username);
+            return ResponseEntity.ok("계정이 성공적으로 복구되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("계정 복구에 실패했습니다: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/recovery")
+    @ResponseBody
+    public char recovery(@RequestParam("username") String username) {
+        MemberDTO memberDTO = memberService.findMemberById(username);
+        char deleteAccountFlag = memberDTO.getDeleteAccountFlag();
+        return deleteAccountFlag;
     }
 
     @GetMapping(value="findAllMember")

@@ -3,43 +3,7 @@
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
     <title>집사 회의 게시글 상세 페이지</title>
-    <style>
-        .comment-form textarea {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        .comment-list {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        .comment-item {
-            border-bottom: 1px solid #eee;
-            padding: 10px 0;
-        }
-        .btn-blue {
-            background-color: #007bff;
-            color: white;
-            float: right;
-        }
-        .comment-form-container {
-            text-align: right;
-        }
-        .button-container {
-            text-align: right;
-            margin-top: 10px;
-        }
-        .button-container form {
-            display: inline-block;
-            margin-left: 10px;
-        }
-        .btn-green {
-            background-color: #28a745; /* 초록색 */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-    </style>
+
 </head>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
@@ -117,11 +81,11 @@
         </div>
         <div style="margin-bottom: 20px;">
             <a href="/community/conference" class="btn btn-secondary me-2" style="margin-right: 10px;">🏠 목록으로</a>
-            <a href="/community/conferenceNo/create" class="btn btn-primary" style="margin-right: 10px;">✍ 새 글 작성</a>
+            <a href="/community/conference/create" class="btn btn-primary" style="margin-right: 10px;">✍ 새 글 작성</a>
         </div>
     </div>
 </div>
- </div>
+</div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var images = document.getElementsByTagName('img');

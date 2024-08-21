@@ -124,6 +124,13 @@
         WHERE USER_ID = #{id}
     </update>
 
+    <update id="recoverAccount">
+        UPDATE TB_USERS
+        SET USER_DELETE_ACCOUNT_FLAG = 'N',
+            USER_DELETE_ACCOUNT_DATE = NULL
+        WHERE USER_ID = #{id}
+    </update>
+
     <select id="findMemberByEmail" resultMap="memberResultMap">
         SELECT
             USER_NO,

@@ -37,4 +37,10 @@ public class CartServiceImpl implements CartService{
     public void clearCart(String username) {
         cartDAO.clearCart(username);
     }
+
+    @Override
+    public void updateCart(int purchaseQuantity, int no) {
+        cartDAO.updateCart(purchaseQuantity, no);
+    }
+
 }

@@ -5,6 +5,8 @@ import com.multi.happytails.member.model.dao.BusinessDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BusinessService {
 
@@ -13,5 +15,13 @@ public class BusinessService {
 
     public void registerBusiness(BusinessDTO businessDTO) {
         businessDAO.insertBusiness(businessDTO);
+    }
+
+    public List<BusinessDTO> getAllBusinesses() {
+        return businessDAO.getAllBusinesses();
+    }
+
+    public void updateBusinessRegistrationFlag(int businessNo, String flag) {
+        businessDAO.updateBusinessRegistrationFlag(businessNo, flag);
     }
 }
