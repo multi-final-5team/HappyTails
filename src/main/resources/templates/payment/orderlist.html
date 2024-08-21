@@ -1,94 +1,128 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head}">
-
-
-    <title>결제하기</title>
-
-
+    <title>판매 내역</title>
+    <style>
+        .order-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .order-item:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .order-details {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination button {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+        .pagination button.active {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
 </head>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
-<main>
-<div class="container">
-    <h1>판매 내역</h1>
+<main class="container my-5">
+    <h1 class="text-center mb-4">판매 내역</h1>
 
-    <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="상품명 검색">
-        <button id="searchButton">검색</button>
+    <div class="mb-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="상품명 검색">
+        <button id="searchButton" class="btn btn-primary mt-2">검색</button>
     </div>
 
-    <div>
-        <p>주문한 상품 개수: <span id="totalItemsCount">0</span>개</p>
+    <div class="mb-3">
+        <p>주문한 상품 개수: <span id="totalItemsCount" class="font-weight-bold">0</span>개</p>
     </div>
 
     <div th:if="${not #lists.isEmpty(orderList)}">
-        <div class="order-item" th:each="order : ${orderList}" th:data-username="${order.username}">
-            <div class="order-info">
-                <div class="order-details d-flex flex-wrap justify-content-between">
-                    <h3 th:text="${order.productname}"></h3>
-                    <p th:text="${order.productinfo}"></p>
-                    <p th:text="${#dates.format(order.date_created, 'yyyy-MM-dd HH:mm:ss')}"></p>
-                    <p th:text="${#numbers.formatDecimal(order.purchaseprice, 0, 'COMMA', 0, 'POINT')} + '원'"></p>
-                    <p th:text="${order.delivery_code == '환불 대기' ? '환불 신청' : order.delivery_code}"
-                       th:classappend="${order.delivery_code == '환불 대기'} ? 'text-danger' : ''"></p>
+        <div th:each="order : ${orderList}" th:data-username="${order.username}" class="order-item">
+            <div class="order-details">
+                <h3 th:text="${order.productname}" class="mb-2"></h3>
+                <p th:text="${order.productinfo}" class="text-muted"></p>
+                <p th:text="${#dates.format(order.date_created, 'yyyy-MM-dd HH:mm:ss')}" class="text-muted"></p>
+                <p th:text="${#numbers.formatDecimal(order.purchaseprice, 0, 'COMMA', 0, 'POINT')} + '원'" class="font-weight-bold"></p>
+                <p th:text="${order.delivery_code == '환불 대기' ? '환불 신청' : order.delivery_code}"
+                   th:class="${order.delivery_code == '환불 대기'} ? 'text-danger' : 'text-success'"></p>
+            </div>
+            <div class="order-actions">
+                <button class="btn btn-danger cancel-button"
+                        th:data-payment-no="${order.payment_no}"
+                        th:data-imp-uid="${order.imPortId}"
+                        th:data-amount="${order.purchaseprice}">환불</button>
 
-                    <div class="order-actions">
-                        <button class="cancel-button"
-                                th:data-payment-no="${order.payment_no}"
-                                th:data-imp-uid="${order.imPortId}"
-                                th:data-amount="${order.purchaseprice}">주문 취소하기</button>
-                    </div>
+                <button th:if="${order.delivery_code == '배송 준비'}"
+                        class="btn btn-primary delivery-btn"
+                        th:data-payment-no="${order.payment_no}">송장 등록</button>
 
-                    <button
-                            th:if="${order.delivery_code == '배송 준비'}"
-                            type="button"
-                            class="btn btn-primary delivery-btn"
-                            th:data-payment-no="${order.payment_no}">
-                        송장 등록
-                    </button>
+                <button th:if="${order.delivery_code == '배송 중'}"
+                        class="btn btn-success success-btn"
+                        th:data-payment-no="${order.payment_no}">배송 완료</button>
 
-                    <button
-                            th:if="${order.delivery_code == '배송 중'}"
-                            type="button"
-                            class="btn btn-primary success-btn"
-                            id="success-btn"
-                            th:data-payment-no="${order.payment_no}">
-                        배송 완료
-                    </button>
-
-<!--                    <button type="button" class="btn btn-primary delivery-status-btn"-->
-<!--                            th:data-payment-no="${order.payment_no}"-->
-<!--                            th:data-delivery-code="${order.delivery_code}">-->
-<!--                        배송 상태 변경-->
-<!--                    </button>-->
-
-                </div>
+                <button class="btn btn-info delivery-status-btn"
+                        th:data-payment-no="${order.payment_no}"
+                        th:data-delivery-code="${order.delivery_code}">배송 상태 변경</button>
             </div>
         </div>
     </div>
 
-    <div th:if="${#lists.isEmpty(orderList)}">
+    <div th:if="${#lists.isEmpty(orderList)}" class="text-center">
         <p>주문 정보가 없습니다.</p>
     </div>
 
     <div class="pagination">
         <!-- 페이지네이션은 JavaScript에서 동적으로 생성됩니다 -->
     </div>
-</div>
 </main>
 
-<script src="/js/payment/orderlist.js"></script>
+<footer th:replace="fragments/head :: footer"></footer>
 
-<!-- JavaScript 코드 -->
+<script src="/js/payment/orderlist.js"></script>
 <script th:inline="javascript">
     document.addEventListener('DOMContentLoaded', function() {
-        var buttons = document.querySelectorAll('.delivery-status-btn');
-        buttons.forEach(function(button) {
+        // 배송 상태 변경 버튼 이벤트
+        document.querySelectorAll('.delivery-status-btn').forEach(button => {
             button.addEventListener('click', function() {
                 var paymentNo = this.getAttribute('data-payment-no');
                 var deliveryCode = this.getAttribute('data-delivery-code');
                 openPopup(paymentNo, deliveryCode);
+            });
+        });
+
+        // 송장 등록 버튼 이벤트
+        document.querySelectorAll('.delivery-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                var payment_no = this.getAttribute('data-payment-no');
+                openDeliveryPopup(payment_no);
+            });
+        });
+
+        // 배송 완료 버튼 이벤트
+        document.querySelectorAll('.success-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                var paymentNo = this.getAttribute('data-payment-no');
+                completeDelivery(paymentNo);
             });
         });
     });
@@ -99,44 +133,32 @@
         var options = "width=500,height=300,top=100,left=100";
         window.open(url, name, options);
     }
-</script>
 
-<script th:inline="javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        var buttons = document.querySelectorAll('.delivery-btn');
-        buttons.forEach(function(button) {
-            button.addEventListener('click', function() {
-                var payment_no = this.getAttribute('data-payment-no');
-                openPopup(payment_no);
-            });
-        });
-    });
-
-    function openPopup(payment_no) {
+    function openDeliveryPopup(payment_no) {
         var url = `/payment/deliveryPopup?payment_no=${encodeURIComponent(payment_no)}`;
         var name = "송장 등록";
         var options = "width=500,height=300,top=100,left=100";
         window.open(url, name, options);
     }
-</script>
 
-<script th:inline="javascript">
-    $('#success-btn').click(function(){
-
-    var paymentNo = $(this).attr('data-payment-no');
-
-    $.ajax({
-        url : "/payment/success",
-        type : 'POST',
-        data: { paymentNo: paymentNo },
-        success : function(result) {
+    function completeDelivery(paymentNo) {
+        fetch('/payment/success', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ paymentNo: paymentNo }),
+        })
+        .then(response => response.text())
+        .then(result => {
             alert(result);
             location.href = "/payment/orderlist";
-        }
-    });
-});
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('오류가 발생했습니다.');
+        });
+    }
 </script>
-
 </body>
-<footer th:replace="fragments/head :: footer"></footer>
 </html>

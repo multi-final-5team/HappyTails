@@ -8,17 +8,18 @@
 <main>
     <div class="container">
         <figure class="text-center">
-            <h2>판매 상품 목록</h2>
+            <h1 class="mb-4 text-center">🐾 멍샵 🐾</h1>
+            <h3 class="mb-4 text-center"> 오늘 뭐 사개? 🐶</h3>
         </figure>
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <form action="/sales/search" method="get" class="d-flex align-items-center">
-                    <input type="text" name="keyword" class="form-control me-2" placeholder="제품명" aria-label="검색">
-                    <button type="submit" class="btn btn-success" style="white-space: nowrap;">검색</button>
+                <form id="searchForm" action="/sales/search" method="get" class="d-flex align-items-center">
+                    <input type="text" name="keyword" class="form-control me-2" placeholder="제품명" aria-label="검색" required>
+                    <button type="submit" class="btn btn-outline-success">🔎</button>
                 </form>
             </div>
         </div>
-        <div class="col-9 mt-3 tab-content">
+        <div class="col-9 mt-3 tab-content" style="margin-left: 170px;">
             <div class="tab-pane fade show active" id="list-find">
                 <div class="row">
                     <th:block th:each="salesGoods : ${salesGoodsList}">
@@ -66,6 +67,16 @@
         </nav>
     </div>
 </main>
+
+<script>
+    document.getElementById('searchForm').addEventListener('submit', function(event) {
+        var keyword = this.querySelector('input[name="keyword"]').value.trim();
+        if (keyword === '') {
+            event.preventDefault();
+            alert('검색어를 입력해주세요.');
+        }
+    });
+</script>
 <script>
 $(".listRow").on("click",function(){
 let DataNo = $(this).attr('data-no');
@@ -73,7 +84,6 @@ console.log(DataNo);
 location.href='/sales/selectGoods?no='+DataNo;
 });
 </script>
-<!--th:href="@{/sales/selectGoods(no=${salesGoods.no})}"-->
 
 </body>
 <footer th:replace="fragments/head :: footer"></footer>

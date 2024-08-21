@@ -33,4 +33,10 @@
         DELETE FROM TB_CART
         WHERE ID = #{username}
     </delete>
+
+    <update id="updateCart" parameterType="com.multi.happytails.shop.model.dto.CartDTO">
+        UPDATE tb_cart
+        SET purchase_quantity = #{purchaseQuantity}
+        where no = #{no}
+    </update>
 </mapper>

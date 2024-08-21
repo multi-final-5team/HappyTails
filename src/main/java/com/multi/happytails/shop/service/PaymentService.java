@@ -171,4 +171,12 @@ public class PaymentService {
     public void stateSuccess(int paymentNo) {
         paymentDAO.stateSuccess(paymentNo);
     }
+
+    public List<PaymentDTO> paymentHistoryDetails(String username, String imPortId) {
+        return paymentDAO.paymentHistoryDetails(username, imPortId);
+    }
+
+    public void paymentPurchaseDelivery(int paymentNo) {
+        paymentDAO.paymentPurchaseDelivery(paymentNo);
+    }
 }

@@ -22,6 +22,8 @@ public interface MemberDAO {
 
     void deleteMember(String id);
 
+    void recoverAccount(String id);
+
     MemberDTO findMemberByUserNo(int no);
 
     MemberDTO findMemberByEmail(String email);

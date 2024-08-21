@@ -3,7 +3,6 @@ package com.multi.happytails.authentication.model.service;
 import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.member.model.dao.MemberDAO;
 import com.multi.happytails.member.model.dto.MemberDTO;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,7 +41,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         // 탈퇴한 계정 체크
         if (memberDTO.getDeleteAccountFlag() == 'Y') {
             System.out.println("탈퇴한 계정입니다");
-            throw new DisabledException("탈퇴한 계정입니다.");
+            throw new UsernameNotFoundException("탈퇴한 계정입니다.");
         }
 
         String role = memberDTO.getRole();

@@ -2,6 +2,7 @@ package com.multi.happytails.shop.model.dao;
 
 import com.multi.happytails.shop.model.dto.ReviewDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -61,4 +62,8 @@ public interface ReviewDAO {
      * @return the review no
      */
     int getReviewNo();
+
+    Boolean hasUserReviewed(@Param("id") String id, @Param("goodsNo") int goodsNo);
+
+    ReviewDTO selectReview(@Param("id") String id, @Param("goodsNo") int goodsNo);
 }

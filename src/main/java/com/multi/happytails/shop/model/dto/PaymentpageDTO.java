@@ -14,5 +14,7 @@ public class PaymentpageDTO {
     private int productprice;
     private String imPortId;
     private int GoodsNo;
+    private String address;
+    private String request;
 
 }

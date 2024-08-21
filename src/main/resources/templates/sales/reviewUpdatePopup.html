@@ -1,41 +1,44 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>리뷰 작성</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
 <div class="card">
     <div class="card-body">
-        <h3 class="card-title">리뷰 작성</h3>
-        <form id="insertForm" enctype="multipart/form-data">
-            <input type="hidden" id="goodsNo" name="goodsNo" th:value="${goodsNo}">
+        <h3 class="card-title" id="리뷰-수정">리뷰 수정</h3>
+        <form th:action="@{/review/updateReview}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="no" th:value="${reviewDetails.no}">
+            <input type="hidden" name="goodsNo" th:value="${reviewDetails.goodsNo}">
 
             <div class="mb-3">
-                <label for="starRating" class="form-label">별점:</label>
+                <label>별점:</label>
                 <div class="star-rating">
-                    <input type="radio" id="star1" name="starRating" value="1"><label for="star1">1점</label>
-                    <input type="radio" id="star2" name="starRating" value="2"><label for="star2">2점</label>
-                    <input type="radio" id="star3" name="starRating" value="3"><label for="star3">3점</label>
-                    <input type="radio" id="star4" name="starRating" value="4"><label for="star4">4점</label>
-                    <input type="radio" id="star5" name="starRating" value="5" required><label for="star5">5점</label>
+                    <input type="radio" id="star1" name="starRating" value="1" th:checked="${reviewDetails.starRating == 1}"><label for="star1">1점</label>
+                    <input type="radio" id="star2" name="starRating" value="2" th:checked="${reviewDetails.starRating == 2}"><label for="star2">2점</label>
+                    <input type="radio" id="star3" name="starRating" value="3" th:checked="${reviewDetails.starRating == 3}"><label for="star3">3점</label>
+                    <input type="radio" id="star4" name="starRating" value="4" th:checked="${reviewDetails.starRating == 4}"><label for="star4">4점</label>
+                    <input type="radio" id="star5" name="starRating" value="5" th:checked="${reviewDetails.starRating == 5}" required><label for="star5">5점</label>
                 </div>
             </div>
 
             <div class="mb-3">
-                <label for="imageInput" class="form-label">이미지 첨부:</label>
-                <input type="file" class="form-control" id="imageInput" multiple>
-                <div id="imgAddDiv" class="d-flex flex-wrap mt-2"></div>
+                <label>이미지 첨부:</label>
+                <input type="file" class="form-control" name="imageFiles" multiple>
+                <div id="imgAddDiv" class="d-flex flex-wrap mt-2">
+                    <div th:each="uploadDto : ${uploadDtos}" class="me-2 mb-2">
+                        <img th:src="@{${uploadDto.uploadPath}}" alt="Uploaded image" style="max-width: 100px; max-height: 100px;">
+                        <input type="checkbox" name="imageDeleteImageNo" th:value="${uploadDto.imageNo}"> 삭제
+                    </div>
+                </div>
             </div>
 
             <div class="mb-3">
-                <label for="content" class="form-label">리뷰 내용:</label>
-                <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+                <label>리뷰 내용:</label>
+                <textarea class="form-control" name="content" rows="4" th:text="${reviewDetails.content}"></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary">리뷰 등록</button>
+            <button type="submit" class="btn btn-primary">리뷰 수정</button>
         </form>
     </div>
 </div>
