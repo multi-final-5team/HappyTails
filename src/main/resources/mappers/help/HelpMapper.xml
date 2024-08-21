@@ -20,14 +20,23 @@
             LIMIT 1
     </select>
 
+    <select id="inquiryList">
+        SELECT A.*, HC.CATEGORY_NAME
+        FROM tb_inquiry AS A
+        LEFT JOIN TB_HELP_CATEGORY AS HC ON A.HELP_CATEGORY_CODE = HC.HELP_CATEGORY_CODE
+        ORDER BY A.INQUIRY_NO DESC
+    </select>
+
     <select id="questionList">
-        SELECT *
-        FROM tb_question
+        SELECT A.*, HC.CATEGORY_NAME
+        FROM tb_question AS A
+        LEFT JOIN TB_HELP_CATEGORY AS HC ON A.HELP_CATEGORY_CODE = HC.HELP_CATEGORY_CODE
         <where>
             <if test="categoryCode != null">
-                AND HELP_CATEGORY_CODE = #{categoryCode}
+                AND A.HELP_CATEGORY_CODE = #{categoryCode}
             </if>
         </where>
+        ORDER BY A.QUESTION_NO DESC
     </select>
 
     <select id="inquiryListCount">
