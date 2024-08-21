@@ -108,9 +108,11 @@ public class PatrolRecordPlaceController {
     @PostMapping("deletePlace")
     public String  deletePlace(@RequestBody PrecordPlaceDTO targetplace){
 
-        int deletePlaceHistoryResult = patrolPlaceService.precordPlaceHistoryDelete(targetplace.getPrecordPlaceNo());
+        if(targetplace.getPrecordNo() == 0){
+            int deletePlaceHistoryResult = patrolPlaceService.precordPlaceHistoryDelete(targetplace.getPrecordPlaceNo());
 
-        int deletePlaceResult = patrolPlaceService.deletePlace(targetplace);
+            int deletePlaceResult = patrolPlaceService.deletePlace(targetplace);
+        }
 
         return "/patrol/patrolRecordPlace";
     }

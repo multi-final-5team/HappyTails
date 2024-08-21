@@ -164,7 +164,10 @@
         FROM tb_users
         <where>
             <if test="data.id != null and data.id !='' ">
-                AND title LIKE CONCAT('%' , #{data.id} , '%')
+                AND USER_ID LIKE CONCAT('%' , #{data.id} , '%')
+            </if>
+            <if test="data.role != null and data.role !='' ">
+                AND USER_ROLE LIKE CONCAT('%' , #{data.role} , '%')
             </if>
         </where>
         <!--ORDER BY 절 추가-->
@@ -184,7 +187,10 @@
         FROM tb_users
         <where>
             <if test="id != null and id !='' ">
-                AND title LIKE CONCAT('%' , #{id} , '%')
+                AND USER_ID LIKE CONCAT('%' , #{id} , '%')
+            </if>
+            <if test="role != null and role !='' ">
+                AND USER_ROLE LIKE CONCAT('%' , #{role} , '%')
             </if>
         </where>
     </select>

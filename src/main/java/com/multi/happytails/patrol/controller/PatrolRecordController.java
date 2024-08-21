@@ -60,6 +60,9 @@ public class PatrolRecordController {
     PatrolRecordService patrolRecordService;
 
     @Autowired
+    PatrolService patrolService;
+
+    @Autowired
     PatrolPlaceService patrolPlaceService;
 
     @Autowired
@@ -106,7 +109,7 @@ public class PatrolRecordController {
 
 
     @PostMapping("makePrecord")
-    public String makePrecord(PrecordDTO precordDTO , @RequestParam("precordPlace") int precordPlace, @RequestParam(value = "imageFiles",required = false) List<MultipartFile> imageFiles , @AuthenticationPrincipal() CustomUser customUser){
+    public String makePrecord(PrecordDTO precordDTO , @RequestParam(value = "precordPlace",required = false) int precordPlace, @RequestParam(value = "imageFiles",required = false) List<MultipartFile> imageFiles , @AuthenticationPrincipal() CustomUser customUser){
 
 
         precordDTO.setUserNo((int)customUser.getNo());
@@ -115,51 +118,56 @@ public class PatrolRecordController {
 
         System.out.println("유저넘버 >>>> " + (int)customUser.getNo());
 
+        PatrolDTO patrolDTO = patrolService.findOnePatrol((int)customUser.getNo());
 
-        patrolRecordService.patrolRecordInsert(precordDTO);
+        System.out.println("patrolDTO >>>> " + patrolDTO);
 
-        PrecordDTO target = patrolRecordService.findOnePatrolRecord((int)customUser.getNo());
+        if((patrolDTO.getPatrolNo() != 0)&&(precordPlace != 0)){
+            patrolRecordService.patrolRecordInsert(precordDTO);
 
-        patrolPlaceService.updatePrecordNo(target.getPrecordNo(), precordPlace);
+            PrecordDTO target = patrolRecordService.findOnePatrolRecord((int)customUser.getNo());
 
-        int count = scoreService.scoreCountByUserNo((int)customUser.getNo());
+            patrolPlaceService.updatePrecordNo(target.getPrecordNo(), precordPlace);
 
-        if(count < 1){
-            scoreService.scoreInsert((int)customUser.getNo());
-        }
+            int count = scoreService.scoreCountByUserNo((int)customUser.getNo());
 
-        //점수부여
-        ScoreDTO scoreDTO = scoreService.findOneScoreByUserNo((int)customUser.getNo());
+            if(count < 1){
+                scoreService.scoreInsert((int)customUser.getNo());
+            }
 
-        PrecordPlaceDTO precordPlaceDTO = patrolPlaceService.findOnePrecordPlaceByPrecordNo(target.getPrecordNo());
+            //점수부여
+            ScoreDTO scoreDTO = scoreService.findOneScoreByUserNo((int)customUser.getNo());
 
-        int distance = (int) precordPlaceDTO.getPrecordTotal();
+            PrecordPlaceDTO precordPlaceDTO = patrolPlaceService.findOnePrecordPlaceByPrecordNo(target.getPrecordNo());
 
-        int point = 0;
+            int distance = (int) precordPlaceDTO.getPrecordTotal();
 
-        if(distance <= 3000){
-            point = distance / 300;
-        }
-        else if(distance > 3000){
-            point = 10;
-        }
+            int point = 0;
 
-        scoreDTO.setPoliceScore(scoreDTO.getPoliceScore() + point);
+            if(distance <= 3000){
+                point = distance / 300;
+            }
+            else if(distance > 3000){
+                point = 10;
+            }
 
-        scoreService.scoreUpdate(scoreDTO);
-        //점수부여
+            scoreDTO.setPoliceScore(scoreDTO.getPoliceScore() + point);
 
-        System.out.println("target >>>> " + target);
+            scoreService.scoreUpdate(scoreDTO);
+            //점수부여
+
+            System.out.println("target >>>> " + target);
 
 
-        if (imageFiles != null) {
-            UploadDto uploadDto = new UploadDto();
-            uploadDto.setForeignNo(target.getPrecordNo());
-            uploadDto.setCategoryCode("Y");
+            if (imageFiles != null) {
+                UploadDto uploadDto = new UploadDto();
+                uploadDto.setForeignNo(target.getPrecordNo());
+                uploadDto.setCategoryCode("Y");
 
-            for (int i = 0; i < imageFiles.size(); i++) {
-                uploadDto.setFile(imageFiles.get(i));
-                uploadService.uploadInsert(uploadDto);
+                for (int i = 0; i < imageFiles.size(); i++) {
+                    uploadDto.setFile(imageFiles.get(i));
+                    uploadService.uploadInsert(uploadDto);
+                }
             }
         }
 
@@ -195,7 +203,7 @@ public class PatrolRecordController {
                 point = 10;
             }
             scoreDTO.setPoliceScore(scoreDTO.getPoliceScore() - point);
-            //기존 거리점수 빼기
+            //기존 거리점수 빼기 end
 
             //선택한 순찰기록으로 변경
             patrolPlaceService.updatePrecordNo(PrecordDTO.getPrecordNo(), precordPlace);
@@ -279,7 +287,7 @@ public class PatrolRecordController {
         scoreDTO.setPoliceScore(scoreDTO.getPoliceScore() - point);
 
         scoreService.scoreUpdate(scoreDTO);
-        //기존 거리점수 빼기
+        //기존 거리점수 빼기 end
 
         //순찰경로삭제
         patrolPlaceService.updatePrecordNoNULL(beforePrecordNo);
@@ -346,6 +354,10 @@ public class PatrolRecordController {
     @ResponseBody
     public Page<PrecordDTO> findAllPatrol(PrecordDTO precordDTO,@PageableDefault(size = 10) Pageable pageable){
         System.out.println("findAllPatrol PrecordDTO>> " + precordDTO);
+
+        if((precordDTO.getUserId() != null)&&(precordDTO.getUserId() != "")){
+            precordDTO.setUserNo((int)memberService.findMemberById(precordDTO.getUserId()).getNo());
+        }
 
         Page<PrecordDTO> list = pageService.getListPrecord(precordDTO,pageable);
 

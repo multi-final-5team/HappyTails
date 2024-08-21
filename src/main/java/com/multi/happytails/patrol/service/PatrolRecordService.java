@@ -30,6 +30,10 @@ public class PatrolRecordService {
         return patrolRecordDAO.findAllPatrolRecord();
     }
 
+    public List<PrecordDTO> findAllPatrolRecordByUserNo(int userNo) {
+        return patrolRecordDAO.findAllPatrolRecordByUserNo(userNo);
+    }
+
     public PrecordDTO findOnePatrolRecordByPrecordNo(int precordNo) {
         return patrolRecordDAO.findOnePatrolRecordByPrecordNo(precordNo);
     }
