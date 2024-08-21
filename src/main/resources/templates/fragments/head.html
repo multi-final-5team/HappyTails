@@ -88,7 +88,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
-<menu th:fragment="menu">
+<menu style="padding-left: 0px;" th:fragment="menu">
     <nav class="navbar navbar-expand-lg navbar-light">
 
         <div class="container my-3">
@@ -169,7 +169,7 @@
                             <a class="nav-link" href="/cart/cartList"><i class="fas fa-shopping-cart"></i> 장바구니</a>
                         </li>
                         <li class="nav-item" sec:authorize="hasAuthority('ROLE_ADMIN')">
-                            <a class="nav-link" href="/admin/index">
+                            <a class="nav-link" href="/admin/memberRoleAdmin">
                                 <img src="https://kr.object.ncloudstorage.com/team-5/free-icon-padlock-456112.png" style="width: 20px; height: 20px;" alt="Admin Access">
                             </a>
                         </li>
