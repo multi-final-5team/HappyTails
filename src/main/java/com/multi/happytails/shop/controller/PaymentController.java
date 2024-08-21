@@ -183,6 +183,8 @@ public class PaymentController {
                         paymentDTO.setProductinfo(cartItem.getGoodsName());
                         paymentDTO.setAddress(request.getAddress());
                         paymentDTO.setRequest(request.getRequest());
+                        System.out.println(request.getAddress() + "-----------------------주소");
+                        System.out.println(request.getRequest() + "-----------------------요청사항");
 
                         paymentService.insertPayment(paymentDTO);
                     }

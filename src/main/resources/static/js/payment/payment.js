@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', function() {
     request = document.getElementById('request').value;
     address = document.getElementById('address').value;
 
+    console.log(address);
+    console.log(request);
+    console.log(email);
+
     // 값이 변경될 때마다 업데이트하기 위한 이벤트 리스너 추가
     document.getElementById('email').addEventListener('input', function(e) {
         email = e.target.value;
@@ -65,6 +69,31 @@ function updateTotalPrice() {
 
 function mypayment() {
     const amountDisplay = document.getElementById('amount');
+
+    email = document.getElementById('email').value;
+        request = document.getElementById('request').value;
+        address = document.getElementById('address').value;
+
+        console.log(address);
+        console.log(request);
+        console.log(email);
+
+        // 값이 변경될 때마다 업데이트하기 위한 이벤트 리스너 추가
+        document.getElementById('email').addEventListener('input', function(e) {
+            email = e.target.value;
+        });
+
+        document.getElementById('request').addEventListener('input', function(e) {
+            request = e.target.value;
+        });
+
+        document.getElementById('address').addEventListener('input', function(e) {
+            address = e.target.value;
+        });
+
+    console.log('Address:', address);  // 디버깅을 위해 추가
+    console.log('Request:', request);  // 디버깅을 위해 추가
+
     if (!amountDisplay) {
         alert("결제 금액을 표시하는 요소를 찾을 수 없습니다.");
         return;
