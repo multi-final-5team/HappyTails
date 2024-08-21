@@ -205,7 +205,7 @@
     closeBtn.addEventListener('click', () => {
         chatbox.classList.remove('active');
     });
-
+    let abcdf = 0;
     function addMessage(content, isUser = false) {
         const messageContainer = document.createElement('div');
         messageContainer.classList.add('message-container');
@@ -214,7 +214,22 @@
         const messageElement = document.createElement('div');
         messageElement.classList.add('message');
         messageElement.classList.add(isUser ? 'user' : 'bot');
+
+
+
         messageElement.textContent = content;
+
+        if (messageElement.className === 'message bot' && abcdf >= 1) {
+           let data = JSON.parse(content);
+
+           if (data.url && data.url !== '') {
+                messageElement.innerHTML = '<a href="' + data.url + '">'+data.description+'</a>';
+            } else {
+                messageElement.textContent = data.description;
+            }
+        }
+
+        abcdf = 1;
 
         messageContainer.appendChild(messageElement);
         chatBody.appendChild(messageContainer);
