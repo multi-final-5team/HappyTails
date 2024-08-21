@@ -42,7 +42,7 @@
                 border: 2px solid #fff;
                 box-sizing: border-box;">
 
-                <h3 id="name" class="mb-4"></h3>
+                <h3 id="nickname" class="mb-4"></h3>
                 <div class="d-grid gap-2">
                     <button id="purchase-history" class="btn btn-primary">구매 목록</button>
                     <button id="business-registration" class="btn btn-primary">사업자 등록</button>
@@ -69,7 +69,7 @@
             method: 'GET',
             success: function(data) {
                 // $('#profile-img').attr('src', '/member/profile-img/' + data.profileIMG);
-                $('#name').text(data.name);
+                $('#nickname').text(data.nickname);
             }
         });
 

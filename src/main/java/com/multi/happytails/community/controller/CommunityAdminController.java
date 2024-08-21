@@ -50,7 +50,7 @@ public class CommunityAdminController {
                 uploadService.uploadDelete(uploadDto.getImageNo());
             }
         }
-        return "redirect:/admin/dogloveAdmin";
+        return "redirect:/admin/dogLoveAdmin";
     }
 
 
