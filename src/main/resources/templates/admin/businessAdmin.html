@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/index :: head}">
+    <meta charset="UTF-8">
+    <title>사업자 등록증 관리</title>
+</head>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<body class="sb-nav-fixed">
+<menu th:replace="~{admin/index :: headDiv}"></menu>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">사업자 등록증 관리</h1>
+            <div class="card mb-4">
+                <div class="card-body">
+                    사업자 관리자 페이지 입니다.
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    사업자 등록증
+                </div>
+                <div class="card-body">
+                    <table id="datatablesSimple">
+                        <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>아이디</th>
+                            <th>사업자 등록증</th>
+                            <th>작성일</th>
+                            <th>관리</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        <tr th:each="business : ${businesses}">
+                            <td th:text="${business.businessNo}"></td>
+                            <td th:text="${business.businessId}"></td>
+                            <td>
+                                <a href="https://kr.object.ncloudstorage.com/team-5/%EC%82%AC%EC%97%85%EC%9E%90_%EB%93%B1%EB%A1%9D%EC%A6%9D.jpg"
+                                   target="_blank"
+                                   class="btn btn-primary btn-sm">등록증 보기</a>
+                            </td>
+                            <td th:text="${business.createDate}"></td>
+                            <td>
+                                <button th:if="${business.businessRegistrationFlag != 'R'}"
+                                        th:onclick="|approveRegistration(${business.businessNo})|"
+                                        class="btn btn-sm btn-primary">승인</button>
+                                <button th:if="${business.businessRegistrationFlag == 'R'}"
+                                        th:onclick="|cancelRegistration(${business.businessNo})|"
+                                        class="btn btn-sm btn-danger">취소</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    function approveRegistration(businessNo) {
+        if (confirm('이 사업자 등록을 승인하시겠습니까?')) {
+            // AJAX call to approve registration
+            $.ajax({
+                url: '/admin/approveRegistration',
+                type: 'POST',
+                data: { businessNo: businessNo },
+                success: function(response) {
+                    alert('승인되었습니다.');
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    alert('오류가 발생했습니다: ' + error);
+                }
+            });
+        }
+    }
+
+    function cancelRegistration(businessNo) {
+        if (confirm('이 사업자 등록을 취소하시겠습니까?')) {
+            // AJAX call to cancel registration
+            $.ajax({
+                url: '/admin/cancelRegistration',
+                type: 'POST',
+                data: { businessNo: businessNo },
+                success: function(response) {
+                    alert('취소되었습니다.');
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    alert('오류가 발생했습니다: ' + error);
+                }
+            });
+        }
+    }
+</script>
+
+</body>
+</html>

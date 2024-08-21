@@ -1,7 +1,6 @@
 package com.multi.happytails.member.service;
 
 
-import com.multi.happytails.dog4cuts.model.dto.Dog4CutsDTO;
 import com.multi.happytails.member.model.dao.MemberDAO;
 import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.patrol.pageable.model.dto.RequestList;
@@ -69,6 +68,10 @@ public class MemberService {
 
     public void deleteMember(String id) {
         memberDAO.deleteMember(id);
+    }
+
+    public void recoverAccount(String id) {
+        memberDAO.recoverAccount(id);
     }
 
     public MemberDTO findMemberByEmail(String email) {
