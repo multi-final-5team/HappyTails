@@ -39,6 +39,13 @@ public class SecurityConfiguration {
                         .requestMatchers("/", "/css/**", "/js/**", "/images/**", "/error/**").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
 //                        .requestMatchers("/subadmin/**").hasRole("ROLE_SUB_ADMIN")
+                        .requestMatchers("/finddog/detail").authenticated()
+                        .requestMatchers("/finddog/write").authenticated()
+                        .requestMatchers("/finddog/update").authenticated()
+                        .requestMatchers("/finddog/print").authenticated()
+                        .requestMatchers("/help/inquiry/write").authenticated()
+                        .requestMatchers("/help/inquiry/list").authenticated()
+                        .requestMatchers("/help/inquiry/detail").authenticated()
                         .anyRequest().permitAll()
                 );
         http
