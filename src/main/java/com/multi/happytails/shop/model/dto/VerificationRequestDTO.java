@@ -10,4 +10,6 @@ public class VerificationRequestDTO {
     private String imPortId;
     private BigDecimal amount;
     private int GoodsNo;
+    private String address;
+    private String request;
 }

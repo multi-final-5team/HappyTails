@@ -7,10 +7,7 @@ import com.multi.happytails.upload.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.HashMap;
@@ -71,6 +68,18 @@ public class CartController {
         model.addAttribute("cartMap", cartMap);
 
 
-        return "/cart/cartList";
+        return "cart/cartList";
+    }
+
+    @PostMapping("/updateCart")
+    @ResponseBody
+    public String updateCart(@RequestParam("purchaseQuantity") int purchaseQuantity,
+                             @RequestParam("no") int no) {
+        System.out.println(purchaseQuantity);
+        System.out.println(no);
+
+        cartService.updateCart(purchaseQuantity, no);
+
+        return "dd";
     }
 }

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}">
+    <title>구매 상품 목록</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .table-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+<menu th:replace="~{fragments/head :: menu}"></menu>
+<main>
+    <div class="container  my-5">
+
+        <figure class="text-center">
+            <h2>구매 상품 목록</h2>
+        </figure>
+
+        <div th:if="${not #lists.isEmpty(paymentHistory)}" class="card shadow">
+            <div class="card-body paymentHistory-item">
+                <div class="paymentHistory-info table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>구매 상품</th>
+                            <th>결제 금액</th>
+                            <th>결제일</th>
+                            <th>배송 상태</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr  th:each="paymentHistory : ${paymentHistory}" th:data-username="${paymentHistory.username}">
+                            <td>
+                                <div th:if="${salesGoodsMap[paymentHistory.goodsNo].size() > 0}" class="card-body">
+                                    <img th:src="@{/images/S/{file}(file=${salesGoodsMap[paymentHistory.goodsNo][0].storedFileName})}" alt="대표 이미지" class="card-img-top" height="100">
+                                </div>
+                                <a th:href="@{/sales/selectGoods(no=${paymentHistory.goodsNo})}"
+                                   th:text="${paymentHistory.productname}"
+                                   class="text-decoration-none">
+                                </a>
+                            </td>
+                            <th th:text="'가격: ' + ${paymentHistory.purchaseprice} + '원'"></th>
+                            <th th:text="${#dates.format(paymentHistory.date_created, 'yyyy-MM-dd')}"></th>
+                            <th th:text="${paymentHistory.delivery_code}"></th>
+                            <th>
+                                <a th:if="${paymentHistory.delivery_code != '구매 완료' AND paymentHistory.delivery_code != '환불 대기' and paymentHistory.delivery_code != '환불 완료'}"
+                                   th:href="@{/payment/paymentUpdateDelivery(payment_no=${paymentHistory.payment_no})}"
+                                   class="btn btn-success">
+                                    환불 신청</a>
+
+                                <button
+                                        th:if="${paymentHistory.delivery_code == '구매 완료' and !reviewedMap[paymentHistory.goodsNo]}"
+                                        type="button" class="btn btn-primary delivery-status-btn"
+                                        th:data-payment-no="${paymentHistory.goodsNo}">
+                                    리뷰 작성
+                                </button>
+
+                                <button
+                                        th:if="${paymentHistory.delivery_code == '구매 완료' and reviewedMap[paymentHistory.goodsNo]}"
+                                        type="button" class="btn btn-primary delivery-update-btn"
+                                        th:data-payment-no="${paymentHistory.goodsNo}">
+                                    리뷰 수정
+                                </button>
+
+
+                                <a th:if="${paymentHistory.delivery_code != '구매 완료' AND paymentHistory.delivery_code != '환불 대기' and paymentHistory.delivery_code != '환불 완료'}"
+                                   th:href="@{/payment/paymentPurchaseDelivery(payment_no=${paymentHistory.payment_no})}"
+                                   class="btn btn-success">
+                                    구입 확정</a>
+
+                            </th>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(paymentHistory)}">
+                            주문 정보가 없습니다.
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="paymentHistory-actions">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="pagination"></div>
+    </div>
+</main>
+
+<script th:inline="javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        var buttons = document.querySelectorAll('.delivery-status-btn');
+        buttons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var goodsNo = this.getAttribute('data-payment-no');
+                openPopup(goodsNo);
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var buttons = document.querySelectorAll('.delivery-update-btn');
+        buttons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var goodsNo = this.getAttribute('data-payment-no');
+
+            });
+        });
+    });
+
+    function openPopup(goodsNo) {
+        var url = `/sales/reviewPopup?goodsNo=${encodeURIComponent(goodsNo)}`;
+        var name = "배송 상태 변경";
+        var options = "width=500,height=300,top=100,left=100";
+        window.open(url, name, options);
+    }
+</script>
+
+</body>
+<footer th:replace="fragments/head :: footer"></footer>
+</html>

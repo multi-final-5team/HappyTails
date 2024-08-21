@@ -7,6 +7,9 @@ import com.multi.happytails.member.service.MemberService;
 import com.multi.happytails.shop.model.dto.*;
 import com.multi.happytails.shop.service.CartService;
 import com.multi.happytails.shop.service.PaymentService;
+import com.multi.happytails.shop.service.ReviewService;
+import com.multi.happytails.upload.model.dto.UploadDto;
+import com.multi.happytails.upload.service.UploadService;
 import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
@@ -38,6 +41,8 @@ public class PaymentController {
     private final MemberDAO memberDAO;
     private final MemberService memberService;
     private final ApiKeys apiKeys;
+    private final UploadService uploadService;
+    private final ReviewService reviewService;
 
 
     /**
@@ -48,12 +53,14 @@ public class PaymentController {
      * @param memberService  the member service
      * @param cartService    the cart service
      */
-    public PaymentController(PaymentService paymentService, MemberDAO memberDAO, MemberService memberService, CartService cartService, ApiKeys apiKeys) {
+    public PaymentController(PaymentService paymentService, MemberDAO memberDAO, MemberService memberService, CartService cartService, ApiKeys apiKeys, UploadService uploadService, ReviewService reviewService) {
         this.paymentService = paymentService;
         this.memberDAO = memberDAO;
         this.memberService = memberService;
         this.cartService = cartService;
         this.apiKeys = apiKeys;
+        this.uploadService = uploadService;
+        this.reviewService = reviewService;
     }
 
 
@@ -106,12 +113,39 @@ public class PaymentController {
      * @return the string
      */
     @RequestMapping("/paymentHistory")
-    public String orderHistory(Model model, Principal principal) {
+    public String paymentHistory(Model model, Principal principal) {
         String username = principal.getName();
         List<Payment> paymentHistory = paymentService.paymentList(username);
         model.addAttribute("paymentHistory", paymentHistory);
 
         return "/payment/PaymentHistory";
+    }
+
+    @RequestMapping("/paymentHistoryDetails")
+    public String paymentHistoryDetails(
+            Model model,
+            Principal principal,
+            @RequestParam("imPortId") String imPortId) {
+
+        String username = principal.getName();
+        String id = principal.getName();
+
+        List<PaymentDTO> paymentHistory = paymentService.paymentHistoryDetails(username, imPortId);
+
+        Map<Integer, List<UploadDto>> salesGoodsMap = new HashMap<>();
+        Map<Integer, Boolean> reviewedMap = new HashMap<>();
+
+        for (PaymentDTO SalesGoods : paymentHistory) {
+            int goodsNo = SalesGoods.getGoodsNo();
+            salesGoodsMap.put(goodsNo, uploadService.uploadSelect("S", goodsNo));
+            reviewedMap.put(goodsNo, reviewService.hasUserReviewed(id, goodsNo));
+        }
+
+        model.addAttribute("salesGoodsMap", salesGoodsMap);
+        model.addAttribute("reviewedMap", reviewedMap);
+        model.addAttribute("paymentHistory", paymentHistory);
+
+        return "/payment/paymentHistoryDetails";
     }
 
 
@@ -139,15 +173,19 @@ public class PaymentController {
             if (actualAmount.compareTo(requestedAmount) == 0) {
                 // Create individual payment records for each item
                 for (CartDTO cartItem : cartItems) {
-                    PaymentDTO paymentDTO = new PaymentDTO();
-                    paymentDTO.setUsername(username);
-                    paymentDTO.setImPortId(request.getImPortId());
-                    paymentDTO.setPurchaseprice(cartItem.totalPrice());
-                    paymentDTO.setGoodsNo(cartItem.getGoodsNo());
-                    paymentDTO.setProductname(cartItem.getGoodsName());
-                    paymentDTO.setProductinfo(cartItem.getGoodsName() + " x " + cartItem.getPurchaseQuantity());
+                    for (int i = 0; i < cartItem.getPurchaseQuantity(); i++) {
+                        PaymentDTO paymentDTO = new PaymentDTO();
+                        paymentDTO.setUsername(username);
+                        paymentDTO.setImPortId(request.getImPortId());
+                        paymentDTO.setPurchaseprice(cartItem.getPrice());
+                        paymentDTO.setGoodsNo(cartItem.getGoodsNo());
+                        paymentDTO.setProductname(cartItem.getGoodsName());
+                        paymentDTO.setProductinfo(cartItem.getGoodsName());
+                        paymentDTO.setAddress(request.getAddress());
+                        paymentDTO.setRequest(request.getRequest());
 
-                    paymentService.insertPayment(paymentDTO);
+                        paymentService.insertPayment(paymentDTO);
+                    }
                 }
 
                 // Clear the cart after successful payment
@@ -160,7 +198,6 @@ public class PaymentController {
             return ResponseEntity.badRequest().body(Map.of("success", false, "message", "Payment verification failed: " + e.getMessage()));
         }
     }
-
 
     /**
      * methodName : cancelPayment
@@ -226,6 +263,14 @@ public class PaymentController {
             response.put("message", "부분 취소 중 오류 발생: " + e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
+    }
+
+    @RequestMapping("/paymentPurchaseDelivery")
+    public String paymentPurchaseDelivery(@RequestParam("payment_no") int payment_no) {
+
+        paymentService.paymentPurchaseDelivery(payment_no);
+
+        return "redirect:/payment/paymentHistory";
     }
 
     @RequestMapping("/paymentUpdateDelivery")

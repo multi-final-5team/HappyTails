@@ -12,7 +12,7 @@
             <h1 class="mt-4">고객센터 관리</h1>
             <div class="card mb-4">
                 <div class="card-body" id="dd">
-                    자주묻는 질문, 1:1문의를 관리하는 부분 입니다.
+                    1:1문의를 관리하는 페이지 입니다.
                 </div>
             </div>
             <div class="card mb-4">
@@ -28,7 +28,7 @@
                             <th>제목</th>
                             <th>작성자</th>
                             <th>카테고리</th>
-                            <th>장소</th>
+                            <th>결과</th>
                             <th>삭제</th>
                         </tr>
                         </thead>
@@ -38,19 +38,27 @@
                             <th>제목</th>
                             <th>작성자</th>
                             <th>카테고리</th>
-                            <th>장소</th>
+                            <th>결과</th>
                             <th>삭제</th>
                         </tr>
                         </tfoot>
                         <tbody>
-                        <th:block th:each="findDog : ${findDogList}">
-                            <tr class="findList">
-                                <td th:text="${findDog.findDogNo}"></td>
-                                <td><a th:href="@{'/finddog/detail?findDogNo=' + ${findDog.findDogNo}}" th:text="${findDog.title}"></a></td>
-                                <td th:text="${findDog.writerId}"></td>
-                                <td th:text="${findDog.category}"></td>
-                                <td th:text="${findDog.area}"></td>
-                                <td><input type="button" class="deleteBtn" value="삭제" th:data-find-dog-no="${findDog.findDogNo}"></td>
+                        <th:block th:each="inquiry : ${inquiryList}">
+                            <tr class="inquiryList">
+                                <td th:text="${inquiry.inquiryNo}"></td>
+                                <td><a th:href="@{'/help/inquiry/detail?inquiryNo=' + ${inquiry.inquiryNo}}" th:text="${inquiry.title}"></a></td>
+                                <td th:text="${inquiry.writerId}"></td>
+                                <td th:text="${inquiry.categoryName}"></td>
+                                <th:block th:if="${inquiry.result} == 'N'">
+                                    <td>대기</td>
+                                </th:block>
+                                <th:block th:if="${inquiry.result} == 'S'">
+                                    <td>열람</td>
+                                </th:block>
+                                <th:block th:if="${inquiry.result} == 'Y'">
+                                    <td>완료</td>
+                                </th:block>
+                                <td><input type="button" class="btn btn-danger deleteBtn" value="삭제" th:data-inquiry-no="${inquiry.inquiryNo}"></td>
                             </tr>
                         </th:block>
                         </tbody>
@@ -64,9 +72,9 @@
     $(document).ready(function() {
        $('.deleteBtn').click(function(){
             $.ajax({
-                url : "/finddog/delete",
+                url : "/help/inquiry/delete",
                 type : 'POST',
-                data: { findDogNo: $(this).attr('data-find-dog-no') },
+                data: { inquiryNo: $(this).attr('data-inquiry-no') },
                 success : function(result) {
                     alert(result);
                     location.reload();

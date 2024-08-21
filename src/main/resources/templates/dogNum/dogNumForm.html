@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+<style>
+    .form-group {
+    display: flex;
+    align-items: center;
+    }
+    .form-group input {
+    margin-right: 10px;
+    }
+</style>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
 <div class="container">
@@ -12,7 +21,7 @@
     <h3>동물 등록 번호가 없다면? 우리 댕댕이를 위해 직접 작성해보세요!</h3>
 
     <div class="tab-container">
-        <button onclick="showTab('api')">API 조회</button>
+        <button onclick="showTab('api')">동물등록번호 조회</button>
         <button onclick="showTab('manual')">직접 만들기</button>
     </div>
 
@@ -28,25 +37,37 @@
 
     <div id="manualForm" style="display: none;">
         <div class="form-group">
-            <input type="text" id="manualDogRegNo" placeholder="동물등록번호" required>
+            <input type="text" id="manualDogRegNo" placeholder="동물등록번호" maxlength="15" pattern="[0-9]*" required>
+            <p> ex) 숫자 15자로 자유양식</p>
+
         </div>
         <div class="form-group">
             <input type="text" id="manualDogNm" placeholder="강아지 이름" required>
+            <p> ex) 댕댕이</p>
         </div>
         <div class="form-group">
             <input type="text" id="manualKindNm" placeholder="품종" required>
+            <p> ex) 푸들</p>
         </div>
         <div class="form-group">
-            <input type="text" id="manualSexNm" placeholder="성별" required>
+            <label>성별 : </label>
+            <div class="radio-group">
+                <label><input type="radio" name="sexNm" value="수컷" required> 수컷</label>
+                <label><input type="radio" name="sexNm" value="암컷" required> 암컷</label>
+            </div>
         </div>
         <div class="form-group">
-            <input type="text" id="manualNeuterYn" placeholder="중성화 여부 (Y/N)" required>
+            <label>중성화 여부 : </label>
+            <div class="radio-group">
+                <label><input type="radio" name="neuterYn" value="중성" required> 중성</label>
+                <label><input type="radio" name="neuterYn" value="미중성" required> 미중성</label>
+            </div>
         </div>
-        <button onclick="createManualCertificate()">등록증 만들기</button>
+        <button onclick="createManualCertificate()">신분증 만들기</button>
     </div>
 
     <div id="certificate" style="display: none;">
-        <h4>댕댕이 등록증</h4>
+        <h4>댕댕이 신분증</h4>
         <p><strong>이름:</strong> <span id="dogNm"></span></p>
         <p><strong>등록 번호:</strong> <span id="dogRegNoDisplay"></span></p>
         <p><strong>품종:</strong> <span id="kindNm"></span></p>
@@ -111,8 +132,13 @@
         var dogRegNo = document.getElementById('manualDogRegNo').value;
         var dogNm = document.getElementById('manualDogNm').value;
         var kindNm = document.getElementById('manualKindNm').value;
-        var sexNm = document.getElementById('manualSexNm').value;
-        var neuterYn = document.getElementById('manualNeuterYn').value;
+        var sexNm = document.querySelector('input[name="sexNm"]:checked');
+        var neuterYn = document.querySelector('input[name="neuterYn"]:checked');
+
+        if (!/^\d+$/.test(dogRegNo)) {
+            alert('동물등록번호는 숫자로만 입력해 주세요.');
+            return;
+            }
 
         if (!dogRegNo || !dogNm || !kindNm || !sexNm || !neuterYn) {
             alert('모든 항목을 입력해 주세요.');
@@ -122,8 +148,8 @@
         document.getElementById('dogNm').innerText = dogNm;
         document.getElementById('dogRegNoDisplay').innerText = dogRegNo;
         document.getElementById('kindNm').innerText = kindNm;
-        document.getElementById('sexNm').innerText = sexNm;
-        document.getElementById('neuterYn').innerText = neuterYn;
+        document.getElementById('sexNm').innerText = sexNm.value;
+        document.getElementById('neuterYn').innerText = neuterYn.value;
 
         document.getElementById('certificate').style.display = 'block';
         document.getElementById('createCertificateBtn').disabled = false;
@@ -171,11 +197,14 @@
 
         window.location.href = url;
     }
-    function checkRegNoLength(input) {
-    if (input.value.length >= 15) {
-        alert("동물등록번호는 최대 15자까지 입력 가능합니다.");
+    function validateDogRegNo() {
+        var input = document.getElementById('manualDogRegNo').value;
+        if (input.length > 15) {
+            alert("동물등록번호는 15자까지 입력 가능합니다.");
+            document.getElementById('manualDogRegNo').value = input.slice(0, 15);
+        }
     }
-}
+    document.getElementById('manualDogRegNo').addEventListener('input', validateDogRegNo);
 </script>
 </body>
 </html>

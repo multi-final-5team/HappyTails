@@ -1,5 +1,5 @@
 // 전역 변수 선언
-let username, productname, productinfo, productprice;
+let username, productname, productinfo, productprice, email, request, address;
 
 // DOM이 로드된 후 실행될 함수
 document.addEventListener('DOMContentLoaded', function() {
@@ -7,6 +7,24 @@ document.addEventListener('DOMContentLoaded', function() {
     username = document.getElementById('name').value;
     productname = document.querySelector('h3').textContent;
     productinfo = document.querySelector('.right-section p').textContent;
+
+    // email, request, address 값 가져오기
+    email = document.getElementById('email').value;
+    request = document.getElementById('request').value;
+    address = document.getElementById('address').value;
+
+    // 값이 변경될 때마다 업데이트하기 위한 이벤트 리스너 추가
+    document.getElementById('email').addEventListener('input', function(e) {
+        email = e.target.value;
+    });
+
+    document.getElementById('request').addEventListener('input', function(e) {
+        request = e.target.value;
+    });
+
+    document.getElementById('address').addEventListener('input', function(e) {
+        address = e.target.value;
+    });
 
     const amountElement = document.getElementById('amount');
     if (amountElement) {
@@ -70,10 +88,10 @@ function mypayment() {
             pay_method: "card",
             name: productname,
             amount: myAmount,
-            buyer_email: "gildong@gmail.com",
+            buyer_email: email,
             buyer_name: username,
             buyer_tel: "010-4242-4242",
-            buyer_addr: "서울특별시 강남구 신사동",
+            buyer_addr: address,
             buyer_postcode: "01181",
             m_redirect_url: "",
         },
@@ -85,7 +103,9 @@ function mypayment() {
                     const { data } = await axios.post('/payment/verifyPayment', {
                         imPortId: rsp.imp_uid,
                         amount: myAmount,
-                        cartItems: cartItems
+                        cartItems: cartItems,
+                        address: address,
+                        request: request
                     });
 
                     if (data.success) {

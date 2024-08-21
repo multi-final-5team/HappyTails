@@ -48,4 +48,16 @@ public class ReviewServiceImpl implements ReviewService{
     public int getReviewNo() {
         return reviewDAO.getReviewNo();
     }
+
+    @Override
+    public Boolean hasUserReviewed(String id, int goodsNo) {
+        return reviewDAO.hasUserReviewed(id, goodsNo);
+    }
+
+    @Override
+    public ReviewDTO selectReview(String id, int goodsNo) {
+        return reviewDAO.selectReview(id, goodsNo);
+    }
+
+
 }
