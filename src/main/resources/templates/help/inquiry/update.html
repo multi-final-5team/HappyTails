@@ -15,7 +15,7 @@
                     <form action="/help/inquiry/write" method="post" enctype="multipart/form-data" id="inquiryForm">
                         <div class="mb-3 w-50">
                             <label for="title" class="form-label">제목</label>
-                            <input type="text" class="form-control" name="title" id="title" th:value="${inquiryDto.title}">
+                            <input type="text" class="form-control" name="title" id="title" th:value="${inquiryDto.title}" oninput="handleOnInput(this, 30)">
                         </div>
                         <div class="mb-3 w-25">
                             <label for="category" class="form-label">카테고리</label>
