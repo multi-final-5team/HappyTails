@@ -6,10 +6,10 @@
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
     <h1 class="mb-4">상품 수정</h1>
-    <form action="/sales/updateGoods" method="post" enctype="multipart/form-data" id="updateForm">
+    <form method="post" enctype="multipart/form-data" id="updateForm">
         <div class="mb-3">
             <label for="name" class="form-label">상품 이름:</label>
-            <input type="text" class="form-control" id="name" name="name" required th:value="${salesDetails.name}">
+            <input type="text" class="form-control" id="name" name="name" required th:value="${salesDetails.name}" minlength="1">
         </div>
 
         <div th:if="${uploadDtos != null && !uploadDtos.isEmpty()}" class="mb-3">
@@ -184,7 +184,6 @@
             currentImg = $(this).parent().find('img');
             $('#imageUpdate').click(); // 파일 선택 창을 엽니다.
         });
-
     });
 </script>
 </body>

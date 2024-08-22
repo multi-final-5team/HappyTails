@@ -37,27 +37,6 @@ function updateTotalItemsCount() {
     document.getElementById('totalItemsCount').textContent = totalItems;
 }
 
-function searchOrders() {
-    const searchText = document.getElementById('searchInput').value.toLowerCase();
-    const orderItems = document.getElementsByClassName('order-item');
-    filteredOrders = [];
-
-    for (let item of orderItems) {
-        const productName = item.querySelector('h3').textContent.toLowerCase();
-        if (productName.includes(searchText)) {
-            filteredOrders.push(item);
-            item.style.display = '';
-        } else {
-            item.style.display = 'none';
-        }
-    }
-
-    currentPage = 1;
-    updateTotalItemsCount();
-    displayPage(currentPage);
-    updatePagination();
-}
-
 function displayPage(page) {
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -119,12 +98,6 @@ function updatePagination() {
 }
 
 function initEventListeners() {
-    document.getElementById('searchButton').addEventListener('click', searchOrders);
-    document.getElementById('searchInput').addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-            searchOrders();
-        }
-    });
 
     // 주문 취소 버튼에 이벤트 리스너 추가
     document.querySelectorAll('.cancel-button').forEach(button => {

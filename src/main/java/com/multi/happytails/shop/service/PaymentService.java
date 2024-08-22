@@ -49,6 +49,10 @@ public class PaymentService {
         return paymentDAO.selectOrders(memberName);
     }
 
+    public List<OrderlistDTO> selectOrders2(String name) {
+        return paymentDAO.selectOrders2(name);
+    }
+
     public int updateRefundStatus(int paymentNo) {
         return paymentDAO.updateRefundStatus(paymentNo);
     }
@@ -178,5 +182,10 @@ public class PaymentService {
 
     public void paymentPurchaseDelivery(int paymentNo) {
         paymentDAO.paymentPurchaseDelivery(paymentNo);
+    }
+
+
+    public List<PaymentDTO> orderHistoryDetails(String username, String imPortId) {
+        return paymentDAO.orderHistoryDetails(username, imPortId);
     }
 }

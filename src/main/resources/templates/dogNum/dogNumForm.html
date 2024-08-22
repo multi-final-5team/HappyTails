@@ -26,44 +26,36 @@
     </div>
 
     <div id="apiForm">
-        <div class="form-group">
-            <input type="text" id="dogRegNo" placeholder="동물등록번호" required>
-        </div>
-        <div class="form-group">
-            <input type="text" id="ownerNm" placeholder="견주 이름" required>
-        </div>
-        <button onclick="lookUp()">조회</button>
+        <fieldset>
+            <legend>동물등록번호 조회</legend>
+            <input type="text" id="dogRegNo" placeholder="동물등록번호" required><br><br>
+            <input type="text" id="ownerNm" placeholder="견주 이름" required><br><br>
+            <button onclick="lookUp()">조회</button>
+        </fieldset>
     </div>
 
     <div id="manualForm" style="display: none;">
-        <div class="form-group">
-            <input type="text" id="manualDogRegNo" placeholder="동물등록번호" maxlength="15" pattern="[0-9]*" required>
-            <p> ex) 숫자 15자로 자유양식</p>
+        <fieldset>
+            <legend>직접 만들기</legend>
+            <input type="text" id="manualDogRegNo" placeholder="동물등록번호" maxlength="15" pattern="[0-9]*" required><br>
+            <small>ex) 숫자 15자로 자유양식</small><br><br>
 
-        </div>
-        <div class="form-group">
-            <input type="text" id="manualDogNm" placeholder="강아지 이름" required>
-            <p> ex) 댕댕이</p>
-        </div>
-        <div class="form-group">
-            <input type="text" id="manualKindNm" placeholder="품종" required>
-            <p> ex) 푸들</p>
-        </div>
-        <div class="form-group">
-            <label>성별 : </label>
-            <div class="radio-group">
-                <label><input type="radio" name="sexNm" value="수컷" required> 수컷</label>
-                <label><input type="radio" name="sexNm" value="암컷" required> 암컷</label>
-            </div>
-        </div>
-        <div class="form-group">
-            <label>중성화 여부 : </label>
-            <div class="radio-group">
-                <label><input type="radio" name="neuterYn" value="중성" required> 중성</label>
-                <label><input type="radio" name="neuterYn" value="미중성" required> 미중성</label>
-            </div>
-        </div>
-        <button onclick="createManualCertificate()">신분증 만들기</button>
+            <input type="text" id="manualDogNm" placeholder="강아지 이름" required><br>
+            <small>ex) 댕댕이</small><br><br>
+
+            <input type="text" id="manualKindNm" placeholder="품종" required><br>
+            <small>ex) 푸들</small><br><br>
+
+            <label>성별 :</label><br>
+            <label><input type="radio" name="sexNm" value="수컷" required> 수컷</label>
+            <label><input type="radio" name="sexNm" value="암컷" required> 암컷</label><br><br>
+
+            <label>중성화 여부 :</label><br>
+            <label><input type="radio" name="neuterYn" value="중성" required> 중성</label>
+            <label><input type="radio" name="neuterYn" value="미중성" required> 미중성</label><br><br>
+
+            <button onclick="createManualCertificate()">신분증 만들기</button>
+        </fieldset>
     </div>
 
     <div id="certificate" style="display: none;">
@@ -76,7 +68,6 @@
         <button onclick="saveDogNum()">저장</button>
         <button id="createCertificateBtn" onclick="createCertificate()" disabled>신분증 만들기</button>
     </div>
-</div>
 <footer th:replace="fragments/head :: footer"></footer>
 
 <script>

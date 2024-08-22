@@ -2,7 +2,9 @@ package com.multi.happytails.member.controller;
 
 import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.authentication.model.service.AuthenticationService;
+import com.multi.happytails.member.model.dto.BusinessDTO;
 import com.multi.happytails.member.model.dto.MemberDTO;
+import com.multi.happytails.member.service.BusinessService;
 import com.multi.happytails.member.service.MemberService;
 import com.multi.happytails.patrol.pageable.service.PageService;
 import com.multi.happytails.upload.model.dto.UploadDto;
@@ -45,6 +47,9 @@ public class MemberController {
 
     @Autowired
     private AuthenticationService authenticationService;
+
+    @Autowired
+    private BusinessService businessService;
 
     @Autowired
     PageService pageService;
@@ -283,12 +288,18 @@ public class MemberController {
             return "redirect:/member/login";
         }
 
+
         MemberDTO member = memberService.findMemberById(customUser.getId());
         List<UploadDto> profileImages = uploadService.uploadSelect("P", member.getNo());
 
+
+
         System.out.println(profileImages);
         System.out.println(member);
+        BusinessDTO BusinessInfo = businessService.getInfoById(customUser.getId());
+        System.out.println(BusinessInfo + "--------------------------------************");
 
+        model.addAttribute("BusinessInfo", BusinessInfo);
         model.addAttribute("member", member);
         model.addAttribute("profileImage", profileImages.isEmpty() ? null : profileImages.get(0));
 

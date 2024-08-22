@@ -101,4 +101,6 @@ public interface SalesGoodsDAO {
     List<SalesGoodsDTO> getRandomSalesGoods(int count);
 
     List<SalesGoodsDTO> getRandomProducts();
+
+    int salesPageCountForUser(String id);
 }

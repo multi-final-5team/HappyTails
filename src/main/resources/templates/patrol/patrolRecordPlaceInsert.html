@@ -100,6 +100,7 @@
 
 
     $(document).ready(function(){
+
         $.ajax({
 	 			type: "get",
 	 			url : "/patrol/patrolCheck",
@@ -113,7 +114,6 @@
 	 				alert("에러 발생. " + data);
 	 			}
 	 	})
-
 
 
         $('#btnstart').click(function(){

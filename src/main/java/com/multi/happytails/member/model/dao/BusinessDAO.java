@@ -15,4 +15,5 @@ public interface BusinessDAO {
 
     void updateBusinessRegistrationFlag(@Param("businessNo") int businessNo, @Param("flag") String flag);
 
+    BusinessDTO getInfoById(@Param("businessId") String businessId);
 }

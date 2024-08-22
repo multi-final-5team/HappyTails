@@ -24,4 +24,8 @@ public class BusinessService {
     public void updateBusinessRegistrationFlag(int businessNo, String flag) {
         businessDAO.updateBusinessRegistrationFlag(businessNo, flag);
     }
+
+    public BusinessDTO getInfoById(String id) {
+        return businessDAO.getInfoById(id);
+    }
 }

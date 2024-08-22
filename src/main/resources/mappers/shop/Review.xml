@@ -47,6 +47,11 @@
         WHERE GOODS_NO = #{goodsNo} AND ID = #{id}
     </select>
 
+    <select id="selectReview2"  resultMap="ReviewResultMap">
+        SELECT * FROM TB_REVIEW
+        WHERE GOODS_NO = #{goodsNo} AND ID = #{id}
+    </select>
+
     <select id="getReviewNo">
         SELECT REVIEW_NO
         FROM TB_REVIEW
