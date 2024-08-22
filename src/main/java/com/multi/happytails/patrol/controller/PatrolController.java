@@ -178,7 +178,11 @@ public class PatrolController {
      */
     @GetMapping(value="findAllPatrol", produces = "application/json; charset=UTF-8")
     @ResponseBody
-    public PatrolImgDTO findAllPatrol(@PageableDefault(size = 10) Pageable pageable){
+    public PatrolImgDTO findAllPatrol(PatrolDTO patrolDTO2 ,@PageableDefault(size = 10) Pageable pageable){
+
+        if((patrolDTO2.getUserId() != null)&&(patrolDTO2.getUserId() != "")){
+            patrolDTO2.setUserNo((int)memberService.findMemberById(patrolDTO2.getUserId()).getNo());
+        }
 
         List<UploadDto> uploadDtos = new ArrayList<>();
 
@@ -261,7 +265,7 @@ public class PatrolController {
 
         System.out.println("beforeImgNo>>>>" + beforeImgNo);
 
-        if (!pageIngs.isEmpty()) {
+        if (imageFiles != null) {
             if (beforeImgNo != 0){
                 uploadService.uploadDelete(beforeImgNo);
             }
@@ -306,6 +310,8 @@ public class PatrolController {
 
         patrolDTO.setUserNo((int)customUser.getNo());
 
+        ScoreDTO scoreDTO = scoreService.findOneScoreByUserNo((int)customUser.getNo());
+
         List<PrecordDTO> list = patrolRecordService.findAllPatrolRecordByUserNo((int)customUser.getNo());
 
         List<PrecordPlaceDTO> placeDTOList = patrolPlaceService.findAllPrecordPlace(patrolDTO.getPatrolNo());
@@ -333,6 +339,60 @@ public class PatrolController {
                 uploadService.uploadDelete(pageIngs.get(i).getImageNo());
             }
         }
+
+        //포인트 0점
+        scoreDTO.setPoliceScore(0);
+
+        scoreService.scoreUpdate(scoreDTO);
+
+
+
+        int result = patrolService.patrolDelete(patrolDTO.getPatrolNo());
+
+        return "patrol/patrol";
+    }
+
+    @PostMapping("patrolDeleteAdmin")
+    public String patrolDeleteAdmin(PatrolDTO patrolDTO , @AuthenticationPrincipal CustomUser customUser){
+
+        PatrolDTO target = patrolService.findOnePatrolByPatrolNo(patrolDTO.getPatrolNo());
+
+        ScoreDTO scoreDTO = scoreService.findOneScoreByUserNo(target.getUserNo());
+
+        List<PrecordDTO> list = patrolRecordService.findAllPatrolRecordByUserNo(target.getUserNo());
+
+        List<PrecordPlaceDTO> placeDTOList = patrolPlaceService.findAllPrecordPlace(patrolDTO.getPatrolNo());
+
+        //기존 순찰기록 삭제
+        for (int i = 0; i < placeDTOList.size(); i++) {
+            patrolPlaceService.precordPlaceHistoryDelete(placeDTOList.get(i).getPrecordPlaceNo());
+
+            patrolPlaceService.deletePlace(placeDTOList.get(i));
+        }
+
+        //기존 순찰일지 삭제
+        for (int i = 0; i < list.size(); i++) {
+            //순찰일지 댓글 삭제
+            patrolRecordReplyService.repleyDeleteByPrecordNo(list.get(i).getPrecordNo());
+
+            patrolRecordService.patrolRecordDelete(list.get(i));
+        }
+
+        //이미지 삭제
+        List<UploadDto> pageIngs = uploadService.uploadSelect("Z",patrolDTO.getPatrolNo());
+
+        if (!pageIngs.isEmpty()) {
+            for(int i = 0; i < pageIngs.size(); i++) {
+                uploadService.uploadDelete(pageIngs.get(i).getImageNo());
+            }
+        }
+
+        //포인트 0점
+        scoreDTO.setPoliceScore(0);
+
+        scoreService.scoreUpdate(scoreDTO);
+
+
 
         int result = patrolService.patrolDelete(patrolDTO.getPatrolNo());
 

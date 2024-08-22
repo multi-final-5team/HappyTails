@@ -33,10 +33,14 @@
 
 <h1 class="mb-4">순찰대 관리</h1>
 
-    <div style="width: 30%;margin-left:auto;">
-        <input class="form-control" type="text" id="searchinput">
-        <button class="btn btn-info" id="btnserch" onclick="search()" style="margin-left:70%; width: 30%;">검색</button>
-    </div>
+        <div style="width: 40%;margin-left:auto;display: flex;">
+            <select class="form-select" id="targetSelect" name="targetSelect" style="width: 30%">
+                <option value="selectId" selected>아이디</option>
+                <option value="selectName">강아지이름</option>
+            </select>
+            <input class="form-control" type="text" id="searchinput" style="width: 40%;">
+            <button class="btn btn-primary" id="btnserch" onclick="search()" style="width: 30%;">검색</button>
+        </div>
 
 <div id="patroldiv" sec:authorize="hasRole('ROLE_ADMIN')">
 
@@ -51,7 +55,10 @@
 
     <script>
         var urlParams = new URL(location.href).searchParams;
+
         var page = urlParams.get('page');
+        var userId = urlParams.get('userId');
+        var name = urlParams.get('name');
 
         var pageFirst;
         var pageLast;
@@ -61,11 +68,73 @@
 
     $(document).ready(function(){
 
+        if(name != "null"){
+            $('#searchinput').val(name);
+        }
+        if(userId != null){
+            $('#searchinput').val(userId);
+        }
+
+        search();
+
+        $('#goPatrolInsertBtn').click(function(){
+            location.href = "/patrol/patrolinsert";
+        });
+
+    });
+
+    function search(){
+
+        if(page  == null){
+            page = 0;
+        }
+
+        var url = "/admin/patrolAdmin?size=10";
+
+        var select = $('#targetSelect').val();
+
+        if(select == "selectId"){
+            name = null;
+            if($('#searchinput').val().length != 0){
+                if(userId != $('#searchinput').val()){
+                    page = 0;
+                    userId = $('#searchinput').val();
+                }
+                else{
+                    userId = $('#searchinput').val();
+                }
+
+                if((userId != null)&&(userId != '')){
+                    url = url + "&userId=" + userId;
+                }
+            }
+        }
+        else if(select == "selectName"){
+            userId = null;
+            if($('#searchinput').val().length != 0){
+                if(name != $('#searchinput').val()){
+                    page = 0;
+                    name = $('#searchinput').val();
+                }
+                else{
+                    name = $('#searchinput').val();
+                }
+
+                if((title != null)&&(title != '')){
+                    url = url + "&name=" + name;
+                }
+            }
+        }
+
+        url = url + "&page=";
+
         $.ajax({
         type:'get',
         url: "/patrol/findAllPatrol",
         data : {
-		    page : page
+		    "page" : page,
+		    "name" : name,
+		    "userId" : userId
 	    },
         success : function(dto){
             var imgs = dto.uploadDtos;
@@ -79,6 +148,9 @@
             totalElements = data.totalElements;
 
             var contentList = data.content;
+
+            $('#pageItems').empty();
+            $('#patroldiv').empty();
 
             for(let index in contentList){
                 var img;
@@ -140,14 +212,14 @@
 
             if(page > 9){
                 $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/admin/patrolAdmin?page=0">&#166;&laquo;</a></li>'
+                    '<li class="page-item"><a class="page-link" href="' + url + '0">&#166;&laquo;</a></li>'
                 );
             }
 
             if(!pageFirst){
                 pagePrevious = Number(page) - 1;
                 $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/admin/patrolAdmin?page=' + pagePrevious + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
+                    '<li class="page-item"><a class="page-link" href="' + url + pagePrevious + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
                 );
             }
 
@@ -159,7 +231,7 @@
 	                    pageNext = Number(i) + 1;
 	                    if(page != i){
 	                        $('#pageItems').append(
-                                '<li class="page-item"><a   class="page-link"href="/admin/patrolAdmin?page=' + i +'">' + pageNext +  '</a></li>'
+                                '<li class="page-item"><a   class="page-link"href="' + url + i +'">' + pageNext +  '</a></li>'
                             );
 	                    }
 	                    else{
@@ -176,7 +248,7 @@
 	                    pageNext = Number(i) + 1;
 	                    if(page != i){
 	                        $('#pageItems').append(
-                                '<li class="page-item"><a   class="page-link"href="/admin/patrolAdmin?page=' + i +'">' + pageNext +  '</a></li>'
+                                '<li class="page-item"><a   class="page-link"href="' + url + i +'">' + pageNext +  '</a></li>'
                             );
 	                    }
 	                    else{
@@ -192,7 +264,7 @@
             if(!pageLast){
                 pageNext = Number(page) + 1;
                 $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/admin/patrolAdmin?page=' + pageNext + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
+                    '<li class="page-item"><a class="page-link" href="' + url + pageNext + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
                 );
             }
 
@@ -203,7 +275,7 @@
 
             if((totalPages > 10)&&(pageT != totalPagesT)){
                 $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/admin/patrolAdmin?page=' + endTarget + '">&raquo;&#166;</a></li>'
+                    '<li class="page-item"><a class="page-link" href="' + url + endTarget + '">&raquo;&#166;</a></li>'
                 );
             }
         },
@@ -211,30 +283,30 @@
             console.log(xhr);
         }
         }); // $.ajax()
-
-        $('#goPatrolInsertBtn').click(function(){
-            location.href = "/patrol/patrolinsert";
-        });
-
-    });
+    }
 
     function gopatrolAdmin() {
              location.href = "/admin/patrolAdmin";
         }
 
     function deletepatrol(patrolno) {
+        event.stopPropagation();
 
         $.ajax({
                 type:'post',
-                url: "/patrol/patrolDelete",
+                url: "/patrol/patrolDeleteAdmin",
                 data: {patrolNo : patrolno},
                 success : function(data){
-                    gopatrolAdmin();
+                    search();
                 },
                 error: function (xhr){
                     console.log(xhr);
                 }
         }); // $.ajax()
+    }
+
+    function gopatrol(patrolno) {
+        location.href = "/patrol/patrolview?patrolNo="+patrolno;
     }
     </script>
 

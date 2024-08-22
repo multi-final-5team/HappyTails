@@ -18,6 +18,7 @@ public class PrecordDTO {
     private int precordNo;
     private int userNo;
     private String userId;
+    private String userName;
     private String title;
     private String content;
     private int viewcount;

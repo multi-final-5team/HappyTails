@@ -231,10 +231,6 @@
                 })
             }
 
-        function gopatrolRecordAdmin() {
-            location.href = "/admin/patrolRecordAdmin";
-        }
-
         function deleteprecord(precordno) {
 
             $.ajax({
@@ -242,7 +238,7 @@
                 url: "/patrolRecord/patrolRecordDeleteAdmin",
                 data: {precordNo : precordno},
                 success : function(data){
-                    gopatrolRecordAdmin();
+
                 },
                 error: function (xhr){
                     console.log(xhr);

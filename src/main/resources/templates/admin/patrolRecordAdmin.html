@@ -1,38 +1,278 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-    <head th:replace="~{admin/index :: head}">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/index :: head}">
+    <meta charset="UTF-8">
+    <title>관리</title>
+</head>
 
-    </head>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    <body class="sb-nav-fixed">
-        <menu th:replace="~{admin/index :: headDiv}"></menu>
+<body class="sb-nav-fixed">
+<menu th:replace="~{admin/index :: headDiv}"></menu>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">순찰일지 관리</h1>
+            <div class="card mb-4">
+                <div class="card-body">
+                    순찰일지를 조회하고 삭제하는 페이지
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    순찰일지 관리
+                </div>
+                <div class="card-body">
 
-            <div id="layoutSidenav_content">
-
-                <main th:replace="patrol/patrolRecordAdmin :: main">
-
-                </main>
-
-                <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2023</div>
-                            <div>
-                                <a href="#">Privacy Policy</a>
-                                &middot;
-                                <a href="#">Terms &amp; Conditions</a>
-                            </div>
-                        </div>
+                    <div style="width: 40%;margin-left:auto;display: flex;">
+                        <select class="form-select" id="targetSelect" name="targetSelect" style="width: 30%">
+                            <option value="selectId" selected>아이디</option>
+                            <option value="selectTitle">제목</option>
+                        </select>
+                        <input class="form-control" type="text" id="searchinput" style="width: 40%;">
+                        <button class="btn btn-primary" id="btnserch" onclick="search()" style="width: 30%;">검색</button>
                     </div>
-                </footer>
+                    <table id=""  class="table">
+                        <thead>
+                        <tr>
+                            <th>일지번호</th>
+                            <th>아이디</th>
+                            <th>작성자</th>
+                            <th>제목</th>
+                            <th>관리</th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="tableTbody" class="table-group-divider">
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination pagination-lg justify-content-center" id="pageItems">
+
+                    </ul>
+                </nav>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="/js/admin/scripts.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-        <script src="/js/admin/datatables-simple-demo.js"></script>
-    </body>
+    </main>
+</div>
+
+<script>
+    var urlParams = new URL(location.href).searchParams;
+    var page = urlParams.get('page');
+
+    var title = urlParams.get('title');
+    var userId = urlParams.get('userId');
+
+    var pageFirst;
+    var pageLast;
+    var totalPages;
+    var totalElements;
+
+
+    $(document).ready(function(){
+
+        if(title != null){
+            $('#searchinput').val(title);
+        }
+        if(userId != null){
+            $('#searchinput').val(userId);
+        }
+
+        search();
+
+
+        $('#goPatrolRecordInsertBtn').click(function(){
+            location.href = "/patrolRecord/patrolRecordInsert";
+        });
+    });
+
+    function gopatrolRecord(precordNo) {
+        location.href = "/patrolRecord/patrolRecordView?precordNo="+precordNo;
+    }
+
+    function goPatrolRecordMain() {
+        location.href = "/patrolRecord/patrolRecord";
+    }
+
+    function search(){
+
+        if(page  == null){
+            page = 0;
+        }
+
+        var url = "/admin/patrolRecordAdmin?size=10";
+
+        var select = $('#targetSelect').val();
+
+        if(select == "selectId"){
+            title = null;
+            if($('#searchinput').val().length != 0){
+                if(userId != $('#searchinput').val()){
+                    page = 0;
+                    userId = $('#searchinput').val();
+                }
+                else{
+                    userId = $('#searchinput').val();
+                }
+
+                if((userId != null)&&(userId != '')){
+                    url = url + "&userId=" + userId;
+                }
+            }
+        }
+        else if(select == "selectTitle"){
+            userId = null;
+            if($('#searchinput').val().length != 0){
+                if(title != $('#searchinput').val()){
+                    page = 0;
+                    title = $('#searchinput').val();
+                }
+                else{
+                    title = $('#searchinput').val();
+                }
+
+                if((title != null)&&(title != '')){
+                    url = url + "&title=" + title;
+                }
+            }
+        }
+
+        url = url + "&page=";
+
+        console.log(url);
+
+        $.ajax({
+        type:'get',
+        url: "/patrolRecord/findAllPatrolRecord",
+        data : {
+		    "page" : page,
+		    "title" : title,
+		    "userId" : userId
+	    },
+        success : function(data){
+            console.log(data);
+
+            pageFirst = data.first;
+            pageLast = data.last;
+            totalPages = data.totalPages;
+            totalElements = data.totalElements;
+
+            var contentList = data.content;
+
+
+            let placeInfo="";
+
+            for(let i=0;i<contentList.length;i++){
+                placeInfo+="<tr>";
+                placeInfo+="<td>"+contentList[i].precordNo+"</td>";
+                placeInfo+="<td>"+contentList[i].userId+"</td>";
+                placeInfo+="<td>"+contentList[i].userName+"</td>";
+                placeInfo+='<td><a href="/patrolRecord/patrolRecordView?precordNo=' + contentList[i].precordNo + '">' + contentList[i].title + '</a></td>';
+                placeInfo+="<td>" + "<button onclick='deleteprecord(" + contentList[i].precordNo + ")' class='btn btn-primary'>삭제</button>" + "</td>"
+                placeInfo+="</tr>";
+            }
+
+            $("#tableTbody").html(placeInfo);
+
+
+            $('#pageItems').empty();
+
+            if(page > 9){
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="' + url + '0">&#166;&laquo;</a></li>'
+                );
+            }
+
+            if(!pageFirst){
+                pagePrevious = Number(page) - 1;
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="' + url + pagePrevious + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
+                );
+            }
+
+
+            if(page > 9){
+                pageStart = parseInt( page / 10 ) * 10;
+                for(let i = pageStart; i< pageStart + 10; i++){
+	                if(i < totalPages){
+	                    pageNext = Number(i) + 1;
+	                    if(page != i){
+	                        $('#pageItems').append(
+                                '<li class="page-item"><a   class="page-link"href="' + url + i + '">' + pageNext +  '</a></li>'
+                            );
+	                    }
+	                    else{
+	                        $('#pageItems').append(
+                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
+                            );
+	                    }
+	                }
+                }
+            }
+            else{
+                for(let i = 0; i<10; i++){
+	                if(i < totalPages){
+	                    pageNext = Number(i) + 1;
+	                    if(page != i){
+	                        $('#pageItems').append(
+                                '<li class="page-item"><a   class="page-link"href="' + url + i  + '">' + pageNext +  '</a></li>'
+                            );
+	                    }
+	                    else{
+	                        $('#pageItems').append(
+                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
+                            );
+	                    }
+	                }
+                }
+            }
+
+
+            if(!pageLast){
+                pageNext = Number(page) + 1;
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="' + url + pageNext + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
+                );
+            }
+
+            pageT = parseInt( page / 10 ) * 10;
+            totalPagesT = parseInt( totalPages / 10 ) * 10;
+
+            endTarget = Number(totalPagesT);
+
+            if((totalPages > 10)&&(pageT != totalPagesT)){
+                $('#pageItems').append(
+                    '<li class="page-item"><a class="page-link" href="' + url + endTarget + '">&raquo;&#166;</a></li>'
+                );
+            }
+
+        },
+        error: function (xhr){
+            console.log(xhr);
+        }
+        }); // $.ajax()
+    }
+
+    function deleteprecord(precordno) {
+
+            $.ajax({
+                type:'post',
+                url: "/patrolRecord/patrolRecordDeleteAdmin",
+                data: {precordNo : precordno},
+                success : function(data){
+                    search();
+                },
+                error: function (xhr){
+                    console.log(xhr);
+                }
+            }); // $.ajax()
+        }
+</script>
+
+</body>
 </html>
