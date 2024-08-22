@@ -60,6 +60,7 @@
 <menu th:replace="fragments/head :: footer"></menu>
 
 <script>
+    var checkFlag = 0;
     $(document).ready(function() {
 
         $.ajax({
@@ -73,6 +74,14 @@
                         if(!isNaN(data[index].precordPlaceNo)){
                             $precordPlace.append($("<option>").val(data[index].precordPlaceNo).text(data[index].precordPlaceNo + "번 기록"))
                         }
+                        else{
+                            checkFlag = 1;
+                        }
+                    }
+
+                    if(checkFlag == 1){
+                        alert("순찰일지를 작상하려면 먼저 순찰 기록을 남겨야 합니다.");
+	 				    location.replace("/patrolRecordPlace/patrolRecordPlace");
                     }
                 },
                 error: function (xhr){

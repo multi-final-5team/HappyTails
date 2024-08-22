@@ -409,4 +409,18 @@ public class PatrolController {
         return "patrol/patrolRank::#rankTbody";
     }
 
+    @GetMapping("patrolCheck")
+    @ResponseBody
+    public String patrolCheck(@AuthenticationPrincipal CustomUser customUser){
+        PatrolDTO check = patrolService.findOnePatrol((int)customUser.getNo());
+
+        String result = "0";
+
+        if(check != null){
+            result = "1";
+        }
+
+        return result;
+    }
+
 }

@@ -39,6 +39,7 @@
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a76def1c0c0dd8e389a263fe93ef2974"></script>
 
 <script>
+    var loadingFlag = 0;
     var interval;
     var tracepoint = [];
 
@@ -100,7 +101,20 @@
 
     $(document).ready(function(){
 
-        mapMove();
+        $.ajax({
+	 			type: "get",
+	 			url : "/patrol/patrolCheck",
+	 			success: function(results){
+	 				if(results == 0){
+	 				    alert("순찰 기록을 남기려면 순찰 대원이어야 합니다");
+	 				    location.replace("/patrol/patrol");
+	 				}
+	 			},
+	 			error: function(data){
+	 				alert("에러 발생. " + data);
+	 			}
+	 	})
+
 
         $('#btnstart').click(function(){
             console.log("Interval 시작");
@@ -173,6 +187,11 @@
 
             $('#hidden_lat').val(lat);
             $('#hidden_lng').val(lng);
+
+            if(loadingFlag == 0){
+                loadingFlag = 1;
+                mapMove();
+            }
         }, function (){
             Swal.fire({
                 icon: 'question',

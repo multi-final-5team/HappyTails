@@ -96,62 +96,71 @@
         </div>
     </div>
 
-    <label>사진배치</label>
-    <select class="" id="arrangementSelect" name="">
-        <option value="imgSquare" selected>네모나게</option>
-        <option value="imgLine">일자로</option>
-    </select>
 
-    <label for="backgroundColorPicker">배경색 설정:</label>
-    <input type="color" id="backgroundColorPicker">
+    <div class="d-flex justify-content-center bg-white border rounded" style="margin: 3%;">
+        <div class="" style="width : 18%;">
+            <div>
+                <div>
+                    <label>사진배치</label>
+                    <select class="" id="arrangementSelect" name="">
+                        <option value="imgSquare" selected>네모나게</option>
+                        <option value="imgLine">일자로</option>
+                    </select>
+                </div>
 
-    <button id="styleChangeButton" onclick="styleChange()">스타일 변경</button>
+                <div>
+                    <label for="backgroundColorPicker">배경색 설정:</label>
+                    <input type="color" id="backgroundColorPicker">
+                </div>
+            </div>
+            <button class="btn btn-light border" id="styleChangeButton" onclick="styleChange(); this.blur();">스타일 변경</button>
+        </div>
 
-    <div class="d-flex justify-content-center" style="margin: 3%;">
-        <div style="width : 100%;">
+        <div style="width : 30%;">
             <label>스티커 추가</label>
+            <input class="form-control" type="file" id="inputFile" name="inputFile" style="width : 100%;">
+            <button class="btn btn-light  border" id="addStickerBtn" name="addStickerBtn" onclick="addSticker(); this.blur();">스티커추가</button>
 
             <div  class="mb-3" id="image_container">
                 <!-- 이미지 들어가는곳 -->
             </div>
-
-            <input class="form-control" type="file" id="inputFile" name="inputFile" style="width : 100%;">
-            <button class="" id="addStickerBtn" name="addStickerBtn" onclick="addSticker()">스티커추가</button>
         </div>
 
-        <div style="width : 100%;">
+        <div style="width : 30%;">
             <label>프레임 변경</label>
 
             <input class="form-control" type="file" id="inputFileFrame" name="inputFileFrame" style="width : 100%;">
             <div>
-                <button class="" id="addFrameBtn" name="addFrameBtn" onclick="addFrame()">프레임 변경</button>
-                <button class="" id="removeFrameBtn" name="removeFrameBtn" onclick="removeFrame()">취소</button>
+                <button class="btn btn-light  border" id="addFrameBtn" name="addFrameBtn" onclick="addFrame(); this.blur();">프레임 변경</button>
+                <button class="btn btn-light  border" id="removeFrameBtn" name="removeFrameBtn" onclick="removeFrame(); this.blur();">취소</button>
             </div>
         </div>
-        <div style="width : 100%;">
+        <div style="width : 18%;">
             <label>사진 흑백필터</label><br>
-            <button class="" id="grayscaleBtn" name="grayscaleBtn" onclick="addGrayscale()">사진흑백으로</button>
-            <button class="" id="removeGrayscaleBtn" name="removeGrayscaleBtn" onclick="removeGrayscale()">취소</button>
+            <button class="btn btn-light  border" id="grayscaleBtn" name="grayscaleBtn" onclick="addGrayscale(); this.blur();">사진흑백으로</button>
+            <button class="btn btn-light border" id="removeGrayscaleBtn" name="removeGrayscaleBtn" onclick="removeGrayscale(); this.blur();">취소</button>
         </div>
     </div>
 
 
-    <div id="captureWrap">
-        <div class="imgSquare" id="capture">
-            <div class="imgDivSquare" id="inputFile1Div">사진1</div>
-            <div class="imgDivSquare" id="inputFile2Div">사진2</div>
-            <div class="imgDivSquare" id="inputFile3Div">사진3</div>
-            <div class="imgDivSquare" id="inputFile4Div">사진4</div>
+        <div class="d-flex justify-content-center">
+            <div id="captureWrap">
+                <div class="imgSquare" id="capture">
+                    <div class="imgDivSquare" id="inputFile1Div">사진1</div>
+                    <div class="imgDivSquare" id="inputFile2Div">사진2</div>
+                    <div class="imgDivSquare" id="inputFile3Div">사진3</div>
+                    <div class="imgDivSquare" id="inputFile4Div">사진4</div>
+                </div>
+            </div>
         </div>
-    </div>
 
     <div class="d-flex" style="margin: 3%;">
         <div>
-            <button id="downloadButton">다운로드</button>
+            <button class="btn btn-light border" id="downloadButton">다운로드</button>
         </div>
         &emsp;
         <div>
-            <button id="saveToServerButton">업로드</button>
+            <button class="btn btn-light border" id="saveToServerButton">업로드</button>
             <br>
             <label style="font-size : 1.2em;">견생네컷 공개</label>
             <input type="checkbox" id="publicCheck" name="publicCheck" value="F">
@@ -176,6 +185,8 @@
     let captureDiv = document.getElementById('capture');
     let downloadButton = document.getElementById('downloadButton');
     let saveToServerButton = document.getElementById('saveToServerButton');
+
+    var className;
 
     captureDiv.addEventListener('click', (e) => {
 
@@ -254,6 +265,12 @@
             });
         });
 
+        if(confirm("이미지저장완료. 계속 이미지를 만드시겠습니까?")){
+
+	    }else{
+		    location.replace("/dog4cuts/dog4cutsview");
+	    }
+
         }
     });
 
@@ -267,6 +284,8 @@
         link.click();
 
         document.body.removeChild(link);
+
+        alert('이미지 저장완료');
     };
 
     //파일 선택시 표시
@@ -294,6 +313,7 @@
 
     //이미지 스타일 변경
     function styleChange() {
+
         $(".stickerImg").remove();
 
 
@@ -310,6 +330,11 @@
             $("#capture").attr('class', 'imgLine');
             $("#capture").children().attr('class', 'imgDivLine');
         }
+
+        $('#capture').css({'background-image':'url()'});
+        frameLoadFlag = 0;
+        className = $('#capture').attr('class');
+
     }
 
     function inputCheck() {
@@ -368,32 +393,42 @@
     }
 
     function addFrame() {
-        var className = $('#capture').attr('class');
+        var frameCheck = $('#inputFileFrame').val();
+         if(frameCheck){
+            className = $('#capture').attr('class');
 
-        console.log("className >> " + className);
+            console.log("className >> " + className);
 
-        var frameImage = new Image();
-        frameImage.src = frameSrc;
+            var frameImage = new Image();
+            frameImage.src = frameSrc;
 
-        frameImage.addEventListener('load', function() {
-            frameLoadFlag = 1;
-        });
+            frameImage.addEventListener('load', function() {
+                frameLoadFlag = 1;
+            });
 
-        if(frameLoadFlag == 1){
-            console.log(frameImage.width + " , " + frameImage.height);
+            if(frameLoadFlag == 1){
+                console.log(frameImage.width + " , " + frameImage.height);
 
-            if((className == "imgSquare") && (frameImage.width > frameImage.height)){
-                 $('#capture').css({'background-image':'url('+ frameSrc +')'});
+                if((className == "imgSquare") && (frameImage.width > frameImage.height)){
+                    $('#capture').css({'background-image':'url('+ frameSrc +')'});
+                }
+                else if((className == "imgLine") && (frameImage.width < frameImage.height)){
+                    $('#capture').css({'background-image':'url('+ frameSrc +')'});
+                }
+                else{
+                    alert('프레임 사이즈가 다릅니다. 다른 프레임을 입력해주세요.');
+                    $('#inputFileFrame').val('');
+                    frameLoadFlag = 0;
+                }
             }
-            else if((className == "imgLine") && (frameImage.width < frameImage.height)){
-                $('#capture').css({'background-image':'url('+ frameSrc +')'});
+            else if(frameLoadFlag == 0){
+                alert('이미지 로딩중입니다. 잠시만 기다려주세요.');
             }
-        }
-
+         }
     }
 
     function removeFrame() {
-
+        $('#capture').css({'background-image':'url()'});
     }
 
     function addGrayscale() {
