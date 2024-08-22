@@ -29,6 +29,7 @@
                     <div class="mb-3">
                         <label for="newPassword" class="form-label">새 비밀번호</label>
                         <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                        <div id="passwordError" class="text-danger"></div>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">비밀번호 변경</button>
                 </form>
@@ -53,8 +54,8 @@
             event.preventDefault();
 
             // 이메일 유효성 검사
-            var email = $('#email').val();
-            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const email = $('#email').val();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 $('#emailError').text('올바른 이메일 형식이 아닙니다.');
                 return;
@@ -63,7 +64,8 @@
             }
 
             // 비밀번호 유효성 검사
-            var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,13}$/;
+            const newPassword = $('#newPassword').val();
+            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,13}$/;
             if (!passwordRegex.test(newPassword)) {
                 alert('비밀번호는 4~13자의 영문자와 숫자 조합이어야 합니다.');
                 return;
@@ -75,7 +77,7 @@
                 data: JSON.stringify({
                     id: $('#id').val(),
                     email: email,
-                    newPassword: $('#newPassword').val()
+                    newPassword: newPassword
                 }),
                 contentType: 'application/json',
                 success: function(response) {
