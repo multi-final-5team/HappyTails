@@ -19,6 +19,7 @@ public class OrderlistDTO {
     private int invoice_number;
     private String address;
     private String request;
+    private String seller;
 
     private String refund;
     private String refund_date;

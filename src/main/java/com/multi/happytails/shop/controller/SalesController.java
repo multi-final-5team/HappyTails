@@ -185,13 +185,11 @@ public class SalesController {
      * description : 상품 상세 페이지 호출 메소드, 해당 상품 리뷰 목록 호출 메소드
      *
      * @param no        the no
-     * @param principal the principal
      * @param model     the model
      * @return the string
      */
     @GetMapping("/selectGoods")
     public String selectGoods(@RequestParam("no") int no,
-//                              Principal principal ,
                               Model model) {
 
         SalesGoodsDTO salesGoodsDTO = new SalesGoodsDTO();

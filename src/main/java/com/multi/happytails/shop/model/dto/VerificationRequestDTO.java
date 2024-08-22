@@ -13,4 +13,5 @@ public class VerificationRequestDTO {
     private String email;
     private String address;
     private String request;
+    private String seller;
 }

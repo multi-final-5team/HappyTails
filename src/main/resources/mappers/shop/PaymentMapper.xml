@@ -13,6 +13,7 @@
         <result column="date_created" property="date_created"/>
         <result column="productprice" property="productprice"/>
         <result column="im_port_id" property="imPortId"/>
+        <result column="seller" property="seller" />
     </resultMap>
 
     <resultMap id="OrderlistResultMap"
@@ -26,6 +27,7 @@
         <result column="im_port_id" property="imPortId"/>
         <result column="goodsNo" property="goodsNo"/>
         <result column="delivery_code" property="delivery_code"/>
+        <result column="seller" property="seller" />
     </resultMap>
 
     <resultMap id="memberResultMap" type="com.multi.happytails.member.model.dto.MemberDTO">
@@ -64,7 +66,8 @@
         DELIVERY_CODE,
         goodsNo,
         address,
-        request
+        request,
+        seller
         ) VALUES (
         #{username},
         #{productname},
@@ -76,12 +79,13 @@
         'P',
         #{goodsNo},
         #{address},
-        #{request}
+        #{request},
+        #{seller}
         )
     </insert>
 
     <select id="selectOrders" resultMap="OrderlistResultMap">
-        SELECT payment_no, username, productname, productinfo, date_created, purchaseprice, im_port_id, goodsNo, invoice_number, delivery_man, address, request,
+        SELECT payment_no, username, productname, productinfo, date_created, purchaseprice, im_port_id, goodsNo, invoice_number, delivery_man, address, request, seller,
         CASE delivery_code
         WHEN 'P' THEN '배송 준비'
         WHEN 'D' THEN '배송 중'
@@ -91,7 +95,7 @@
         WHEN 'B' THEN '구매 완료'
         END AS delivery_code
         FROM payment
-        WHERE username = #{id}
+        WHERE seller = #{id}
         ORDER BY date_created DESC
     </select>
 
@@ -132,6 +136,7 @@
         <result property="delivery_man" column="delivery_man"/>
         <result property="address" column="address"/>
         <result property="request" column="request"/>
+        <result column="seller" property="seller" />
         <collection property="cartItems" ofType="com.multi.happytails.shop.model.dto.CartDTO">
             <result property="goodsNo" column="goods_no"/>
             <result property="goodsName" column="goods_name"/>
@@ -155,7 +160,7 @@
         WHERE payment_no = #{paymentNo}
     </update>
     <select id="paymentList" resultMap="paymentDetailsResultMap">
-        SELECT payment_no, username, productname, productinfo, date_created, purchaseprice, im_port_id, goodsNo,  invoice_number, delivery_man, address, request,
+        SELECT payment_no, username, productname, productinfo, date_created, purchaseprice, im_port_id, goodsNo,  invoice_number, delivery_man, address, request, seller,
         CASE delivery_code
         WHEN 'P' THEN '배송 준비'
         WHEN 'D' THEN '배송 중'
@@ -166,6 +171,7 @@
         END AS delivery_code
         FROM payment
         WHERE username = #{username}
+        ORDER BY date_created DESC
     </select>
 
     <update id="updatePartialRefundStatus">
@@ -218,13 +224,13 @@
     </update>
 
     <update id="updateCartItemQuantity" parameterType="com.multi.happytails.shop.model.dto.CartDTO">
-        UPDATE cart
+        UPDATE tb_cart
         SET purchase_quantity = #{purchaseQuantity}
         WHERE id = #{id} AND goods_no = #{goodsNo}
     </update>
 
     <select id="paymentHistoryDetails" resultMap="paymentDetailsResultMap">
-        SELECT payment_no, username, productname, productinfo, date_created, purchaseprice, im_port_id, goodsNo,  invoice_number, delivery_man, address, request,
+        SELECT payment_no, username, productname, productinfo, date_created, purchaseprice, im_port_id, goodsNo,  invoice_number, delivery_man, address, request, seller,
         CASE delivery_code
         WHEN 'P' THEN '배송 준비'
         WHEN 'D' THEN '배송 중'

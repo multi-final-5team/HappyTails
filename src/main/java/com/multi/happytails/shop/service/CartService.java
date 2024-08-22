@@ -25,4 +25,6 @@ public interface CartService {
     void clearCart(String username);
 
     void updateCart(int purchaseQuantity, int no);
+
+    void deleteCart(int no);
 }

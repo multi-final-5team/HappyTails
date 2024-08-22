@@ -24,6 +24,7 @@
                             <th>상품명</th>
                             <th>가격</th>
                             <th>수량</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -46,6 +47,12 @@
                                        th:data-goods-no="${cartList.goodsNo}"
                                        th:data-no="${cartList.no}"
                                        style="width: 70px;">
+                            </td>
+                            <td>
+                                <a th:href="@{/cart/deleteCart(no=${cartList.no})}"
+                                   class="btn btn-danger">
+                                    삭제
+                                </a>
                             </td>
                         </tr>
                         </tbody>

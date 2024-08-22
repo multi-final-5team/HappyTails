@@ -12,11 +12,11 @@
             <form>
                 <div class="mb-3">
                     <label for="name" class="form-label">구매자 성함</label>
-                    <input th:value="${memberDTO.name}" type="text" class="form-control" id="name" required>
+                    <input th:value="${memberDTO.name}" type="text" class="form-control" id="name" readonly required>
                 </div>
                 <div class="mb-3">
                     <label for="phone" class="form-label">연락처</label>
-                    <input th:value="${memberDTO.tel}" type="tel" class="form-control" id="phone" required>
+                    <input th:value="${memberDTO.tel}" type="tel" class="form-control" id="phone" readonly required>
                 </div>
                 <div class="mb-3">
                     <label for="address" class="form-label">배송지 주소</label>
@@ -26,8 +26,10 @@
                     <label for="request" class="form-label">배송시 요청사항</label>
                     <textarea class="form-control" id="request" rows="3"></textarea>
                 </div>
-                <label for="email" class="form-label" >이메일</label>
-                <input th:value="${memberDTO.email}" type="text" class="form-control" id="email" required>
+                <div class="mb-3" style="display: none;">
+                    <label for="email" class="form-label" >이메일</label>
+                    <input th:value="${memberDTO.email}" id="email" name="email" required>
+                </div>
             </form>
         </div>
 
@@ -47,6 +49,9 @@
                             <tbody>
                             <tr th:each="cartList : ${cartList}">
                                 <td>
+                                    <div th:if="${cartMap[cartList.goodsNo].size() > 0}">
+                                        <img th:src="@{/images/S/{file}(file=${cartMap[cartList.goodsNo][0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="100" height="100">
+                                    </div>
                                     <a th:href="@{/sales/selectGoods(no=${cartList.goodsNo})}"
                                        th:text="${cartList.goodsName}"
                                        class="text-decoration-none"></a>

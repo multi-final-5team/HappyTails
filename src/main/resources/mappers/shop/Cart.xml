@@ -9,6 +9,7 @@
         <result column="ID" property="id" />
         <result column="GOODS_NO" property="goodsNo" />
         <result column="PURCHASE_QUANTITY" property="purchaseQuantity" />
+        <result column="seller" property="seller" />
 
         <result column="GOODS_PRICE" property="price" />
         <result column="GOODS_NAME" property="goodsName" />
@@ -16,14 +17,14 @@
 
     <select id="insertCart" parameterType="com.multi.happytails.shop.model.dto.CartDTO">
         INSERT INTO TB_CART (
-        ID, GOODS_NO, PURCHASE_QUANTITY
+        ID, GOODS_NO, PURCHASE_QUANTITY, SELLER
         ) VALUES (
-        #{id}, #{goodsNo}, #{purchaseQuantity}
+        #{id}, #{goodsNo}, #{purchaseQuantity}, #{seller}
         )
     </select>
 
     <select id="cartList" resultMap="cartResultMap">
-        SELECT c.NO, c.ID, c.GOODS_NO, c.PURCHASE_QUANTITY, g.GOODS_PRICE, g.GOODS_NAME
+        SELECT c.NO, c.ID, c.GOODS_NO, c.PURCHASE_QUANTITY, c.SELLER, g.GOODS_PRICE, g.GOODS_NAME
         FROM TB_CART c
         JOIN TB_SALES_GOODS g ON c.GOODS_NO = g.GOODS_NO
         WHERE c.ID = #{id};
@@ -39,4 +40,8 @@
         SET purchase_quantity = #{purchaseQuantity}
         where no = #{no}
     </update>
+
+    <delete id="deleteCart" parameterType="com.multi.happytails.shop.model.dto.CartDTO">
+        DELETE FROM TB_CART WHERE NO = #{no}
+    </delete>
 </mapper>
