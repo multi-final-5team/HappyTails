@@ -75,7 +75,7 @@ public class DogloveController {
     @GetMapping
     public String dogloveList(
             @RequestParam(value = "page", defaultValue = "1") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "size", defaultValue = "9") int size,
             @RequestParam(value = "sort", defaultValue = "date") String sort,
             @RequestParam(value = "keyword", required = false) String keyword,
             Model model) {
@@ -98,11 +98,6 @@ public class DogloveController {
             List<UploadDto> imageFiles = uploadService.uploadSelect(IMAGE_CODE, doglove.getDogloveNo());
             dogloveImages.put(doglove.getDogloveNo(), imageFiles);
         }
-
-        // 로그 추가
-        System.out.println("Current Page: " + (doglovePage.getNumber() + 1));
-        System.out.println("Total Pages: " + doglovePage.getTotalPages());
-        System.out.println("Total Items: " + doglovePage.getTotalElements());
 
         model.addAttribute("keyword", keyword);
         model.addAttribute("dogloves", doglovePage.getContent());

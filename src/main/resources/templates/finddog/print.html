@@ -80,7 +80,7 @@
 <div class="flyer">
     <h1>잃어버린 강아지를 찾습니다!</h1>
     <div class="dog-photo">
-        <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png" alt="잃어버린 강아지 사진">
+        <img th:src="@{/images/F/{file}(file=${storedFileName})}" onerror="this.onerror=null; this.src='https://kr.object.ncloudstorage.com/team-5/Non-Img.png';" alt="...">
     </div>
     <div class="dog-info">
         <h2>강아지 정보</h2>

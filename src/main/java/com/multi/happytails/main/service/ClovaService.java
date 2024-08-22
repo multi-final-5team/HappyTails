@@ -44,7 +44,7 @@ public class ClovaService {
         this.objectMapper = objectMapper;
     }
 
-    public String processMessage(String message) throws Exception {
+    public JsonNode processMessage(String message) throws Exception {
         String requestBody = getReqMessage(message);
         String signature = makeSignature(requestBody, secretKey);
 
@@ -57,9 +57,9 @@ public class ClovaService {
         return parseResponse(response);
     }
 
-    private String parseResponse(String jsonResponse) throws Exception {
+    private JsonNode parseResponse(String jsonResponse) throws Exception {
         JsonNode root = objectMapper.readTree(jsonResponse);
-        return root.path("bubbles").get(0).path("data").path("description").asText();
+        return root.path("bubbles").get(0).path("data");
     }
 
     private String makeSignature(String message, String secretKey) throws Exception {

@@ -6,13 +6,15 @@ import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * packageName    : com.multi.happytails.shop.controller
@@ -83,7 +85,7 @@ public class ReviewController {
             uploadService.uploadInsert(uploadDto);
         }
 
-        return "redirect:/sales/salesList"; // adjust the redirect as necessary
+        return "success"; // adjust the redirect as necessary
     }
 
 
@@ -101,6 +103,7 @@ public class ReviewController {
      * @return the string
      */
     @PostMapping("/updateReview")
+    @ResponseBody
     public String updateReview(Principal principal,
                                @ModelAttribute ReviewDTO reviewDTO,
                                @RequestParam(value = "imageFiles") @Nullable List<MultipartFile> imageFiles,
@@ -109,6 +112,12 @@ public class ReviewController {
                                @RequestParam(value = "imageUpdateImageNo") @Nullable List<Long> imageUpdateImageNo) {
         String userId = principal.getName();
         reviewDTO.setId(userId);
+
+        System.out.println(imageFiles + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        System.out.println(imageUpdateFiles);
+        System.out.println(imageUpdateImageNo);
+        System.out.println(imageDeleteImageNo);
+
 
         int result = reviewService.updateReview(reviewDTO);
 
@@ -139,7 +148,7 @@ public class ReviewController {
             }
         }
 
-        return "/sales/salesList";
+        return "배송 상태 변경에 성공하였습니다.";
     }
     // Update
 
@@ -168,9 +177,10 @@ public class ReviewController {
     }
     // Delete
 
-    @GetMapping("/reviewUpdatePopup")
-    public String updateForm(@RequestParam("goodsNo") int goodsNo
-            , Model model, Principal principal){
+    @GetMapping("/reviewUpdate")
+    @ResponseBody
+    public ResponseEntity<?> updateForm(@RequestParam("goodsNo") int goodsNo,
+                                     Principal principal){
         String id = principal.getName();
         ReviewDTO reviewDetails = reviewService.selectReview(id, goodsNo);
 
@@ -180,10 +190,13 @@ public class ReviewController {
         System.out.println(id);
         System.out.println(goodsNo);
 
-        model.addAttribute("uploadDtos", uploadDtos);
-        model.addAttribute("reviewDetails", reviewDetails);
+        // ResponseEntity에 담을 데이터를 Map으로 구성
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("uploadDtos", uploadDtos);
+        responseData.put("reviewDetails", reviewDetails);
 
-        return "sales/reviewUpdatePopup";
+        // ResponseEntity로 데이터 반환
+        return ResponseEntity.ok(responseData);
     }
 
     //PosetMan

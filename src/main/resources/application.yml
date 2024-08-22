@@ -53,4 +53,9 @@ portone:
 clova:
   api:
     url: https://47rv9xlkxz.apigw.ntruss.com/custom/v1/15493/f69f6c6d015b3086ad093d91891151366447026ce08fa9f2737293979ffbca0d
-    secret-key: eHpJeEFqdGZ1RHdtaVdFSGVKVkpMaXBmY3lKcHVybkI=
+    secret-key: c1FHS2hsSU5naENXZXVwRkNVRXZjRkdYTGZHZm5hRWU=
+
+servlet:
+  multipart:
+    max-file-size: 50MB
+    max-request-size: 50MB

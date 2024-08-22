@@ -121,8 +121,8 @@
         // 배송 완료 버튼 이벤트
         document.querySelectorAll('.success-btn').forEach(button => {
             button.addEventListener('click', function() {
-                var paymentNo = this.getAttribute('data-payment-no');
-                completeDelivery(paymentNo);
+                var payment_no = this.getAttribute('data-payment-no');
+                completeDelivery(payment_no);
             });
         });
     });
@@ -141,13 +141,13 @@
         window.open(url, name, options);
     }
 
-    function completeDelivery(paymentNo) {
+    function completeDelivery(payment_no) {
         fetch('/payment/success', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ paymentNo: paymentNo }),
+            body: JSON.stringify({ payment_no: payment_no }),
         })
         .then(response => response.text())
         .then(result => {
@@ -159,6 +159,7 @@
             alert('오류가 발생했습니다.');
         });
     }
+
 </script>
 </body>
 </html>
