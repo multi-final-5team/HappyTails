@@ -52,6 +52,10 @@ public class MemberService {
         return memberDAO.findMemberById(id) != null;
     }
 
+    public boolean isEmailDuplicate(String email) {
+        return memberDAO.findMemberByEmail(email) != null;
+    }
+
     public void updateMember(String userId, MemberDTO memberDTO) {
         MemberDTO existingMember = memberDAO.findMemberById(userId);
         if (existingMember != null) {
