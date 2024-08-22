@@ -15,7 +15,7 @@
                 <form method="post" enctype="multipart/form-data" id="inquiryForm">
                     <div class="mb-3">
                         <label for="title" class="form-label">제목</label>
-                        <input type="text" class="form-control" name="title" id="title">
+                        <input type="text" class="form-control" name="title" id="title" oninput="handleOnInput(this, 30)">
                     </div>
                     <div class="row">
 
@@ -36,11 +36,11 @@
 
                         <div class="form-group mb-3 w-25">
                             <label for="dogName" class="form-label">강아지 이름</label>
-                            <input type="text" class="form-control" name="dogName" id="dogName">
+                            <input type="text" class="form-control" name="dogName" id="dogName" oninput="handleOnInput(this, 15)">
                         </div>
                         <div class="form-group mb-3 w-25 ms-5">
                             <label for="breed" class="form-label">품종</label>
-                            <input type="text" class="form-control" name="breed" id="breed">
+                            <input type="text" class="form-control" name="breed" id="breed" oninput="handleOnInput(this, 15)">
                         </div>
                     </div>
 

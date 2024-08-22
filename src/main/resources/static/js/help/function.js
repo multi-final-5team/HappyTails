@@ -46,3 +46,13 @@ function handleNullInArray(arr) {
     }
     return result;
 }
+
+function handleOnInput(element, maxLength) {
+    console.log('됐다');
+    if (element.value.length > maxLength) {
+        if (element.value.length > maxLength) {
+            element.value = element.value.slice(0, maxLength);
+        }
+        return;
+    }
+}
