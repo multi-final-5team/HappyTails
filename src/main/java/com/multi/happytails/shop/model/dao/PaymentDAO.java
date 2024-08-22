@@ -20,6 +20,8 @@ public interface PaymentDAO {
 
     List<OrderlistDTO> selectOrders(String memberName);
 
+    List<OrderlistDTO> selectOrders2(@Param("seller") String name);
+
     PaymentDTO getPaymentDetails(String imPortId);
 
     int updateRefundStatus(@Param("paymentNo") int paymentNo);
@@ -41,4 +43,6 @@ public interface PaymentDAO {
     List<PaymentDTO> paymentHistoryDetails(@Param("username") String username, @Param("imPortId") String imPortId);
 
     void paymentPurchaseDelivery(int paymentNo);
+
+    List<PaymentDTO> orderHistoryDetails(@Param("seller") String username, @Param("imPortId") String imPortId);
 }

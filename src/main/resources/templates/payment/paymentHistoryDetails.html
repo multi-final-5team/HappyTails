@@ -21,7 +21,7 @@
             <h2>구매 상품 목록</h2>
         </figure>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <h2 class="mb-4">주문/결제</h2>
                 <form>
                     <div class="mb-3">
@@ -43,7 +43,7 @@
                 </form>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <div th:if="${not #lists.isEmpty(paymentHistory)}" class="card shadow">
                     <div class="card-body paymentHistory-item">
                         <div class="paymentHistory-info table-responsive">
@@ -117,14 +117,11 @@
 </main>
 
 <!-- 리뷰 작성 모달 -->
-<div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewModalLabel" aria-hidden="true">
+<div class="modal fade" id="reviewModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="reviewModalLabel">리뷰 작성</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 <form id="reviewForm" enctype="multipart/form-data">
@@ -132,7 +129,7 @@
 
                     <div class="form-group">
                         <label for="starRating">별점:</label>
-                        <div class="star-rating">
+                        <div class="star-rating" id="starRating">
                             <input type="radio" id="star1" name="starRating" value="1"><label for="star1">1점</label>
                             <input type="radio" id="star2" name="starRating" value="2"><label for="star2">2점</label>
                             <input type="radio" id="star3" name="starRating" value="3"><label for="star3">3점</label>
@@ -154,7 +151,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                 <button type="button" class="btn btn-primary" id="submitReview">리뷰 등록</button>
             </div>
         </div>
@@ -167,9 +164,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="reviewUpdateModalLabel">리뷰 수정</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 <form id="reviewUpdateForm" enctype="multipart/form-data">
@@ -177,7 +171,7 @@
 
                     <div class="form-group">
                         <label for="updateStarRating">별점:</label>
-                        <div class="star-rating">
+                        <div class="star-rating" id="updateStarRating">
                             <input type="radio" id="updateStar1" name="starRating" value="1" ><label for="updateStar1">1점</label>
                             <input type="radio" id="updateStar2" name="starRating" value="2" ><label for="updateStar2">2점</label>
                             <input type="radio" id="updateStar3" name="starRating" value="3" ><label for="updateStar3">3점</label>
@@ -193,6 +187,7 @@
 
                         </div>
                     </div>
+                    <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
 
                     <div class="form-group">
                         <label for="updateContent">리뷰 내용:</label>
@@ -201,7 +196,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                 <button type="button" class="btn btn-primary" id="submitUpdateReview">리뷰 수정</button>
             </div>
         </div>
@@ -214,115 +209,227 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script th:inline="javascript">
 
- $(document).ready(function() {
-            let imageFiles = [];
+    let selectNo;
 
-            $('.review-btn').on('click', function() {
-                const goodsNo = $(this).data('goods-no');
-                $('#goodsNo').val(goodsNo);
-                $('#reviewModal').modal('show');
-            });
+    let imageFiles = [];
+    let imageDeleteImageNos = [];
+    let imageUpdateImageNos = [];
+    let imageUpdateFiles = [];
 
-            $('#imageInput').on('change', function(event) {
-                const files = event.target.files;
-                imageFiles = [];
-                $('#imgPreview').empty();
-
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    if (file && file.type.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            $('#imgPreview').append('<img src="' + e.target.result + '" alt="Selected Image" class="img-thumbnail m-1" style="width: 100px; height: 100px;">');
-                        }
-                        imageFiles.push(file);
-                        reader.readAsDataURL(file);
-                    } else {
-                        alert('이미지 파일을 선택해주세요');
-                    }
-                }
-            });
-
-            $('#submitReview').on('click', function() {
-                let formData = new FormData($('#reviewForm')[0]);
-
-                for (let i = 0; i < imageFiles.length; i++) {
-                    formData.append('imageFiles', imageFiles[i]);
-                }
-
-                $.ajax({
-                    url: "/review/insertReview",
-                    processData: false,
-                    contentType: false,
-                    type: 'POST',
-                    data: formData,
-                    success: function(data) {
-                        alert('리뷰가 성공적으로 등록되었습니다.');
-                        $('#reviewModal').modal('hide');
-                        location.reload();
-                    },
-                    error: function(xhr, status, error) {
-                        alert('리뷰가 성공적으로 등록되었습니다.');
-                        $('#reviewModal').modal('hide');
-                        location.reload();
-                    }
-                });
-            });
-
-            $('#reviewModal').on('hidden.bs.modal', function () {
-                $('#reviewForm')[0].reset();
-                $('#imgPreview').empty();
-                imageFiles = [];
-            });
-        });
+    // imgDiv, img, imageNo를 저장할 변수 선언
+    let currentImgDiv;
+    let currentImg;
+    let currentImageNo;
 
 $(document).ready(function() {
 
-            let imageFiles = [];
+    $('.review-btn').on('click', function() {
+        const goodsNo = $(this).data('goods-no');
+        $('#goodsNo').val(goodsNo);
+        $('#reviewModal').modal('show');
+    });
 
-            $('.review-update-btn').on('click', function() {
-                const goodsNo = $(this).data('goods-no');
-                $('#goodsNo').val(goodsNo);
-                console.log(goodsNo);
+    $('#imageInput').on('change', function(event) {
+        const files = event.target.files;
+        imageFiles = [];
+        $('#imgPreview').empty();
 
-                    $.ajax({
-                    url : "/review/reviewUpdate",
-                    type : 'GET',
-                    data: { goodsNo: goodsNo },
-                    success : function(result) {
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#imgPreview').append('<img src="' + e.target.result + '" alt="Selected Image" class="img-thumbnail m-1" style="width: 100px; height: 100px;">');
+                }
+                imageFiles.push(file);
+                reader.readAsDataURL(file);
+            } else {
+                alert('이미지 파일을 선택해주세요');
+            }
+        }
+    });
 
-                    var uploadDtos = result.uploadDtos;
-                    var reviewDetails = result.reviewDetails;
+    $('#updateImageInput').on('change', function(event) {
+        const files = event.target.files;
+        imageFiles = [];
+        $('#imgPreview').empty();
 
-                    console.log(uploadDtos);
-                    console.log(reviewDetails);
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#imgAddDiv').append('<img src="' + e.target.result + '" alt="Selected Image" class="img-thumbnail m-1" style="width: 100px; height: 100px;">');
+                }
+                imageFiles.push(file);
+                reader.readAsDataURL(file);
+            } else {
+                alert('이미지 파일을 선택해주세요');
+            }
+        }
+    });
 
-                    // 별점 설정
-                    $(`#updateStar${reviewDetails.starRating}`).prop('checked', true);
+    $('#submitReview').on('click', function() {
+        let formData = new FormData($('#reviewForm')[0]);
 
-                    // 리뷰 내용 설정
-                    $('#updateContent').val(reviewDetails.content);
+        for (let i = 0; i < imageFiles.length; i++) {
+            formData.append('imageFiles', imageFiles[i]);
+        }
 
-                    // 기존 이미지 표시
-                    $('#imgAddDiv').empty();
-                    uploadDtos.forEach(function(uploadDto) {
-                        $('#imgAddDiv').append(`
-                            <div class="imgDiv">
-                                <img src="/images/R/${uploadDto.storedFileName}" alt="..." width="100px" height="100px">
-                                <input type="button" class="btn btn-danger imgDeleteBtn" data-image-no="${uploadDto.imageNo}" value="삭제">
-                                <input type="button" class="btn btn-success imgUpdateBtn" data-image-no="${uploadDto.imageNo}" value="수정">
-                            </div>
-                        `);
-                    });
+        $.ajax({
+            url: "/review/insertReview",
+            processData: false,
+            contentType: false,
+            type: 'POST',
+            data: formData,
+            success: function(data) {
+                alert('리뷰가 성공적으로 등록되었습니다.');
+                $('#reviewModal').modal('hide');
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                alert('리뷰가 성공적으로 등록되었습니다.');
+                $('#reviewModal').modal('hide');
+                location.reload();
+            }
+        });
+    });
 
-                    $('#reviewUpdateModal').modal('show');
-                    }
-                });
-            });
+    $('#reviewModal').on('hidden.bs.modal', function () {
+        $('#reviewForm')[0].reset();
+        $('#imgPreview').empty();
+        imageFiles = [];
+    });
 });
 
+$(document).ready(function() {
+
+    $('.review-update-btn').on('click', function() {
+        const goodsNo = $(this).data('goods-no');
+        $('#goodsNo').val(goodsNo);
+
+        selectNo = $(this).data('goods-no');
+        console.log(goodsNo);
+
+            $.ajax({
+            url : "/review/reviewUpdate",
+            type : 'GET',
+            data: { goodsNo: goodsNo },
+            success : function(result) {
+
+            var uploadDtos = result.uploadDtos;
+            var reviewDetails = result.reviewDetails;
+
+            // 별점 설정
+            $(`#updateStar${reviewDetails.starRating}`).prop('checked', true);
+
+            // 리뷰 내용 설정
+            $('#updateContent').val(reviewDetails.content);
+
+            // 기존 이미지 표시
+            $('#imgAddDiv').empty();
+            uploadDtos.forEach(function(uploadDto) {
+                $('#imgAddDiv').append(`
+                    <div class="imgDiv">
+                        <img src="/images/R/${uploadDto.storedFileName}" alt="..." width="100px" height="100px">
+                        <input type="button" class="btn btn-danger imgDeleteBtn" data-image-no="${uploadDto.imageNo}" value="삭제">
+                        <input type="button" class="btn btn-success imgUpdateBtn" data-image-no="${uploadDto.imageNo}" value="수정">
+                    </div>
+                `);
+            });
+
+            $('#reviewUpdateModal').modal('show');
+            }
+        });
+    });
+});
+
+    // 업데이트 이미지 업로드
+    $('#imageUpdate').on('change', function(event) {
+        var file = event.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                currentImg.attr("src", e.target.result);
+            }
+            reader.readAsDataURL(file);
+            imageUpdateFiles.push(file);
+            imageUpdateImageNos.push(currentImageNo);
+            currentImgDiv.find('input').remove();
+        } else {
+            alert('이미지 파일을 선택해주세요');
+        }
+    });
+
+    $('#imgAddDiv').on('click','.imgDeleteBtn', function() {
+        console.log('삭제버튼 이벤트');
+        let imageNo = $(this).attr('data-image-no');
+        imageDeleteImageNos.push(imageNo);
+        $(this).parent().remove();
+    });
+
+    $('#imgAddDiv').on('click','.imgUpdateBtn', function() {
+        console.log('수정버튼 이벤트');
+        currentImageNo = $(this).attr('data-image-no');
+        currentImgDiv = $(this).parent();
+        currentImg = $(this).parent().find('img');
+        $('#imageUpdate').click(); // 파일 선택 창을 엽니다.
+    });
+
+    $('#submitUpdateReview').click(function(){
+        console.log(imageFiles + '이미지 첨부');
+        console.log(imageDeleteImageNos + '이미지 삭제 번호');
+        console.log(imageUpdateImageNos + '이미지 첨부 업데이트 번호');
+        console.log(imageUpdateFiles + '이미지 수정 파일');
+
+        // 체크된 라디오 버튼의 값을 가져옴
+        let goodsNo = selectNo;
+        let content = $('#updateContent').val();
+        let starRating = $('input[name="starRating"]:checked').val();
+
+        console.log(goodsNo);
+        console.log(starRating);
+        console.log(content);
+
+        // 체크된 값이 있는지 확인하고 출력
+        if(starRating) {
+            console.log('선택된 별점:', starRating);
+        } else {
+            console.log('별점이 선택되지 않았습니다.');
+        }
 
 
+        let formData = new FormData();
+        formData.append('starRating',starRating);
+        formData.append('content', content);
+        formData.append('goodsNo', goodsNo);
+
+        for (let i = 0; i < imageDeleteImageNos.length;i++) {
+            formData.append('imageDeleteImageNo',imageDeleteImageNos[i]);
+        }
+
+        for (let i = 0; i < imageFiles.length;i++) {
+            formData.append('imageFiles',imageFiles[i]);
+        }
+
+        for (let i = 0; i < imageUpdateFiles.length;i++) {
+            formData.append('imageUpdateImageNo',imageUpdateImageNos[i]);
+            formData.append('imageUpdateFiles',imageUpdateFiles[i]);
+        }
+
+        $.ajax({
+            url : "/review/updateReview",
+            processData : false,
+            contentType : false,
+            type : 'POST',
+            data : formData,
+            success : function(result) {
+                alert(result);
+                location.reload();
+            }
+        });
+
+    });
 
 </script>
 

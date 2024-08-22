@@ -75,6 +75,12 @@
             LIMIT #{limit} OFFSET #{offset}
     </select>
 
+    <select id="salesPageCountForUser" resultType="int">
+        SELECT COUNT(*)
+        FROM TB_SALES_GOODS
+        WHERE ID = #{id}
+    </select>
+
     <select id="salesPageCount" resultType="int">
         SELECT COUNT(*) FROM TB_SALES_GOODS
     </select>

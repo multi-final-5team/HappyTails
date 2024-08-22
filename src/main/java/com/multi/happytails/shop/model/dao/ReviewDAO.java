@@ -66,4 +66,5 @@ public interface ReviewDAO {
     Boolean hasUserReviewed(@Param("id") String id, @Param("goodsNo") int goodsNo);
 
     ReviewDTO selectReview(@Param("id") String id, @Param("goodsNo") int goodsNo);
+    ReviewDTO selectReview2(@Param("id") String id, @Param("goodsNo") int goodsNo);
 }

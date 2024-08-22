@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}">
+    <title>구매 상품 목록</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <style>
+        .table-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+<menu th:replace="~{fragments/head :: menu}"></menu>
+<main>
+    <div class="container my-5">
+        <figure class="text-center">
+            <h2 id="구매-상품-목록">판매 상품 목록</h2>
+        </figure>
+
+        <div class="card shadow" th:if="${not #lists.isEmpty(orderList)}">
+            <div class="card-body paymentHistory-item">
+                <div class="paymentHistory-info table-responsive">
+                    <table class="table table-hover" id="paymentHistoryTable">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>판매 상품</th>
+                            <th>결제 금액</th>
+                            <th>결제일</th>
+                            <th> </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!-- JavaScript will populate this -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(orderList)}">
+            <p>주문 정보가 없습니다.</p>
+        </div>
+    </div>
+</main>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const paymentHistory = /*[[${orderList}]]*/ [];
+
+    function groupBy(list, keyGetter) {
+        const map = new Map();
+        list.forEach((item) => {
+            const key = keyGetter(item);
+            const collection = map.get(key);
+            if (!collection) {
+                map.set(key, [item]);
+            } else {
+                collection.push(item);
+            }
+        });
+        return map;
+    }
+
+    function formatDateToISO(dateString) {
+        const date = new Date(dateString);
+        return date.toISOString();
+    }
+
+    function groupAndDisplayPaymentHistory() {
+        let groupedPayments;
+        if (typeof _ !== 'undefined') {
+            groupedPayments = _.groupBy(paymentHistory, item => item.imPortId + '_' + item.date_created);
+        } else {
+            console.warn('Lodash is not available. Using fallback grouping method.');
+            groupedPayments = groupBy(paymentHistory, item => item.imPortId + '_' + item.date_created);
+        }
+
+        const tableBody = document.querySelector('#paymentHistoryTable tbody');
+        tableBody.innerHTML = '';
+
+        Array.from(groupedPayments.values()).forEach(group => {
+            const firstItem = group[0];
+            const additionalItems = group.length - 1;
+            const totalPurchasePrice = group.reduce((sum, item) => sum + item.purchaseprice, 0);
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    <p>
+                        ${firstItem.productname}${additionalItems > 0 ? ` 외 ${additionalItems}개` : ''}
+                    </p>
+                </td>
+                <td>${new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(totalPurchasePrice)}</td>
+                <td>${new Date(firstItem.date_created).toLocaleString('ko-KR')}</td>
+                <td><a href="/payment/orderHistoryDetails?imPortId=${firstItem.imPortId}">상세보기</a></td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', groupAndDisplayPaymentHistory);
+    /*]]>*/
+</script>
+</body>
+</html>

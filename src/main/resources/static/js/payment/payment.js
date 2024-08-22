@@ -138,18 +138,18 @@ function mypayment() {
                     });
 
                     if (data.success) {
-                        alert("결제 및 검증 성공");
+                        alert("결제가 되었습니다.");
                         window.location.href = '/payment/paymentHistory';
                     } else {
                         // 검증 실패 시 결제 취소 로직 추가
                         await cancelPayment(rsp.imp_uid, myAmount);
-                        alert("결제 검증 실패로 인해 결제가 취소되었습니다.");
+                        alert("결제에 실패하였습니다. 다시 시도해주세요. 지속적으로 결제가 안될 시 관리자에게 문의 해주세요.");
                     }
                 } catch (error) {
                     // 검증 요청 자체가 실패한 경우 결제 취소
                     await cancelPayment(rsp.imp_uid, myAmount);
                     console.log("Sending amount to server:", myAmount);
-                    alert("검증 실패로 인해 결제가 취소되었습니다: " + (error.response ? error.response.data : error.message));
+                    alert("결제에 실패하였습니다. 다시 시도해주세요. 지속적으로 결제가 안될 시 관리자에게 문의 해주세요." + (error.response ? error.response.data : error.message));
                 }
             } else {
                 alert("결제 실패: " + rsp.error_msg);
