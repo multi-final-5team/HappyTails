@@ -35,7 +35,7 @@
 
             <div class="mb-3">
                 <label class="form-label">강아지 이름</label><br>
-                <input class="form-control" type="text" id="name" name="name"><br>
+                <input class="form-control" type="text" id="name" name="name" maxlength="100"><br>
             </div>
 
             <div class="mb-3">
@@ -45,12 +45,12 @@
 
             <div class="mb-3">
                 <label class="form-label">품종</label><br>
-                <input class="form-control" type="text" id="breed" name="breed"><br>
+                <input class="form-control" type="text" id="breed" name="breed" maxlength="100"><br>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">주소</label><br>
-                <input class="form-control" type="text" id="location" name="location"><br>
+                <label class="form-label">활동장소</label><br>
+                <input class="form-control" type="text" id="location" name="location" maxlength="100"><br>
             </div>
 
             <input class="btn btn-primary" type="button" id="formSubmitBtn" value="신청" sec:authorize="isAuthenticated()">
@@ -88,6 +88,7 @@
 
         $('#formSubmitBtn').click(function(){
 
+            if(inputCheck()){
             let formData = new FormData($("#formId")[0]);
 
             for (let i = 0; i < imageFiles.length;i++) {
@@ -104,9 +105,33 @@
                     location.replace("/patrol/patrol");
                 }
             });
+            }
+
         });
         // 폼 서브밋 End
     });
+
+    function inputCheck() {
+        var input1 = $('#name').val();
+        var input2 = $('#age').val();
+        var input3 = $('#breed').val();
+        var input4 = $('#location').val();
+
+        if((input1 == "")||(input2 == "")||(input3 == "")||(input4 == "")){
+            alert("입력칸을 모두 채워주세요.");
+
+            return false;
+        }
+        else{
+            if(input2.length < 11){
+                return true;
+            }
+            else{
+                alert("나이가 너무 많이 입력되었습니다. 줄여주세요.");
+                $('#age').val("");
+            }
+        }
+    }
 </script>
 
 </body>

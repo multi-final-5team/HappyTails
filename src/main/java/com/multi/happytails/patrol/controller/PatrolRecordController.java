@@ -368,7 +368,8 @@ public class PatrolRecordController {
 
             String userName = memberDTO.getName();
 
-            content.setUserId(userName);
+            content.setUserId(memberDTO.getId());
+            content.setUserName(userName);
         }
 
         return list;

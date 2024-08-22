@@ -3,13 +3,12 @@ package com.multi.happytails.patrol.controller;
 
 
 import com.multi.happytails.authentication.model.dto.CustomUser;
+import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.patrol.model.dao.PatrolPlaceDAO;
-import com.multi.happytails.patrol.model.dto.PrecordDTO;
-import com.multi.happytails.patrol.model.dto.PrecordPlaceDTO;
-import com.multi.happytails.patrol.model.dto.PrecordPlaceHistoryDTO;
-import com.multi.happytails.patrol.model.dto.PlacePointListDTO;
+import com.multi.happytails.patrol.model.dto.*;
 import com.multi.happytails.patrol.pageable.service.PageService;
 import com.multi.happytails.patrol.service.PatrolPlaceService;
+import com.multi.happytails.patrol.service.PatrolService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

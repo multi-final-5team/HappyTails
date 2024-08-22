@@ -305,13 +305,13 @@
 
                 if(username == data.userId){
                     $('#titleDiv').append(
-                        '<input class="form-control" type="text" id="title" name="title" ><br>'
+                        '<input class="form-control" type="text" id="title" name="title" maxlength="255"><br>'
                     );
 
                     $('#title').val(data.title);
 
                     $('#contentDiv').append(
-                        '<textarea class="form-control" type="text" id="content" name="content" rows="10" >' + data.content +'</textarea><br>'
+                        '<textarea class="form-control" type="text" id="content" name="content" rows="10" maxlength="255">' + data.content +'</textarea><br>'
                     );
                     $('#formId').append(
                     '<button class="btn btn-warning" type="button" id="formUpdateSubmitBtn" onclick="updateSubmit()">수정</button>'
@@ -403,7 +403,8 @@
     // 이미지 삭제버튼 클릭 End
 
     function updateSubmit(){
-        console.log("imageDeleteImageNos >> " + imageDeleteImageNos.length);
+            if(inputCheck()){
+                console.log("imageDeleteImageNos >> " + imageDeleteImageNos.length);
             console.log("imageUpdateFiles >> " + imageUpdateFiles.length);
             console.log("imageFiles >> " + imageFiles.length);
 
@@ -432,6 +433,7 @@
                     location.replace("/patrolRecord/patrolRecord");
                 }
             });
+            }
     }
 
     function deleteSubmit(){
@@ -484,6 +486,21 @@
             $(".comment_length").text(content.length);
         }
     });
+
+    function inputCheck() {
+        var input1 = $('#title').val();
+        var input2 = $('#content').val();
+        var input3 = $('#precordPlace').val();
+
+        if((input1 == "")||(input2 == "")||(input3 == null)){
+            alert("입력칸을 모두 채워주세요.");
+
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 </script>
 
 </body>
