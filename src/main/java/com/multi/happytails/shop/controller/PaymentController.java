@@ -14,6 +14,7 @@ import com.siot.IamportRestClient.IamportClient;
 import com.siot.IamportRestClient.exception.IamportResponseException;
 import com.siot.IamportRestClient.response.IamportResponse;
 import com.siot.IamportRestClient.response.Payment;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -119,6 +120,44 @@ public class PaymentController {
 
         return "/payment/payment";
     }
+
+    @RequestMapping("/orderHistory")
+    public String orderHistory(Model model, Principal principal) {
+        String username = principal.getName();
+        List<OrderlistDTO> orderList = paymentService.selectOrders(principal.getName());
+        model.addAttribute("orderList", orderList);
+
+        return "/payment/orderHistory";
+    }
+
+    @RequestMapping("/orderHistoryDetails")
+    public String orderHistoryDetails(
+            Model model,
+            Principal principal,
+            @RequestParam("imPortId") String imPortId) {
+
+        String username = principal.getName();
+
+
+        List<PaymentDTO> paymentHistory = paymentService.orderHistoryDetails(username, imPortId);
+
+        Map<Integer, List<UploadDto>> salesGoodsMap = new HashMap<>();
+
+        for (PaymentDTO SalesGoods : paymentHistory) {
+            int goodsNo = SalesGoods.getGoodsNo();
+            salesGoodsMap.put(goodsNo, uploadService.uploadSelect("S", goodsNo));
+            MemberDTO memberDTO = memberService.findMemberById(SalesGoods.getUsername());
+
+            model.addAttribute("memberDTO", memberDTO);
+        }
+
+        model.addAttribute("salesGoodsMap", salesGoodsMap);
+        model.addAttribute("paymentHistory", paymentHistory);
+
+        return "/payment/orderHistoryDetails";
+    }
+
+
 
     /**
      * methodName : orderHistory
@@ -286,19 +325,22 @@ public class PaymentController {
     }
 
     @RequestMapping("/paymentPurchaseDelivery")
-    public String paymentPurchaseDelivery(@RequestParam("payment_no") int payment_no) {
+    public String paymentPurchaseDelivery(@RequestParam("payment_no") int payment_no,
+                                          HttpServletRequest request) {
 
         paymentService.paymentPurchaseDelivery(payment_no);
 
-        return "redirect:/payment/paymentHistory";
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/payment/paymentHistory");
     }
 
     @RequestMapping("/paymentUpdateDelivery")
-    public String paymentUpdateDelivery(@RequestParam("payment_no") int payment_no) {
-
+    public String paymentUpdateDelivery(@RequestParam("payment_no") int payment_no,
+                                        HttpServletRequest request) {
         paymentService.updateDelivery(payment_no);
 
-        return "redirect:/payment/paymentHistory";
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/payment/paymentHistory");
     }
 
     @PostMapping("/updateDeliveryCode")

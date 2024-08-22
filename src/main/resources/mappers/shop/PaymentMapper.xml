@@ -174,6 +174,8 @@
         ORDER BY date_created DESC
     </select>
 
+
+
     <update id="updatePartialRefundStatus">
         UPDATE payment
         SET refund = 'Y',
@@ -236,11 +238,25 @@
         WHEN 'D' THEN '배송 중'
         WHEN 'S' THEN '배송 완료'
         WHEN 'C' THEN '환불 대기'
-        WHEN 'S' THEN '환불 완료'
+        WHEN 'R' THEN '환불 완료'
         WHEN 'B' THEN '구매 완료'
         END AS delivery_code
         FROM payment
         WHERE username = #{username} AND im_port_id = #{imPortId}
+    </select>
+
+    <select id="orderHistoryDetails" resultMap="paymentDetailsResultMap">
+        SELECT payment_no, username, productname, productinfo, date_created, purchaseprice, im_port_id, goodsNo,  invoice_number, delivery_man, address, request, seller,
+        CASE delivery_code
+        WHEN 'P' THEN '배송 준비'
+        WHEN 'D' THEN '배송 중'
+        WHEN 'S' THEN '배송 완료'
+        WHEN 'C' THEN '환불 대기'
+        WHEN 'R' THEN '환불 완료'
+        WHEN 'B' THEN '구매 완료'
+        END AS delivery_code
+        FROM payment
+        WHERE seller = #{seller} AND im_port_id = #{imPortId}
     </select>
 
 </mapper>

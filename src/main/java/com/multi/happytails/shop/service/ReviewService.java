@@ -65,4 +65,6 @@ public interface ReviewService {
 
 
     ReviewDTO selectReview(String id, int goodsNo);
+
+    ReviewDTO selectReview2(String id, int goodsNo);
 }

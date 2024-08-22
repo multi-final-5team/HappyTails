@@ -113,12 +113,53 @@ public class ReviewController {
         String userId = principal.getName();
         reviewDTO.setId(userId);
 
+        // imageUpdateFiles 출력
+        if (imageUpdateFiles != null) {
+            System.out.println("imageUpdateFiles:");
+            for (MultipartFile file : imageUpdateFiles) {
+                System.out.println(" - " + file.getOriginalFilename());
+            }
+        } else {
+            System.out.println("imageUpdateFiles is null or empty");
+        }
+
+        // imageDeleteImageNo 출력
+        if (imageDeleteImageNo != null) {
+            System.out.println("imageDeleteImageNo:");
+            for (Long imageNo : imageDeleteImageNo) {
+                System.out.println(" - " + imageNo);
+            }
+        } else {
+            System.out.println("imageDeleteImageNo is null or empty");
+        }
+
+        // imageUpdateImageNo 출력
+        if (imageUpdateImageNo != null) {
+            System.out.println("imageUpdateImageNo:");
+            for (Long imageNo : imageUpdateImageNo) {
+                System.out.println(" - " + imageNo);
+            }
+        } else {
+            System.out.println("imageUpdateImageNo is null or empty");
+        }
+
         System.out.println(imageFiles + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         System.out.println(imageUpdateFiles);
         System.out.println(imageUpdateImageNo);
         System.out.println(imageDeleteImageNo);
 
+        System.out.println(reviewDTO);
 
+        String id = reviewDTO.getId();
+        int goodsNo = reviewDTO.getGoodsNo();
+
+        ReviewDTO selectReview = reviewService.selectReview2(id, goodsNo);
+
+        reviewDTO.setNo(selectReview.getNo());
+
+        System.out.println(id + "bbbbbbbbbbbbbbbbbbbbb");
+        System.out.println(goodsNo + "bbbbbbbbbbbbbbbbbbbbb");
+        System.out.println(reviewDTO + "bbbbbbbbbbbbbbbbbbbbb");
         int result = reviewService.updateReview(reviewDTO);
 
         if (result == 1) {
@@ -148,7 +189,7 @@ public class ReviewController {
             }
         }
 
-        return "배송 상태 변경에 성공하였습니다.";
+        return "리뷰 수정에 성공하였습니다.";
     }
     // Update
 

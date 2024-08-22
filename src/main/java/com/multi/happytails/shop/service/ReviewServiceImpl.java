@@ -59,5 +59,10 @@ public class ReviewServiceImpl implements ReviewService{
         return reviewDAO.selectReview(id, goodsNo);
     }
 
+    @Override
+    public ReviewDTO selectReview2(String id, int goodsNo) {
+        return reviewDAO.selectReview2(id, goodsNo);
+    }
+
 
 }

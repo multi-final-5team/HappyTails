@@ -37,6 +37,11 @@
         SELECT * FROM TB_BUSINESS ORDER BY BUSINESS_NO DESC
     </select>
 
+    <select id="getInfoById" resultMap="businessResultMap">
+        SELECT * FROM TB_BUSINESS
+        WHERE BUSINESS_ID = #{businessId}
+    </select>
+
     <update id="updateBusinessRegistrationFlag">
         UPDATE TB_BUSINESS
         SET BUSINESS_REGISTRATION_FLAG = #{flag}

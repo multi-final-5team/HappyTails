@@ -125,10 +125,10 @@ public class SalesController {
      */
     @GetMapping("/salesListBusiness")
     public String salesListBusiness(@RequestParam(name = "page", defaultValue = "1") int page, Principal principal, Model model) {
-        int pageSize = 8;
+        int pageSize = 9;
         String id = principal.getName();
         List<SalesGoodsDTO> salesGoodsList = salesService.salesListBusiness(page, pageSize, id);
-        int totalSalesCount = salesService.salesPageCount();
+        int totalSalesCount = salesService.salesPageCountForUser(id);
         int totalPages = (int) Math.ceil((double) totalSalesCount / pageSize);
 
         Map<Integer, List<UploadDto>> salesGoodsMap = new HashMap<>();
@@ -290,6 +290,7 @@ public class SalesController {
      * @return the string
      */
     @PostMapping("/updateGoods")
+    @ResponseBody
     public String updateGoods (Principal principal,
                                @ModelAttribute SalesGoodsDTO salesGoodsDTO,
                                @RequestParam(value = "imageFiles") @Nullable List<MultipartFile> imageFiles,
@@ -332,7 +333,7 @@ public class SalesController {
             }
         }
 
-        return "/sales/salesList";
+        return "상품 수정에 성공하였습니다.";
     }
 
     // Update
