@@ -28,7 +28,6 @@ public interface MemberDAO {
 
     MemberDTO findMemberByEmail(String email);
 
-
     List<MemberDTO> getListMember(RequestList<?> requestList);
 
     int getListMemberCount(MemberDTO memberDTO);

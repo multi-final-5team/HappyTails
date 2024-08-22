@@ -281,6 +281,13 @@ public class MemberController {
         }
     }
 
+    @PostMapping("/checkEmailDuplicate")
+    @ResponseBody
+    public ResponseEntity<Boolean> checkEmailDuplicate(@RequestParam("email") String email) {
+        boolean isDuplicate = memberService.isEmailDuplicate(email);
+        return ResponseEntity.ok(isDuplicate);
+    }
+
     @GetMapping("/mypage")
     public String myPage(Model model, @AuthenticationPrincipal CustomUser customUser) {
 

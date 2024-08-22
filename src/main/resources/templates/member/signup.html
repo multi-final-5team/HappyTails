@@ -34,6 +34,7 @@
                     <div class="mb-3">
                         <label for="password" class="form-label">비밀번호</label>
                         <input type="password" class="form-control" id="password" name="password" required>
+                        <div id="passwordError" class="text-danger"></div>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">이메일</label>
@@ -142,6 +143,45 @@
                 return;
             }
 
+            // 비밀번호 유효성 검사
+            var password = $('#password').val();
+            var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,13}$/;
+            if (!passwordRegex.test(password)) {
+                $('#passwordError').text('비밀번호는 4~13자의 영문자와 숫자 조합이어야 합니다.');
+                return;
+            } else {
+                $('#passwordError').text('');
+            }
+
+            // 이메일 유효성 검사
+            const email = $('#email').val();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                $('#emailError').text('올바른 이메일 형식이 아닙니다.');
+                return;
+            } else {
+                $('#emailError').text('');
+            }
+
+            // 이메일 중복 체크
+            $.ajax({
+                url: '/member/checkEmailDuplicate',
+                type: 'POST',
+                data: { email: email },
+                success: function(response) {
+                    if (response === true) {
+                        alert("이메일 중복. 다른 이메일을 작성해주세요.");
+                        $('#email').focus();
+                    } else {
+                        // 이메일 중복이 아닌 경우에만 폼을 제출합니다.
+                        $('#signupForm')[0].submit();
+                    }
+                },
+                error: function() {
+                    alert("이메일 중복 확인 중 오류가 발생했습니다.");
+                }
+            });
+
             // 닉네임 유효성 검사
             var nickname = $('#nickname').val();
             var nicknameRegex = /^([가-힣]{1,10}|[a-zA-Z0-9]{1,10})$/;
@@ -160,24 +200,6 @@
                 return;
             } else {
                 $('#telError').text('');
-            }
-
-            // 이메일 유효성 검사
-            var email = $('#email').val();
-            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                $('#emailError').text('올바른 이메일 형식이 아닙니다.');
-                return;
-            } else {
-                $('#emailError').text('');
-            }
-
-            // 비밀번호 유효성 검사
-            var password = $('#password').val();
-            var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,13}$/;
-            if (!passwordRegex.test(password)) {
-                alert('비밀번호는 4~13자의 영문자와 숫자 조합이어야 합니다.');
-                return;
             }
 
             // 모든 유효성 검사를 통과하면 폼 제출
