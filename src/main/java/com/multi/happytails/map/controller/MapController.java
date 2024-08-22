@@ -8,9 +8,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MapController {
 
     @RequestMapping("/map")
-    public void map(){
+    public String map(){
 
+        return "redirect:/map/mapview";
     }
 
+    @RequestMapping("/mapview")
+    public String mapView(){
+
+        return "/map/map";
+    }
 
 }

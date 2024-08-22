@@ -66,6 +66,20 @@
 <script>
     $(document).ready(function() {
 
+        $.ajax({
+	 			type: "get",
+	 			url : "/patrol/patrolCheck",
+	 			success: function(results){
+	 				if(results == 1){
+	 				    alert("한 아이디에 하나의 순찰대만 신청할수있습니다.");
+	 				    location.replace("/patrol/patrol");
+	 				}
+	 			},
+	 			error: function(data){
+	 				alert("에러 발생. " + data);
+	 			}
+	 	})
+
         // 이미지 road Start
         let imageFiles = [];
         $('#inputFile').on('change', function(event) {
