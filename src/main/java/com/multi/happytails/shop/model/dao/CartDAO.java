@@ -26,4 +26,6 @@ public interface CartDAO {
     void clearCart(String username);
 
     void updateCart(@Param("purchaseQuantity") int purchaseQuantity, @Param("no") int no);
+
+    void deleteCart(int no);
 }

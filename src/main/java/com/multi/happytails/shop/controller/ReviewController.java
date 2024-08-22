@@ -66,7 +66,7 @@ public class ReviewController {
                                @RequestParam("goodsNo") int goodsNo,
                                @RequestParam("starRating") int starRating,
                                @RequestParam("content") String content,
-                               @RequestParam("imageFiles")List<MultipartFile> imageFiles) {
+                               @RequestParam("imageFiles") @Nullable List<MultipartFile> imageFiles) {
         String Id = principal.getName();
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setId(Id);

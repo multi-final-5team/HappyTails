@@ -46,6 +46,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/help/inquiry/write").authenticated()
                         .requestMatchers("/help/inquiry/list").authenticated()
                         .requestMatchers("/help/inquiry/detail").authenticated()
+                        .requestMatchers("/sales/salesList").permitAll()
+                        .requestMatchers("/sales/selectGoods").permitAll()
+                        .requestMatchers("/sales/**").authenticated()
                         .anyRequest().permitAll()
                 );
         http

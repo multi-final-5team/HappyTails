@@ -43,4 +43,9 @@ public class CartServiceImpl implements CartService{
         cartDAO.updateCart(purchaseQuantity, no);
     }
 
+    @Override
+    public void deleteCart(int no) {
+        cartDAO.deleteCart(no);
+    }
+
 }

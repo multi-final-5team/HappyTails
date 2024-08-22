@@ -20,74 +20,99 @@
         <figure class="text-center">
             <h2>구매 상품 목록</h2>
         </figure>
+        <div class="row">
+            <div class="col-md-6">
+                <h2 class="mb-4">주문/결제</h2>
+                <form>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">구매자 성함</label>
+                        <input type="text" class="form-control" id="name" th:value="${memberDTO.name}" readonly required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">연락처</label>
+                        <input type="text" class="form-control" id="phone" th:value="${memberDTO.tel}" readonly required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">배송지 주소</label>
+                        <input type="text" class="form-control" id="address" th:value="${paymentHistory[0].address}" readonly required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="request" class="form-label">배송시 요청사항</label>
+                        <input type="text" class="form-control" id="request" th:value="${paymentHistory[0].request}" readonly required>
+                    </div>
+                </form>
+            </div>
 
-        <div th:if="${not #lists.isEmpty(paymentHistory)}" class="card shadow">
-            <div class="card-body paymentHistory-item">
-                <div class="paymentHistory-info table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-dark">
-                        <tr>
-                            <th>구매 상품</th>
-                            <th>결제 금액</th>
-                            <th>결제일</th>
-                            <th>배송 상태</th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr  th:each="paymentHistory : ${paymentHistory}" th:data-username="${paymentHistory.username}">
-                            <td>
-                                <div th:if="${salesGoodsMap[paymentHistory.goodsNo].size() > 0}" class="card-body">
-                                    <img th:src="@{/images/S/{file}(file=${salesGoodsMap[paymentHistory.goodsNo][0].storedFileName})}" alt="대표 이미지" class="card-img-top" height="100">
-                                </div>
-                                <a th:href="@{/sales/selectGoods(no=${paymentHistory.goodsNo})}"
-                                   th:text="${paymentHistory.productname}"
-                                   class="text-decoration-none">
-                                </a>
-                            </td>
-                            <th th:text="'가격: ' + ${paymentHistory.purchaseprice} + '원'"></th>
-                            <th th:text="${#dates.format(paymentHistory.date_created, 'yyyy-MM-dd')}"></th>
-                            <th th:text="${paymentHistory.delivery_code}"></th>
-                            <th>
-                                <a th:if="${paymentHistory.delivery_code != '구매 완료' AND paymentHistory.delivery_code != '환불 대기' and paymentHistory.delivery_code != '환불 완료'}"
-                                   th:href="@{/payment/paymentUpdateDelivery(payment_no=${paymentHistory.payment_no})}"
-                                   class="btn btn-success">
-                                    환불 신청</a>
+            <div class="col-md-6">
+                <div th:if="${not #lists.isEmpty(paymentHistory)}" class="card shadow">
+                    <div class="card-body paymentHistory-item">
+                        <div class="paymentHistory-info table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th>구매 상품</th>
+                                    <th>결제 금액</th>
+                                    <th>결제일</th>
+                                    <th>배송 상태</th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="paymentHistory : ${paymentHistory}" th:data-username="${paymentHistory.username}">
+                                    <td>
+                                        <div th:if="${salesGoodsMap[paymentHistory.goodsNo].size() > 0}" class="card-body">
+                                            <img th:src="@{/images/S/{file}(file=${salesGoodsMap[paymentHistory.goodsNo][0].storedFileName})}" alt="대표 이미지" class="card-img-top" height="100">
+                                        </div>
+                                        <a th:href="@{/sales/selectGoods(no=${paymentHistory.goodsNo})}"
+                                           th:text="${paymentHistory.productname}"
+                                           class="text-decoration-none">
+                                        </a>
+                                    </td>
+                                    <th th:text="'가격: ' + ${paymentHistory.purchaseprice} + '원'"></th>
+                                    <th th:text="${#dates.format(paymentHistory.date_created, 'yyyy-MM-dd')}"></th>
+                                    <th th:text="${paymentHistory.delivery_code}"></th>
+                                    <th>
+                                        <a th:if="${paymentHistory.delivery_code != '구매 완료' AND paymentHistory.delivery_code != '환불 대기' and paymentHistory.delivery_code != '환불 완료'}"
+                                           th:href="@{/payment/paymentUpdateDelivery(payment_no=${paymentHistory.payment_no})}"
+                                           class="btn btn-success">
+                                            환불 신청</a>
 
-                                <button th:if="${paymentHistory.delivery_code == '구매 완료' and !reviewedMap[paymentHistory.goodsNo]}"
-                                        type="button" class="btn btn-primary review-btn"
-                                        th:data-goods-no="${paymentHistory.goodsNo}">
-                                    리뷰 작성
-                                </button>
+                                        <button th:if="${paymentHistory.delivery_code == '구매 완료' and !reviewedMap[paymentHistory.goodsNo]}"
+                                                type="button" class="btn btn-primary review-btn"
+                                                th:data-goods-no="${paymentHistory.goodsNo}">
+                                            리뷰 작성
+                                        </button>
 
-                                <button
-                                        th:if="${paymentHistory.delivery_code == '구매 완료' and reviewedMap[paymentHistory.goodsNo]}"
-                                        type="button" class="btn btn-primary review-update-btn"
-                                        th:data-goods-no="${paymentHistory.goodsNo}">
-                                    리뷰 수정
-                                </button>
+                                        <button
+                                                th:if="${paymentHistory.delivery_code == '구매 완료' and reviewedMap[paymentHistory.goodsNo]}"
+                                                type="button" class="btn btn-primary review-update-btn"
+                                                th:data-goods-no="${paymentHistory.goodsNo}">
+                                            리뷰 수정
+                                        </button>
 
 
-                                <a th:if="${paymentHistory.delivery_code == '배송 완료'}"
-                                   th:href="@{/payment/paymentPurchaseDelivery(payment_no=${paymentHistory.payment_no})}"
-                                   class="btn btn-success">
-                                    구입 확정</a>
+                                        <a th:if="${paymentHistory.delivery_code == '배송 완료'}"
+                                           th:href="@{/payment/paymentPurchaseDelivery(payment_no=${paymentHistory.payment_no})}"
+                                           class="btn btn-success">
+                                            구입 확정</a>
 
-                            </th>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(paymentHistory)}">
-                            주문 정보가 없습니다.
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="paymentHistory-actions">
+                                    </th>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(paymentHistory)}">
+                                    주문 정보가 없습니다.
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="paymentHistory-actions">
 
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="pagination"></div>
+            <div class="pagination"></div>
+        </div>
     </div>
 </main>
 

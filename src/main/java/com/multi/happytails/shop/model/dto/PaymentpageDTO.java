@@ -16,5 +16,6 @@ public class PaymentpageDTO {
     private int GoodsNo;
     private String address;
     private String request;
+    private String seller;
 
 }

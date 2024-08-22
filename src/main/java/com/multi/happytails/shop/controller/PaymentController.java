@@ -77,6 +77,15 @@ public class PaymentController {
     public String orderList(Model model, Principal principal) {
 
         List<OrderlistDTO> orderList = paymentService.selectOrders(principal.getName());
+
+        Map<Integer, List<UploadDto>> orderListMap = new HashMap<>();
+
+        for (OrderlistDTO orderList2 : orderList) {
+            int goodsNo = orderList2.getGoodsNo();
+            orderListMap.put(goodsNo, uploadService.uploadSelect("S", goodsNo));
+        }
+
+        model.addAttribute("orderListMap", orderListMap);
         model.addAttribute("orderList", orderList);
         return "/payment/orderlist";
     }
@@ -97,8 +106,16 @@ public class PaymentController {
         String username = principal.getName();
         List<CartDTO> cartList = cartService.cartList(username);
 
+        Map<Integer, List<UploadDto>> cartMap = new HashMap<>();
+
+        for (CartDTO cartDTO : cartList) {
+            int goodsNo = cartDTO.getGoodsNo();
+            cartMap.put(goodsNo, uploadService.uploadSelect("S", goodsNo));
+        }
+
         model.addAttribute("cartList", cartList);
         model.addAttribute("memberDTO", memberDTO);
+        model.addAttribute("cartMap", cartMap);
 
         return "/payment/payment";
     }
@@ -129,6 +146,8 @@ public class PaymentController {
 
         String username = principal.getName();
         String id = principal.getName();
+        MemberDTO memberDTO = new MemberDTO();
+        memberDTO = memberService.findMemberById(principal.getName());
 
         List<PaymentDTO> paymentHistory = paymentService.paymentHistoryDetails(username, imPortId);
 
@@ -140,7 +159,7 @@ public class PaymentController {
             salesGoodsMap.put(goodsNo, uploadService.uploadSelect("S", goodsNo));
             reviewedMap.put(goodsNo, reviewService.hasUserReviewed(id, goodsNo));
         }
-
+        model.addAttribute("memberDTO", memberDTO);
         model.addAttribute("salesGoodsMap", salesGoodsMap);
         model.addAttribute("reviewedMap", reviewedMap);
         model.addAttribute("paymentHistory", paymentHistory);
@@ -183,8 +202,7 @@ public class PaymentController {
                         paymentDTO.setProductinfo(cartItem.getGoodsName());
                         paymentDTO.setAddress(request.getAddress());
                         paymentDTO.setRequest(request.getRequest());
-                        System.out.println(request.getAddress() + "-----------------------주소");
-                        System.out.println(request.getRequest() + "-----------------------요청사항");
+                        paymentDTO.setSeller(cartItem.getSeller());
 
                         paymentService.insertPayment(paymentDTO);
                     }

@@ -24,6 +24,7 @@ public class CartDTO {
     private String id;
     private int goodsNo;
     private int purchaseQuantity;
+    private String seller;
 
     private int price;
     private String goodsName;

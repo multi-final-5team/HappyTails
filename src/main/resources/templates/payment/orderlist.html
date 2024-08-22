@@ -59,6 +59,9 @@
     <div th:if="${not #lists.isEmpty(orderList)}">
         <div th:each="order : ${orderList}" th:data-username="${order.username}" class="order-item">
             <div class="order-details">
+                <div th:if="${orderListMap[order.goodsNo].size() > 0}" class="col-md-4 mb-3">
+                    <img th:src="@{/images/S/{file}(file=${orderListMap[order.goodsNo][0].storedFileName})}" alt="대표 이미지" class="img-fluid">
+                </div>
                 <h3 th:text="${order.productname}" class="mb-2"></h3>
                 <p th:text="${order.productinfo}" class="text-muted"></p>
                 <p th:text="${#dates.format(order.date_created, 'yyyy-MM-dd HH:mm:ss')}" class="text-muted"></p>

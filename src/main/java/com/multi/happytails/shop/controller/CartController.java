@@ -1,9 +1,12 @@
 package com.multi.happytails.shop.controller;
 
 import com.multi.happytails.shop.model.dto.CartDTO;
+import com.multi.happytails.shop.model.dto.SalesGoodsDTO;
 import com.multi.happytails.shop.service.CartService;
+import com.multi.happytails.shop.service.SalesService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +38,9 @@ public class CartController {
     @Autowired
     private UploadService uploadService;
 
+    @Autowired
+    private SalesService salesService;
+
     @PostMapping("/insertCart")
     public String insertReview(Principal principal,
                                @RequestParam("goodsNo") int goodsNo,
@@ -42,9 +48,16 @@ public class CartController {
                                 ) {
         CartDTO cartDTO = new CartDTO();
         String id = principal.getName();
+        SalesGoodsDTO salesGoodsDTO = new SalesGoodsDTO();
+        salesGoodsDTO.setNo(goodsNo);
+
+        SalesGoodsDTO salesDetails = salesService.selectSales(salesGoodsDTO);
+
         cartDTO.setId(id);
         cartDTO.setGoodsNo(goodsNo);
+
         cartDTO.setPurchaseQuantity(purchaseQuantity);
+        cartDTO.setSeller(salesDetails.getId());
 
         cartService.insertCart(cartDTO);
 
@@ -81,5 +94,16 @@ public class CartController {
         cartService.updateCart(purchaseQuantity, no);
 
         return "dd";
+    }
+
+
+
+    @GetMapping("/deleteCart")
+    public String deleteCart (@RequestParam("no") int no, HttpServletRequest request){
+
+        cartService.deleteCart(no);
+
+        String referer = request.getHeader("Referer"); // 이전 페이지 URL 가져오기
+        return "redirect:" + referer;
     }
 }

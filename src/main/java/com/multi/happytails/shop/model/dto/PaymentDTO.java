@@ -23,6 +23,7 @@ public class PaymentDTO {
     private int invoice_number;
     private String address;
     private String request;
+    private String seller;
 
     private List<CartDTO> cartItems;
 
