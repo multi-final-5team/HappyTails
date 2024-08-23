@@ -2,9 +2,9 @@
 2024 세미 프로젝트 5조
 
 ## 🖥️ 팀원 소개
-| <img src="https://avatars.githubusercontent.com/Shin-Hyeoncheol" width=90px alt="신현철"/> | <img src="https://avatars.githubusercontent.com/" width=90px alt="남동석"/> | <img src="https://avatars.githubusercontent.com/" width=90px alt="여낭영"/> | <img src="https://avatars.githubusercontent.com/" width=90px alt="우재협"/> | <img src="https://avatars.githubusercontent.com/supreme4rest" width=90px alt="이은수"/> |
+| <img src="https://avatars.githubusercontent.com/Shin-Hyeoncheol" width=90px alt="신현철"/> | <img src="https://avatars.githubusercontent.com/ehdtka" width=90px alt="남동석"/> | <img src="https://avatars.githubusercontent.com/nayoung77" width=90px alt="여낭영"/> | <img src="https://avatars.githubusercontent.com/wjh0429" width=90px alt="우재협"/> | <img src="https://avatars.githubusercontent.com/supreme4rest" width=90px alt="이은수"/> |
 | :-----: | :-----: | :-----: | :-----: | :-----: | :-----: |
-| [신현철](https://github.com/Shin-Hyeoncheol) | [남동석]() | [여나영]() | [우재협]() | [이은수](https://github.com/supreme4rest) |
+| [신현철](https://github.com/Shin-Hyeoncheol) | [남동석](https://github.com/ehdtka) | [여나영](https://github.com/nayoung77) | [우재협](https://github.com/wjh0429) | [이은수](https://github.com/supreme4rest) |
 
 
 
