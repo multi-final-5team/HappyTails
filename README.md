@@ -16,7 +16,7 @@
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
 
 ## ERD
-- ERD 이미지 또는 링크 추가 예정
+- [ERD](https://www.erdcloud.com/d/WyztNt6hzckmpBGSK)
 
 ## Service Architecture
 - Service Architecture 이미지 또는 링크 추가 예정
