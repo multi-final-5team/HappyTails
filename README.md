@@ -1,5 +1,5 @@
-# 2024-multicampus-semi-proj
-2024 파이널 프로젝트 5조
+# 2024-multicampus-final_5-HappyTails
+2024 파이널 프로젝트 5조 - Happy Tails
 
 ## 🖥️ 팀원 소개
 | <img src="https://avatars.githubusercontent.com/Shin-Hyeoncheol" width=90px alt="신현철"/> | <img src="https://avatars.githubusercontent.com/ehdtka" width=90px alt="남동석"/> | <img src="https://avatars.githubusercontent.com/nayoung77" width=90px alt="여나영"/> | <img src="https://avatars.githubusercontent.com/wjh0429" width=90px alt="우재협"/> | <img src="https://avatars.githubusercontent.com/supreme4rest" width=90px alt="이은수"/> |
