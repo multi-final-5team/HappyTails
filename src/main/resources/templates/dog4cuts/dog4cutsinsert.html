@@ -21,6 +21,20 @@
         height: 600px;
     }
 
+    .imgSquareVertical{
+        display: flex;
+        flex-wrap: wrap;
+
+        justify-content: center;
+	    align-items : center;
+
+	    gap: 2% 3%;
+
+        background-color: black;
+        width: 600px;
+        height: 1000px;
+    }
+
     .imgLine{
 
         display: flex;
@@ -39,6 +53,22 @@
         width: 42.5%;
         height: 47.5%;
         background-color: white;
+    }
+
+    .imgDivSquareVerticalTop{
+        position : relative;
+        width: 42.5%;
+        height: 40%;
+        background-color: white;
+        align-self : flex-end;
+    }
+
+    .imgDivSquareVerticalBot{
+        position : relative;
+        width: 42.5%;
+        height: 40%;
+        background-color: white;
+        align-self : flex-start;
     }
 
     .imgDivLine{
@@ -97,13 +127,14 @@
     </div>
 
 
-    <div class="d-flex justify-content-center bg-white border rounded" style="margin: 3%;">
+    <div class="d-flex justify-content-center bg-white border rounded" style="margin: 3%;padding: 2%;">
         <div class="" style="width : 18%;">
-            <div>
+            <div style="margin: 3%;">
                 <div>
                     <label>사진배치</label>
                     <select class="" id="arrangementSelect" name="">
-                        <option value="imgSquare" selected>네모나게</option>
+                        <option value="imgSquare" selected>네모나게(가로)</option>
+                        <option value="imgSquareVertical">네모나게(세로)</option>
                         <option value="imgLine">일자로</option>
                     </select>
                 </div>
@@ -113,7 +144,8 @@
                     <input type="color" id="backgroundColorPicker">
                 </div>
             </div>
-            <button class="btn btn-light border" id="styleChangeButton" onclick="styleChange(); this.blur();">스타일 변경</button>
+            <button class="btn btn-light border" id="styleChangeButton" onclick="styleChange(); this.blur();" style="margin: 3%;">스타일 변경</button>
+            <button class="btn btn-light border" onclick="styleReset(); this.blur();" style="margin: 3%;">꾸미기취소</button>
         </div>
 
         <div style="width : 30%;">
@@ -181,6 +213,7 @@
     var frameFlag = 0;
     var frameLoadFlag = 0;
     var frameSrc;
+    var frameImage;
 
     let captureDiv = document.getElementById('capture');
     let downloadButton = document.getElementById('downloadButton');
@@ -265,10 +298,10 @@
             });
         });
 
-        if(confirm("이미지저장완료. 계속 이미지를 만드시겠습니까?")){
-
+        if(confirm("이미지저장완료. 만든 이미지를 확인하시겠습니까?")){
+            location.replace("/dog4cuts/dog4cutsview");
 	    }else{
-		    location.replace("/dog4cuts/dog4cutsview");
+
 	    }
 
         }
@@ -330,7 +363,26 @@
             $("#capture").attr('class', 'imgLine');
             $("#capture").children().attr('class', 'imgDivLine');
         }
+        else if(arrangement == "imgSquareVertical"){
+            $("#capture").attr('class', 'imgSquareVertical');
+            $("#inputFile1Div").attr('class', 'imgDivSquareVerticalTop');
+            $("#inputFile2Div").attr('class', 'imgDivSquareVerticalTop');
+            $("#inputFile3Div").attr('class', 'imgDivSquareVerticalBot');
+            $("#inputFile4Div").attr('class', 'imgDivSquareVerticalBot');
+        }
 
+        $('#capture').css({'background-image':'url()'});
+        frameLoadFlag = 0;
+        className = $('#capture').attr('class');
+
+    }
+
+    //꾸미기취소
+    function styleReset() {
+
+        $(".stickerImg").remove();
+
+        $(".cutImg").css("filter", "grayscale(0)");
         $('#capture').css({'background-image':'url()'});
         frameLoadFlag = 0;
         className = $('#capture').attr('class');
@@ -379,6 +431,7 @@
 
                 frameSrc = e.target.result;
                 frameFlag = 1;
+                console.log(frameSrc);
                 }
             reader.readAsDataURL(file);
             }
@@ -399,7 +452,7 @@
 
             console.log("className >> " + className);
 
-            var frameImage = new Image();
+            frameImage = new Image();
             frameImage.src = frameSrc;
 
             frameImage.addEventListener('load', function() {
@@ -409,17 +462,8 @@
             if(frameLoadFlag == 1){
                 console.log(frameImage.width + " , " + frameImage.height);
 
-                if((className == "imgSquare") && (frameImage.width > frameImage.height)){
-                    $('#capture').css({'background-image':'url('+ frameSrc +')'});
-                }
-                else if((className == "imgLine") && (frameImage.width < frameImage.height)){
-                    $('#capture').css({'background-image':'url('+ frameSrc +')'});
-                }
-                else{
-                    alert('프레임 사이즈가 다릅니다. 다른 프레임을 입력해주세요.');
-                    $('#inputFileFrame').val('');
-                    frameLoadFlag = 0;
-                }
+                $('#capture').css({'background-image':'url('+ frameSrc +')'});
+
             }
             else if(frameLoadFlag == 0){
                 alert('이미지 로딩중입니다. 잠시만 기다려주세요.');

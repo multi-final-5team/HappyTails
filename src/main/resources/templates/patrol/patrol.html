@@ -16,8 +16,8 @@
     }
 
     .imgDiv{
-        width : 50%;
-        height: 100%;
+        width : 200px;
+        height: 300px;
     }
 
     .patrolImg{
@@ -126,7 +126,7 @@
                     );
 
                     $('#divimg' + index).append(
-                        '<img src="/images/Z/' + img + '" class="patrolImg">'
+                        '<img src="/images/Z/' + img + '" class="patrolImg" onerror="this.onerror=null; this.src=\'https://kr.object.ncloudstorage.com/team-5/Non-Img.png\';">'
                     );
 
                     $('#' + 'divContent' + index).append(
@@ -145,8 +145,14 @@
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '<sub class="card-text">품종:' + contentList[index].breed + '</sub>'
+                        '<sub class="card-text">품종:' + contentList[index].breed + '</sub><br>'
                     );
+
+                    $('#' + 'divbody' + index).append(
+                        '<sub class="card-text">활동지역:' + contentList[index].location + '</sub>'
+                    );
+
+                    img = "";
             }
 
             if(page > 9){
