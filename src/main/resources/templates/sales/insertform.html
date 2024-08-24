@@ -7,7 +7,9 @@
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
     <div  class="container mt-5">
-    <h1 class="mb-4">상품 등록</h1>
+        <h1 class="mb-4 text-center">🐾 상품 등록 🐾</h1>
+        <div class="card w-75 mx-auto">
+            <div class="card-body">
     <form action="/sales/insertGoods" method="post" enctype="multipart/form-data" id="insertForm">
         <div class="mb-3">
             <label for="name" class="form-label">상품 이름:</label>
@@ -50,8 +52,10 @@
         <div id="imgAddDiv" class="mb-3">
         </div>
 
-        <button type="submit" class="btn btn-primary">등록</button>
+        <button type="submit" class="btn btn-primary float-end">등록</button>
     </form>
+    </div>
+        </div>
     </div>
 </main>
 

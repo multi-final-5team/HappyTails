@@ -44,7 +44,7 @@
                     <h2 th:text="${salesDetails.name}" class="mb-3">상품명</h2>
                     <p class="h4 mb-4"><strong>판매자:</strong> <span th:text="${salesDetails.id}">판매자</span></p>
 
-                    <p><strong>주소:</strong> <span th:text="${salesDetails.address}">주소</span></p>
+                    <p><strong>남은 수량:</strong> <span th:text="${salesDetails.quantity} + '개'">재고</span></p>
                     <p><strong>가격:</strong> <span th:text="${#numbers.formatCurrency(salesDetails.price)}">가격</span></p>
 
                     <div class="mb-3" sec:authorize="isAuthenticated()">
