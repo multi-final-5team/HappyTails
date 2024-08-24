@@ -43,11 +43,19 @@
                 </thead>
                 <tbody id="rankTbody" class="table-group-divider">
                 <tr th:each="item, itemStat : ${ranking}">
-                    <td th:text="${itemStat.count}"></td>
-    <!--                <td th:text="${category == 'doglove' ? item.userId : item.id}"></td>-->
+                    <td>
+                        <div style="display: flex; align-items: center;">
+                            <img th:if="${itemStat.count == 1}" src="https://kr.object.ncloudstorage.com/team-5/1-rank.png" alt="1st Place" style="width: 38px; height: 38px; margin-right: 5px;">
+                            <img th:if="${itemStat.count == 2}" src="https://kr.object.ncloudstorage.com/team-5/2-rank.png" alt="2nd Place" style="width: 38px; height: 38px; margin-right: 5px;">
+                            <img th:if="${itemStat.count == 3}" src="https://kr.object.ncloudstorage.com/team-5/3-rank.png" alt="3rd Place" style="width: 38px; height: 38px; margin-right: 5px;">
+                            <span th:text="${itemStat.count}"></span>
+                        </div>
+                    </td>
+
                     <td th:text="${item.userId}"></td>
                     <td th:if="${category == 'doglove'}" th:text="${item.totalCount}"></td>
                     <td th:if="${category == 'police'}" th:text="${item.policeScore}"></td>
+
                     <td th:if="${category == 'police'}">
 
                         <span th:if="${item.policeScore > 6600}" th:text="치안총감"></span>
