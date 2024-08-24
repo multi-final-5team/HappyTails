@@ -25,227 +25,44 @@
                     유저 권한 변경
                 </div>
                 <div class="card-body">
-
-                    <div style="width: 40%;margin-left:auto;display: flex;">
-                        <select class="form-select" id="targetSelect" name="targetSelect" style="width: 30%">
-                            <option value="selectId" selected>아이디</option>
-                            <option value="selectRole">권한</option>
-                        </select>
-                        <input class="form-control" type="text" id="searchinput" style="width: 40%;">
-                        <button class="btn btn-primary" id="btnserch" onclick="findMember()" style="width: 30%;">검색</button>
-                    </div>
-                    <table id=""  class="table">
+                    <table id="datatablesSimple">
                         <thead>
                         <tr>
                             <th>번호</th>
                             <th>아이디</th>
                             <th>이름</th>
                             <th>가입일</th>
+                            <th>탈퇴여부</th>
                             <th>권한</th>
                             <th>관리</th>
                         </tr>
                         </thead>
-
-                        <tbody id="tableTbody" class="table-group-divider">
-
+                        <tbody>
+                        <th:block th:each="member : ${memberList}">
+                            <tr>
+                                <td th:text="${member.no}"></td>
+                                <td th:text="${member.id}"></td>
+                                <td th:text="${member.name}"></td>
+                                <td th:text="${member.signupDate}"></td>
+                                <th:block th:if="${member.deleteAccountFlag} == 'N'">
+                                    <td>활동중</td>
+                                </th:block>
+                                <th:block th:if="${member.deleteAccountFlag} == 'Y'">
+                                    <td>탈퇴</td>
+                                </th:block>
+                                <td th:text="${member.role}"></td>
+                                <td><button type="button" class="btn btn-danger deleteBtn" th:onclick="changeRole([[${member}]])">권한변경</button></td>
+                            </tr>
+                        </th:block>
                         </tbody>
                     </table>
                 </div>
-
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination pagination-lg justify-content-center" id="pageItems">
-
-                    </ul>
-                </nav>
             </div>
         </div>
     </main>
 </div>
 
 <script>
-    var urlParams = new URL(location.href).searchParams;
-    var page = urlParams.get('page');
-
-    var id = urlParams.get('id');
-
-    var role = urlParams.get('role');
-
-
-    var pageFirst;
-    var pageLast;
-    var totalPages;
-    var totalElements;
-
-    $(document).ready(function(){
-        if(id != null){
-            $('#searchinput').val(id);
-        }
-        if(role != null){
-            $('#searchinput').val(role);
-        }
-
-        findMember();
-
-    }); // ready()
-
-    function findMember(){
-        if(page  == null){
-            page = 0;
-        }
-
-        var url = "/admin/memberRoleAdmin?size=10";
-
-        var select = $('#targetSelect').val();
-
-        if(select == "selectId"){
-            role = null;
-            if($('#searchinput').val().length != 0){
-                if(id != $('#searchinput').val()){
-                    page = 0;
-                    id = $('#searchinput').val();
-                }
-                else{
-                    id = $('#searchinput').val();
-                }
-
-                if((id != null)&&(id != '')){
-                    url = url + "&id=" + id;
-                }
-            }
-        }
-        else if(select == "selectRole"){
-            id = null;
-            if($('#searchinput').val().length != 0){
-                if(role != $('#searchinput').val()){
-                    page = 0;
-                    role = $('#searchinput').val();
-                }
-                else{
-                    role = $('#searchinput').val();
-                }
-
-                if((role != null)&&(role != '')){
-                    url = url + "&role=" + role;
-                }
-            }
-        }
-
-        url = url + "&page=";
-
-        console.log(url);
-
-        $.ajax({
-            url:"/member/findAllMember",
-            data : {
-		        page : page,
-		        id : id,
-		        role : role
-	        },
-            success: function (data){
-
-            console.log(data);
-
-            pageFirst = data.first;
-            pageLast = data.last;
-            totalPages = data.totalPages;
-            totalElements = data.totalElements;
-
-            var contentList = data.content;
-
-            let placeInfo="";
-
-            for(let i=0;i<contentList.length;i++){
-                target = JSON.stringify(contentList[i]);
-                placeInfo+="<tr>";
-                placeInfo+="<td>"+contentList[i].no+"</td>";
-                placeInfo+="<td>"+contentList[i].id+"</td>";
-                placeInfo+="<td>"+contentList[i].name+"</td>";
-                placeInfo+="<td>"+contentList[i].signupDate+"</td>";
-                placeInfo+="<td>"+contentList[i].role+"</td>";
-                placeInfo+="<td>" + "<button onclick='changeRole(" + target + ")' class='btn btn-primary'>권한변경</button>" + "</td>"
-                placeInfo+="</tr>";
-            }
-
-            $("#tableTbody").html(placeInfo);
-
-            $("#pageItems").empty();
-
-            //페이징 시작
-            if(page > 9){
-                $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="' + url + '0">&#166;&laquo;</a></li>'
-                );
-            }
-
-            if(!pageFirst){
-                pagePrevious = Number(page) - 1;
-                $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="' + url + pagePrevious + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
-                );
-            }
-
-
-            if(page > 9){
-                pageStart = parseInt( page / 10 ) * 10;
-                for(let i = pageStart; i< pageStart + 10; i++){
-	                if(i < totalPages){
-	                    pageNext = Number(i) + 1;
-	                    if(page != i){
-	                        $('#pageItems').append(
-                                '<li class="page-item"><a   class="page-link"href="' + url + i +'">' + pageNext +  '</a></li>'
-                            );
-	                    }
-	                    else{
-	                        $('#pageItems').append(
-                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
-                            );
-	                    }
-	                }
-                }
-            }
-            else{
-                for(let i = 0; i<10; i++){
-	                if(i < totalPages){
-	                    pageNext = Number(i) + 1;
-	                    if(page != i){
-	                        $('#pageItems').append(
-                                '<li class="page-item"><a   class="page-link"href="' + url + i +'">' + pageNext +  '</a></li>'
-                            );
-	                    }
-	                    else{
-	                        $('#pageItems').append(
-                                '<li class="page-item active"><a class="page-link">' + pageNext + '</a></li>'
-                            );
-	                    }
-	                }
-                }
-            }
-
-
-            if(!pageLast){
-                pageNext = Number(page) + 1;
-                $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="' + url + pageNext + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
-                );
-            }
-
-            pageT = parseInt( page / 10 ) * 10;
-            totalPagesT = parseInt( totalPages / 10 ) * 10;
-
-            endTarget = Number(totalPagesT);
-
-            if((totalPages > 10)&&(pageT != totalPagesT)){
-                $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="' + url + endTarget + '">&raquo;&#166;</a></li>'
-                );
-            }
-
-            },
-            error: function (xhr){
-               console.log(xhr);
-            }
-        })
-    }
 
     function changeRole(member) {
         if(member.role == "ROLE_ADMIN"){
@@ -271,7 +88,7 @@
 		        role : role
 	        },
             success: function (data){
-                findMember();
+                location.reload();
             },
             error: function (xhr){
                 console.log(xhr);

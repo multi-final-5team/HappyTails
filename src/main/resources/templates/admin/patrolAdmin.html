@@ -1,50 +1,78 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-    <head th:replace="~{admin/index :: head}">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/index :: head}">
+    <meta charset="UTF-8">
+    <title>관리</title>
+</head>
 
-    </head>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    <style>
-        .card{
-            width: 45%;
-            margin: 2.5%;
-        }
-
-        #patroldiv{
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-    </style>
-
-    <body class="sb-nav-fixed">
-        <menu th:replace="~{admin/index :: headDiv}"></menu>
-
-            <div id="layoutSidenav_content">
-                <main th:replace="patrol/patrolAdmin :: main">
-
-                </main>
-                <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2023</div>
-                            <div>
-                                <a href="#">Privacy Policy</a>
-                                &middot;
-                                <a href="#">Terms &amp; Conditions</a>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
+<body class="sb-nav-fixed">
+<menu th:replace="~{admin/index :: headDiv}"></menu>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">순찰대 관리</h1>
+            <div class="card mb-4">
+                <div class="card-body">
+                    순찰대를 조회하고 삭제하는 페이지
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    순찰대 관리
+                </div>
+                <div class="card-body">
+                    <table id="datatablesSimple">
+                        <thead>
+                        <tr>
+                            <th>순찰대번호</th>
+                            <th>아이디</th>
+                            <th>강아지이름</th>
+                            <th>연령</th>
+                            <th>품종</th>
+                            <th>활동지역</th>
+                            <th>관리</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="patrol : ${patrolList}">
+                            <tr>
+                                <td th:text="${patrol.patrolNo}"></td>
+                                <td th:text="${patrol.userId}"></td>
+                                <td th:text="${patrol.name}"></td>
+                                <td th:text="${patrol.age}"></td>
+                                <td th:text="${patrol.breed}"></td>
+                                <td th:text="${patrol.location}"></td>
+                                <td><button type="button" class="btn btn-danger deleteBtn" th:onclick="deletepatrol([[${patrol.patrolNo}]])">삭제</button></td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="/js/admin/scripts.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-        <script src="/js/admin/datatables-simple-demo.js"></script>
-    </body>
+    </main>
+</div>
+
+<script>
+    function deletepatrol(patrolno) {
+
+        $.ajax({
+                type:'post',
+                url: "/patrol/patrolDeleteAdmin",
+                data: {patrolNo : patrolno},
+                success : function(data){
+                    location.reload();
+                },
+                error: function (xhr){
+                    console.log(xhr);
+                }
+        }); // $.ajax()
+    }
+</script>
+
+</body>
 </html>

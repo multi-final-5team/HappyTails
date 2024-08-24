@@ -8,12 +8,21 @@ import com.multi.happytails.community.service.ConferenceService;
 import com.multi.happytails.community.service.DogloveService;
 import com.multi.happytails.finddog.service.FindDogService;
 import com.multi.happytails.help.service.HelpService;
+import com.multi.happytails.member.model.dto.MemberDTO;
+import com.multi.happytails.member.service.MemberService;
+import com.multi.happytails.patrol.model.dao.PatrolRecordDAO;
+import com.multi.happytails.patrol.model.dto.PatrolDTO;
+import com.multi.happytails.patrol.model.dto.PrecordDTO;
+import com.multi.happytails.patrol.service.PatrolRecordService;
+import com.multi.happytails.patrol.service.PatrolService;
 import com.multi.happytails.shop.model.dto.SalesGoodsDTO;
 import com.multi.happytails.shop.service.SalesService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,6 +70,15 @@ public class AdminController {
     @Autowired
     private HelpService helpService;
 
+    @Autowired
+    private PatrolRecordService patrolRecordService;
+
+    @Autowired
+    private PatrolService patrolService;
+
+    @Autowired
+    private MemberService memberService;
+
 
     @RequestMapping("/index")
     public String adminMain(Principal principal) {
@@ -77,10 +95,33 @@ public class AdminController {
     public void test2() {}
 
     @RequestMapping("/patrolAdmin")
-    public void patrolAdmin() {}
+    public void patrolAdmin(Model model) {
+        List<PatrolDTO> list = patrolService.findAllPatrol();
+
+        for(PatrolDTO dto : list){
+            MemberDTO memberDTO = memberService.findMemberByUserNo(dto.getUserNo());
+
+            dto.setUserId(memberDTO.getId());
+        }
+
+        model.addAttribute("patrolList",list);
+    }
 
     @RequestMapping("/patrolRecordAdmin")
-    public void patrolRecordAdmin() {}
+    public void patrolRecordAdmin(Model model) {
+        List<PrecordDTO> list = patrolRecordService.findAllPatrolRecord();
+
+        for(PrecordDTO dto : list){
+            MemberDTO memberDTO = memberService.findMemberByUserNo(dto.getUserNo());
+
+            String userName = memberDTO.getName();
+
+            dto.setUserId(memberDTO.getId());
+            dto.setUserName(userName);
+        }
+
+        model.addAttribute("precordList",list);
+    }
 
     @RequestMapping("/salesListAdmin")
     public String salesListAdmin(@RequestParam(name = "page", defaultValue = "1") int page, Model model) {
@@ -146,7 +187,15 @@ public class AdminController {
     }
   
     @RequestMapping("/memberRoleAdmin")
-    public void memberRoleAdmin() {}
+    public void memberRoleAdmin(Model model, @PageableDefault(size = 100000) Pageable pageable) {
+        MemberDTO memberDTO = new MemberDTO();
+
+        Page<MemberDTO> list = memberService.findAllMember(memberDTO,pageable);
+
+        List<MemberDTO> content = list.getContent();
+
+        model.addAttribute("memberList",content);
+    }
 
     @RequestMapping("/chatdogAdmin")
     public String chatdogAdmin(
