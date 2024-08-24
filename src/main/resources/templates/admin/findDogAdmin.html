@@ -29,6 +29,7 @@
                             <th>작성자</th>
                             <th>카테고리</th>
                             <th>장소</th>
+                            <th>작성일</th>
                             <th>삭제</th>
                         </tr>
                         </thead>
@@ -39,6 +40,7 @@
                             <th>작성자</th>
                             <th>카테고리</th>
                             <th>장소</th>
+                            <th>작성일</th>
                             <th>삭제</th>
                         </tr>
                         </tfoot>
@@ -56,6 +58,7 @@
                                 </th:block>
 
                                 <td th:text="${findDog.area}"></td>
+                                <td th:text="${#dates.format(findDog.createDate, 'yyyy-MM-dd')}"></td>
                                 <td><input type="button" class="btn btn-danger deleteBtn" value="삭제" th:data-find-dog-no="${findDog.findDogNo}"></td>
                             </tr>
                         </th:block>

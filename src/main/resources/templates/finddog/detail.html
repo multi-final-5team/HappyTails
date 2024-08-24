@@ -73,7 +73,7 @@
                     <textarea class="form-control" id="content" rows="3" oninput="handleOnInput(this, 100)"></textarea>
                 </div>
                 <div>
-                    <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
+                    <input type="button" class="btn btn-primary float-end" value="댓글 작성" id="createBtn"/>
                 </div>
                 <div>
                     <table class="table table-hover" id="tableDiv">
@@ -81,6 +81,7 @@
                 </div>
             </div>
         </div>
+    </div>
 </main>
 <menu th:replace="fragments/head :: footer"></menu>
 <!-- 스크립트 -->
@@ -213,7 +214,7 @@
 
             let htmlStr = `
                 <input type="text" class="replyContent" value="`+findDogContent+`">
-                <input type="button" value="작성" class="replyUpdateBtn">
+                <input type="button" value="수정" class="replyUpdateBtn">
                 <input type="button" value="취소" class="replyUpdateClose">
             `;
 
