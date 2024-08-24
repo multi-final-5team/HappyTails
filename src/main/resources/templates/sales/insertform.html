@@ -3,9 +3,10 @@
 <head th:replace="fragments/head :: head">
 
 </head>
-<body class="container mt-5">
+<body>
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
+    <div  class="container mt-5">
     <h1 class="mb-4">상품 등록</h1>
     <form action="/sales/insertGoods" method="post" enctype="multipart/form-data" id="insertForm">
         <div class="mb-3">
@@ -51,6 +52,7 @@
 
         <button type="submit" class="btn btn-primary">등록</button>
     </form>
+    </div>
 </main>
 
 <script>

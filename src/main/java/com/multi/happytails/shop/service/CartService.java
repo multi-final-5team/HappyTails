@@ -27,4 +27,6 @@ public interface CartService {
     void updateCart(int purchaseQuantity, int no);
 
     void deleteCart(int no);
+
+    CartDTO getInfoByNo(int no);
 }

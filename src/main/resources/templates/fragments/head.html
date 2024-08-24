@@ -17,68 +17,146 @@
 
     <!-- Custom CSS -->
     <style>
-        body {
-            font-family: 'Jua', sans-serif;
-            background-color: #FFF8A04D;
-            color: #4A4A4A;
-        }
-        .navbar {
-            background-color: #FFF57D !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .navbar-brand img {
-            height: 40px;
-        }
-        .navbar-light .navbar-nav .nav-link {
-            color: #8B4513;
-            font-weight: 500;
-            transition: background-color 0.3s;
-            border-radius: 20px;
-            padding: 0.5rem 1rem;
-        }
-        .navbar-light .navbar-nav .nav-link:hover {
-            background-color: rgba(139, 69, 19, 0.1);
-        }
-        .dropdown-menu {
-            background-color: #FFF5E6;
-            border: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .dropdown-item:hover {
-            background-color: #FFF57D;
-        }
-        .btn-primary {
-            background-color: #8B4513;
-            border-color: #8B4513;
-        }
-        .btn-primary:hover {
-            background-color: #734A12;
-            border-color: #734A12;
-        }
-        footer {
-            background-color: #FFF57D;
-            color: #8B4513;
-            text-align: center;
-            padding: 1rem;
-            margin-top: 2rem;
-        }
-        .content-wrapper {
-            background-color: #FFFFFF;
-            border-radius: 20px;
-            padding: 1.5rem;
-            margin-top: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .tag {
-            background-color: #FFF57D;
-            color: #8B4513;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            display: inline-block;
-            margin: 0.25rem;
-        }
+        :root {
+       --main-color: #FFD166;
+       --accent-color: #FF9999;
+       --background-color: #F8F9FA; /* 연한 회색 배경 */
+       --text-color: #4A4A4A;
+       --light-gray: #E9ECEF;
+   }
+
+   body {
+       font-family: 'Noto Sans KR', sans-serif;
+       background-color: var(--background-color);
+       color: var(--text-color);
+   }
+
+              .navbar {
+                  background-color: #ffffff !important;
+                  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+                  border-bottom: 3px solid var(--main-color);
+              }
+
+              .navbar-brand img {
+                  height: 40px;
+              }
+
+              .navbar-light .navbar-nav .nav-link {
+                  color: var(--text-color);
+                  font-weight: 500;
+                  transition: all 0.3s;
+                  padding: 0.5rem 1rem;
+                  border-radius: 20px;
+              }
+
+              .navbar-light .navbar-nav .nav-link:hover {
+                  color: #ffffff;
+                  background-color: var(--accent-color);
+              }
+
+              .dropdown-menu {
+                  background-color: #ffffff;
+                  border: none;
+                  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                  border-radius: 12px;
+              }
+
+              .dropdown-item:hover {
+                  background-color: var(--light-gray);
+              }
+
+              .btn-primary {
+                  background-color: var(--accent-color);
+                  border-color: var(--accent-color);
+                  border-radius: 25px;
+                  padding: 8px 20px;
+                  font-weight: 500;
+                  transition: all 0.3s;
+              }
+
+              .btn-primary:hover {
+                  background-color: #FF7F7F;
+                  border-color: #FF7F7F;
+                  transform: translateY(-2px);
+                  box-shadow: 0 4px 8px rgba(255, 153, 153, 0.3);
+              }
+
+              footer {
+                    background-color: #FFF0E0;
+                    color: #4A4A4A;
+                  text-align: center;
+                  padding: 2rem;
+                  margin-top: 3rem;
+                  border-top: 3px solid #FFB366;
+              }
+
+              .content-wrapper {
+                  background-color: #ffffff;
+                  border-radius: 20px;
+                  padding: 2rem;
+                  margin-top: 2rem;
+                  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+                  border: 2px dashed var(--main-color);
+              }
+
+              .tag {
+                  background-color: var(--light-gray);
+                  color: var(--text-color);
+                  padding: 0.25rem 0.75rem;
+                  border-radius: 20px;
+                  font-size: 0.85rem;
+                  font-weight: 500;
+                  display: inline-block;
+                  margin: 0.25rem;
+                  transition: all 0.3s;
+                  border: 2px solid var(--main-color);
+              }
+
+              .tag:hover {
+                  background-color: var(--main-color);
+                  color: #ffffff;
+                  transform: translateY(-2px);
+              }
+
+              /* 강아지 테마 추가 요소 */
+              .paw-print {
+                  position: fixed;
+                  bottom: 20px;
+                  right: 20px;
+                  width: 50px;
+                  height: 50px;
+                  background-image: url('path-to-paw-print-image.png');
+                  background-size: contain;
+                  opacity: 0.5;
+              }
+
+              .section-title {
+                  position: relative;
+                  display: inline-block;
+                  margin-bottom: 1.5rem;
+                  font-weight: 700;
+                  color: var(--accent-color);
+              }
+
+              .section-title::after {
+                  content: '🐾';
+                  position: absolute;
+                  bottom: -5px;
+                  right: -25px;
+                  font-size: 1.2em;
+              }
+
+              .card {
+                  border-radius: 15px;
+                  overflow: hidden;
+                  transition: all 0.3s;
+                  border: 2px solid var(--main-color);
+              }
+
+              .card:hover {
+                  transform: translateY(-5px);
+                  box-shadow: 0 8px 20px rgba(255, 209, 102, 0.3);
+              }
     </style>
 
     <!-- Bootstrap Bundle JS (includes Popper) -->

@@ -113,6 +113,12 @@ public class ReviewController {
         String userId = principal.getName();
         reviewDTO.setId(userId);
 
+        System.out.println(reviewDTO + "aaaaaaaaaaaaaaaaaaaaaa");
+        System.out.println(imageFiles);
+        System.out.println(imageUpdateFiles);
+        System.out.println(imageDeleteImageNo);
+        System.out.println(imageUpdateImageNo);
+
         // imageUpdateFiles 출력
         if (imageUpdateFiles != null) {
             System.out.println("imageUpdateFiles:");
@@ -225,7 +231,7 @@ public class ReviewController {
         String id = principal.getName();
         ReviewDTO reviewDetails = reviewService.selectReview(id, goodsNo);
 
-        List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_INQUIRY_CODE, goodsNo);
+        List<UploadDto> uploadDtos = uploadService.uploadSelect(UPLOAD_INQUIRY_CODE, reviewDetails.getNo());
         System.out.println(uploadDtos + " ===============================================");
         System.out.println(reviewDetails);
         System.out.println(id);

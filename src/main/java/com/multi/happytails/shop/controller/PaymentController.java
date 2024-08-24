@@ -370,7 +370,7 @@ public class PaymentController {
     @PostMapping("/insertDelivery")
     @ResponseBody
     public ResponseEntity<?> insertDelivery(@RequestParam("payment_no") int payment_no,
-                                            @RequestParam("invoice_number") int invoice_number,
+                                            @RequestParam("invoice_number") long invoice_number,
                                             @RequestParam("delivery_man") String delivery_man) {
 
         try {

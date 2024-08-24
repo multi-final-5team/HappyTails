@@ -231,8 +231,6 @@ $(document).ready(function() {
 
     $('#imageInput').on('change', function(event) {
         const files = event.target.files;
-        imageFiles = [];
-        $('#imgPreview').empty();
 
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
@@ -251,8 +249,7 @@ $(document).ready(function() {
 
     $('#updateImageInput').on('change', function(event) {
         const files = event.target.files;
-        imageFiles = [];
-        $('#imgPreview').empty();
+
 
         for (let i = 0; i < files.length; i++) {
             const file = files[i];

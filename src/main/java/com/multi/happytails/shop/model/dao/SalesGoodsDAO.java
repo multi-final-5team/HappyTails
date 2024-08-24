@@ -48,6 +48,7 @@ public interface SalesGoodsDAO {
      * @return the list
      */
     List<SalesGoodsDTO> salesList(@Param("offset") int offset, @Param("limit") int limit);
+    List<SalesGoodsDTO> salesListAdmin(@Param("offset") int offset, @Param("limit") int limit);
 
     /**
      * methodName : salesListBusiness
@@ -103,4 +104,6 @@ public interface SalesGoodsDAO {
     List<SalesGoodsDTO> getRandomProducts();
 
     int salesPageCountForUser(String id);
+
+    void updateQuantity(@Param("quantity")int result, @Param("no") int goodsNo);
 }

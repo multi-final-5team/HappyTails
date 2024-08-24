@@ -42,26 +42,35 @@ public class CartController {
     private SalesService salesService;
 
     @PostMapping("/insertCart")
-    public String insertReview(Principal principal,
+    @ResponseBody
+    public int insertCart(Principal principal,
                                @RequestParam("goodsNo") int goodsNo,
                                @RequestParam("purchaseQuantity") int purchaseQuantity
                                 ) {
+        int result = 0;
         CartDTO cartDTO = new CartDTO();
         String id = principal.getName();
         SalesGoodsDTO salesGoodsDTO = new SalesGoodsDTO();
         salesGoodsDTO.setNo(goodsNo);
 
         SalesGoodsDTO salesDetails = salesService.selectSales(salesGoodsDTO);
+        if(salesDetails.getQuantity() < purchaseQuantity){
+            return 0;
+        } else {
+            result = (salesDetails.getQuantity() - purchaseQuantity);
+            salesService.updateQuantity(result, goodsNo);
 
-        cartDTO.setId(id);
-        cartDTO.setGoodsNo(goodsNo);
 
-        cartDTO.setPurchaseQuantity(purchaseQuantity);
-        cartDTO.setSeller(salesDetails.getId());
+            cartDTO.setId(id);
+            cartDTO.setGoodsNo(goodsNo);
 
-        cartService.insertCart(cartDTO);
+            cartDTO.setPurchaseQuantity(purchaseQuantity);
+            cartDTO.setSeller(salesDetails.getId());
 
-        return "redirect:/cart/cartList"; // adjust the redirect as necessary
+            cartService.insertCart(cartDTO);
+
+            return 1; // adjust the redirect as necessary
+        }
     }
 
     @GetMapping("/cartList")
@@ -100,7 +109,13 @@ public class CartController {
 
     @GetMapping("/deleteCart")
     public String deleteCart (@RequestParam("no") int no, HttpServletRequest request){
-
+        int result = 0;
+        CartDTO cartInfo = cartService.getInfoByNo(no);
+        SalesGoodsDTO salesGoodsDTO = new SalesGoodsDTO();
+        salesGoodsDTO.setNo(cartInfo.getGoodsNo());
+        SalesGoodsDTO salesInfo = salesService.selectSales(salesGoodsDTO);
+        result = (salesInfo.getQuantity() + cartInfo.getPurchaseQuantity());
+        salesService.updateQuantity(result, cartInfo.getGoodsNo());
         cartService.deleteCart(no);
 
         String referer = request.getHeader("Referer"); // 이전 페이지 URL 가져오기
