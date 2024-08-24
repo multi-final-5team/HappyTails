@@ -356,7 +356,11 @@ public class PatrolRecordController {
         System.out.println("findAllPatrol PrecordDTO>> " + precordDTO);
 
         if((precordDTO.getUserId() != null)&&(precordDTO.getUserId() != "")){
-            precordDTO.setUserNo((int)memberService.findMemberById(precordDTO.getUserId()).getNo());
+            MemberDTO memberDTO = memberService.findMemberById(precordDTO.getUserId());
+
+            if(memberDTO != null){
+                precordDTO.setUserNo((int)memberDTO.getNo());
+            }
         }
 
         Page<PrecordDTO> list = pageService.getListPrecord(precordDTO,pageable);
