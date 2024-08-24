@@ -48,4 +48,9 @@ public class CartServiceImpl implements CartService{
         cartDAO.deleteCart(no);
     }
 
+    @Override
+    public CartDTO getInfoByNo(int no) {
+        return cartDAO.getInfoByNo(no);
+    }
+
 }

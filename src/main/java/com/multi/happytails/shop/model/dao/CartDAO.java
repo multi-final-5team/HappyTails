@@ -28,4 +28,6 @@ public interface CartDAO {
     void updateCart(@Param("purchaseQuantity") int purchaseQuantity, @Param("no") int no);
 
     void deleteCart(int no);
+
+    CartDTO getInfoByNo(int no);
 }

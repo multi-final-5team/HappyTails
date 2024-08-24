@@ -20,7 +20,7 @@ public class PaymentDTO {
     private String delivery_code;
     private int goodsNo;
     private String delivery_man;
-    private int invoice_number;
+    private long invoice_number;
     private String address;
     private String request;
     private String seller;

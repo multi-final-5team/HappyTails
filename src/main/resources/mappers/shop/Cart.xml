@@ -44,4 +44,11 @@
     <delete id="deleteCart" parameterType="com.multi.happytails.shop.model.dto.CartDTO">
         DELETE FROM TB_CART WHERE NO = #{no}
     </delete>
+
+
+    <select id="getInfoByNo" resultMap="cartResultMap">
+        SELECT *
+        FROM TB_CART
+        WHERE NO = #{no};
+    </select>
 </mapper>

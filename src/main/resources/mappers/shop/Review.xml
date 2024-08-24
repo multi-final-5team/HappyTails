@@ -42,7 +42,7 @@
         ORDER BY REVIEW_NO DESC
     </select>
 
-    <select id="selectReview">
+    <select id="selectReview" resultMap="ReviewResultMap">
         SELECT * FROM TB_REVIEW
         WHERE GOODS_NO = #{goodsNo} AND ID = #{id}
     </select>

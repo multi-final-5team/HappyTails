@@ -47,6 +47,8 @@ public interface SalesService {
      */
     List<SalesGoodsDTO> salesList(int page, int pageSize);
 
+    List<SalesGoodsDTO> salesListAdmin(int page, int pageSize);
+
     /**
      * methodName : salesListBusiness
      * author : Shin HyeonCheol
@@ -100,4 +102,6 @@ public interface SalesService {
     List<SalesGoodsDTO> getRandomProducts();
 
     int salesPageCountForUser(String id);
+
+    void updateQuantity(int result, int goodsNo);
 }

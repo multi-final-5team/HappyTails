@@ -90,7 +90,7 @@ public class SalesController {
      * @param model the model
      * @return the string
      */
-    @GetMapping("/salesList")
+    @RequestMapping("/salesList")
     public String salesList(@RequestParam(name = "page", defaultValue = "1") int page, Model model) {
         int pageSize = 9;
         List<SalesGoodsDTO> salesGoodsList = salesService.salesList(page, pageSize);
@@ -123,7 +123,7 @@ public class SalesController {
      * @param model     the model
      * @return the string
      */
-    @GetMapping("/salesListBusiness")
+    @RequestMapping("/salesListBusiness")
     public String salesListBusiness(@RequestParam(name = "page", defaultValue = "1") int page, Principal principal, Model model) {
         int pageSize = 9;
         String id = principal.getName();
@@ -156,10 +156,10 @@ public class SalesController {
      * @param model the model
      * @return the string
      */
-    @GetMapping("/salesListAdmin")
+    @RequestMapping("/salesListAdmin")
     public String salesListAdmin(@RequestParam(name = "page", defaultValue = "1") int page, Model model) {
         int pageSize = 10;
-        List<SalesGoodsDTO> salesGoodsList = salesService.salesList(page, pageSize);
+        List<SalesGoodsDTO> salesGoodsList = salesService.salesListAdmin(page, pageSize);
         int totalSalesCount = salesService.salesPageCount();
         int totalPages = (int) Math.ceil((double) totalSalesCount / pageSize);
 
@@ -272,7 +272,7 @@ public class SalesController {
             uploadService.uploadInsert(uploadDto);
         }
 
-        return "redirect:/sales/salesList";
+        return "redirect:/sales/salesListBusiness";
     }
     // Create
 

@@ -20,8 +20,11 @@
 
             <div class="mb-3">
                 <label for="invoice_number" class="form-label">송장 번호 입력</label>
-                <input type="number" class="form-control" id="invoice_number" name="invoice_number" required min="0">
-                <small class="form-text text-muted">숫자만 입력 가능합니다.</small>
+                <input type="text" class="form-control" id="invoice_number" name="invoice_number" required
+                       minlength="10" maxlength="14" pattern="\d{10,14}"
+                       title="10자리 이상 14자리 이하의 숫자를 입력하세요">
+                <small class="form-text text-muted">10자리 이상 14자리 이하의 숫자만 입력 가능합니다.</small>
+                <div id="invoice_number_feedback" class="invalid-feedback"></div>
             </div>
 
             <button type="submit" class="btn btn-primary">송장 정보 등록</button>
@@ -64,6 +67,43 @@
         $('#invoice_number').on('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
         });
+    });
+</script>
+<script>
+    document.getElementById('invoice_number').addEventListener('input', function(e) {
+        let value = e.target.value;
+
+        // 숫자만 입력 가능하도록 제한
+        value = value.replace(/[^0-9]/g, '');
+
+        // 14자리로 제한
+        if (value.length > 14) {
+            value = value.slice(0, 14);
+        }
+
+        // 입력 값 업데이트
+        e.target.value = value;
+
+        // 유효성 검사
+        if (value.length >= 10 && value.length <= 14) {
+            e.target.setCustomValidity('');
+            e.target.classList.remove('is-invalid');
+            e.target.classList.add('is-valid');
+        } else {
+            e.target.setCustomValidity('송장 번호는 10자리 이상 14자리 이하여야 합니다.');
+            e.target.classList.remove('is-valid');
+            e.target.classList.add('is-invalid');
+        }
+
+        // 피드백 메시지 업데이트
+        let feedbackElement = document.getElementById('invoice_number_feedback');
+        if (value.length < 10) {
+            feedbackElement.textContent = `현재 ${value.length}자리입니다. 최소 10자리가 필요합니다.`;
+        } else if (value.length > 14) {
+            feedbackElement.textContent = `현재 ${value.length}자리입니다. 최대 14자리까지 가능합니다.`;
+        } else {
+            feedbackElement.textContent = '';
+        }
     });
 </script>
 </body>

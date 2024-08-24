@@ -41,6 +41,12 @@ public class SalesServiceImpl implements SalesService {
     }
 
     @Override
+    public List<SalesGoodsDTO> salesListAdmin(int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        return salesGoodsDAO.salesListAdmin(offset, pageSize);
+    }
+
+    @Override
     public List<SalesGoodsDTO> salesListBusiness(int page, int pageSize, String id) {
         int offset = (page - 1) * pageSize;
         return salesGoodsDAO.salesListBusiness(offset, pageSize, id);
@@ -80,4 +86,10 @@ public class SalesServiceImpl implements SalesService {
     public int salesPageCountForUser(String id) {
         return salesGoodsDAO.salesPageCountForUser(id);
     }
+
+    @Override
+    public void updateQuantity(int result, int goodsNo) {
+        salesGoodsDAO.updateQuantity(result, goodsNo);
+    }
+
 }
