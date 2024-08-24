@@ -4,7 +4,141 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+
 <style>
+    /* Modal 내부에만 스타일을 적용하기 위해 #saveModal로 범위를 한정 */
+#saveModal .custom-modal-content {
+    font-family: 'Gaegu', cursive;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #ffe6e6;
+}
+
+#saveModal .certificate {
+    background-color: #fff5f5;
+    border: 3px solid #ff9999;
+    border-radius: 20px;
+    padding: 20px;
+    width: 350px;
+    box-shadow: 0 0 15px rgba(255, 153, 153, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+#saveModal .certificate::before, #saveModal .certificate::after {
+    content: "🐾";
+    position: absolute;
+    font-size: 24px;
+    color: #ff9999;
+    opacity: 0.3;
+}
+
+#saveModal .certificate::before {
+    top: 10px;
+    left: 10px;
+}
+
+#saveModal .certificate::after {
+    bottom: 10px;
+    right: 10px;
+}
+
+#saveModal .certificate h1 {
+    text-align: center;
+    color: #ff6666;
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+#saveModal .photo-placeholder {
+    width: 200px;
+    height: 150px;
+    background-color: #ffcccc;
+    border: 2px dashed #ff9999;
+    margin: 0 auto 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    color: #ff9999;
+    cursor: pointer;
+}
+
+#saveModal .certificate p {
+    margin: 10px 0;
+    color: #ff6666;
+    font-size: 18px;
+}
+
+#saveModal .certificate strong {
+    color: #ff4d4d;
+}
+
+#saveModal button {
+    padding: 10px;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-family: 'Gaegu', cursive;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+#saveModal .save-button {
+    display: block;
+    width: 100%;
+    background-color: #ff9999;
+    margin-top: 20px;
+}
+
+#saveModal .save-button:hover {
+    background-color: #ff6666;
+}
+
+#saveModal .action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#saveModal .action-buttons a {
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    border-radius: 15px;
+    font-family: 'Gaegu', cursive;
+    font-size: 18px;
+    text-align: center;
+    display: inline-block;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#saveModal .action-buttons .back-button {
+    background-color: #99ccff;
+}
+
+#saveModal .action-buttons .back-button:hover {
+    background-color: #66b3ff;
+    transform: scale(1.05);
+}
+
+#saveModal .action-buttons .more-button {
+    background-color: #ff9999;
+}
+
+#saveModal .action-buttons .more-button:hover {
+    background-color: #ff6666;
+    transform: scale(1.05);
+}
+
+
+
+
     .form-group {
     display: flex;
     align-items: center;
@@ -15,68 +149,139 @@
 </style>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
-<div class="container">
-    <h1>댕댕이 신분증 만들기</h1>
-    <h3>동물 등록 번호로 간편하게 조회하고 댕댕이 신분증을 만들어보세요!</h3>
-    <h3>동물 등록 번호가 없다면? 우리 댕댕이를 위해 직접 작성해보세요!</h3>
-
-    <div class="tab-container">
-        <button onclick="showTab('api')">동물등록번호 조회</button>
-        <button onclick="showTab('manual')">직접 만들기</button>
-    </div>
+<div class="container py-4">
+    <h1 class="mb-4 text-center">🐾 댕댕이 신분증 만들기 🐾</h1>
+    <h3 class="mb-4 text-center">동물 등록 번호가 없다면? 우리 댕댕이를 위해 직접 작성해보세요!🐶</h3>
 
     <div id="apiForm">
-        <fieldset>
-            <legend>동물등록번호 조회</legend>
-            <input type="text" id="dogRegNo" placeholder="동물등록번호" required><br><br>
-            <input type="text" id="ownerNm" placeholder="견주 이름" required><br><br>
-            <button onclick="lookUp()">조회</button>
-        </fieldset>
+        <div class="card w-50 mx-auto text-center d-flex justify-content-center align-items-center">
+            <div class="card-body">
+                    <input type="button" class="btn btn-outline-primary btn-sm me-2" onclick="showTab('api')" value="등물등록번호로 조회">
+                    <input type="button" class="btn btn-outline-primary btn-sm m-3" onclick="showTab('manual')" value="직접 만들기">
+                <div>
+                    <h3>동물등록번호 조회</h3>
+                    <div class="mb-3 w-100">
+                        <label for="dogRegNo" class="form-label">동물등록번호</label>
+                        <input type="text" class="form-control" id="dogRegNo">
+                    </div>
+                    <div class="mb-3 w-100">
+                        <label for="ownerNm" class="form-label">견주이름</label>
+                        <input type="text" class="form-control" id="ownerNm">
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="lookUp()">조회</button>
+            </div>
+        </div>
     </div>
 
     <div id="manualForm" style="display: none;">
-        <fieldset>
-            <legend>직접 만들기</legend>
-            <input type="text" id="manualDogRegNo" placeholder="동물등록번호" maxlength="15" pattern="[0-9]*" required><br>
-            <small>ex) 숫자 15자로 자유양식</small><br><br>
-
-            <input type="text" id="manualDogNm" placeholder="강아지 이름" required><br>
-            <small>ex) 댕댕이</small><br><br>
-
-            <input type="text" id="manualKindNm" placeholder="품종" required><br>
-            <small>ex) 푸들</small><br><br>
-
-            <label>성별 :</label><br>
-            <label><input type="radio" name="sexNm" value="수컷" required> 수컷</label>
-            <label><input type="radio" name="sexNm" value="암컷" required> 암컷</label><br><br>
-
-            <label>중성화 여부 :</label><br>
-            <label><input type="radio" name="neuterYn" value="중성" required> 중성</label>
-            <label><input type="radio" name="neuterYn" value="미중성" required> 미중성</label><br><br>
-
-            <button onclick="createManualCertificate()">신분증 만들기</button>
-        </fieldset>
-    </div>
-
-    <div id="certificate" style="display: none;">
-        <h4>댕댕이 신분증</h4>
-        <p><strong>이름:</strong> <span id="dogNm"></span></p>
-        <p><strong>등록 번호:</strong> <span id="dogRegNoDisplay"></span></p>
-        <p><strong>품종:</strong> <span id="kindNm"></span></p>
-        <p><strong>성별:</strong> <span id="sexNm"></span></p>
-        <p><strong>중성화 여부:</strong> <span id="neuterYn"></span></p>
-        <button onclick="saveDogNum()">저장</button>
-        <button id="createCertificateBtn" onclick="createCertificate()" disabled>신분증 만들기</button>
+        <div class="card w-50 mx-auto text-center d-flex justify-content-center align-items-center">
+            <div class="card-body">
+                <input type="button" class="btn btn-outline-primary btn-sm me-2" onclick="showTab('api')" value="등물등록번호로 조회">
+                <input type="button" class="btn btn-outline-primary btn-sm m-3" onclick="showTab('manual')" value="직접 만들기">
+                <div>
+                    <h3>직접 만들기</h3>
+                    <div class="mb-3 w-100">
+                        <label for="manualDogRegNo" class="form-label">동물등록번호</label>
+                        <input type="text" class="form-control" id="manualDogRegNo" maxlength="15" pattern="[0-9]*" required>
+                        <small>ex) 숫자 15자로 자유양식</small>
+                    </div>
+                    <div class="mb-3 w-100">
+                        <label for="manualDogNm" class="form-label">강아지 이름</label>
+                        <input type="text" class="form-control" id="manualDogNm" required>
+                        <small>ex) 댕댕이</small>
+                    </div>
+                    <div class="mb-3 w-100">
+                        <label for="manualKindNm" class="form-label">품종</label>
+                        <input type="text" class="form-control" id="manualKindNm" required>
+                        <small>ex) 푸들</small>
+                    </div>
+                    <div class="mb-3 w-100">
+                        <label class="form-label">성별 :</label>
+                        <input type="radio" name="sexNm" value="수컷" required> 수컷
+                        <input type="radio" name="sexNm" value="암컷" required> 암컷
+                    </div>
+                    <div class="mb-3 w-100">
+                        <label class="form-label">중성화 여부 :</label>
+                        <input type="radio" name="neuterYn" value="중성" required> 중성
+                        <input type="radio" name="neuterYn" value="미중성" required> 미중성
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="createManualCertificate()">신분증 만들기</button>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- 자주묻는질문 작성 Modal -->
+<div class="modal fade" id="saveModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width: 385px;">
+            <div class="modal-body">
+                <div class="certificate" id="certificateInModal">
+                    <h1>댕댕이 신분증</h1>
+                    <div class="photo-placeholder" id="photo-placeholder">🐶</div>
+                    <p><strong>이름:</strong> <span id="dogNmInModal"></span></p>
+                    <p><strong>등록 번호:</strong> <span id="dogRegNoInModal"></span></p>
+                    <p><strong>품종:</strong> <span id="kindNmInModal"></span></p>
+                    <p><strong>성별:</strong> <span id="sexNmInModal"></span></p>
+                    <p><strong>중성화 여부:</strong> <span id="neuterYnInModal"></span></p>
+                </div>
+            <div class="modal-footer">
+                <button class="save-button btn btn-primary" style="font: unset;" onclick="saveCertificate()">신분증 저장하기</button>
+                <button class="btn btn-secondary" style="font: unset; width: 100%;" data-bs-dismiss="modal" id="saveModalClose">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 <footer th:replace="fragments/head :: footer"></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+    function saveCertificate() {
+        var modalContent = document.querySelector('#certificateInModal');
+
+        // html2canvas로 모달 콘텐츠 캡처
+        html2canvas(modalContent).then(function(canvas) {
+            // 캔버스를 JPG 데이터로 변환
+            var link = document.createElement('a');
+            link.href = canvas.toDataURL('image/jpeg');  // JPG 형식으로 변환
+            link.download = '댕댕이_신분증.jpg';  // 파일명 지정 (확장자를 JPG로 수정)
+            link.click();  // 다운로드 실행
+        });
+    }
+
+     // 이미지 업로드 처리
+    document.getElementById('photo-placeholder').addEventListener('click', function() {
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = function(event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                document.getElementById('photo-placeholder').innerHTML = '';
+                document.getElementById('photo-placeholder').appendChild(img);
+            }
+            reader.readAsDataURL(file);
+        }
+        input.click();
+    });
+
+
     function showTab(tabName) {
         document.getElementById('apiForm').style.display = tabName === 'api' ? 'block' : 'none';
         document.getElementById('manualForm').style.display = tabName === 'manual' ? 'block' : 'none';
     }
 
     function lookUp() {
+
+
         var dogRegNo = document.getElementById('dogRegNo').value;
         var ownerNm = document.getElementById('ownerNm').value;
 
@@ -100,16 +305,24 @@
 
                     if (resultCode === '00') {
                         var dogInfo = xmlDoc.getElementsByTagName('item')[0];
-                        document.getElementById('dogNm').innerText = dogInfo.getElementsByTagName('dogNm')[0]?.textContent || '정보 없음';
-                        document.getElementById('dogRegNoDisplay').innerText = dogInfo.getElementsByTagName('dogRegNo')[0]?.textContent || '정보 없음';
-                        document.getElementById('kindNm').innerText = dogInfo.getElementsByTagName('kindNm')[0]?.textContent || '정보 없음';
-                        document.getElementById('sexNm').innerText = dogInfo.getElementsByTagName('sexNm')[0]?.textContent || '정보 없음';
-                        document.getElementById('neuterYn').innerText = dogInfo.getElementsByTagName('neuterYn')[0]?.textContent || '정보 없음';
+                        let dogNm = dogInfo.getElementsByTagName('dogNm')[0]?.textContent || '정보 없음';
+                        let dogRegNoDisplay = dogInfo.getElementsByTagName('dogRegNo')[0]?.textContent || '정보 없음';
+                        let kindNm = dogInfo.getElementsByTagName('kindNm')[0]?.textContent || '정보 없음';
+                        let sexNm = dogInfo.getElementsByTagName('sexNm')[0]?.textContent || '정보 없음';
+                        let neuterYn = dogInfo.getElementsByTagName('neuterYn')[0]?.textContent || '정보 없음';
 
-                        document.getElementById('certificate').style.display = 'block';
+                        $('#dogNmInModal').text(dogNm);
+                        $('#dogRegNoInModal').text(dogRegNoDisplay);
+                        $('#kindNmInModal').text(kindNm);
+                        $('#sexNmInModal').text(sexNm);
+                        $('#neuterYnInModal').text(neuterYn);
+
+                        // saveDogNum(dogRegNoDisplay, dogNm, kindNm, sexNm, neuterYn);
+
+                        $("#saveModal").modal('show');
+
                     } else {
                         alert('동물 정보를 찾을 수 없습니다. 결과 코드: ' + resultCode);
-                        document.getElementById('certificate').style.display = 'none';
                     }
                 } else {
                     alert('API 요청 실패: ' + this.status);
@@ -120,11 +333,20 @@
     }
 
     function createManualCertificate() {
+
+        console.log('실행');
+
         var dogRegNo = document.getElementById('manualDogRegNo').value;
         var dogNm = document.getElementById('manualDogNm').value;
         var kindNm = document.getElementById('manualKindNm').value;
-        var sexNm = document.querySelector('input[name="sexNm"]:checked');
-        var neuterYn = document.querySelector('input[name="neuterYn"]:checked');
+        var sexNm = document.querySelector('input[name="sexNm"]:checked').value;
+        var neuterYn = document.querySelector('input[name="neuterYn"]:checked').value;
+
+        console.log(dogRegNo);
+        console.log(dogNm);
+        console.log(kindNm);
+        console.log(sexNm);
+        console.log(neuterYn);
 
         if (!/^\d+$/.test(dogRegNo)) {
             alert('동물등록번호는 숫자로만 입력해 주세요.');
@@ -136,22 +358,18 @@
             return;
         }
 
-        document.getElementById('dogNm').innerText = dogNm;
-        document.getElementById('dogRegNoDisplay').innerText = dogRegNo;
-        document.getElementById('kindNm').innerText = kindNm;
-        document.getElementById('sexNm').innerText = sexNm.value;
-        document.getElementById('neuterYn').innerText = neuterYn.value;
+        $('#dogNmInModal').text(dogNm);
+        $('#dogRegNoInModal').text(dogRegNo);
+        $('#kindNmInModal').text(kindNm);
+        $('#sexNmInModal').text(sexNm);
+        $('#neuterYnInModal').text(neuterYn);
 
-        document.getElementById('certificate').style.display = 'block';
-        document.getElementById('createCertificateBtn').disabled = false;
+        // saveDogNum(dogRegNo, dogNm, kindNm, sexNm, neuterYn);
+
+        $("#saveModal").modal('show');
     }
 
-    function saveDogNum() {
-        var dogRegNo = document.getElementById('dogRegNoDisplay').innerText;
-        var dogNm = document.getElementById('dogNm').innerText;
-        var kindNm = document.getElementById('kindNm').innerText;
-        var sexNm = document.getElementById('sexNm').innerText;
-        var neuterYn = document.getElementById('neuterYn').innerText;
+    function saveDogNum(dogRegNo, dogNm, kindNm, sexNm, neuterYn) {
 
         var formData = new FormData();
         formData.append('dogRegNo', dogRegNo);
@@ -167,9 +385,7 @@
         .then(response => response.text())
         .then(message => {
             alert(message);
-            document.getElementById('createCertificateBtn').disabled = false;
         })
-        .catch(error => alert('저장 실패: ' + error));
     }
 
     function createCertificate() {
