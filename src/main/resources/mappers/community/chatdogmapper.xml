@@ -108,7 +108,7 @@
         WHERE DATE_FORMAT(CREATETIME, '%Y-%m') = DATE_FORMAT(CURDATE(), '%Y-%m')
         AND CATEGORY_CODE = 'CHATDOG_CODE'
         ORDER BY RECOMMEND_COUNT DESC
-        LIMIT 5
+        LIMIT 3
     </select>
 
 </mapper>

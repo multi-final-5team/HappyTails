@@ -87,8 +87,7 @@
 
         var xhr = new XMLHttpRequest();
         var url = 'http://apis.data.go.kr/1543061/animalInfoSrvc/animalInfo';
-        var queryParams = '?' + encodeURIComponent('serviceKey') + '=WO6eYkS2IohC2ttnnnk4oJVRUweEG%2F9Pvi9HokXptwYM1P
-        okLcexnxHVoThQZk%2FAl2mAfd1WltIinmxbGpmodQ%3D%3D';
+        var queryParams = '?' + encodeURIComponent('serviceKey') + '=WO6eYkS2IohC2ttnnnk4oJVRUweEG%2F9Pvi9HokXptwYM1PokLcexnxHVoThQZk%2FAl2mAfd1WltIinmxbGpmodQ%3D%3D';
         queryParams += '&' + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(dogRegNo);
         queryParams += '&' + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerNm);
         xhr.open('GET', url + queryParams);
