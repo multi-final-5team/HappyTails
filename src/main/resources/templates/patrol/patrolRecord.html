@@ -20,7 +20,7 @@
 
         <div style="width: 40%;margin-left:auto;display: flex;">
             <select class="form-select" id="targetSelect" name="targetSelect" style="width: 30%">
-                <option value="selectId" selected>아이디</option>
+                <option value="selectId">아이디</option>
                 <option value="selectTitle">제목</option>
             </select>
             <input class="form-control" type="text" id="searchinput" style="width: 40%;">
@@ -65,9 +65,11 @@
 
         if(title != null){
             $('#searchinput').val(title);
+            $("#targetSelect").val("selectTitle").prop("selected", true);
         }
         if(userId != null){
             $('#searchinput').val(userId);
+            $("#targetSelect").val("selectId").prop("selected", true);
         }
 
         search();
