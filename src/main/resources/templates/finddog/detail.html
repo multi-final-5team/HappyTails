@@ -7,7 +7,7 @@
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
-    <div class="container">
+    <div class="container py-4">
         <h1 class="mb-4 text-center">🐾 찾아주개 🐾</h1>
         <h3 class="mb-4 text-center">잃어버린 반려견, 함께 찾습니다. 🐶</h3>
         <div class="card w-75 mx-auto">
@@ -60,13 +60,14 @@
                 <!-- 작성자만 보이게 -->
                 <div th:if="${findDogDto.writerId} == ${#authentication.principal.username}">
                     <th:block th:if="${findDogDto.state} == 'N'">
-                        <input type="button" class="btn btn-warning float-end" id="stateUpdateBtn" value="해결">
+                        <input type="button" class="btn btn-warning float-end mx-1" id="stateUpdateBtn" value="해결">
                     </th:block>
-                    <input type="button" class="btn btn-secondary float-end" id="printBtn" value="인쇄">
-                    <input type="button" class="btn btn-danger float-end" id="deleteBtn" value="삭제">
-                    <input type="button" class="btn btn-success float-end" id="updatePageBtn" value="수정">
+                    <button class="btn btn-secondary float-start" onclick="history.back()">뒤로가기</button>
+                    <input type="button" class="btn btn-secondary float-end mx-1" id="printBtn" value="인쇄">
+                    <input type="button" class="btn btn-danger float-end mx-1" id="deleteBtn" value="삭제">
+                    <input type="button" class="btn btn-success float-end mx-1" id="updatePageBtn" value="글수정">
                 </div>
-
+                <br>
                 <br>
                 <div class="mb-3">
                     <label for="content" class="form-label">댓글</label>
@@ -82,6 +83,7 @@
             </div>
         </div>
     </div>
+
 </main>
 <menu th:replace="fragments/head :: footer"></menu>
 <!-- 스크립트 -->
@@ -303,7 +305,7 @@
                                     <td>`+result[i].writerId+`</td>
                                     <td>`+dataFormat1(result[i].createDate)+`</td>
                                     <td>`+result[i].content+`</td>
-                                    <td><input type="button" class="btn btn-success reply-update-btn" value="수정"><input type="button" class="btn btn-danger reply-delete-btn" value="삭제"></td>
+                                    <td><input type="button" class="btn btn-success reply-update-btn mx-1" value="수정"><input type="button" class="btn btn-danger reply-delete-btn" value="삭제"></td>
                                 </tr>
                             </tbody>
                         `;
