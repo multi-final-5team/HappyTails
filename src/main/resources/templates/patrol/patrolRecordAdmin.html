@@ -1,54 +1,158 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org"
-                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="fragments/head :: head">
-
-    <title>Title</title>
-
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{admin/index :: head}">
+    <meta charset="UTF-8">
+    <title>관리</title>
 </head>
 
-<body>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-<menu th:replace="fragments/head :: menu"></menu>
+<body class="sb-nav-fixed">
+<menu th:replace="~{admin/index :: headDiv}"></menu>
+<div id="layoutSidenav_content">
+    <main>
+        <div class="container-fluid px-4">
+            <h1 class="mt-4">순찰일지 관리</h1>
+            <div class="card mb-4">
+                <div class="card-body">
+                    순찰일지를 조회하고 삭제하는 페이지
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    순찰일지 관리
+                </div>
+                <div class="card-body">
 
-<main>
+                    <div style="width: 40%;margin-left:auto;display: flex;">
+                        <select class="form-select" id="targetSelect" name="targetSelect" style="width: 30%">
+                            <option value="selectId" selected>아이디</option>
+                            <option value="selectTitle">제목</option>
+                        </select>
+                        <input class="form-control" type="text" id="searchinput" style="width: 40%;">
+                        <button class="btn btn-primary" id="btnserch" onclick="search()" style="width: 30%;">검색</button>
+                    </div>
+                    <table id=""  class="table">
+                        <thead>
+                        <tr>
+                            <th>일지번호</th>
+                            <th>아이디</th>
+                            <th>작성자</th>
+                            <th>제목</th>
+                            <th>관리</th>
+                        </tr>
+                        </thead>
 
-    <div class="container mt-5">
+                        <tbody id="tableTbody" class="table-group-divider">
 
-<h1 class="mb-4">순찰일지 관리</h1>
+                        </tbody>
+                    </table>
+                </div>
 
-    <div style="width: 30%;margin-left:auto;">
-        <input class="form-control" type="text" id="searchinput">
-        <button class="btn btn-info" id="btnserch" onclick="search()" style="margin-left:70%; width: 30%;">검색</button>
-    </div>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination pagination-lg justify-content-center" id="pageItems">
 
-<div id="patrolRecordDiv" sec:authorize="hasRole('ROLE_ADMIN')">
-
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </main>
 </div>
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination pagination-lg justify-content-center" id="pageItems">
+<script>
+    var urlParams = new URL(location.href).searchParams;
+    var page = urlParams.get('page');
 
-        </ul>
-    </nav>
+    var title = urlParams.get('title');
+    var userId = urlParams.get('userId');
+
+    var pageFirst;
+    var pageLast;
+    var totalPages;
+    var totalElements;
 
 
-    <script>
-        var urlParams = new URL(location.href).searchParams;
-        var page = urlParams.get('page');
+    $(document).ready(function(){
 
-        var pageFirst;
-        var pageLast;
-        var totalPages;
-        var totalElements;
+        if(title != null){
+            $('#searchinput').val(title);
+        }
+        if(userId != null){
+            $('#searchinput').val(userId);
+        }
 
-        $(document).ready(function(){
+        search();
+
+
+        $('#goPatrolRecordInsertBtn').click(function(){
+            location.href = "/patrolRecord/patrolRecordInsert";
+        });
+    });
+
+    function gopatrolRecord(precordNo) {
+        location.href = "/patrolRecord/patrolRecordView?precordNo="+precordNo;
+    }
+
+    function goPatrolRecordMain() {
+        location.href = "/patrolRecord/patrolRecord";
+    }
+
+    function search(){
+
+        if(page  == null){
+            page = 0;
+        }
+
+        var url = "/admin/patrolRecordAdmin?size=10";
+
+        var select = $('#targetSelect').val();
+
+        if(select == "selectId"){
+            title = null;
+            if($('#searchinput').val().length != 0){
+                if(userId != $('#searchinput').val()){
+                    page = 0;
+                    userId = $('#searchinput').val();
+                }
+                else{
+                    userId = $('#searchinput').val();
+                }
+
+                if((userId != null)&&(userId != '')){
+                    url = url + "&userId=" + userId;
+                }
+            }
+        }
+        else if(select == "selectTitle"){
+            userId = null;
+            if($('#searchinput').val().length != 0){
+                if(title != $('#searchinput').val()){
+                    page = 0;
+                    title = $('#searchinput').val();
+                }
+                else{
+                    title = $('#searchinput').val();
+                }
+
+                if((title != null)&&(title != '')){
+                    url = url + "&title=" + title;
+                }
+            }
+        }
+
+        url = url + "&page=";
+
+        console.log(url);
 
         $.ajax({
         type:'get',
         url: "/patrolRecord/findAllPatrolRecord",
         data : {
-		    page : page
+		    "page" : page,
+		    "title" : title,
+		    "userId" : userId
 	    },
         success : function(data){
             console.log(data);
@@ -60,56 +164,34 @@
 
             var contentList = data.content;
 
-            for(let index in contentList){
 
-                $('#patrolRecordDiv').append(
-                    $('<div>').prop({
-                        id: 'precord' + index,
-                        className: 'card'
-                        }).attr("onclick", "gopatrolRecord(" + contentList[index].precordNo + ")")
-                );
+            let placeInfo="";
 
-                $('#' + 'precord' + index).append(
-                    $('<div>').prop({
-                        id: 'divbody' + index,
-                        className: 'card-body'
-                    })
-                );
-
-                $('#' + 'divbody' + index).append(
-                    '<b class="card-text">글제목: ' + contentList[index].title + '</b><br>'
-                );
-
-                $('#' + 'divbody' + index).append(
-                    '<sub class="card-text">글쓴이: ' + contentList[index].userId + '</sub><br>'
-                );
-
-                $('#' + 'divbody' + index).append(
-                    '<sub class="card-text">조회수: ' + contentList[index].viewcount + '</sub>'
-                );
-
-                $('#' + 'patrol' + index).append(
-                    $('<div>').prop({
-                        id: 'divbtn' + index,
-                        className: ''
-                    })
-                );
-
-                $('#' + 'precord' + index,).append(
-                    '<button class="" id="btnDelete' + index + '" name="btnDelete' + index + '" onclick="deleteprecord(' + contentList[index].precordNo + ')">삭제</button>'
-                );
+            for(let i=0;i<contentList.length;i++){
+                placeInfo+="<tr>";
+                placeInfo+="<td>"+contentList[i].precordNo+"</td>";
+                placeInfo+="<td>"+contentList[i].userId+"</td>";
+                placeInfo+="<td>"+contentList[i].userName+"</td>";
+                placeInfo+='<td><a href="/patrolRecord/patrolRecordView?precordNo=' + contentList[i].precordNo + '">' + contentList[i].title + '</a></td>';
+                placeInfo+="<td>" + "<button onclick='deleteprecord(" + contentList[i].precordNo + ")' class='btn btn-primary'>삭제</button>" + "</td>"
+                placeInfo+="</tr>";
             }
+
+            $("#tableTbody").html(placeInfo);
+
+
+            $('#pageItems').empty();
 
             if(page > 9){
                 $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/admin/patrolRecordAdmin?page=0">&#166;&laquo;</a></li>'
+                    '<li class="page-item"><a class="page-link" href="' + url + '0">&#166;&laquo;</a></li>'
                 );
             }
 
             if(!pageFirst){
                 pagePrevious = Number(page) - 1;
                 $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/admin/patrolRecordAdmin?page=' + pagePrevious + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
+                    '<li class="page-item"><a class="page-link" href="' + url + pagePrevious + '" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>'
                 );
             }
 
@@ -121,7 +203,7 @@
 	                    pageNext = Number(i) + 1;
 	                    if(page != i){
 	                        $('#pageItems').append(
-                                '<li class="page-item"><a   class="page-link"href="/admin/patrolRecordAdmin?page=' + i +'">' + pageNext +  '</a></li>'
+                                '<li class="page-item"><a   class="page-link"href="' + url + i + '">' + pageNext +  '</a></li>'
                             );
 	                    }
 	                    else{
@@ -138,7 +220,7 @@
 	                    pageNext = Number(i) + 1;
 	                    if(page != i){
 	                        $('#pageItems').append(
-                                '<li class="page-item"><a   class="page-link"href="/admin/patrolRecordAdmin?page=' + i +'">' + pageNext +  '</a></li>'
+                                '<li class="page-item"><a   class="page-link"href="' + url + i  + '">' + pageNext +  '</a></li>'
                             );
 	                    }
 	                    else{
@@ -154,7 +236,7 @@
             if(!pageLast){
                 pageNext = Number(page) + 1;
                 $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/admin/patrolRecordAdmin?page=' + pageNext + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
+                    '<li class="page-item"><a class="page-link" href="' + url + pageNext + '" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>'
                 );
             }
 
@@ -165,7 +247,7 @@
 
             if((totalPages > 10)&&(pageT != totalPagesT)){
                 $('#pageItems').append(
-                    '<li class="page-item"><a class="page-link" href="/admin/patrolRecordAdmin?page=' + endTarget + '">&raquo;&#166;</a></li>'
+                    '<li class="page-item"><a class="page-link" href="' + url + endTarget + '">&raquo;&#166;</a></li>'
                 );
             }
 
@@ -174,84 +256,23 @@
             console.log(xhr);
         }
         }); // $.ajax()
+    }
 
-            $('#goPatrolRecordInsertBtn').click(function(){
-                location.href = "/patrolRecord/patrolRecordInsert";
-            });
-        });
-
-        function gopatrolRecord(precordNo) {
-            location.href = "/patrolRecord/patrolRecordView?precordNo="+precordNo;
-        }
-
-        function search(){
-                var searchword = $('#searchinput').val();
-
-                $.ajax({
-                    url:"/patrolRecord/findRecordBySearch",
-                    data: {searchword : searchword},
-                    success: function (data){
-                    $('#patrolRecordDiv').empty();
-
-
-                    for(let index in data){
-
-                    $('#patrolRecordDiv').append(
-
-                        $('<div>').prop({
-                            id: 'precord' + index,
-                            className: 'card'
-                            }).attr("onclick", "gopatrolRecord(" + data[index].precordNo + ")")
-                        );
-
-                        $('#' + 'precord' + index).append(
-                            $('<div>').prop({
-                                id: 'divbody' + index,
-                                className: 'card-body'
-                            })
-                        );
-
-                        $('#' + 'divbody' + index).append(
-                            '<b class="card-text">글제목: ' + data[index].title + '</b><br>'
-                        );
-
-                        $('#' + 'divbody' + index).append(
-                            '<sub class="card-text">글쓴이: ' + data[index].userNo + '</sub><br>'
-                        );
-
-                        $('#' + 'divbody' + index).append(
-                            '<sub class="card-text">조회수: ' + data[index].viewcount + '</sub>'
-                        );
-                }
-
-                    },
-                    error: function (xhr){
-                        console.log(xhr);
-                    }
-                })
-            }
-
-        function deleteprecord(precordno) {
+    function deleteprecord(precordno) {
 
             $.ajax({
                 type:'post',
                 url: "/patrolRecord/patrolRecordDeleteAdmin",
                 data: {precordNo : precordno},
                 success : function(data){
-
+                    search();
                 },
                 error: function (xhr){
                     console.log(xhr);
                 }
             }); // $.ajax()
         }
-    </script>
-
-    </div>
-
-</main>
-
-<menu th:replace="fragments/head :: footer"></menu>
+</script>
 
 </body>
 </html>
