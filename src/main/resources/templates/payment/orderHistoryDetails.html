@@ -25,7 +25,7 @@
                 <h2 class="mb-4">주문/결제</h2>
                 <form>
                     <div class="mb-3">
-                        <label for="name" class="form-label">구매자 성함</label>
+                        <label for="name" class="form-label">구매자</label>
                         <input type="text" class="form-control" id="name" th:value="${memberDTO.name}" readonly required>
                     </div>
                     <div class="mb-3">
@@ -39,6 +39,14 @@
                     <div class="mb-3">
                         <label for="request" class="form-label">배송시 요청사항</label>
                         <input type="text" class="form-control" id="request" th:value="${paymentHistory[0].request}" readonly required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="request" class="form-label">배달원</label>
+                        <input type="text" class="form-control" id="delivery_man" th:value="${paymentHistory[0].delivery_man}" readonly required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">송장 번호</label>
+                        <input type="text" class="form-control" id="invoice_number" th:value="${paymentHistory[0].invoice_number}" readonly required>
                     </div>
                 </form>
             </div>
@@ -73,12 +81,6 @@
                                     <th th:text="${paymentHistory.delivery_code}"></th>
                                     <th>
                                         <div class="order-actions">
-                                            <button class="btn btn-danger cancel-button"
-                                                    th:if="${paymentHistory.delivery_code != '환불 완료'}"
-                                                    th:data-payment-no="${paymentHistory.payment_no}"
-                                                    th:data-imp-uid="${paymentHistory.imPortId}"
-                                                    th:data-amount="${paymentHistory.purchaseprice}">환불</button>
-
                                             <button th:if="${paymentHistory.delivery_code == '배송 준비'}"
                                                     class="btn btn-primary delivery-btn"
                                                     th:data-payment-no="${paymentHistory.payment_no}">송장 등록</button>
@@ -91,6 +93,12 @@
                                                     th:if="${paymentHistory.delivery_code != '환불 완료'}"
                                                     th:data-payment-no="${paymentHistory.payment_no}"
                                                     th:data-delivery-code="${paymentHistory.delivery_code}">배송 상태 변경</button>
+
+                                            <button class="btn btn-danger cancel-button"
+                                                    th:if="${paymentHistory.delivery_code != '환불 완료'}"
+                                                    th:data-payment-no="${paymentHistory.payment_no}"
+                                                    th:data-imp-uid="${paymentHistory.imPortId}"
+                                                    th:data-amount="${paymentHistory.purchaseprice}">환불</button>
                                         </div>
 
                                     </th>

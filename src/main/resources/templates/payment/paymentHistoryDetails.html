@@ -25,7 +25,7 @@
                 <h2 class="mb-4">주문/결제</h2>
                 <form>
                     <div class="mb-3">
-                        <label for="name" class="form-label">구매자 성함</label>
+                        <label for="name" class="form-label">구매자</label>
                         <input type="text" class="form-control" id="name" th:value="${memberDTO.name}" readonly required>
                     </div>
                     <div class="mb-3">
@@ -39,6 +39,14 @@
                     <div class="mb-3">
                         <label for="request" class="form-label">배송시 요청사항</label>
                         <input type="text" class="form-control" id="request" th:value="${paymentHistory[0].request}" readonly required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="request" class="form-label">배달원</label>
+                        <input type="text" class="form-control" id="delivery_man" th:value="${paymentHistory[0].delivery_man}" readonly required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">송장 번호</label>
+                        <input type="text" class="form-control" id="invoice_number" th:value="${paymentHistory[0].invoice_number}" readonly required>
                     </div>
                 </form>
             </div>
@@ -72,10 +80,10 @@
                                     <th th:text="${#dates.format(paymentHistory.date_created, 'yyyy-MM-dd')}"></th>
                                     <th th:text="${paymentHistory.delivery_code}"></th>
                                     <th>
-                                        <a th:if="${paymentHistory.delivery_code != '구매 완료' AND paymentHistory.delivery_code != '환불 대기' and paymentHistory.delivery_code != '환불 완료'}"
-                                           th:href="@{/payment/paymentUpdateDelivery(payment_no=${paymentHistory.payment_no})}"
+                                        <a th:if="${paymentHistory.delivery_code == '배송 완료'}"
+                                           th:href="@{/payment/paymentPurchaseDelivery(payment_no=${paymentHistory.payment_no})}"
                                            class="btn btn-success">
-                                            환불 신청</a>
+                                            구입 확정</a>
 
                                         <button th:if="${paymentHistory.delivery_code == '구매 완료' and !reviewedMap[paymentHistory.goodsNo]}"
                                                 type="button" class="btn btn-primary review-btn"
@@ -90,12 +98,10 @@
                                             리뷰 수정
                                         </button>
 
-
-                                        <a th:if="${paymentHistory.delivery_code == '배송 완료'}"
-                                           th:href="@{/payment/paymentPurchaseDelivery(payment_no=${paymentHistory.payment_no})}"
+                                        <a th:if="${paymentHistory.delivery_code != '구매 완료' AND paymentHistory.delivery_code != '환불 대기' and paymentHistory.delivery_code != '환불 완료'}"
+                                           th:href="@{/payment/paymentUpdateDelivery(payment_no=${paymentHistory.payment_no})}"
                                            class="btn btn-success">
-                                            구입 확정</a>
-
+                                            환불 신청</a>
                                     </th>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(paymentHistory)}">
@@ -197,6 +203,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                <button type="button" class="btn btn-primary" id="submitDeleteReview">리뷰 삭제</button>
                 <button type="button" class="btn btn-primary" id="submitUpdateReview">리뷰 수정</button>
             </div>
         </div>
@@ -220,6 +227,7 @@
     let currentImgDiv;
     let currentImg;
     let currentImageNo;
+    let reviewNo;
 
 $(document).ready(function() {
 
@@ -304,6 +312,7 @@ $(document).ready(function() {
     $('.review-update-btn').on('click', function() {
         const goodsNo = $(this).data('goods-no');
         $('#goodsNo').val(goodsNo);
+        reviewNo = $(this).attr('data-review-no');
 
         selectNo = $(this).data('goods-no');
         console.log(goodsNo);
@@ -420,6 +429,27 @@ $(document).ready(function() {
             contentType : false,
             type : 'POST',
             data : formData,
+            success : function(result) {
+                alert(result);
+                location.reload();
+            }
+        });
+
+    });
+
+
+    $('#submitDeleteReview').click(function(){
+
+
+        // 체크된 라디오 버튼의 값을 가져옴
+        let goodsNo = selectNo;
+
+        console.log(goodsNo);
+
+        $.ajax({
+            url : "/review/deleteReview",
+            type : 'POST',
+            data : {goodsNo:goodsNo},
             success : function(result) {
                 alert(result);
                 location.reload();

@@ -207,20 +207,20 @@ public class ReviewController {
      * @param no   the review no
      * @return the string
      */
-    @GetMapping("/deleteReview")
-    public String deleteReview(@RequestParam("reviewNo") int no) {
-        ReviewDTO reviewDTO = new ReviewDTO();
-        reviewDTO.setNo(no);
-        System.out.println("dd" + no);
-        System.out.println("dd" + reviewDTO);
-        List<UploadDto> uploadDtos= uploadService.uploadSelect(UPLOAD_INQUIRY_CODE,no); // 리스트로 가져오니까
+    @PostMapping("/deleteReview")
+    @ResponseBody
+    public String deleteReview(Principal principal,@RequestParam("goodsNo") int goodsNo) {
+        ReviewDTO reviewInfo = reviewService.selectReview2(principal.getName(), goodsNo);
+
+
+        List<UploadDto> uploadDtos= uploadService.uploadSelect(UPLOAD_INQUIRY_CODE,reviewInfo.getNo()); // 리스트로 가져오니까
         // for문으로 써서
 
         for(int i = 0; i < uploadDtos.size(); i++) {
             uploadService.uploadDelete(uploadDtos.get(i).getImageNo());
         }
-        reviewService.deleteReview(reviewDTO);
-        return "redirect:/sales/salesList";
+        reviewService.deleteReview(reviewInfo);
+        return "리뷰 삭제에 성공하였습니다.";
     }
     // Delete
 
