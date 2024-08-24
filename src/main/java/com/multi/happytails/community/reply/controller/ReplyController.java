@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -86,15 +87,24 @@ public class ReplyController {
 
     @PostMapping("/{communityCategoryCode}/{foreignNo}/reply/update/{communityReplyNo}")
     @ResponseBody
-    public ResponseEntity<String> updateReplyAjax(
+    public ResponseEntity<String> updateReplyAjax( Model model,@ModelAttribute ReplyDTO replyDTO,
             @PathVariable("communityReplyNo") int communityReplyNo,
             @RequestParam("content") String content) {
+
+        // 댓글 내용 검증
+        if (content == null || content.trim().isEmpty()) {
+            model.addAttribute("errorMessage", "댓글 내용을 입력해주세요.");
+            return ResponseEntity.badRequest().body("댓글 내용을 입력해주세요.");
+        }
+        
         try {
             replyService.updateReply(communityReplyNo, content);
             return ResponseEntity.ok("댓글이 성공적으로 수정되었습니다.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("댓글 수정 중 오류가 발생했습니다.");
         }
+
+
     }
 
     private String getRedirectUrl(String communityCategoryCode) {
