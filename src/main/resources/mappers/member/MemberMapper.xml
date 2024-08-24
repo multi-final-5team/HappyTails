@@ -160,7 +160,7 @@
     <select id="getListMember"
             parameterType="com.multi.happytails.patrol.pageable.model.dto.RequestList"
             resultMap="memberResultMap">
-        SELECT USER_NO, USER_ID, USER_PASSWORD, USER_NAME, USER_NICKNAME, USER_AGE, USER_GENDER, USER_TEL, USER_SIGNUP_DATE, USER_DELETE_ACCOUNT_FLAG, USER_ROLE, USER_EMAIL, USER_SIGNUP_PATH_FLAG
+        SELECT USER_NO, USER_ID, USER_PASSWORD, USER_NAME, USER_NICKNAME, USER_GENDER, USER_TEL, USER_SIGNUP_DATE, USER_DELETE_ACCOUNT_FLAG, USER_ROLE, USER_EMAIL, USER_SIGNUP_PATH_FLAG
         FROM tb_users
         <where>
             <if test="data.id != null and data.id !='' ">

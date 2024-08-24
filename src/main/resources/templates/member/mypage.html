@@ -47,11 +47,11 @@
                     <button id="purchase-history" class="btn btn-primary">구매 목록</button>
                     <button id="business-registration" class="btn btn-primary">사업자 등록</button>
                     <button id="member-info" class="btn btn-primary">회원정보수정</button>
-                    <button id="delete-account" class="btn btn-danger">회원탈퇴</button>
+                    <button id="delete-account" class="btn btn-primary" style="background-color:red;">회원탈퇴</button>
                     <button th:if="${BusinessInfo != null}"
-                            class="btn btn-primary" onclick="location.href='/sales/salesListBusiness'">판매 상품 목록</button>
+                            class="btn btn-primary" style="background-color: skyblue;" onclick="location.href='/sales/salesListBusiness'">판매 상품 목록</button>
                     <button th:if="${BusinessInfo != null}"
-                            class="btn btn-primary" onclick="location.href='/payment/orderHistory'">판매 내역</button>
+                            class="btn btn-primary" style="background-color: skyblue;" onclick="location.href='/payment/orderHistory'">판매 내역</button>
                 </div>
             </div>
         </div>
@@ -106,4 +106,5 @@
     });
 </script>
 </body>
+<footer th:replace="fragments/head :: footer"></footer>
 </html>
