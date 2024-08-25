@@ -4,40 +4,56 @@
 <head>
     <meta charset="UTF-8">
     <title>문의</title>
+<style>
+    body {
+        font-family: 'Gaegu', cursive;
+        background-color: #FFF5EE;
+        background-image: url('paw-pattern.png');
+    }
+    .table th, .table td {
+        vertical-align: middle;
+    }
+    .btn {
+        border-radius: 20px;
+    }
+    .text-muted {
+        color: #6c757d;
+    }
+</style>
 </head>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
-    <main>
-        <div class="container py-4">
-            <h1 class="mb-4 text-center">🐾 고객센터 🐾</h1>
-            <h3 class="mb-4 text-center">고민 있으면 여기다 얘기하개 🐶</h3>
-        <div class="row align-items-end">
-            <div class="col">
-                <label for="category" class="form-label">카테고리</label>
-                <select class="form-select" id="category">
-                    <option selected value="" >전체</option>
-                </select>
-            </div>
-            <div class="col">
-                <label for="result" class="form-label">결과</label>
-                <select class="form-select" id="result">
-                    <option value="" selected>전체</option>
-                    <option value="N">대기</option>
-                    <option value="S">열람</option>
-                    <option value="Y">완료</option>
-                </select>
-            </div>
-            <div class="col">
-                <label for="title" class="form-label">제목</label>
-                <input type="text" id="title" class="form-control">
-            </div>
-            <div class="col">
-                <br>
-                <button type="button" class="btn btn-primary" id="searchBtn">검색</button>
-            </div>
+    <main class="container py-4">
+        <div>
+        <h1 class="mb-4 text-center">🐾 고객센터 🐾</h1>
+        <h3 class="mb-4 text-center">고민 있으면 여기다 얘기하개 🐶</h3>
+        <div class="row">
+            <div class="col-md-10 py-3" style="margin-left: 250px;">
+                <form class="row align-items-end">
+                    <div class="col-md-3">
+                        <select class="form-select" id="category">
+                            <option selected value="">카테고리(전체)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="result">
+                            <option value="" selected>결과(전체)</option>
+                            <option value="N">대기</option>
+                            <option value="S">열람</option>
+                            <option value="Y">완료</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" id="title" class="form-control" placeholder="제목을 입력하세요.">
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-outline-success" id="searchBtn">🔎</button>
+                    </div>
+                </form>
+                </div>
             </div>
             <div>
-                <table class="table table-hover" id="tableDiv">
+                <table class="table table-striped" id="tableDiv">
                 </table>
             </div>
             <div class="d-flex justify-content-center">
@@ -104,11 +120,13 @@
                 template = `
                         <thead>
                             <tr>
-                                <th scope="col">생성 날짜</th>
-                                <th scope="col">제목</th>
-                                <th scope="col">결과</th>
+                                <th> </th>
+                                <th>제목</th>
+                                <th>생성 날짜</th>
+                                <th>결과</th>
                             </tr>
                         </thead>
+                        <tbody>
                     `;
                 for (var i = 0; i < result.viewAll.length; i++) {
                     if (result.viewAll[i].result == 'S') {
@@ -122,15 +140,15 @@
                         resultStateClass = "bg-secondary";
                     }
                     template += `
-                            <tbody>
-                                <tr class="listRow" data-inquiryNo="`+result.viewAll[i].inquiryNo+`">
-                                    <td>`+dataFormat1(result.viewAll[i].createDate)+`</td>
-                                    <td>`+result.viewAll[i].title+`</td>
-                                    <td><span class="badge rounded-pill `+resultStateClass+`">`+resultStr+`</span></td>
-                                </tr>
-                            </tbody>
+                            <tr class="listRow" data-inquiryNo="`+result.viewAll[i].inquiryNo+`">
+                                <td>`+result.viewAll[i].inquiryNo+`</td>
+                                <td>`+result.viewAll[i].title+`</td>
+                                <td>`+dataFormat1(result.viewAll[i].createDate)+`</td>
+                                <td><span class="badge rounded-pill `+resultStateClass+`">`+resultStr+`</span></td>
+                            </tr>
                         `;
                 }
+                template += '</tbody>';
                 getpaging(result);
                 $('#tableDiv').append(template);
             }
