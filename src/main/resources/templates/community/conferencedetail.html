@@ -2,208 +2,209 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
-    <title>집사 회의 게시글 상세 페이지</title>
+    <title>내 새꾸 자랑 상세 페이지</title>
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu&display=swap" rel="stylesheet">
+    <style>
+        /* 깨진 이미지 아이콘 숨기기 */
+        img[src=""], img:not([src]) {
+            display: none;
+        }
 
+    </style>
 </head>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
-<h1 class="mb-4 text-center">🐾 집사 회의 게시글 상세 페이지 🐾</h1>
-<h3 class="mb-4 text-center">견주들만의 고민을 공유하시개! 🐶</h3>
- <div class="container">
-<div class="card mb-4">
-    <div class="card-body">
-        <h2 class="card-title"><strong>제목 : </strong> <span th:text="${conference.title}"></span></h2>
-        <p class="card-text"><strong>작성자 : </strong> <span th:text="${conference.userId}"></span></p>
-        <p class="card-text"><strong>작성일 : </strong> <span th:text="${#temporals.format(conference.createTime, 'yyyy-MM-dd')}"></span></p>
-        <p class="card-text" th:text="${conference.content}"></p>
-        <p class="card-text">❤️ <strong>추천 수:</strong> <span th:id="recommendCount" th:text="${conference.recommendCount}"></span></p>
-    </div>
 
-    <div class="row">
-        <div th:each="uploadDto : ${imageFiles}" class="col-md-4 mb-3">
-            <img th:src="@{/images/O/{file}(file=${uploadDto.storedFileName})}" class="img-fluid" alt="Image">
+    <div class="container">
+        <h1 class="mb-4 text-center">🐾 집사 회의 상세 페이지 🐾</h1>
+        <h3 class="mb-4 text-center">견주들만의 고민을 공유하시개! 🐶</h3>
+        <div class="card w-75 mx-auto">
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">제목</dt>
+                    <dd class="col-sm-9"><th:block th:text="${conference.title}"></th:block></dd>
+                    <dt class="col-sm-3">작성자</dt>
+                    <dd class="col-sm-9"><th:block th:text="${conference.userId}"></th:block></dd>
+                    <dt class="col-sm-3">작성날짜</dt>
+                    <dd class="col-sm-9"><th:block th:text="${conference.createTime}"></th:block></dd>
+                    <dt class="col-sm-3">추천수❤️</dt>
+                    <dd class="col-sm-9"><th:block th:text="${conference.recommendCount}"></th:block></dd>
+
+                    <dt class="col-sm-3">내용</dt>
+                    <dd class="col-sm-9" style="white-space: pre-wrap;" th:text="${conference.content}">
+                    </dd>
+
+                    <div class="row">
+                        <div th:each="uploadDto : ${imageFiles}" class="col-md-4 mb-3">
+                            <img th:src="@{/images/O/{file}(file=${uploadDto.storedFileName})}" style="margin-left: 320px; margin-right: 320px;" class="img-fluid rounded">
+                        </div>
+                    </div>
+                    <form th:action="@{/community/conference/conferenceRecommend}" method="post" onsubmit="return confirm('이 게시글을 추천하시겠어요?');">
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                        <button type="submit" class="btn btn-green" style="background-color: pink; color: white; margin-left: 816px; ">❤️ 추천하기</button>
+                        <input type="hidden" name="conferenceNo" th:value="${conference.conferenceNo}"/>
+                    </form>
+
+                    <div class="mb-4">
+                        <form th:action="@{/community/O/{foreignNo}/reply/add(foreignNo=${conference.conferenceNo})}" method="post" class="comment-form">
+                            <input type="hidden" name="communityCategoryCode" value="C" />
+                            <input type="hidden" name="foreignNo" th:value="${conference.conferenceNo}" />
+                            <div class="mb-3">
+                                <label  class="form-label">댓글</label>
+                                <textarea name="content" required rows="3" class="form-control"></textarea>
+                            </div>
+                            <div style="display: flex; justify-content: flex-end;" >
+                                <button type="submit"class="btn btn-primary float-end">댓글 생성</button>
+                            </div>
+                            <div>
+                                <table class="table table-hover" id="tableDiv">
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+
+                    <ul class="reply-list mt-4" style="list-style-type: none; padding: 0;">
+                        <li th:each="reply : ${reply}" class="comment-item" th:data-reply-no="${reply.communityReplyNo}" th:data-reply-content="${reply.content}" style="margin-bottom: 10px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <p style="margin: 0;">
+                                    <strong th:text="${reply.writerId}">작성자</strong>:
+                                    <span class="reply-content" th:text="${reply.content}">내용</span>
+                                </p>
+                                <div>
+                                    <button th:if="${#authentication.name == reply.writerId}" class="btn btn-sm reply-update-btn"
+                                            style="background-color: green; color: white;">수정</button>
+                                    <button th:if="${#authentication.name == 'admin' or #authentication.name == reply.writerId}" class="btn btn-sm btn-danger reply-delete-btn">삭제</button>
+                                </div>
+                            </div>
+                            <div class="reply-edit-form" style="display: none; margin-top: 10px;">
+                                <input type="text" class="replyContent form-control" />
+                                <button  type="submit" class="btn btn-sm btn-secondary replyUpdateBtn" >수정</button>
+                                <button class="replyUpdateClose">취소</button>
+                            </div>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex justify-content-between mt-4" >
+                        <div style="margin-bottom: 20px;">
+                            <div th:if="${#authentication.name == conference.userId}" class="d-inline-block me-2">
+                                <a th:href="@{/community/conference/update/{conferenceNo}(conferenceNo=${conference.conferenceNo})}"
+                                   class="btn btn-info me-2" style="margin-right: 10px;" >게시글 수정</a>
+                                <form th:action="@{/community/conference/delete}" method="post" class="d-inline-block me-2"
+                                      onsubmit="return confirm('게시글을 삭제하시겠어요?');">
+                                    <input type="hidden" name="conferenceNo" th:value="${conference.conferenceNo}">
+                                    <button type="submit" class="btn btn-danger">게시글 삭제</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <button class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
+                        </div>
+                    </div>
+                </dl>
+            </div>
         </div>
     </div>
-
-    <div class="mb-4">
-        <form th:action="@{/community/O/{foreignNo}/reply/add(foreignNo=${conference.conferenceNo})}" method="post" class="comment-form">
-            <input type="hidden" name="communityCategoryCode" value="C" />
-            <input type="hidden" name="foreignNo" th:value="${conference.conferenceNo}" />
-            <div style="margin-bottom: 10px;">
-                <textarea name="content" required rows="3" class="form-control" placeholder="댓글을 남겨주시개"></textarea>
-            </div>
-            <div style="display: flex; justify-content: flex-end;">
-                <button type="submit" class="btn btn-blue">댓글 남기기</button>
-            </div>
-        </form>
-    </div>
-
-    <form th:action="@{/community/conference/conferencerecommend}" method="post" onsubmit="return confirm('이 게시글을 추천하시겠어요?');">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-        <button type="submit" class="btn btn-green">❤️ 추천하기</button>
-        <input type="hidden" name="conferenceNo" th:value="${conference.conferenceNo}"/>
-    </form>
-
-    <h3 class="mt-4">댓글 목록</h3>
-    <ul class="reply-list mt-4" style="list-style-type: none; padding: 0;">
-        <li th:each="reply : ${reply}" class="comment-item" th:data-reply-no="${reply.communityReplyNo}" th:data-reply-content="${reply.content}">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <p style="margin: 0;">
-                    <strong th:text="${reply.writerId}">작성자</strong>:
-                    <span class="reply-content" th:text="${reply.content}">내용</span>
-                </p>
-                <div>
-                    <button th:if="${#authentication.name == reply.writerId}" class="btn btn-sm btn-blue reply-update-btn">수정</button>
-                    <button th:if="${#authentication.name == 'admin' or #authentication.name == reply.writerId}" class="btn btn-sm btn-danger reply-delete-btn">삭제</button>
-                </div>
-            </div>
-            <div class="reply-edit-form" style="display: none; margin-top: 10px;">
-                <input type="text" class="replyContent form-control" />
-                <button  type="submit" class="btn btn-sm btn-primary replyUpdateBtn">작성</button>
-                <button class="btn btn-sm btn-secondary replyUpdateClose">취소</button>
-            </div>
-        </li>
-
-    </ul>
-
-    <div class="d-flex justify-content-between mt-4">
-
-        <div style="margin-bottom: 20px;">
-            <div th:if="${#authentication.name == conference.userId}" class="d-inline-block me-2">
-                <a th:href="@{/community/conference/update/{conferenceNo}(conferenceNo=${conference.conferenceNo})}"
-                   class="btn btn-info me-2" style="margin-right: 10px;" >게시글 수정</a>
-                <form th:action="@{/community/conference/delete}" method="post" class="d-inline-block me-2"
-                      onsubmit="return confirm('게시글을 삭제하시겠어요?');">
-                    <input type="hidden" name="conferenceNo" th:value="${conference.conferenceNo}">
-                    <button type="submit" class="btn btn-danger">게시글 삭제</button>
-                </form>
-            </div>
-        </div>
-        <div style="margin-bottom: 20px;">
-            <button class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
-        </div>
-    </div>
-</div>
-</div>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var images = document.getElementsByTagName('img');
-        for (var i = 0; i < images.length; i++) {
-            images[i].onerror = function() {
-                var parentDiv = this.closest('.col-md-4');
-                if (parentDiv) {
-                    parentDiv.remove();
-                } else {
-                    this.style.display = 'none';
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var images = document.getElementsByTagName('img');
+            for (var i = 0; i < images.length; i++) {
+                images[i].onerror = function() {
+                    var parentDiv = this.closest('.col-md-4');
+                    if (parentDiv) {
+                        parentDiv.remove();
+                    } else {
+                        this.style.display = 'none';
+                    }
                 }
             }
-        }
-    });
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var images = document.getElementsByTagName('img');
-        for (var i = 0; i < images.length; i++) {
-            images[i].onerror = function() {
-                var parentDiv = this.closest('.col-md-4');
-                if (parentDiv) {
-                    parentDiv.remove();
-                } else {
-                    this.style.display = 'none';
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var foreignNo = $('input[name="conferenceNo"]').val();
+
+            // 댓글 수정 버튼 클릭
+            $('.reply-list').on('click', '.reply-update-btn', function() {
+                var $commentItem = $(this).closest('.comment-item');
+                var replyContent = $commentItem.attr('data-reply-content');
+                var $editForm = $commentItem.find('.reply-edit-form');
+
+                $editForm.find('.replyContent').val(replyContent);
+                $editForm.show();
+                $(this).hide();
+            });
+
+            // 댓글 수정 취소
+            $('.reply-list').on('click', '.replyUpdateClose', function() {
+                var $commentItem = $(this).closest('.comment-item');
+                var replyContent = $commentItem.attr('data-reply-content');
+                var $editForm = $commentItem.find('.reply-edit-form');
+
+                $editForm.hide();
+                $commentItem.find('.reply-update-btn').show();
+            });
+
+            // 댓글 수정 제출
+            $('.reply-list').on('click', '.replyUpdateBtn', function() {
+                var $commentItem = $(this).closest('.comment-item');
+                var communityReplyNo = $commentItem.attr('data-reply-no');
+                var content = $commentItem.find('.replyContent').val();
+
+                if (!content.trim()) {
+                    alert('댓글 내용을 입력해주세요.');
+                    return;
                 }
-            }
-        }
-    });
 
-   document.addEventListener('DOMContentLoaded', function() {
-    var foreignNo = $('input[name="conferenceNo"]').val();
-
-
-    // 댓글 수정 버튼 클릭
-    $('.reply-list').on('click', '.reply-update-btn', function() {
-        var $commentItem = $(this).closest('.comment-item');
-        var replyContent = $commentItem.attr('data-reply-content');
-        var $editForm = $commentItem.find('.reply-edit-form');
-
-            $editForm.find('.replyContent').val(replyContent);
-            $editForm.show();
-            $(this).hide();
-        });
-
-        // 댓글 수정 취소
-        $('.reply-list').on('click', '.replyUpdateClose', function() {
-            var $commentItem = $(this).closest('.comment-item');
-            var replyContent = $commentItem.attr('data-reply-content');
-            var $editForm = $commentItem.find('.reply-edit-form');
-
-            $editForm.hide();
-            $commentItem.find('.reply-update-btn').show();
-        });
-
-        // 댓글 수정 제출
-        $('.reply-list').on('click', '.replyUpdateBtn', function() {
-            var $commentItem = $(this).closest('.comment-item');
-            var communityReplyNo = $commentItem.attr('data-reply-no');
-            var content = $commentItem.find('.replyContent').val();
-
-            if (!content.trim()) {
-                alert('댓글 내용을 입력해주세요.');
-                return;
-            }
-
-            if (confirm("수정 하시겠습니까?")) {
-                $.ajax({
-                    url: "/community/O/" + foreignNo + "/reply/update/" + communityReplyNo,
-                    method: 'POST',
-
-                    data: { content: content },
-                    success: function(result) {
-                        alert(result);
-                        $commentItem.attr('data-reply-content', content);
-                        $commentItem.find('.reply-content').text(content);
-                        $commentItem.find('.reply-edit-form').hide();
-                        $commentItem.find('.reply-update-btn').show();
-                    },
-                    error: function() {
-                        alert('댓글 수정에 실패했습니다. 다시 시도해주세요.');
-                    }
-                });
-            }
-        });
-
-
-        // 댓글 삭제 버튼 클릭
-        $('.reply-list').on('click', '.reply-delete-btn', function() {
-            var $commentItem = $(this).closest('.comment-item');
-            var communityReplyNo = $commentItem.attr('data-reply-no');
-
-            if (confirm('댓글을 삭제하시겠어요?')) {
-                $.ajax({
-                    url: "/community/O/" + foreignNo + "/reply/delete/" + communityReplyNo,
-                    method: 'POST',
-                    success: function(result) {
-                        if (typeof result === 'object') {
-                            alert(result.message || '댓글이 성공적으로 삭제되었습니다.');
-                        } else {
-                            alert(result || '댓글이 성공적으로 삭제되었습니다.');
+                if (confirm("수정 하시겠습니까?")) {
+                    $.ajax({
+                        url: "/community/O/" + foreignNo + "/reply/update/" + communityReplyNo,
+                        method: 'POST',
+                        data: { content: content },
+                        success: function(result) {
+                            alert(result);
+                            $commentItem.attr('data-reply-content', content);
+                            $commentItem.find('.reply-content').text(content);
+                            $commentItem.find('.reply-edit-form').hide();
+                            $commentItem.find('.reply-update-btn').show();
+                        },
+                        error: function() {
+                            alert('댓글 수정에 실패했습니다. 다시 시도해주세요.');
                         }
-                        $commentItem.remove();
-                    },
-                    error: function(xhr, status, error) {
-                        var errorMessage = '댓글 삭제에 실패했습니다.';
-                        if (xhr.responseJSON && xhr.responseJSON.message) {
-                            errorMessage += ' 오류: ' + xhr.responseJSON.message;
-                        } else if (xhr.responseText) {
-                            errorMessage += ' 오류: ' + xhr.responseText;
+                    });
+                }
+            });
+
+            // 댓글 삭제 버튼 클릭
+            $('.reply-list').on('click', '.reply-delete-btn', function() {
+                var $commentItem = $(this).closest('.comment-item');
+                var communityReplyNo = $commentItem.attr('data-reply-no');
+
+                if (confirm('댓글을 삭제하시겠어요?')) {
+                    $.ajax({
+                        url: "/community/O/" + foreignNo + "/reply/delete/" + communityReplyNo,
+                        method: 'POST',
+                        success: function(result) {
+                            if (typeof result === 'object') {
+                                alert(result.message || '댓글이 성공적으로 삭제되었습니다.');
+                            } else {
+                                alert(result || '댓글이 성공적으로 삭제되었습니다.');
+                            }
+                            $commentItem.remove();
+                        },
+                        error: function(xhr, status, error) {
+                            var errorMessage = '댓글 삭제에 실패했습니다.';
+                            if (xhr.responseJSON && xhr.responseJSON.message) {
+                                errorMessage += ' 오류: ' + xhr.responseJSON.message;
+                            } else if (xhr.responseText) {
+                                errorMessage += ' 오류: ' + xhr.responseText;
+                            }
+                            alert(errorMessage);
                         }
-                        alert(errorMessage);
-                    }
-                });
-            }
+                    });
+                }
+            });
         });
-    });
-</script>
+    </script>
 </main>
 </body>
 <footer th:replace="fragments/head :: footer"></footer>

@@ -40,11 +40,11 @@
                         <input type="file" id="imageInput" name="imageFiles" multiple class="form-control" accept="image/*">
                     </div>
                     <div id="imgContainer" class="img-container">
-                        <div id="imgAddDiv" class="row g-2" style="width=;width: 100px;" height="100px;">
+                        <div id="imgAddDiv" class="d-flex flex-wrap" style="width=;width: 100px;" height="100px;">
                             <th:block th:if="${not #lists.isEmpty(uploadDtos)}">
                                 <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
-                                    <div class="imgDiv col-md-3 mb-3" th:id="'imgDiv' + ${uploadDto.imageNo}" style="display: inline-block; width: 120px; margin-right: 10px;">
-                                        <img th:src="@{/images/C/{file}(file=${uploadDto.storedFileName})}" style="width: 100px; height: 100px; object-fit: cover;">
+                                    <div class="imgDiv col-md-3 mb-3" th:id="'imgDiv' + ${uploadDto.imageNo}" style="display: block; width: 120px; margin-right: 10px;">
+                                        <img th:src="@{/images/C/{file}(file=${uploadDto.storedFileName})}" style="width: 100px; height: 100px;">
                                         <div class="mt-2" style="width: 100px;" >
                                             <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" th:data-image-no="${uploadDto.imageNo}" value="삭제">
                                             <input type="button" class="btn btn-success btn-sm imgUpdateBtn" th:data-image-no="${uploadDto.imageNo}" value="수정">
@@ -89,7 +89,7 @@
                           let reader = new FileReader();
                           reader.onload = function(e) {
                               let newImageDiv = $(`
-                            <div class="imgDiv col-md-3 mb-3" style="display: inline-block; width: 120px; margin-right: 10px;">
+                            <div class="imgDiv col-md-3 mb-3" style="display:block; width: 120px; margin-right: 10px;">
                                 <img src="${e.target.result}" style="width: 100px; height: 100px; object-fit: cover;">
                                 <div class="mt-2">
                                 <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" value="삭제" style="width: 100px;">
