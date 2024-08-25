@@ -36,8 +36,10 @@
                     </dd>
 
                     <div class="row">
-                        <div th:each="uploadDto : ${imageFiles}" class="col-md-4 mb-3">
-                            <img th:src="@{/images/O/{file}(file=${uploadDto.storedFileName})}" style="margin-left: 320px; margin-right: 320px;" class="img-fluid rounded">
+                        <div th:each="uploadDto : ${imageFiles}" class="col-md-4 offset-md-4 mb-3">
+                            <div style="width: 100%; text-align: center;">
+                                <img th:src="@{/images/C/{file}(file=${uploadDto.storedFileName})}" class="img-fluid rounded" style="display: block; margin: auto;">
+                            </div>
                         </div>
                     </div>
                     <form th:action="@{/community/conference/conferenceRecommend}" method="post" onsubmit="return confirm('이 게시글을 추천하시겠어요?');">

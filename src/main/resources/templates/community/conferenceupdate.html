@@ -40,14 +40,14 @@
                 <input type="file" id="imageInput" name="imageFiles" multiple class="form-control" accept="image/*">
             </div>
             <div id="imgContainer" class="img-container">
-                <div id="imgAddDiv" class="row g-2">
+                <div id="imgAddDiv" class="d-flex flex-wrap" style="width=;width: 100px;" height="100px;">
                     <th:block th:if="${not #lists.isEmpty(uploadDtos)}">
                         <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
-                            <div class="imgDiv col-md-3 mb-3" th:id="'imgDiv' + ${uploadDto.imageNo}">
-                                <img th:src="@{/images/O/{file}(file=${uploadDto.storedFileName})}">
-                                <div class="mt-2">
-                                    <button  type="submit" class="btn btn-sm btn-secondary replyUpdateBtn">수정</button>
-                                    <button class="replyUpdateClose">취소</button>
+                            <div class="imgDiv col-md-3 mb-3" th:id="'imgDiv' + ${uploadDto.imageNo}" style="display: block; width: 120px; margin-right: 10px;">
+                                <img th:src="@{/images/O/{file}(file=${uploadDto.storedFileName})}" style="width: 100px; height: 100px;">
+                                <div class="mt-2" style="width: 100px;" >
+                                    <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" th:data-image-no="${uploadDto.imageNo}" value="삭제">
+                                    <input type="button" class="btn btn-success btn-sm imgUpdateBtn" th:data-image-no="${uploadDto.imageNo}" value="수정">
                                 </div>
                             </div>
                         </th:block>
@@ -59,179 +59,179 @@
             <div>
                 <a href="/community/conference" class="btn btn-secondary mt-3" style="float: right;">뒤로가기</a>
             </div>
+        </div>
     </div>
 </div>
-</div>
-<script>
-let conferenceNo = [[${conference.conferenceNo}]];
+    <script>
+        let conferenceNo = [[${conference.conferenceNo}]];
 
-$(document).ready(function() {
-      let imageDeleteImageNo = [];
-      let imageUpdateImageNo = [];
-      let imageUpdateFiles = [];
-      let imageFiles = [];
+        $(document).ready(function() {
+              let imageDeleteImageNo = [];
+              let imageUpdateImageNo = [];
+              let imageUpdateFiles = [];
+              let imageFiles = [];
 
-      function logImageState() {
-            console.log('Current state:');
-            console.log('imageDeleteImageNo:', imageDeleteImageNo);
-            console.log('imageUpdateImageNo:', imageUpdateImageNo);
-            console.log('imageUpdateFiles:', imageUpdateFiles);
-            console.log('imageFiles:', imageFiles);
-            console.log('Total images:', $('#imgAddDiv').children().length);
-      }
+              function logImageState() {
+                    console.log('Current state:');
+                    console.log('imageDeleteImageNo:', imageDeleteImageNo);
+                    console.log('imageUpdateImageNo:', imageUpdateImageNo);
+                    console.log('imageUpdateFiles:', imageUpdateFiles);
+                    console.log('imageFiles:', imageFiles);
+                    console.log('Total images:', $('#imgAddDiv').children().length);
+              }
 
-      $('#imageInput').on('change', function(event) {
-          let files = event.target.files;
+              $('#imageInput').on('change', function(event) {
+                  let files = event.target.files;
 
-          for (let i = 0; i < files.length; i++) {
-              let file = files[i];
-              if (file && file.type.startsWith('image/')) {
-                  let reader = new FileReader();
-                  reader.onload = function(e) {
-                      let newImageDiv = $(`
-                      <div class="imgDiv col-md-3 mb-3" style="width: 100px; height: 100px;">
-                            <img src="${e.target.result}">
-                          <div class="mt-2">
-                              <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" value="삭제">
-                          </div>
-                      </div>
-                      `);
-                      $('#imgAddDiv').append(newImageDiv);
-                        newImageDiv.find('.imgDeleteBtn').on('click', function() {
-                            let index = imageFiles.indexOf(file);
-                            if (index > -1) {
-                                imageFiles.splice(index, 1);
+                  for (let i = 0; i < files.length; i++) {
+                      let file = files[i];
+                      if (file && file.type.startsWith('image/')) {
+                          let reader = new FileReader();
+                          reader.onload = function(e) {
+                              let newImageDiv = $(`
+                            <div class="imgDiv col-md-3 mb-3" style="display:block; width: 120px; margin-right: 10px;">
+                                <img src="${e.target.result}" style="width: 100px; height: 100px; object-fit: cover;">
+                                <div class="mt-2">
+                                <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" value="삭제" style="width: 100px;">
+                                </div>
+                            </div>
+                              `);
+                              $('#imgAddDiv').append(newImageDiv);
+                                newImageDiv.find('.imgDeleteBtn').on('click', function() {
+                                    let index = imageFiles.indexOf(file);
+                                    if (index > -1) {
+                                        imageFiles.splice(index, 1);
+                                    }
+                                    newImageDiv.remove();
+                                    updateImgContainerVisibility();
+                                    console.log('New image removed');
+                                    logImageState();
+                                });
                             }
-                            newImageDiv.remove();
-                            updateImgContainerVisibility();
-                            console.log('New image removed');
-                            logImageState();
-                        });
+                            imageFiles.push(file);
+                            reader.readAsDataURL(file);
+                        } else {
+                            alert('이미지 파일을 선택해주세요');
+                            imageFiles = imageFiles.filter(f => f !== file);
+
+                        }
                     }
-                    imageFiles.push(file);
-                    reader.readAsDataURL(file);
-                } else {
-                    alert('이미지 파일을 선택해주세요');
-                    imageFiles = imageFiles.filter(f => f !== file);
-
-                }
-            }
-            $(this).val('');
-            updateImgContainerVisibility();
-            console.log('New images added');
-            logImageState();
-        });
-
-        $('#updateForm').on('submit', function(e) {
-            e.preventDefault();
-            let formData = new FormData(this);
-
-            imageDeleteImageNo.forEach(imageNo => {
-                formData.append('imageDeleteImageNo', imageNo);
-            });
-
-            imageFiles.forEach(file => {
-                formData.append('imageFiles', file);
-            });
-
-            imageUpdateFiles.forEach((file, index) => {
-                formData.append('imageUpdateImageNo', imageUpdateImageNo[index]);
-                formData.append('imageUpdateFiles', file);
-            });
-
-            console.log('Submitting form');
-            logImageState();
-
-            $.ajax({
-                url: `/community/conference/update/${conferenceNo}`,
-                processData: false,
-                contentType: false,
-                type: 'POST',
-                data: formData,
-                success: function(result) {
-                    console.log('Update successful');
-                    console.log(result);
-                    location.href = "/community/conference";
-                },
-                error: function(xhr, status, error) {
-                    alert("게시글 수정에 실패했습니다. 제목과 내용을 기입해주세요.");
-                    console.error(xhr.responseText);
-                }
-            });
-        });
-
-        $(document).on("click", ".imgDeleteBtn", function() {
-            let imageNo = $(this).data("image-no");
-            let imgDiv = $(this).closest('.imgDiv');
-
-            if (imageNo) {
-                imageDeleteImageNo.push(imageNo);
-            }
-
-            imgDiv.remove();
-            updateImgContainerVisibility();
-            console.log('Image deleted, imageNo:', imageNo);
-            logImageState();
-        });
-
-        $(document).on("click", ".imgUpdateBtn", function() {
-            let imageNo = $(this).data("image-no");
-            let imgDiv = $(this).closest('.imgDiv');
-            let fileInput = $('<input type="file" style="display: none;">');
-
-            fileInput.on('change', function(event) {
-                let file = event.target.files[0];
-                if (file && file.type.startsWith('image/')) {
-                    let reader = new FileReader();
-                    reader.onload = function(e) {
-                        imgDiv.find('img').attr("src", e.target.result);
-                    }
-                    reader.readAsDataURL(file);
-
-                    let existingIndex = imageUpdateImageNo.indexOf(imageNo);
-                    if (existingIndex !== -1) {
-                        imageUpdateFiles.splice(existingIndex, 1);
-                        imageUpdateImageNo.splice(existingIndex, 1);
-                    }
-
-                    imageUpdateFiles.push(file);
-                    imageUpdateImageNo.push(imageNo);
-                    console.log('Image updated, imageNo:', imageNo);
+                    $(this).val('');
+                    updateImgContainerVisibility();
+                    console.log('New images added');
                     logImageState();
-                } else {
-                    alert('이미지 파일을 선택해주세요');
+                });
+
+                $('#updateForm').on('submit', function(e) {
+                    e.preventDefault();
+                    let formData = new FormData(this);
+
+                    imageDeleteImageNo.forEach(imageNo => {
+                        formData.append('imageDeleteImageNo', imageNo);
+                    });
+
+                    imageFiles.forEach(file => {
+                        formData.append('imageFiles', file);
+                    });
+
+                    imageUpdateFiles.forEach((file, index) => {
+                        formData.append('imageUpdateImageNo', imageUpdateImageNo[index]);
+                        formData.append('imageUpdateFiles', file);
+                    });
+
+                    console.log('Submitting form');
+                    logImageState();
+
+                    $.ajax({
+                        url: `/community/conference/update/${conferenceNo}`,
+                        processData: false,
+                        contentType: false,
+                        type: 'POST',
+                        data: formData,
+                        success: function(result) {
+                            console.log('Update successful');
+                            console.log(result);
+                            location.href = "/community/conference";
+                        },
+                        error: function(xhr, status, error) {
+                            alert("게시글 수정에 실패했습니다. 제목과 내용을 기입해주세요.");
+                            console.error(xhr.responseText);
+                        }
+                    });
+                });
+
+                $(document).on("click", ".imgDeleteBtn", function() {
+                    let imageNo = $(this).data("image-no");
+                    let imgDiv = $(this).closest('.imgDiv');
+
+                    if (imageNo) {
+                        imageDeleteImageNo.push(imageNo);
+                    }
+
+                    imgDiv.remove();
+                    updateImgContainerVisibility();
+                    console.log('Image deleted, imageNo:', imageNo);
+                    logImageState();
+                });
+
+                $(document).on("click", ".imgUpdateBtn", function() {
+                    let imageNo = $(this).data("image-no");
+                    let imgDiv = $(this).closest('.imgDiv');
+                    let fileInput = $('<input type="file" style="display: none;">');
+
+                    fileInput.on('change', function(event) {
+                        let file = event.target.files[0];
+                        if (file && file.type.startsWith('image/')) {
+                            let reader = new FileReader();
+                            reader.onload = function(e) {
+                                imgDiv.find('img').attr("src", e.target.result);
+                            }
+                            reader.readAsDataURL(file);
+
+                            let existingIndex = imageUpdateImageNo.indexOf(imageNo);
+                            if (existingIndex !== -1) {
+                                imageUpdateFiles.splice(existingIndex, 1);
+                                imageUpdateImageNo.splice(existingIndex, 1);
+                            }
+
+                            imageUpdateFiles.push(file);
+                            imageUpdateImageNo.push(imageNo);
+                            console.log('Image updated, imageNo:', imageNo);
+                            logImageState();
+                        } else {
+                            alert('이미지 파일을 선택해주세요');
+                        }
+                    });
+
+                    fileInput.click();
+                });
+
+                function updateImgContainerVisibility() {
+                    if ($('#imgAddDiv').children().length === 0) {
+                        $('#imgContainer').hide();
+                    } else {
+                        $('#imgContainer').show();
+                    }
                 }
+
+
+                $('img').on('error', function() {
+                    console.log('Image failed to load:', $(this).attr('src'));
+                    let imgDiv = $(this).closest('.imgDiv');
+                    let imageNo = imgDiv.find('.imgDeleteBtn').data('image-no');
+                    if (imageNo) {
+                        imageDeleteImageNo.push(imageNo);
+                    }
+                    imgDiv.remove();
+                    updateImgContainerVisibility();
+                    logImageState();
+                });
+
+                updateImgContainerVisibility();
+                console.log('Initial state');
+                logImageState();
             });
-
-            fileInput.click();
-        });
-
-        function updateImgContainerVisibility() {
-            if ($('#imgAddDiv').children().length === 0) {
-                $('#imgContainer').hide();
-            } else {
-                $('#imgContainer').show();
-            }
-        }
-
-
-        $('img').on('error', function() {
-            console.log('Image failed to load:', $(this).attr('src'));
-            let imgDiv = $(this).closest('.imgDiv');
-            let imageNo = imgDiv.find('.imgDeleteBtn').data('image-no');
-            if (imageNo) {
-                imageDeleteImageNo.push(imageNo);
-            }
-            imgDiv.remove();
-            updateImgContainerVisibility();
-            logImageState();
-        });
-
-        updateImgContainerVisibility();
-        console.log('Initial state');
-        logImageState();
-    });
-</script>
+    </script>
 
 </main>
 
