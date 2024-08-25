@@ -7,17 +7,14 @@ import com.multi.happytails.dog4cuts.model.dto.Dog4CutsImgPagingDTO;
 import com.multi.happytails.dog4cuts.service.Dog4CutsService;
 import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.member.service.MemberService;
-import com.multi.happytails.patrol.model.dto.PatrolDTO;
-import com.multi.happytails.patrol.model.dto.PatrolImgDTO;
-import com.multi.happytails.patrol.model.dto.PrecordDTO;
 import com.multi.happytails.patrol.pageable.service.PageService;
 import com.multi.happytails.upload.model.dto.UploadDto;
 import com.multi.happytails.upload.service.UploadService;
-import org.apache.catalina.util.StringUtil;
-import org.apache.commons.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -176,6 +173,10 @@ public class dog4cutsController {
 
         Dog4CutsDTO dog4CutsDTO = new Dog4CutsDTO();
         dog4CutsDTO.setUserNo((int) customUser.getNo());
+        if (pageable.getSort().isUnsorted()) {
+            // 기존 Pageable의 페이지 번호와 크기를 그대로 사용하고, 정렬만 변경
+            pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by(Sort.Direction.DESC, "dog4cuts_no"));
+        }
 
         Page<Dog4CutsDTO> list = pageService.getListDog4Cuts(dog4CutsDTO,pageable);
 
