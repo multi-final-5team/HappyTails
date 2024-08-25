@@ -2,13 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/head :: head">
     <meta charset="UTF-8">
-    <title>떠들개 게시글 수정</title>
+    <title>집사 회의 게시글 수정</title>
     <style>
-        .img-thumbnail {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-        }
         .img-container:empty {
             display: none;
         }
@@ -17,228 +12,227 @@
             background-size: cover;
             background-position: center;
         }
-
     </style>
 </head>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
-<div class="container">
-<h1 class="mb-4 text-center">🐾 떠들개 게시글 수정 🐾</h1>
-    <h3 class="mb-4 text-center">견주들과 자유롭게 얘기하시개! 🐶</h3>
-    <div class="card w-75 mx-auto">
-        <div class="card-body" style="margin-top: 30px;">
-        <form id="updateForm" th:action="@{/community/chatdog/update/{chatdogNo}(chatdogNo=${chatdog.chatdogNo})}" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="chatdogNo" th:value="${chatdog.chatdogNo}"/>
-            <button type="submit" class="btn btn-primary" id="createBtn" onclick="return confirm('수정 하시겠습니까?');" style="position: absolute; top: 10px; right: 10px;">게시글 수정</button>
-            <div class="mb-3">
-                <label for="title" class="form-label">제목:</label>
-                <input type="text" id="title" name="title" class="form-control" th:value="${chatdog.title}" required>
-            </div>
-            <div class="mb-3">
-                <label for="content" class="form-label">내용:</label>
-                <textarea id="content" name="content" class="form-control" rows="5" required th:text="${chatdog.content}"></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="imageInput" class="form-label">새 이미지 추가</label>
-                <input type="file" id="imageInput" name="imageFiles" multiple class="form-control" accept="image/*">
-            </div>
-            <div id="imgContainer" class="img-container">
-                <div id="imgAddDiv" class="row g-2">
-                    <th:block th:if="${not #lists.isEmpty(uploadDtos)}">
-                        <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
-                            <div class="imgDiv col-md-3 mb-3" th:id="'imgDiv' + ${uploadDto.imageNo}">
-                                <img th:src="@{/images/C/{file}(file=${uploadDto.storedFileName})}" class="img-thumbnail w-100">
-                                <div class="mt-2">
-                                    <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" th:data-image-no="${uploadDto.imageNo}" value="삭제">
-                                    <input type="button" class="btn btn-success btn-sm imgUpdateBtn" th:data-image-no="${uploadDto.imageNo}" value="수정">
-                                </div>
-                            </div>
-                        </th:block>
-                    </th:block>
+    <div class="container">
+        <h1 class="mb-4 text-center">🐾 떠들개 게시글 수정 🐾</h1>
+        <h3 class="mb-4 text-center">견주들과 자유롭게 얘기하시개! 🐶</h3>
+        <div class="card w-75 mx-auto">
+            <div class="card-body" style="margin-top: 30px;">
+
+                <form id="updateForm" th:action="@{/community/chatdog/update/{chatdogNo}(chatdogNo=${chatdog.chatdogNo})}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="chatdogNo" th:value="${chatdog.chatdogNo}"/>
+                    <button type="submit" class="btn btn-primary" id="createBtn" onclick="return confirm('수정 하시겠습니까?');" style="position: absolute; top: 10px; right: 10px;">게시글 수정</button>
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label">제목:</label>
+                        <input type="text" id="title" name="title" class="form-control" th:value="${chatdog.title}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">내용:</label>
+                        <textarea id="content" name="content" class="form-control" rows="5" required th:text="${chatdog.content}"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imageInput" class="form-label">새 이미지 추가</label>
+                        <input type="file" id="imageInput" name="imageFiles" multiple class="form-control" accept="image/*">
+                    </div>
+                    <div id="imgContainer" class="img-container">
+                        <div id="imgAddDiv" class="row g-2" style="width=;width: 100px;" height="100px;">
+                            <th:block th:if="${not #lists.isEmpty(uploadDtos)}">
+                                <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
+                                    <div class="imgDiv col-md-3 mb-3" th:id="'imgDiv' + ${uploadDto.imageNo}" style="display: inline-block; width: 120px; margin-right: 10px;">
+                                        <img th:src="@{/images/C/{file}(file=${uploadDto.storedFileName})}" style="width: 100px; height: 100px; object-fit: cover;">
+                                        <div class="mt-2" style="width: 100px;" >
+                                            <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" th:data-image-no="${uploadDto.imageNo}" value="삭제">
+                                            <input type="button" class="btn btn-success btn-sm imgUpdateBtn" th:data-image-no="${uploadDto.imageNo}" value="수정">
+                                        </div>
+                                    </div>
+                                </th:block>
+                            </th:block>
+                        </div>
+                    </div>
+                    <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
+                </form>
+                <div>
+                    <a href="/community/chatdog" class="btn btn-secondary mt-3" style="float: right;">뒤로가기</a>
                 </div>
             </div>
-            <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
-        </form>
-        <div>
-            <button class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
         </div>
     </div>
-</div>
-</div>
+    <script>
+        let chatdogNo = [[${chatdog.chatdogNo}]];
 
-<script>
-    let chatdogNo = [[${chatdog.chatdogNo}]];
+        $(document).ready(function() {
+              let imageDeleteImageNo = [];
+              let imageUpdateImageNo = [];
+              let imageUpdateFiles = [];
+              let imageFiles = [];
 
-    $(document).ready(function() {
-        let imageDeleteImageNo = [];
-        let imageUpdateImageNo = [];
-        let imageUpdateFiles = [];
-        let imageFiles = [];
+              function logImageState() {
+                    console.log('Current state:');
+                    console.log('imageDeleteImageNo:', imageDeleteImageNo);
+                    console.log('imageUpdateImageNo:', imageUpdateImageNo);
+                    console.log('imageUpdateFiles:', imageUpdateFiles);
+                    console.log('imageFiles:', imageFiles);
+                    console.log('Total images:', $('#imgAddDiv').children().length);
+              }
 
-        function logImageState() {
-            console.log('Current state:');
-            console.log('imageDeleteImageNo:', imageDeleteImageNo);
-            console.log('imageUpdateImageNo:', imageUpdateImageNo);
-            console.log('imageUpdateFiles:', imageUpdateFiles);
-            console.log('imageFiles:', imageFiles);
-            console.log('Total images:', $('#imgAddDiv').children().length);
-        }
+              $('#imageInput').on('change', function(event) {
+                  let files = event.target.files;
 
-        $('#imageInput').on('change', function(event) {
-            let files = event.target.files;
-
-            for (let i = 0; i < files.length; i++) {
-                let file = files[i];
-                if (file && file.type.startsWith('image/')) {
-                    let reader = new FileReader();
-                    reader.onload = function(e) {
-                        let newImageDiv = $(`
-                        <div class="imgDiv col-md-3 mb-3">
-                            <img src="${e.target.result}" class="img-thumbnail w-100">
-                            <div class="mt-2">
-                                <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" value="삭제">
+                  for (let i = 0; i < files.length; i++) {
+                      let file = files[i];
+                      if (file && file.type.startsWith('image/')) {
+                          let reader = new FileReader();
+                          reader.onload = function(e) {
+                              let newImageDiv = $(`
+                            <div class="imgDiv col-md-3 mb-3" style="display: inline-block; width: 120px; margin-right: 10px;">
+                                <img src="${e.target.result}" style="width: 100px; height: 100px; object-fit: cover;">
+                                <div class="mt-2">
+                                <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" value="삭제" style="width: 100px;">
+                                </div>
                             </div>
-                        </div>
-                        `);
-                        $('#imgAddDiv').append(newImageDiv);
-
-                        newImageDiv.find('.imgDeleteBtn').on('click', function() {
-                            let index = imageFiles.indexOf(file);
-                            if (index > -1) {
-                                imageFiles.splice(index, 1);
+                              `);
+                              $('#imgAddDiv').append(newImageDiv);
+                                newImageDiv.find('.imgDeleteBtn').on('click', function() {
+                                    let index = imageFiles.indexOf(file);
+                                    if (index > -1) {
+                                        imageFiles.splice(index, 1);
+                                    }
+                                    newImageDiv.remove();
+                                    updateImgContainerVisibility();
+                                    console.log('New image removed');
+                                    logImageState();
+                                });
                             }
-                            newImageDiv.remove();
-                            updateImgContainerVisibility();
-                            console.log('New image removed');
-                            logImageState();
-                        });
+                            imageFiles.push(file);
+                            reader.readAsDataURL(file);
+                        } else {
+                            alert('이미지 파일을 선택해주세요');
+                            imageFiles = imageFiles.filter(f => f !== file);
+
+                        }
                     }
-                    imageFiles.push(file);
-                    reader.readAsDataURL(file);
-                } else {
-                    alert('이미지 파일을 선택해주세요');
-                    imageFiles = imageFiles.filter(f => f !== file);
-
-                }
-            }
-            $(this).val('');
-            updateImgContainerVisibility();
-            console.log('New images added');
-            logImageState();
-        });
-
-        $('#updateForm').on('submit', function(e) {
-            e.preventDefault();
-            let formData = new FormData(this);
-
-            imageDeleteImageNo.forEach(imageNo => {
-                formData.append('imageDeleteImageNo', imageNo);
-            });
-
-            imageFiles.forEach(file => {
-                formData.append('imageFiles', file);
-            });
-
-            imageUpdateFiles.forEach((file, index) => {
-                formData.append('imageUpdateImageNo', imageUpdateImageNo[index]);
-                formData.append('imageUpdateFiles', file);
-            });
-
-            console.log('Submitting form');
-            logImageState();
-
-            $.ajax({
-                url: `/community/chatdog/update/${chatdogNo}`,
-                processData: false,
-                contentType: false,
-                type: 'POST',
-                data: formData,
-                success: function(result) {
-                    console.log('Update successful');
-                    console.log(result);
-                    location.href = "/community/chatdog";
-                },
-                error: function(xhr, status, error) {
-                    alert("게시글 수정에 실패했습니다. 제목과 내용을 기입해주세요.");
-                    console.error(xhr.responseText);
-                }
-            });
-        });
-
-        $(document).on("click", ".imgDeleteBtn", function() {
-            let imageNo = $(this).data("image-no");
-            let imgDiv = $(this).closest('.imgDiv');
-
-            if (imageNo) {
-                imageDeleteImageNo.push(imageNo);
-            }
-
-            imgDiv.remove();
-            updateImgContainerVisibility();
-            console.log('Image deleted, imageNo:', imageNo);
-            logImageState();
-        });
-
-        $(document).on("click", ".imgUpdateBtn", function() {
-            let imageNo = $(this).data("image-no");
-            let imgDiv = $(this).closest('.imgDiv');
-            let fileInput = $('<input type="file" style="display: none;">');
-
-            fileInput.on('change', function(event) {
-                let file = event.target.files[0];
-                if (file && file.type.startsWith('image/')) {
-                    let reader = new FileReader();
-                    reader.onload = function(e) {
-                        imgDiv.find('img').attr("src", e.target.result);
-                    }
-                    reader.readAsDataURL(file);
-
-                    let existingIndex = imageUpdateImageNo.indexOf(imageNo);
-                    if (existingIndex !== -1) {
-                        imageUpdateFiles.splice(existingIndex, 1);
-                        imageUpdateImageNo.splice(existingIndex, 1);
-                    }
-
-                    imageUpdateFiles.push(file);
-                    imageUpdateImageNo.push(imageNo);
-                    console.log('Image updated, imageNo:', imageNo);
+                    $(this).val('');
+                    updateImgContainerVisibility();
+                    console.log('New images added');
                     logImageState();
-                } else {
-                    alert('이미지 파일을 선택해주세요');
+                });
+
+                $('#updateForm').on('submit', function(e) {
+                    e.preventDefault();
+                    let formData = new FormData(this);
+
+                    imageDeleteImageNo.forEach(imageNo => {
+                        formData.append('imageDeleteImageNo', imageNo);
+                    });
+
+                    imageFiles.forEach(file => {
+                        formData.append('imageFiles', file);
+                    });
+
+                    imageUpdateFiles.forEach((file, index) => {
+                        formData.append('imageUpdateImageNo', imageUpdateImageNo[index]);
+                        formData.append('imageUpdateFiles', file);
+                    });
+
+                    console.log('Submitting form');
+                    logImageState();
+
+                    $.ajax({
+                        url: `/community/chatdog/update/${chatdogNo}`,
+                        processData: false,
+                        contentType: false,
+                        type: 'POST',
+                        data: formData,
+                        success: function(result) {
+                            console.log('Update successful');
+                            console.log(result);
+                            location.href = "/community/chatdog";
+                        },
+                        error: function(xhr, status, error) {
+                            alert("게시글 수정에 실패했습니다. 제목과 내용을 기입해주세요.");
+                            console.error(xhr.responseText);
+                        }
+                    });
+                });
+
+                $(document).on("click", ".imgDeleteBtn", function() {
+                    let imageNo = $(this).data("image-no");
+                    let imgDiv = $(this).closest('.imgDiv');
+
+                    if (imageNo) {
+                        imageDeleteImageNo.push(imageNo);
+                    }
+
+                    imgDiv.remove();
+                    updateImgContainerVisibility();
+                    console.log('Image deleted, imageNo:', imageNo);
+                    logImageState();
+                });
+
+                $(document).on("click", ".imgUpdateBtn", function() {
+                    let imageNo = $(this).data("image-no");
+                    let imgDiv = $(this).closest('.imgDiv');
+                    let fileInput = $('<input type="file" style="display: none;">');
+
+                    fileInput.on('change', function(event) {
+                        let file = event.target.files[0];
+                        if (file && file.type.startsWith('image/')) {
+                            let reader = new FileReader();
+                            reader.onload = function(e) {
+                                imgDiv.find('img').attr("src", e.target.result);
+                            }
+                            reader.readAsDataURL(file);
+
+                            let existingIndex = imageUpdateImageNo.indexOf(imageNo);
+                            if (existingIndex !== -1) {
+                                imageUpdateFiles.splice(existingIndex, 1);
+                                imageUpdateImageNo.splice(existingIndex, 1);
+                            }
+
+                            imageUpdateFiles.push(file);
+                            imageUpdateImageNo.push(imageNo);
+                            console.log('Image updated, imageNo:', imageNo);
+                            logImageState();
+                        } else {
+                            alert('이미지 파일을 선택해주세요');
+                        }
+                    });
+
+                    fileInput.click();
+                });
+
+                function updateImgContainerVisibility() {
+                    if ($('#imgAddDiv').children().length === 0) {
+                        $('#imgContainer').hide();
+                    } else {
+                        $('#imgContainer').show();
+                    }
                 }
+
+
+                $('img').on('error', function() {
+                    console.log('Image failed to load:', $(this).attr('src'));
+                    let imgDiv = $(this).closest('.imgDiv');
+                    let imageNo = imgDiv.find('.imgDeleteBtn').data('image-no');
+                    if (imageNo) {
+                        imageDeleteImageNo.push(imageNo);
+                    }
+                    imgDiv.remove();
+                    updateImgContainerVisibility();
+                    logImageState();
+                });
+
+                updateImgContainerVisibility();
+                console.log('Initial state');
+                logImageState();
             });
+    </script>
 
-            fileInput.click();
-        });
-
-        function updateImgContainerVisibility() {
-            if ($('#imgAddDiv').children().length === 0) {
-                $('#imgContainer').hide();
-            } else {
-                $('#imgContainer').show();
-            }
-        }
-
-
-        $('img').on('error', function() {
-            console.log('Image failed to load:', $(this).attr('src'));
-            let imgDiv = $(this).closest('.imgDiv');
-            let imageNo = imgDiv.find('.imgDeleteBtn').data('image-no');
-            if (imageNo) {
-                imageDeleteImageNo.push(imageNo);
-            }
-            imgDiv.remove();
-            updateImgContainerVisibility();
-            logImageState();
-        });
-
-
-        updateImgContainerVisibility();
-        console.log('Initial state');
-        logImageState();
-    });
-</script>
 </main>
 
 </body>
