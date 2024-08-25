@@ -24,20 +24,21 @@
 
     <div class="container mt-5">
         <h1 class="mb-4"></h1>
-
-        <div class="mb-3">
-            <a class="btn btn-primary me-2" th:href="@{/honor(category='doglove', sort=${sort})}">내새꾸자랑 추천순</a>
-            <a class="btn btn-primary" th:href="@{/honor(category='police', sort=${sort})}">순찰대 명예 등급 순위</a>
+        <div class="row" style="margin-bottom: 10px; margin-left: 3px; width: 980px;">
+            <div class="list-group flex-row col-4" id="list-tab" role="tablist" style="width: 410px;">
+                <a class="border border-secondary list-group-item list-group-item-action" id="tab1" th:href="@{/honor(category='doglove', sort=${sort})}">내새꾸자랑 추천순</a>
+                <a class="border border-secondary list-group-item list-group-item-action" id="tab2" th:href="@{/honor(category='police', sort=${sort})}">순찰대 명예 등급 순위</a>
+            </div>
         </div>
-
+        <button class="btn btn-primary float-end" id="modalOnBtn">가이드</button>
         <div id="rankingDiv">
             <table class="table">
                 <thead>
                 <tr>
                     <th>랭킹</th>
                     <th>이름</th>
-                    <th th:if="${category == 'doglove'}">추천 수</th>
-                    <th th:if="${category == 'police'}">점수</th>
+                    <th th:if="${category == 'doglove'}">멍포인트</th>
+                    <th th:if="${category == 'police'}">순찰대포인트</th>
                     <th th:if="${category == 'police'}">계급</th>
                 </tr>
                 </thead>
@@ -53,23 +54,23 @@
                     </td>
 
                     <td th:text="${item.userId}"></td>
-                    <td th:if="${category == 'doglove'}" th:text="${item.totalCount}"></td>
-                    <td th:if="${category == 'police'}" th:text="${item.policeScore}"></td>
+                    <td th:if="${category == 'doglove'}" th:text="${item.totalCount} * 10"></td>
+                    <td th:if="${category == 'police'}" th:text="${item.policeScore} * 10"></td>
 
                     <td th:if="${category == 'police'}">
 
-                        <span th:if="${item.policeScore > 6600}" th:text="치안총감"></span>
-                        <span th:if="${item.policeScore > 5500 and item.policeScore <= 6600}" th:text="치안정감"></span>
-                        <span th:if="${item.policeScore > 4500 and item.policeScore <= 5500}" th:text="치안감"></span>
-                        <span th:if="${item.policeScore > 3600 and item.policeScore <= 4500}" th:text="경무관"></span>
-                        <span th:if="${item.policeScore > 2800 and item.policeScore <= 3600}" th:text="총경"></span>
-                        <span th:if="${item.policeScore > 2100 and item.policeScore <= 2800}" th:text="경정"></span>
-                        <span th:if="${item.policeScore > 1500 and item.policeScore <= 2100}" th:text="경감"></span>
-                        <span th:if="${item.policeScore > 1000 and item.policeScore <= 1500}" th:text="경위"></span>
-                        <span th:if="${item.policeScore > 600 and item.policeScore <= 1000}" th:text="경사"></span>
-                        <span th:if="${item.policeScore > 300 and item.policeScore <= 600}" th:text="경장"></span>
-                        <span th:if="${item.policeScore > 100 and item.policeScore <= 300}" th:text="순경"></span>
-                        <span th:if="${item.policeScore <= 100}" th:text="신입"></span>
+                        <span th:if="${item.policeScore * 10 > 6600}" th:text="치안총감"></span>
+                        <span th:if="${item.policeScore * 10 > 5500 and item.policeScore * 10 <= 6600}" th:text="치안정감"></span>
+                        <span th:if="${item.policeScore * 10 > 4500 and item.policeScore * 10 <= 5500}" th:text="치안감"></span>
+                        <span th:if="${item.policeScore * 10 > 3600 and item.policeScore * 10 <= 4500}" th:text="경무관"></span>
+                        <span th:if="${item.policeScore * 10 > 2800 and item.policeScore * 10 <= 3600}" th:text="총경"></span>
+                        <span th:if="${item.policeScore * 10 > 2100 and item.policeScore * 10 <= 2800}" th:text="경정"></span>
+                        <span th:if="${item.policeScore * 10 > 1500 and item.policeScore * 10 <= 2100}" th:text="경감"></span>
+                        <span th:if="${item.policeScore * 10 > 1000 and item.policeScore * 10 <= 1500}" th:text="경위"></span>
+                        <span th:if="${item.policeScore * 10 > 600 and item.policeScore * 10 <= 1000}" th:text="경사"></span>
+                        <span th:if="${item.policeScore * 10 > 300 and item.policeScore * 10 <= 600}" th:text="경장"></span>
+                        <span th:if="${item.policeScore * 10 > 100 and item.policeScore * 10 <= 300}" th:text="순경"></span>
+                        <span th:if="${item.policeScore * 10 <= 100}" th:text="신입"></span>
                     </td>
                 </tr>
                 </tbody>
@@ -78,7 +79,107 @@
     </div>
 </main>
 
+
+
 <menu th:replace="fragments/head :: footer"></menu>
 
+<div class="modal fade" id="infoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">명예의 전당 가이드</h5>
+            </div>
+                <div class="modal-body">
+                    <div class="card mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0">포인트 획득 방법</h6>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">추천 1개 = 멍포인트 10p</li>
+                                <li class="list-group-item">순찰일지 1회 = 순찰 포인트 10p</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h6 class="mb-0">랭킹 시스템</h6>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary rounded-pill">치안총감</span>
+                                    <span>6600포인트 이상</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-secondary rounded-pill">치안정감</span>
+                                    <span>5500포인트 ~ 6600 포인트</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-success rounded-pill">치안감</span>
+                                    <span>4500포인트 ~ 5500 포인트</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-info rounded-pill">경무관</span>
+                                    <span>3600포인트 ~ 4500 포인트</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-warning rounded-pill">총경</span>
+                                    <span>2800포인트 ~ 3600 포인트</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-danger rounded-pill">경정</span>
+                                    <span>2100포인트 ~ 2800 포인트</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary rounded-pill">경감</span>
+                                    <span>1500포인트 ~ 2100 포인트</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-secondary rounded-pill">경위</span>
+                                    <span>1000포인트 ~ 1500 포인트</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-success rounded-pill">경사</span>
+                                    <span>600포인트 ~ 1000 포인트</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-info rounded-pill">경장</span>
+                                    <span>300포인트 ~ 600 포인트</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-warning rounded-pill">순경</span>
+                                    <span>100포인트 ~ 300 포인트</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-danger rounded-pill">신입</span>
+                                    <span>0포인트 ~ 100 포인트</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="writeModalClose">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        let params = new URLSearchParams(location.search);
+        let category = params.get('category');
+
+        if (category == 'police') {
+            $('#tab2').addClass('active');
+        } else {
+            $('#tab1').addClass('active');
+        }
+
+        $('#modalOnBtn').click(function(){
+            $('#infoModal').modal('show');
+        });
+    });
+</script>
 </body>
 </html>

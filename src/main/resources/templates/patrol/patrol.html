@@ -3,60 +3,36 @@
                 xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments/head :: head">
 
-    <title>Title</title>
+    <title>순찰대 목록</title>
 
 </head>
-
-<style>
-    .total{
-        width: 45%;
-        height: 25%;
-        margin: 2.5%;
-        max-height : 500px;
-    }
-
-    .card-img-top {
-        height: 15rem;
-        object-fit: fill;
-    }
-
-    #patroldiv{
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-</style>
 
 <body>
 
 <menu th:replace="fragments/head :: menu"></menu>
 
-<main>
-<div class="container mt-5">
-    <h1 class="mb-4 text-center">순찰대 소개</h1>
-    <h3 class="mb-4 text-center">🐶반려견과 함께 하는 방범 활동🐾</h3>
+<main class="container py-4">
+    <h1 class="mb-4 text-center">🐾순찰대🐾</h1>
+    <h3 class="mb-4 text-center">반려견과 함께 하는 방범 활동🐶</h3>
 
 
-<div id="patroldiv">
+<div id="patroldiv" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 
 </div>
 
     <div class="d-flex" style="margin: 1%;">
 
-        <button class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
-
         <div style="margin-left:auto;"></div>
 
-        <button class="btn btn-primary" id="goPatrolInsertBtn" sec:authorize="isAuthenticated()">생성</button>
     </div>
+    <div>
+        <button class="btn btn-primary float-end" id="goPatrolInsertBtn" sec:authorize="isAuthenticated()">생성</button>
+        <nav aria-label="Page navigation" class="mt-4" style="padding-left: 110px;">
+            <ul class="pagination justify-content-center" id="pageItems">
 
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center" id="pageItems">
-
-        </ul>
-    </nav>
-</div>
+            </ul>
+        </nav>
+    </div>
 </main>
 
 <menu th:replace="fragments/head :: footer"></menu>
@@ -105,26 +81,26 @@
 
                     $('<div>').prop({
                         id: 'patrol' + index,
-                        className: 'total'
+                        className: 'col'
                         }).attr("onclick", "gopatrol(" + contentList[index].patrolNo + ")")
                     );
 
                     $('#' + 'patrol' + index).append(
                         $('<div>').prop({
                             id: 'divContent' + index,
-                            className: 'card'
+                            className: 'card h-100'
                         })
                     );
 
                     $('#' + 'divContent' + index).append(
                         $('<div>').prop({
                             id: 'divimg' + index,
-                            className: 'imgDiv'
+                            className: 'ratio ratio-1x1'
                         })
                     );
 
                     $('#divimg' + index).append(
-                        '<img src="/images/Z/' + img + '" class="card-img-top"  onerror="this.onerror=null; this.src=\'https://kr.object.ncloudstorage.com/team-5/Non-Img.png\';">'
+                        '<img src="/images/Z/' + img + '" class="card-img-top object-fit-cover"  onerror="this.onerror=null; this.src=\'https://kr.object.ncloudstorage.com/team-5/Non-Img.png\';">'
                     );
 
                     $('#' + 'divContent' + index).append(

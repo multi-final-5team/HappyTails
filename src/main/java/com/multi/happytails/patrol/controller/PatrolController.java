@@ -14,11 +14,9 @@ package com.multi.happytails.patrol.controller;
  */
 
 
-
 import com.multi.happytails.authentication.model.dto.CustomUser;
 import com.multi.happytails.member.model.dto.MemberDTO;
 import com.multi.happytails.member.service.MemberService;
-import com.multi.happytails.patrol.model.dao.PatrolPlaceDAO;
 import com.multi.happytails.patrol.model.dto.*;
 import com.multi.happytails.patrol.pageable.service.PageService;
 import com.multi.happytails.patrol.service.PatrolPlaceService;
@@ -35,13 +33,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -306,6 +302,7 @@ public class PatrolController {
      * @return string
      */
     @PostMapping("patrolDelete")
+    @ResponseBody
     public String patrolDelete(PatrolDTO patrolDTO , @AuthenticationPrincipal CustomUser customUser){
 
         patrolDTO.setUserNo((int)customUser.getNo());
@@ -349,7 +346,7 @@ public class PatrolController {
 
         int result = patrolService.patrolDelete(patrolDTO.getPatrolNo());
 
-        return "patrol/patrol";
+        return "순찰대가 삭제 되었습니다.";
     }
 
     @PostMapping("patrolDeleteAdmin")

@@ -16,37 +16,30 @@
     <div class="container mt-5">
 
         <h1 class="mb-4 text-center">🐾순찰일지🐾</h1>
-        <h5 class="mb-4 text-center">시설물 파손이나 주취자 신고 등 특이사항을 기록해주세요</h5>
+        <h5 class="mb-4 text-center">시설물 파손이나 주취자 신고 등 특이사항을 기록해주세요🐶</h5>
 
-        <div style="width: 40%;margin-left:auto;margin-right:auto;display: flex;">
+        <div style="width: 40%;margin-left:auto;margin-right:auto;display: flex; margin-bottom: 15px;">
             <select class="form-select" id="targetSelect" name="targetSelect" style="width: 30%">
                 <option value="selectId">아이디</option>
                 <option value="selectTitle">제목</option>
             </select>
-            <input class="form-control" type="text" id="searchinput" style="width: 40%;">
-            <button class="btn btn-outline-success" id="btnserch" onclick="search()">🔎</button>
+            <input class="form-control ms-2" type="text" id="searchinput" style="width: 40%;">
+            <button class="btn btn-outline-success ms-2" id="btnserch" onclick="search()">🔎</button>
         </div>
 
+    <div id="patrolRecordDiv" class="mx-2">
 
+    </div>
 
-    <button class="btn btn-outline-primary btn-sm" style="margin: 1%;" id="" name="" onclick="goPatrolRecordMain()">전체목록</button>
+        <div>
+            <button class="btn btn-primary float-end" id="goPatrolRecordInsertBtn" sec:authorize="isAuthenticated()">글작성</button>
 
-<div id="patrolRecordDiv">
+                <nav aria-label="Page navigation" class="mt-4" style="padding-left: 110px;">
+                <ul class="pagination justify-content-center" id="pageItems">
 
-</div>
-
-        <div class="d-flex" style="margin: 1%;">
-            <button class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
-            <div style="margin-left:auto;"></div>
-            <button class="btn btn-primary" id="goPatrolRecordInsertBtn" sec:authorize="isAuthenticated()">생성</button>
+                </ul>
+            </nav>
         </div>
-
-
-    <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center" id="pageItems">
-
-        </ul>
-    </nav>
 
     </div>
 
