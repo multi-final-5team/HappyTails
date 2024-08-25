@@ -28,7 +28,7 @@
         FROM tb_dog4cuts
         WHERE publicstate = 'F'
         ORDER BY dog4cuts_no DESC
-        LIMIT 5
+        LIMIT 10
     </select>
 
     <select id="findAllDog4CutsByUserNo">

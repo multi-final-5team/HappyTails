@@ -7,7 +7,7 @@
 
 <style>
     #carouselDog4cuts{
-        width:60%;
+        width:90%;
         height:40%;
     }
 </style>
@@ -272,9 +272,11 @@
 
                 for(let index in data){
                     var img;
+                    var img2;
                     for(let indexImg in imgs){
                         if(imgs[indexImg].foreignNo == data[index].dog4cutsNo){
                             img = imgs[indexImg].storedFileName;
+                            img2 = imgs[indexImg].storedFileName;
                         }
                     }
 
@@ -296,7 +298,17 @@
                     }
 
                     $('#dog4cuts' + index).append(
-                        '<img src="/images/X/' + img + '" class="d-block w-100 h-100">'
+                        $('<div>').prop({
+                                id: 'dog4cutsImgDiv' + index,
+                                className: 'd-flex'
+                            }).attr("onclick", "")
+                    );
+
+                    $('#dog4cutsImgDiv' + index).append(
+                        '<img src="/images/X/' + img + '" class="d-block w-50 h-100">'
+                    );
+                    $('#dog4cutsImgDiv' + index).append(
+                        '<img src="/images/X/' + img + '" class="d-block w-50 h-100">'
                     );
                 }
             },
