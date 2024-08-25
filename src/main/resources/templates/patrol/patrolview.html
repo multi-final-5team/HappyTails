@@ -11,6 +11,18 @@
         width : 40%;
         margin : 3%;
     }
+
+    .image_container{
+        width : 100%;
+        height : 40%;
+    }
+
+    .patrolImg {
+        width : 100%;
+        height: 100%;
+        object-fit: fill;
+    }
+
 </style>
 
 <body>
@@ -26,11 +38,11 @@
     <div class="bg-white border rounded d-flex justify-content-center">
         <form id="formId" method="post" enctype="multipart/form-data" >
 
-            <div  class="mb-3" id="image_container">
+            <div  class="image_container" id="image_container" onclick="imgInput();">
                 <!-- 이미지 들어가는곳 -->
             </div>
 
-            <input class="form-control" type="file" id="inputFile" name="inputFile"><br>
+            <input class="" type="file" id="inputFile" name="inputFile" style="display:none;"><br>
 
             <input type="hidden" id="patrolNo" name="patrolNo">
             <input type="hidden" id="userNo" name="userNo">
@@ -41,14 +53,16 @@
                 <input class="form-control" type="text" id="name" name="name" maxlength="100"><br>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">나이</label><br>
-                <input class="form-control" type="number" id="age" name="age"><br>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">품종</label><br>
-                <input class="form-control" type="text" id="breed" name="breed" maxlength="100"><br>
+            <div class="d-flex justify-content-center">
+                <div class="mb-3">
+                    <label class="form-label">나이</label><br>
+                    <input class="form-control" type="number" id="age" name="age"><br>
+                </div>
+                <div style="margin-left:auto;"></div>
+                <div class="mb-3">
+                    <label class="form-label">품종</label><br>
+                    <input class="form-control" type="text" id="breed" name="breed" maxlength="100"><br>
+                </div>
             </div>
 
             <div class="mb-3">
@@ -115,7 +129,7 @@
         for(let indexImg in imgs){
             if(indexImg == 0){
                 $('#image_container').append(
-                    '<img src="/images/Z/' + imgs[indexImg].storedFileName + '">'
+                    '<img src="/images/Z/' + imgs[indexImg].storedFileName + '" class="patrolImg">'
                 );
                 $('#beforeImgNo').val(imgs[indexImg].imageNo);
             }
@@ -138,7 +152,7 @@
                 var reader = new FileReader();
                 reader.onload = function(e) {
                 $('#image_container').empty();
-                $('#image_container').append('<img src="' + e.target.result + '" alt="Selected Image" width="100px" height="100px">');
+                $('#image_container').append('<img src="' + e.target.result + '" onerror="this.onerror=null; this.src=\'https://kr.object.ncloudstorage.com/team-5/Non-Img.png\';" class="patrolImg">');
                 }
             imageFiles.push(file);
             reader.readAsDataURL(file);
@@ -206,6 +220,10 @@
                 $('#age').val("");
             }
         }
+    }
+
+    function imgInput(){
+        $('#inputFile').click();
     }
 </script>
 

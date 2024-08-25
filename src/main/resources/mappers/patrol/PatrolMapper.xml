@@ -13,7 +13,6 @@
     <select id="findAllPatrol">
         SELECT patrol_no AS patrolNo, user_no AS userNo, name, age, breed, location
         FROM tb_patrol
-
     </select>
 
     <select id="findOnePatrol">

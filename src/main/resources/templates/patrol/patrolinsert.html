@@ -22,7 +22,7 @@
 
     <div class="container mt-5">
 
-<h1 class="mb-4 text-center" >순찰대 생성</h1>
+<h1 class="mb-4 text-center">🐶순찰대 생성🐶</h1>
 
     <div class="bg-white border rounded d-flex justify-content-center">
         <form action="makepatrol" method="post" enctype="multipart/form-data" id="formId">
@@ -53,7 +53,11 @@
                 <input class="form-control" type="text" id="location" name="location" maxlength="100"><br>
             </div>
 
-            <input class="btn btn-primary" type="button" id="formSubmitBtn" value="신청" sec:authorize="isAuthenticated()">
+            <div class="d-flex" style="margin: 1%;">
+                <button class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
+                <div style="margin-left:auto;"></div>
+                <input class="btn btn-primary" type="button" id="formSubmitBtn" value="신청" sec:authorize="isAuthenticated()">
+            </div>
 
         </form>
     </div>
