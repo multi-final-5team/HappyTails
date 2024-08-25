@@ -15,18 +15,23 @@
 
     <h1 class="mb-4 text-center">순찰경로 생성</h1>
 
-    <label>경로</label>
-
     <input type="hidden" id="hidden_lat" value="">
     <input type="hidden" id="hidden_lng" value="">
 
-    <div id="map" style="width:500px;height:350px;"></div>
+        <div class="d-flex justify-content-center">
+            <div>
+                <div id="map" style="width:1000px;height:600px;"></div>
 
-    <button class="btn btn-primary" id="btnstart">시작</button>
-    <button class="btn btn-danger" id="btnend">종료</button>
-    <button class="btn btn-info" id="btnclear">지우기</button>
+                <div class="d-flex">
+                    <div style="margin-left:auto;"></div>
+                    <button class="btn btn-primary" id="btnstart">시작</button>
+                    <button class="btn btn-danger" id="btnend">종료</button>
+                    <button class="btn btn-info" id="btnclear">지우기</button>
+                    <button class="btn btn-success" id="btnmake">생성</button>
+                </div>
+            </div>
+        </div>
 
-    <button class="btn btn-success" id="btnmake">생성</button>
 
 
     </div>

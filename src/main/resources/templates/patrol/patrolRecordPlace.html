@@ -17,9 +17,7 @@
 
 
         <h1 class="mb-4 text-center">순찰경로 조회</h1>
-        <h5 class="mb-4 text-center">우리 아이의 발자취를 기록해보세요</h5>
-
-    <button class="btn btn-primary" id="goPatrolRecordPlaceInsert" sec:authorize="isAuthenticated()">생성</button>
+        <h5 class="mb-4 text-center">🐾우리 아이의 발자취를 기록해보세요🐾</h5>
 
     <div id="patroldiv">
         <table class="table">
@@ -48,8 +46,14 @@
         </table>
     </div>
 
+        <div class="d-flex" style="margin: 1%;">
+            <button class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
+            <div style="margin-left:auto;"></div>
+            <button class="btn btn-primary" id="goPatrolRecordPlaceInsert" sec:authorize="isAuthenticated()">생성</button>
+        </div>
+
     <nav aria-label="Page navigation example">
-        <ul class="pagination pagination-lg justify-content-center" id="pageItems">
+        <ul class="pagination justify-content-center" id="pageItems">
 
         </ul>
     </nav>
