@@ -18,11 +18,12 @@
     <div class="container  my-5">
 
         <figure class="text-center">
-            <h2>판매 상품 목록</h2>
+            <h1></h1>
         </figure>
+
         <div class="row">
             <div class="col-md-4 info">
-                <h2 class="mb-4">주문/결제</h2>
+                <h2 class="mb-4">주문 정보</h2>
                 <form>
                     <div class="mb-3">
                         <label for="name" class="form-label">구매자</label>
@@ -52,22 +53,23 @@
             </div>
 
             <div class="col-md-8 items">
+                <h2 class="mb-4">판매 상품</h2>
                 <div th:if="${not #lists.isEmpty(paymentHistory)}" class="card shadow">
                     <div class="card-body paymentHistory-item">
                         <div class="paymentHistory-info table-responsive">
                             <table class="table table-hover">
-                                <thead class="table-dark">
+                                <thead>
                                 <tr>
-                                    <th>판매 상품</th>
-                                    <th>결제 금액</th>
-                                    <th>결제일</th>
-                                    <th>배송 상태</th>
-                                    <th></th>
+                                    <th class="text-center align-middle">판매 상품</th>
+                                    <th class="text-center align-middle">결제 금액</th>
+                                    <th class="text-center align-middle">결제일</th>
+                                    <th class="text-center align-middle">배송 상태</th>
+                                    <th class="text-center align-middle"> </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="paymentHistory : ${paymentHistory}" th:data-username="${paymentHistory.username}">
-                                    <td>
+                                    <td class="text-center align-middle">
                                         <div th:if="${salesGoodsMap[paymentHistory.goodsNo].size() > 0}" class="card-body">
                                             <img th:src="@{/images/S/{file}(file=${salesGoodsMap[paymentHistory.goodsNo][0].storedFileName})}" alt="대표 이미지" class="card-img-top" height="100">
                                         </div>
@@ -76,13 +78,13 @@
                                            class="text-decoration-none">
                                         </a>
                                     </td>
-                                    <th th:text="'가격: ' + ${paymentHistory.purchaseprice} + '원'"></th>
-                                    <th th:text="${#dates.format(paymentHistory.date_created, 'yyyy-MM-dd')}"></th>
-                                    <th th:text="${paymentHistory.delivery_code}"></th>
-                                    <th>
+                                    <td class="text-center align-middle" th:text="'가격: ' + ${paymentHistory.purchaseprice} + '원'"></td>
+                                    <td class="text-center align-middle" th:text="${#dates.format(paymentHistory.date_created, 'yyyy-MM-dd')}"></td>
+                                    <td class="text-center align-middle" th:text="${paymentHistory.delivery_code}"></td>
+                                    <td class="text-center align-middle">
                                         <div class="order-actions">
                                             <button th:if="${paymentHistory.delivery_code == '배송 준비'}"
-                                                    class="btn btn-primary delivery-btn"
+                                                    class="btn btn-secondary delivery-btn"
                                                     th:data-payment-no="${paymentHistory.payment_no}">송장 등록</button>
 
                                             <button th:if="${paymentHistory.delivery_code == '배송 중'}"
@@ -101,7 +103,7 @@
                                                     th:data-amount="${paymentHistory.purchaseprice}">환불</button>
                                         </div>
 
-                                    </th>
+                                    </td>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(paymentHistory)}">
                                     주문 정보가 없습니다.
@@ -158,14 +160,14 @@
     function openPopup(paymentNo, deliveryCode) {
         var url = `/payment/deliveryStatusPopup?paymentNo=${encodeURIComponent(paymentNo)}&deliveryCode=${encodeURIComponent(deliveryCode)}`;
         var name = "배송 상태 변경";
-        var options = "width=500,height=300,top=100,left=100";
+        var options = "width=500,height=214,top=100,left=100";
         window.open(url, name, options);
     }
 
     function openDeliveryPopup(payment_no) {
         var url = `/payment/deliveryPopup?payment_no=${encodeURIComponent(payment_no)}`;
         var name = "송장 등록";
-        var options = "width=500,height=300,top=100,left=100";
+        var options = "width=500,height=322,top=100,left=100";
         window.open(url, name, options);
     }
 

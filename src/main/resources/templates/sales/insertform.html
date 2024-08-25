@@ -8,53 +8,56 @@
 <main>
     <div  class="container mt-5">
         <h1 class="mb-4 text-center">🐾 상품 등록 🐾</h1>
+        <h3 class="mb-4 text-center">무엇을 팔고 싶냐멍? 🐶</h3>
         <div class="card w-75 mx-auto">
             <div class="card-body">
-    <form action="/sales/insertGoods" method="post" enctype="multipart/form-data" id="insertForm">
-        <div class="mb-3">
-            <label for="name" class="form-label">상품 이름:</label>
-            <input type="text" class="form-control" id="name" name="name" minlength="1" required>
-        </div>
+                <form action="/sales/insertGoods" method="post" enctype="multipart/form-data" id="insertForm">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">상품 이름</label>
+                        <input type="text" class="form-control" id="name" name="name" minlength="1" required>
+                    </div>
 
-        <div class="mb-3">
-            <label for="IMGFile" class="form-label">대표이미지:</label>
-            <input type="file" class="form-control" id="IMGFile" name="IMGFile" required>
-        </div>
+                    <div class="mb-3">
+                        <label for="IMGFile" class="form-label">대표이미지</label>
+                        <input type="file" class="form-control" id="IMGFile" name="IMGFile" required>
+                    </div>
 
-        <div id="DetailsIMG" class="mb-3">
-        </div>
+                    <div id="DetailsIMG" class="mb-3">
+                    </div>
+                    <div class="row">
+                        <div class="mb-3 w-25">
+                            <label for="category" class="form-label">카테고리</label>
+                            <select id="category" name="categoryCode" class="form-select"></select>
+                        </div>
 
-        <div class="mb-3">
-            <label for="category" class="form-label">카테고리:</label>
-            <select id="category" name="categoryCode" class="form-select"></select>
-        </div>
+                        <div class="mb-3 w-25">
+                            <label for="price" class="form-label">가격</label>
+                            <input type="number" class="form-control" id="price" name="price" required>
+                        </div>
 
-        <div class="mb-3">
-            <label for="price" class="form-label">가격:</label>
-            <input type="number" class="form-control" id="price" name="price" required>
-        </div>
+                        <div class="mb-3 w-25">
+                            <label for="quantity" class="form-label">수량</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" required>
+                        </div>
+                    </div>
 
-        <div class="mb-3">
-            <label for="quantity" class="form-label">수량:</label>
-            <input type="number" class="form-control" id="quantity" name="quantity" required>
-        </div>
 
-        <div class="mb-3">
-            <label for="content" class="form-label">상세 설명:</label>
-            <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
-        </div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">상세 설명</label>
+                        <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+                    </div>
 
-        <div class="mb-3">
-            <label class="form-label">상세 이미지:</label>
-            <input type="file" class="form-control" id="imageInput"/>
-        </div>
+                    <div class="mb-3">
+                        <label class="form-label">상세 이미지:</label>
+                        <input type="file" class="form-control" id="imageInput"/>
+                    </div>
 
-        <div id="imgAddDiv" class="mb-3">
-        </div>
-
-        <button type="submit" class="btn btn-primary float-end">등록</button>
-    </form>
-    </div>
+                    <div id="imgAddDiv" class="mb-3">
+                    </div>
+                    <button class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
+                    <button type="submit" class="btn btn-primary float-end">등록</button>
+                </form>
+            </div>
         </div>
     </div>
 </main>
