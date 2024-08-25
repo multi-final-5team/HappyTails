@@ -6,14 +6,6 @@
     <title>Title</title>
 
 </head>
-
-<style>
-    #formId{
-        width : 40%;
-        margin : 3%;
-    }
-</style>
-
 <body>
 
 <menu th:replace="fragments/head :: menu"></menu>
@@ -24,30 +16,34 @@
 
 <h1 class="mb-4 text-center">🐶순찰대 생성🐶</h1>
 
-    <div class="bg-white border rounded d-flex justify-content-center">
+    <div class="card w-75 mx-auto">
+        <div class="card-body">
         <form action="makepatrol" method="post" enctype="multipart/form-data" id="formId">
 
-            <div  class="mb-3" id="image_container">
-                <!-- 이미지 들어가는곳 -->
+            <div  class="mb-3 text-center" id="image_container">
+                <img src="https://kr.object.ncloudstorage.com/team-5/Non-Img.png"
+                     alt="Selected Image"
+                     width="400px"
+                     height="400px">
             </div>
 
-            <input class="form-control" type="file" id="inputFile" name="inputFile"><br>
+            <input class="form-control" type="file" id="inputFile" name="inputFile" hidden="hidden"><br>
 
             <div class="mb-3">
                 <label class="form-label">강아지 이름</label><br>
                 <input class="form-control" type="text" id="name" name="name" maxlength="100"><br>
             </div>
+            <div class="row">
+                <div class="col-6">
+                    <label class="form-label w-25">나이</label><br>
+                    <input class="form-control" type="number" id="age" name="age"><br>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">나이</label><br>
-                <input class="form-control" type="number" id="age" name="age"><br>
+                <div class="col-6">
+                    <label class="form-label w-25">품종</label><br>
+                    <input class="form-control" type="text" id="breed" name="breed" maxlength="100"><br>
+                </div>
             </div>
-
-            <div class="mb-3">
-                <label class="form-label">품종</label><br>
-                <input class="form-control" type="text" id="breed" name="breed" maxlength="100"><br>
-            </div>
-
             <div class="mb-3">
                 <label class="form-label">활동장소</label><br>
                 <input class="form-control" type="text" id="location" name="location" maxlength="100"><br>
@@ -56,12 +52,12 @@
             <div class="d-flex" style="margin: 1%;">
                 <button class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
                 <div style="margin-left:auto;"></div>
-                <input class="btn btn-primary" type="button" id="formSubmitBtn" value="신청" sec:authorize="isAuthenticated()">
+                <input class="btn btn-primary" type="button" id="formSubmitBtn" value="순찰대등록" sec:authorize="isAuthenticated()">
             </div>
 
         </form>
     </div>
-
+</div>
     </div>
 </main>
 
@@ -83,16 +79,18 @@
 	 				alert("에러 발생. " + data);
 	 			}
 	 	})
-
+	 	let imageFiles = [];
+        $('#image_container').click(function(){
+        $('#inputFile').click();
         // 이미지 road Start
-        let imageFiles = [];
+        imageFiles = [];
         $('#inputFile').on('change', function(event) {
             console.log('실행');
             var file = event.target.files[0];
             if (file && file.type.startsWith('image/')) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                $('#image_container').append('<img src="' + e.target.result + '" alt="Selected Image" width="100px" height="100px">');
+                $('#image_container').html('<img src="' + e.target.result + '" alt="Selected Image" width="400px" height="400px">');
                 }
             imageFiles.push(file);
             reader.readAsDataURL(file);
@@ -101,6 +99,7 @@
                 alert('이미지 파일을 선택해주세요');
             }
            });
+        });
         // 이미지 road End
         // 폼 서브밋 Start
 

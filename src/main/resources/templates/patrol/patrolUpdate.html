@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head :: head">
+
+    <title>Title</title>
+
+</head>
+
+<body>
+
+<menu th:replace="fragments/head :: menu"></menu>
+
+<main>
+
+    <div class="container mt-5">
+
+<h1 class="mb-4 text-center">🐶순찰대 생성🐶</h1>
+
+        <div class="card w-75 mx-auto">
+            <div class="card-body">
+        <form method="post" enctype="multipart/form-data" id="formId">
+
+            <div class="mb-3 text-center" id="image_container">
+                <img th:src="@{/images/Z/{file} (file=${uploadDtos[0].storedFileName})}"
+                     onerror="this.onerror=null; this.src='https://kr.object.ncloudstorage.com/team-5/Non-Img.png';"
+                     alt="Selected Image"
+                     width="400px"
+                     height="400px">
+            </div>
+
+            <input class="form-control" type="file" id="inputFile" name="inputFile" hidden="hidden"><br>
+            <input type="hidden" id="patrolNo" th:value="${patrolDTO.patrolNo}">
+            <div class="mb-3">
+                <label class="form-label">강아지 이름</label><br>
+                <input class="form-control" type="text" id="name" name="name" maxlength="100" th:value="${patrolDTO.name}"><br>
+            </div>
+
+            <div class="row">
+                <div class="col-6">
+                <label class="form-label">나이</label><br>
+                <input class="form-control" type="number" id="age" name="age" th:value="${patrolDTO.age}"><br>
+            </div>
+
+                <div class="col-6">
+                <label class="form-label">품종</label><br>
+                <input class="form-control" type="text" id="breed" name="breed" maxlength="100" th:value="${patrolDTO.breed}"><br>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">활동장소</label><br>
+                <input class="form-control" type="text" id="location" name="location" maxlength="100" th:value="${patrolDTO.location}"><br>
+            </div>
+
+            <div class="d-flex" style="margin: 1%;">
+                <button class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
+                <div style="margin-left:auto;"></div>
+                <input class="btn btn-primary" type="button" id="formSubmitBtn" value="순찰대수정" sec:authorize="isAuthenticated()">
+            </div>
+            </div>
+        </form>
+    </div>
+</div>
+    </div>
+</main>
+
+<menu th:replace="fragments/head :: footer"></menu>
+
+<script>
+
+    let imageFiles = [];
+
+    $(document).ready(function() {
+
+
+        $('#image_container').click(function(){
+            $('#inputFile').click();
+            imageFiles = [];
+            // 이미지 road Start
+            $('#inputFile').on('change', function(event) {
+                console.log('실행');
+                var file = event.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#image_container').html('<img src="' + e.target.result + '" alt="Selected Image" width="400px" height="400px">');
+                    }
+                imageFiles.push(file);
+                reader.readAsDataURL(file);
+                }
+                else {
+                    alert('이미지 파일을 선택해주세요');
+                }
+               });
+        });
+        // 이미지 road End
+        // 폼 서브밋 Start
+
+        $('#formSubmitBtn').click(function(){
+
+            let name = $('#name').val();
+            let age = $('#age').val();
+            let breed = $('#breed').val();
+            let location = $('#location').val();
+            let patrolNo = $('#patrolNo').val();
+
+            if(inputCheck()){
+                let formData = new FormData();
+
+                formData.append('name',name);
+                formData.append('age',age);
+                formData.append('breed',breed);
+                formData.append('location',location);
+                formData.append('patrolNo',patrolNo);
+
+            for (let i = 0; i < imageFiles.length;i++) {
+                formData.append('imageFiles',imageFiles[i]);
+            }
+            console.log(formData);
+            $.ajax({
+                url : "/patrol/patrolUpdate",
+                processData : false,
+                contentType : false,
+                type : 'POST',
+                data : formData,
+                success : function(data) {
+                    alert(data);
+                    window.location.href="/patrol/patrolview?patrolNo=" + patrolNo;
+                }
+            });
+            }
+
+        });
+        // 폼 서브밋 End
+    });
+
+    function inputCheck() {
+        var input1 = $('#name').val();
+        var input2 = $('#age').val();
+        var input3 = $('#breed').val();
+        var input4 = $('#location').val();
+
+        if((input1 == "")||(input2 == "")||(input3 == "")||(input4 == "")){
+            alert("입력칸을 모두 채워주세요.");
+
+            return false;
+        }
+        else{
+            if(input2.length < 11){
+                return true;
+            }
+            else{
+                alert("나이가 너무 많이 입력되었습니다. 줄여주세요.");
+                $('#age').val("");
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
