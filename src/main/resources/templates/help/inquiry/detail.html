@@ -35,10 +35,12 @@
                         </dl>
                     <!-- 작성자만 보이게 -->
                     <div th:if="${inquiryDto.writerId} == ${#authentication.principal.username} and ${inquiryDto.result} == 'N'">
-                        <input type="button" class="btn btn-danger float-end" id="deleteBtn" value="삭제">
-                        <input type="button" class="btn btn-success float-end" id="updatePageBtn" value="문의 수정">
+                        <input type="button" class="btn btn-danger float-end ms-1" id="deleteBtn" value="삭제">
+                        <input type="button" class="btn btn-success float-end ms-1" id="updatePageBtn" value="문의 수정">
                     </div>
-
+                    <div>
+                    <button class="btn btn-secondary float-start" onclick="history.back()">뒤로가기</button>
+                        </div>
                     <!-- 관리자만 보이게-->
                     <th:block sec:authorize="hasRole('ROLE_ADMIN')" th:if="${inquiryDto.result} != 'Y'">
                         <div class="mb-3">
