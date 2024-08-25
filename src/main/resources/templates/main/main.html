@@ -270,15 +270,15 @@
                 var data = dto.list;
                 var imgs = dto.uploadDtos;
 
-                for(let index in data){
-                    var img;
-                    var img2;
-                    for(let indexImg in imgs){
-                        if(imgs[indexImg].foreignNo == data[index].dog4cutsNo){
-                            img = imgs[indexImg].storedFileName;
-                            img2 = imgs[indexImg].storedFileName;
-                        }
-                    }
+                indexNext = 0;
+
+                dataNum = Math.floor(data.length / 2) ;
+
+                console.log("dataNum >> " + dataNum);
+
+                for(let index = 0;index < dataNum;index++){
+                    var img = imgs[index].storedFileName;
+                    var img2 = imgs[index + dataNum].storedFileName;
 
                     if(index == 0){
                         $('#dog4cutImgDiv').append(
@@ -308,7 +308,7 @@
                         '<img src="/images/X/' + img + '" class="d-block w-50 h-100">'
                     );
                     $('#dog4cutsImgDiv' + index).append(
-                        '<img src="/images/X/' + img + '" class="d-block w-50 h-100">'
+                        '<img src="/images/X/' + img2 + '" class="d-block w-50 h-100">'
                     );
                 }
             },

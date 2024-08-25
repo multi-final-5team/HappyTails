@@ -82,6 +82,7 @@
 	display:block;
 	width:100%;
 	height:100%;
+	pointer-events : none;
     }
 
     .fileInputTotal{
@@ -110,22 +111,37 @@
 
     <div class="fileInputTotal" id="" style="margin: 3%;">
         <div class="">
-            <label>이미지1</label><br>
-            <input class="form-control" type="file" id="inputFile1" name="inputFile1" onchange="setThumbnail(event);">
+            <input class="form-control" style="display:none;" type="file" id="inputFile1" name="inputFile1" onchange="setThumbnail(event);">
         </div>
         <div class="">
-            <label>이미지2</label><br>
-            <input class="form-control" type="file" id="inputFile2" name="inputFile2" onchange="setThumbnail(event);">
+            <input class="form-control" style="display:none;" type="file" id="inputFile2" name="inputFile2" onchange="setThumbnail(event);">
         </div>
         <div class="">
-            <label>이미지3</label><br>
-            <input class="form-control" type="file" id="inputFile3" name="inputFile3" onchange="setThumbnail(event);">
+            <input class="form-control" style="display:none;" type="file" id="inputFile3" name="inputFile3" onchange="setThumbnail(event);">
         </div>
         <div class="">
-            <label>이미지4</label><br>
-            <input class="form-control" type="file" id="inputFile4" name="inputFile4" onchange="setThumbnail(event);" >
+            <input class="form-control" style="display:none;" type="file" id="inputFile4" name="inputFile4" onchange="setThumbnail(event);" >
+        </div>
+
+        <div>
+            <button id="inputBtn" class="btn btn-secondary" onclick="inputChange(); this.blur();">이미지 입력</button>
+            <label id="inputLabel"></label>
         </div>
     </div>
+
+
+
+
+        <div class="d-flex justify-content-center">
+            <div id="captureWrap">
+                <div class="imgSquare" id="capture">
+                    <div class="imgDivSquare" id="inputFile1Div">사진1</div>
+                    <div class="imgDivSquare" id="inputFile2Div">사진2</div>
+                    <div class="imgDivSquare" id="inputFile3Div">사진3</div>
+                    <div class="imgDivSquare" id="inputFile4Div">사진4</div>
+                </div>
+            </div>
+        </div>
 
 
     <div class="d-flex justify-content-center bg-white border rounded" style="margin: 3%;padding: 2%;">
@@ -167,6 +183,10 @@
                 <button class="btn btn-light  border" id="addFrameBtn" name="addFrameBtn" onclick="addFrame(); this.blur();">프레임 변경</button>
                 <button class="btn btn-light  border" id="removeFrameBtn" name="removeFrameBtn" onclick="removeFrame(); this.blur();">취소</button>
             </div>
+
+            <div  class="mb-3" id="frame_container">
+                <!-- 이미지 들어가는곳 -->
+            </div>
         </div>
         <div style="width : 18%;">
             <label>사진 흑백필터</label><br>
@@ -175,17 +195,6 @@
         </div>
     </div>
 
-
-        <div class="d-flex justify-content-center">
-            <div id="captureWrap">
-                <div class="imgSquare" id="capture">
-                    <div class="imgDivSquare" id="inputFile1Div">사진1</div>
-                    <div class="imgDivSquare" id="inputFile2Div">사진2</div>
-                    <div class="imgDivSquare" id="inputFile3Div">사진3</div>
-                    <div class="imgDivSquare" id="inputFile4Div">사진4</div>
-                </div>
-            </div>
-        </div>
 
     <div class="d-flex" style="margin: 3%;">
         <div>
@@ -216,6 +225,10 @@
     var frameSrc;
     var frameImage;
 
+    var inputFlag = 0;
+
+    var lastStiker = 0;
+
     let captureDiv = document.getElementById('capture');
     let downloadButton = document.getElementById('downloadButton');
     let saveToServerButton = document.getElementById('saveToServerButton');
@@ -231,28 +244,55 @@
         console.log(e.target.nodeName.toLowerCase());
         var targetTag = e.target.nodeName.toLowerCase();
 
-
-        if(stickerFlag == 1){
-            x = e.offsetX - 50;
-            y = e.offsetY - 50;
-            var $sticker = $("#stickerImg").clone();
-            $sticker.attr('class', 'stickerImg');
-            $sticker.css("position", "absolute");
-            $sticker.css("left", x + "px");
-            $sticker.css("top", y + "px");
-            $sticker.css("z-index", "1");
-            $sticker.css("pointer-events", "none"); //클릭 이벤트 타겟에서 제외
-
-            if(targetTag == "img"){
-                $sticker.appendTo(e.target.parentElement);
+        if(inputFlag == 1){
+            if(e.target.id == "inputFile1Div"){
+                $('#inputFile1').click();
             }
-            else{
-                $sticker.appendTo(e.target);
+            else if(e.target.id == "inputFile2Div"){
+                $('#inputFile2').click();
             }
+            else if(e.target.id == "inputFile3Div"){
+                $('#inputFile3').click();
+            }
+            else if(e.target.id == "inputFile4Div"){
+                $('#inputFile4').click();
+            }
+        }
+        else{
+            if(stickerFlag == 1){
+                x = e.offsetX - 50;
+                y = e.offsetY - 50;
+                var $sticker = $("#stickerImg" + lastStiker).clone();
 
-            stickerFlag = 0;
+                $sticker.attr('class', 'stickerImg');
+                $sticker.css("position", "absolute");
+                $sticker.css("left", x + "px");
+                $sticker.css("top", y + "px");
+                $sticker.css("z-index", "1");
+                $sticker.css("pointer-events", "none"); //클릭 이벤트 타겟에서 제외
+
+                if(targetTag == "img"){
+                    $sticker.appendTo(e.target.parentElement);
+                }
+                else{
+                    $sticker.appendTo(e.target);
+                }
+
+                stickerFlag = 0;
+            }
         }
     });
+
+    function inputChange(){
+        if(inputFlag == 0){
+            inputFlag = 1;
+            $('#inputLabel').text("사진 입력중");
+        }
+        else{
+            inputFlag = 0;
+            $('#inputLabel').text("");
+        }
+    }
 
 
 
@@ -408,13 +448,16 @@
 
     //스티커 사진 변경
     $('#inputFile').on('change', function(event) {
+            event.stopPropagation();
+            lastStiker += 1;
+
             console.log('실행');
             var file = event.target.files[0];
             if (file && file.type.startsWith('image/')) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
                 $('#image_container').empty();
-                $('#image_container').append('<img src="' + e.target.result + '" alt="Selected Image" id="stickerImg" width="100px" height="100px">');
+                $('#image_container').append('<img src="' + e.target.result + '" alt="Selected Image" id="stickerImg' + lastStiker + '" width="100px" height="100px">');
                 }
             reader.readAsDataURL(file);
             }
@@ -430,10 +473,11 @@
             if (file && file.type.startsWith('image/')) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
+                $('#frame_container').empty();
+                $('#frame_container').append('<img src="' + e.target.result + '" width="100px" height="100px">');
 
                 frameSrc = e.target.result;
                 frameFlag = 1;
-                console.log(frameSrc);
                 }
             reader.readAsDataURL(file);
             }
