@@ -10,23 +10,25 @@
             object-fit: cover; /* 이미지 비율을 유지하며 크기에 맞게 조정 */
         }
     </style>
+
+    </style>
 </head>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
 
-<h1 class="mb-4 text-center">🐾 집사 회의 게시글 작성 🐾</h1>
-<h3 class="mb-4 text-center">견주들만의 고민을 공유하시개! 🐶</h3>
 <div class="container">
-<div class="card">
-    <div class="card-body">
+    <h1 class="mb-4 text-center">🐾 집사 회의 🐾</h1>
+    <h3 class="mb-4 text-center">견주들만의 고민을 공유하시개! 🐶</h3>
+    <div class="card w-75 mx-auto">
+        <div class="card-body">
         <form id="submitForm" action="/community/conference" method="post" enctype="multipart/form-data">
             <div class="mb-3">
-                <label for="title" class="form-label">🏷️ 제목:</label>
+                <label for="title" class="form-label">제목:</label>
                 <input type="text" id="title" name="title" class="form-control" required placeholder="제목을 입력해주시개">
             </div>
             <div class="mb-3">
-                <label for="content" class="form-label">📝 내용:</label>
+                <label for="content" class="form-label">내용:</label>
                 <textarea id="content" name="content" class="form-control" rows="5" required placeholder="내용을 입력해주시개"></textarea>
             </div>
             <div class="mb-3">
@@ -39,8 +41,7 @@
                 <button type="submit" class="btn btn-primary" onsubmit="return confirm('게시글을 저장할까요?');">저장하기</button>
             </div>
         </form>
-        <a href="/community/conference" class="btn btn-secondary mt-3">🏠 목록으로</a>
-
+        <button class="btn btn-secondary" onclick="history.back()" style="margin-right: 10px;" >뒤로가기</button>
     </div>
 </div>
 

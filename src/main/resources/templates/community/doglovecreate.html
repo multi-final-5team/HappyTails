@@ -15,18 +15,18 @@
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
 
-<h1 class="mb-4 text-center">🐾 내 새꾸 자랑하기 게시글 작성 🐾</h1>
-<h3 class="mb-4 text-center">우리 아이의 사랑스러운 순간들을 자랑하시개! 🐶</h3>
- <div class="container">
-
-<div class="card">
-    <div class="card-body">
-        <form id="submitForm" action="/community/doglove" method="post" enctype="multipart/form-data">
+<div class="container">
+    <h1 class="mb-4 text-center">🐾 내 새꾸 자랑 🐾</h1>
+    <h3 class="mb-4 text-center">우리 아이의 사랑스러운 순간들을 자랑하시개! 🐶</h3>
+    <div class="card w-75 mx-auto">
+        <div class="card-body">
+            <form id="submitForm" action="/community/doglove" method="post" enctype="multipart/form-data">
             <div class="mb-3">
-                <label for="title" class="form-label">🏷️ 제목:</label>
-                <input type="text" id="title" name="title" class="form-control" required placeholder="제목을 입력해주시개"></div>
-            <div class="mb-3">
-                <label for="content" class="form-label">📝 내용:</label>
+                <label for="title" class="form-label">제목:</label>
+                <input type="text" id="title" name="title" class="form-control" required placeholder="제목을 입력해주시개">
+            </div>
+                <div class="mb-3">
+                <label for="content" class="form-label">내용:</label>
                 <textarea id="content" name="content" class="form-control" rows="5" required placeholder="내용을 입력해주시개"></textarea>
             </div>
             <div class="mb-3">
@@ -39,7 +39,7 @@
                 <button type="submit" class="btn btn-primary" onsubmit="return confirm('게시글을 저장할까요?');">저장하기</button>
             </div>
         </form>
-        <a href="/community/doglove" class="btn btn-secondary mt-3">🏠 목록으로</a>
+        <button class="btn btn-secondary" onclick="history.back()" style="margin-right: 10px;" >뒤로가기</button>
     </div>
 
 </div>
