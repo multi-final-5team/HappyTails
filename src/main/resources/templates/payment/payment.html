@@ -7,7 +7,7 @@
 <menu th:replace="fragments/head :: menu"></menu>
 <div class="container mt-5">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h2 class="mb-4">주문/결제</h2>
             <form>
                 <div class="mb-3">
@@ -33,7 +33,7 @@
             </form>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-8">
             <h2 class="mb-4 text-center">장바구니 상품 목록</h2>
             <div class="card shadow">
                 <div class="card-body">
@@ -41,39 +41,43 @@
                         <table class="table table-hover">
                             <thead>
                             <tr>
-                                <th>상품명</th>
-                                <th>가격</th>
-                                <th>수량</th>
+                                <th class="text-center align-middle">상품</th>
+                                <th class="text-center align-middle">상품명</th>
+                                <th class="text-center align-middle">가격</th>
+                                <th class="text-center align-middle">수량</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr th:each="cartList : ${cartList}">
-                                <td>
-                                    <div th:if="${cartMap[cartList.goodsNo].size() > 0}">
+                                <td th:if="${cartMap[cartList.goodsNo].size() > 0}" class="text-center align-middle">
                                         <img th:src="@{/images/S/{file}(file=${cartMap[cartList.goodsNo][0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="100" height="100">
-                                    </div>
-                                    <a th:href="@{/sales/selectGoods(no=${cartList.goodsNo})}"
-                                       th:text="${cartList.goodsName}"
-                                       class="text-decoration-none"></a>
+                                </td >
+                                <td th:text="${cartList.goodsName}"
+                                    class="price text-center align-middle">
                                 </td>
-                                <td th:text="${#numbers.formatCurrency(cartList.price)}" class="price"></td>
-                                <td th:text="${cartList.purchaseQuantity}" class="purchaseQuantity"></td>
+                                <td th:text="${#numbers.formatCurrency(cartList.price)}" class="price text-center align-middle"></td>
+                                <td th:text="${cartList.purchaseQuantity}" class="purchaseQuantity text-center align-middle"></td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-
             <div class="mt-4 text-end price-row total-price">
-                <h4>
-                    총 결제금액:
-                    <span th:text="${#numbers.formatCurrency(#aggregates.sum(cartList.![price * purchaseQuantity]))} + '원'" id="amount" class="text-primary"></span>
-                </h4>
-                <button onclick="mypayment()" class="btn btn-primary btn-lg mt-3 order-button">결제하기</button>
+            <h4>
+                총 결제금액:
+                <span th:text="${#numbers.formatCurrency(#aggregates.sum(cartList.![price * purchaseQuantity]))} + '원'" id="amount" class="text-primary"></span>
+            </h4>
             </div>
         </div>
     </div>
+    <div class="mt-4 text-end price-row total-price">
+
+
+        <button class="btn btn-secondary float-start" onclick="history.back()">뒤로가기</button>
+        <button onclick="mypayment()" class="btn btn-primary btn-lg mt-3 order-button">결제</button>
+    </div>
+
 </div>
 
 <script src="https://cdn.iamport.kr/v1/iamport.js"></script>

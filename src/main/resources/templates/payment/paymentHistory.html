@@ -18,19 +18,30 @@
 <main>
     <div class="container my-5">
         <figure class="text-center">
-            <h2 id="구매-상품-목록">구매 상품 목록</h2>
+            <h1 class="mb-4 text-center">구매 내역 🛒</h1>
         </figure>
+
+        <br>
+        <div class="row justify-content-center">
+            <div class="col-md-4">
+                <form id="searchForm" action="/sales/search" method="get" class="d-flex align-items-center">
+                    <input type="text" name="keyword" class="form-control me-2" placeholder="상품명" aria-label="검색" required>
+                    <button type="submit" class="btn btn-outline-success">🔎</button>
+                </form>
+            </div>
+        </div>
+        <br>
 
         <div class="card shadow" th:if="${not #lists.isEmpty(paymentHistory)}">
             <div class="card-body paymentHistory-item">
                 <div class="paymentHistory-info table-responsive">
                     <table class="table table-hover" id="paymentHistoryTable">
-                        <thead class="table-dark">
+                        <thead>
                         <tr>
-                            <th>구매 상품</th>
-                            <th>결제 금액</th>
-                            <th>결제일</th>
-                            <th> </th>
+                            <th class="text-center align-middle">구매 상품</th>
+                            <th class="text-center align-middle">결제 금액</th>
+                            <th class="text-center align-middle">주문 날짜</th>
+                            <th class="text-center align-middle"> </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -89,16 +100,16 @@
 
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>
+                <td class="text-center align-middle">
 
                     <p>
                         ${firstItem.productname}${additionalItems > 0 ? ` 외 ${additionalItems}개` : ''}
                     </p>
                 </td>
-                <td>${new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(totalPurchasePrice)}</td>
-                <td>${new Date(firstItem.date_created).toLocaleString('ko-KR')}</td>
+                <td class="text-center align-middle">${new Intl.NumberFormat('ko-KR', { style: 'currency', currency: 'KRW' }).format(totalPurchasePrice)}</td>
+                <td class="text-center align-middle">${new Date(firstItem.date_created).toLocaleString('ko-KR')}</td>
 
-                <td><a href="/payment/paymentHistoryDetails?imPortId=${firstItem.imPortId}">상세보기</></td>
+                <td class="text-center align-middle"><a href="/payment/paymentHistoryDetails?imPortId=${firstItem.imPortId}">상세보기</></td>
             `;
             tableBody.appendChild(row);
         });

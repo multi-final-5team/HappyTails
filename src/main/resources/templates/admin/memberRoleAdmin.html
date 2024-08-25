@@ -51,7 +51,13 @@
                                     <td>탈퇴</td>
                                 </th:block>
                                 <td th:text="${member.role}"></td>
-                                <td><button type="button" class="btn btn-danger deleteBtn" th:onclick="changeRole([[${member}]])">권한변경</button></td>
+                                <td>
+                                    <button type="button" class="btn btn-info deleteBtn" th:onclick="changeRole([[${member}]])">권한변경</button>
+                                    <button th:if="${member.deleteAccountFlag} == 'Y'"
+                                            type="button" class="btn btn-warning deleteBtn" th:onclick="recoverF([[${member}]])">회원 복구</button>
+                                    <button th:if="${member.deleteAccountFlag} == 'N'"
+                                            type="button" class="btn btn-danger deleteBtn" th:onclick="deleteF([[${member}]])">회원탈퇴</button>
+                                </td>
                             </tr>
                         </th:block>
                         </tbody>
@@ -63,7 +69,6 @@
 </div>
 
 <script>
-
     function changeRole(member) {
         if(member.role == "ROLE_ADMIN"){
             member.role = "ROLE_MEMBER";
@@ -73,11 +78,9 @@
         }
 
         no = member.no;
-
         role = member.role
 
         console.log(no);
-
         console.log(role);
 
         $.ajax({
@@ -88,10 +91,45 @@
 		        role : role
 	        },
             success: function (data){
+                alert('권한이 변경 되었습니다.');
                 location.reload();
             },
             error: function (xhr){
                 console.log(xhr);
+            }
+        })
+    }
+
+    function deleteF(member) {
+        let id = member.id;
+        console.log(id);
+
+        $.ajax({
+            url:"/member/deleteUser",
+            type: "POST",
+            data: {
+		        id : id
+	        },
+            success: function (data){
+                alert(data);
+                location.reload();
+            }
+        })
+    }
+
+    function recoverF(member) {
+        let id = member.id;
+        console.log(id);
+
+        $.ajax({
+            url:"/member/recoverUser",
+            type: "POST",
+            data: {
+		        id : id
+	        },
+            success: function (data){
+                alert(data);
+                location.reload();
             }
         })
     }

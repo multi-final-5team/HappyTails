@@ -2,25 +2,31 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>배송 상태 변경</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container">
-    <h1>배송 상태 변경</h1>
-    <form id="updateDeliveryForm">
-        <div class="form-group">
-            <label for="deliveryCodeSelect">배송 상태</label>
-            <select class="form-control" id="deliveryCodeSelect" name="deliveryCode">
-                <option value="P" th:selected="${deliveryCode == 'P'}">배송 준비</option>
-                <option value="D" th:selected="${deliveryCode == 'D'}">배송 중</option>
-                <option value="S" th:selected="${deliveryCode == 'S'}">배송 완료</option>
-                <option value="C" th:selected="${deliveryCode == 'C'}">환불 대기</option>
-                <option value="R" th:selected="${deliveryCode == 'R'}">환불 완료</option>
-            </select>
-        </div>
-        <input type="hidden" id="paymentNo" name="paymentNo" th:value="${paymentNo}">
-        <button type="button" class="btn btn-primary" onclick="saveDeliveryCode()">저장</button>
-    </form>
+<div class="card">
+    <div class="card-body">
+        <h3 class="card-title">배송 상태 변경</h3>
+        <form id="updateDeliveryForm">
+            <div class="form-group">
+                <div class="mb-3">
+                    <label for="deliveryCodeSelect">배송 상태</label>
+                    <select class="form-control" id="deliveryCodeSelect" name="deliveryCode">
+                        <option value="P" th:selected="${deliveryCode == 'P'}">배송 준비</option>
+                        <option value="D" th:selected="${deliveryCode == 'D'}">배송 중</option>
+                        <option value="S" th:selected="${deliveryCode == 'S'}">배송 완료</option>
+                        <option value="C" th:selected="${deliveryCode == 'C'}">환불 대기</option>
+                        <option value="R" th:selected="${deliveryCode == 'R'}">환불 완료</option>
+                    </select>
+                </div>
+            </div>
+            <input type="hidden" id="paymentNo" name="paymentNo" th:value="${paymentNo}">
+            <button type="button" class="btn btn-primary" onclick="saveDeliveryCode()">배송 상태 변경</button>
+        </form>
+    </div>
 </div>
 
 <script>

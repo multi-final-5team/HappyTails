@@ -13,44 +13,48 @@
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
     <div class="container my-5">
-        <h1 class="mb-4 text-center">장바구니</h1>
+        <h1 class="mb-4 text-center">장바구니 🛒</h1>
         <div class="card shadow">
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-hover">
-                        <thead class="table-dark">
+                        <thead>
                         <tr>
-                            <th>대표 이미지</th>
-                            <th>상품명</th>
-                            <th>가격</th>
-                            <th>수량</th>
-                            <th></th>
+                            <th class="text-center align-middle">대표 이미지</th>
+                            <th class="text-center align-middle">상품명</th>
+                            <th class="text-center align-middle">가격</th>
+                            <th class="text-center align-middle">수량</th>
+                            <th class="text-center align-middle"></th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr th:each="cartList : ${cartList}">
-                            <td>
+                            <td class="text-center align-middle">
                                 <div th:if="${cartMap[cartList.goodsNo].size() > 0}">
                                     <img th:src="@{/images/S/{file}(file=${cartMap[cartList.goodsNo][0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="100" height="100">
                                 </div>
                             </td>
-                            <td>
+                            <td class="text-center align-middle">
                                 <a th:href="@{/sales/selectGoods(no=${cartList.goodsNo})}"
                                    th:text="${cartList.goodsName}"
                                    class="text-decoration-none"></a>
                             </td>
-                            <td th:text="${#numbers.formatCurrency(cartList.price)}" class="price" th:data-price="${cartList.price}"></td>
-                            <td>
+                            <td class="text-center align-middle">
+                                <p th:text="${#numbers.formatCurrency(cartList.price)}" class="price" th:data-price="${cartList.price}">
+
+                                </p>
+                            </td>
+                            <td class="text-center align-middle">
                                 <input type="number" th:value="${cartList.purchaseQuantity}"
-                                       class="form-control purchaseQuantity"
+                                       class="form-control purchaseQuantity mx-auto"
                                        min="1"
                                        th:data-goods-no="${cartList.goodsNo}"
                                        th:data-no="${cartList.no}"
                                        style="width: 70px;">
                             </td>
-                            <td>
+                            <td class="text-center align-middle">
                                 <a th:href="@{/cart/deleteCart(no=${cartList.no})}"
-                                   class="btn btn-danger">
+                                   style="color: black;">
                                     삭제
                                 </a>
                             </td>
@@ -58,15 +62,21 @@
                         </tbody>
                     </table>
                     <br>
-                    <div class="card mx-auto" style="width: 50%; min-width: 300px;">
+<!--                    <div class="card mx-auto" style="width: 20%; min-width: 300px;">-->
                         <div class="card-body text-center">
-                            <p>예상 결제 금액</p>
-                            <p id="totalAmount"></p>
-                            <p><a href="/payment/payment" class="btn btn-primary">결제하기</a></p>
+                            <h4>총 결제 금액</h4>
+                            <h4 id="totalAmount"></h4>
                         </div>
-                    </div>
+<!--                    </div>-->
                 </div>
             </div>
+
+
+                <div class="m-4">
+                    <button class="btn btn-secondary float-start" onclick="history.back()">뒤로가기</button>
+                    <a href="/payment/payment" class="btn btn-primary float-end">주문</a>
+                </div>
+
         </div>
     </div>
 </main>
