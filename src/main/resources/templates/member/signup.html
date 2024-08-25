@@ -10,6 +10,18 @@
 <head th:replace="~{fragments/head :: head}">
     <title>회원가입</title>
 </head>
+
+<style>
+    .photo-placeholder {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 28px;
+        cursor: pointer;
+        margin: 0 auto; /* 가운데 정렬 */
+    }
+</style>
+
 <body>
 <menu th:replace="~{fragments/head :: menu}"></menu>
 <main>
@@ -19,8 +31,7 @@
             <div class="col-md-6 col-lg-4 mx-auto">
                 <form action="/member/signup" method="post" enctype="multipart/form-data" id="signupForm">
                     <div class="mb-3">
-                        <label for="file" class="form-label">프로필 이미지</label>
-                        <input type="file" class="form-control" id="file" name="file">
+                        <div class="photo-placeholder" id="photo-placeholder">🐶</div>
                     </div>
                     <div class="mb-3">
                         <label for="id" class="form-label">아이디</label>
@@ -35,6 +46,12 @@
                         <label for="password" class="form-label">비밀번호</label>
                         <input type="password" class="form-control" id="password" name="password" required>
                         <div id="passwordError" class="text-danger"></div>
+                        <p style="color: gray; font-size: 14px;">4~13자의 영문자와 숫자 조합</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="passwordCheck" class="form-label">비밀번호 확인</label>
+                        <input type="password" class="form-control" id="passwordCheck" name="passwordCheck" required>
+                        <div id="passwordCheckError" class="text-danger"></div>
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">이메일</label>
@@ -79,7 +96,7 @@
 -->
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         var isIdChecked = false;
 
         // 아이디 유효성 검사 함수
@@ -87,7 +104,7 @@
             return /^[a-zA-Z0-9_]{4,20}$/.test(id);
         }
 
-        $('#id').on('input', function() {
+        $('#id').on('input', function () {
             var id = $(this).val();
             isIdChecked = false;
             $('#idCheckResult').text('');
@@ -101,7 +118,7 @@
             }
         });
 
-        $('#checkIdButton').click(function() {
+        $('#checkIdButton').click(function () {
             var id = $('#id').val();
             if (!validateId(id)) {
                 $('#idError').text('유효하지 않은 아이디입니다.');
@@ -111,8 +128,8 @@
             $.ajax({
                 url: '/member/checkIdDuplicate',
                 type: 'POST',
-                data: { id: id },
-                success: function(response) {
+                data: {id: id},
+                success: function (response) {
                     $('#idCheckResult').text(response);
                     if (response === "사용 가능한 아이디입니다.") {
                         isIdChecked = true;
@@ -122,14 +139,36 @@
                         $('#idCheckResult').css('color', 'red');
                     }
                 },
-                error: function() {
+                error: function () {
                     alert('서버 오류가 발생했습니다.');
                     isIdChecked = false;
                 }
             });
         });
 
-        $('#signupForm').submit(function(e) {
+        const password = $('#password');
+        const passwordCheck = $('#passwordCheck');
+        const passwordCheckError = $('#passwordCheckError');
+        let isPasswordMatch = false;
+
+        function validatePasswords() {
+            if (password.val() === '' && passwordCheck.val() === '') {
+                passwordCheckError.text('').removeClass('text-danger text-success');
+                isPasswordMatch = false;
+            } else if (password.val() !== passwordCheck.val()) {
+                passwordCheckError.text('비밀번호가 일치하지 않습니다.').removeClass('text-success').addClass('text-danger');
+                isPasswordMatch = false;
+            } else {
+                passwordCheckError.text('비밀번호가 일치합니다.').removeClass('text-danger').addClass('text-success');
+                isPasswordMatch = true;
+            }
+            return isPasswordMatch;
+        }
+
+        passwordCheck.on('input', validatePasswords);
+        password.on('input', validatePasswords);
+
+        $('#signupForm').submit(function (e) {
             e.preventDefault();
 
             var id = $('#id').val();
@@ -147,10 +186,16 @@
             var password = $('#password').val();
             var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,13}$/;
             if (!passwordRegex.test(password)) {
-                $('#passwordError').text('비밀번호는 4~13자의 영문자와 숫자 조합이어야 합니다.');
+                $('#passwordError').alert("비밀번호를 확인해주세요")
                 return;
             } else {
                 $('#passwordError').text('');
+            }
+
+            // 비밀번호 확인 검사
+            if (!validatePasswords()) {
+                $('#passwordCheckError').text('비밀번호가 일치하지 않습니다.').removeClass('text-success').addClass('text-danger');
+                return;
             }
 
             // 이메일 유효성 검사
@@ -162,25 +207,6 @@
             } else {
                 $('#emailError').text('');
             }
-
-            // 이메일 중복 체크
-            $.ajax({
-                url: '/member/checkEmailDuplicate',
-                type: 'POST',
-                data: { email: email },
-                success: function(response) {
-                    if (response === true) {
-                        alert("이메일 중복. 다른 이메일을 작성해주세요.");
-                        $('#email').focus();
-                    } else {
-                        // 이메일 중복이 아닌 경우에만 폼을 제출합니다.
-                        $('#signupForm')[0].submit();
-                    }
-                },
-                error: function() {
-                    alert("이메일 중복 확인 중 오류가 발생했습니다.");
-                }
-            });
 
             // 닉네임 유효성 검사
             var nickname = $('#nickname').val();
@@ -202,22 +228,39 @@
                 $('#telError').text('');
             }
 
-            // 모든 유효성 검사를 통과하면 폼 제출
-            this.submit();
+            // 이메일 중복 체크
+            $.ajax({
+                url: '/member/checkEmailDuplicate',
+                type: 'POST',
+                data: {email: email},
+                success: function (response) {
+                    if (response === true) {
+                        alert("이메일 중복. 다른 이메일을 작성해주세요.");
+                        $('#email').focus();
+                        return;
+                    } else {
+                        // 이메일 중복이 아닌 경우에만 폼을 제출합니다.
+                        $('#signupForm')[0].submit();
+                    }
+                },
+                error: function () {
+                    alert("이메일 중복 확인 중 오류가 발생했습니다.");
+                }
+            });
         });
 
         // 전화번호 입력 시 자동으로 하이픈('-') 추가
-        $('#tel').on('input', function() {
+        $('#tel').on('input', function () {
             var number = $(this).val().replace(/[^0-9]/g, "");
             var tel = "";
 
-            if(number.length < 4) {
+            if (number.length < 4) {
                 return number;
-            } else if(number.length < 7) {
+            } else if (number.length < 7) {
                 tel += number.substr(0, 3);
                 tel += "-";
                 tel += number.substr(3);
-            } else if(number.length < 11) {
+            } else if (number.length < 11) {
                 tel += number.substr(0, 3);
                 tel += "-";
                 tel += number.substr(3, 3);
@@ -232,6 +275,32 @@
             }
             $(this).val(tel);
         });
+    });
+
+    // 이미지 업로드 처리
+    document.getElementById('photo-placeholder').addEventListener('click', function () {
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.name = "file";
+        input.id = "file";
+        input.style.display = 'none';
+        input.onchange = function (event) {
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                document.getElementById('photo-placeholder').innerHTML = '';
+                document.getElementById('photo-placeholder').appendChild(img);
+            }
+            reader.readAsDataURL(file);
+            $('#signupForm').append(input);
+        }
+        input.click();
     });
 </script>
 </body>
