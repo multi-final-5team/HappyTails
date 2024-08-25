@@ -245,6 +245,23 @@ public class PatrolController {
         return onePatrolImgDTO;
     }
 
+    @GetMapping("/patrolUpdate")
+    public void patrolUpdateGo(@AuthenticationPrincipal CustomUser customUser, Model model) {
+        PatrolDTO patrolDTO = patrolService.findOnePatrol((int) customUser.getNo());
+
+        System.out.printf(patrolDTO.toString());
+
+        List<UploadDto> uploadDtos = uploadService.uploadSelect("Z", patrolDTO.getPatrolNo());
+
+        System.out.printf(uploadDtos.toString());
+
+        model.addAttribute("patrolDTO",patrolDTO);
+        model.addAttribute("uploadDtos",uploadDtos);
+
+    }
+
+
+
     /**
      * methodName : patrolUpdate
      * author : 우재협
@@ -254,16 +271,16 @@ public class PatrolController {
      * @param custom user
      * @return string
      */
-    @PostMapping("patrolUpdate")
-    public String patrolUpdate(PatrolDTO patrolDTO, @RequestParam(value = "beforeImgNo",required = false) int beforeImgNo, @RequestParam(value = "imageFiles",required = false) List<MultipartFile> imageFiles){
+    @PostMapping("/patrolUpdate")
+    @ResponseBody
+    public String patrolUpdate(PatrolDTO patrolDTO, @RequestParam(value = "imageFiles",required = false) List<MultipartFile> imageFiles){
 
         List<UploadDto> pageIngs = uploadService.uploadSelect("Z",patrolDTO.getPatrolNo());
 
-        System.out.println("beforeImgNo>>>>" + beforeImgNo);
-
+        System.out.printf(patrolDTO.toString());
         if (imageFiles != null) {
-            if (beforeImgNo != 0){
-                uploadService.uploadDelete(beforeImgNo);
+            if (!pageIngs.isEmpty()){
+                uploadService.uploadDelete(pageIngs.get(0).getImageNo());
             }
         }
 
@@ -289,7 +306,7 @@ public class PatrolController {
 
         int result = patrolService.patrolUpdate(patrolDTO);
 
-        return "patrol/patrol";
+        return "수정이 완료 되었습니다.";
     }
 
     /**
