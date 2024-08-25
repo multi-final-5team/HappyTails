@@ -156,25 +156,6 @@
                   transform: translateY(-5px);
                   box-shadow: 0 8px 20px rgba(255, 209, 102, 0.3);
               }
-
-        @keyframes glow {
-            0%, 100% {
-                filter: drop-shadow(0 0 2px rgba(255, 223, 0, 0.7)) brightness(1);
-                transform: scale(1);
-            }
-            50% {
-                filter: drop-shadow(0 0 10px rgba(255, 223, 0, 1)) brightness(1.2);
-                transform: scale(1.1);
-            }
-        }
-
-        .glowing-star {
-            animation: glow 2s infinite;
-        }
-
-        .glowing-star:hover {
-            filter: drop-shadow(0 0 15px rgba(255, 223, 0, 1)) brightness(1.3);
-        }
     </style>
 
     <!-- Bootstrap Bundle JS (includes Popper) -->
@@ -236,13 +217,6 @@
 
                         <li class="nav-item">
                             <a class="nav-link" href="/honor" style="display: flex; align-items: center;">
-                                <div style="position: relative; width: 22px; height: 22px; margin-right: 5px;">
-                                    <img src="https://kr.object.ncloudstorage.com/team-5/honor-star.png"
-                                         class="glowing-star"
-                                         style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;"
-                                         alt="">
-                                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle, rgba(255,223,0,0.3) 0%, rgba(255,223,0,0) 70%);"></div>
-                                </div>
                                 <span>명예의 전당</span>
                             </a>
                         </li>
