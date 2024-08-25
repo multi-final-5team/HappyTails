@@ -46,8 +46,8 @@
                             <div class="imgDiv col-md-3 mb-3" th:id="'imgDiv' + ${uploadDto.imageNo}">
                                 <img th:src="@{/images/O/{file}(file=${uploadDto.storedFileName})}">
                                 <div class="mt-2">
-                                    <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" th:data-image-no="${uploadDto.imageNo}" value="삭제">
-                                    <input type="button" class="btn btn-success btn-sm imgUpdateBtn" th:data-image-no="${uploadDto.imageNo}" value="수정">
+                                    <button  type="submit" class="btn btn-sm btn-secondary replyUpdateBtn">수정</button>
+                                    <button class="replyUpdateClose">취소</button>
                                 </div>
                             </div>
                         </th:block>
