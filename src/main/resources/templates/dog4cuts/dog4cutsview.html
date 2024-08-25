@@ -35,11 +35,6 @@
 
     .divbtn{
         display: flex;
-        position: absolute;
-
-        top: 80%;
-        left: 70%;
-        width: 30%;
     }
 
 
@@ -57,16 +52,21 @@
 
     <div class="container mt-5">
 
-    <h1 class="mb-4">견생네컷</h1>
-
-    <button class="btn btn-primary" id="goPatrolInsertBtn" onclick="goDog4CutsInsert()" sec:authorize="isAuthenticated()">생성</button>
+        <h1 class="mb-4 text-center">🎞견생네컷📷</h1>
+        <h3 class="mb-4 text-center">🐶반려견과의 소중한 순간을 꾸며보세요🐾</h3>
 
     <div id="dog4cutsdiv">
 
     </div>
 
+        <div class="d-flex" style="margin: 1%;">
+            <div style="margin-left:auto;"></div>
+
+            <button class="btn btn-primary" id="goPatrolInsertBtn" onclick="goDog4CutsInsert()" sec:authorize="isAuthenticated()">생성</button>
+        </div>
+
     <nav aria-label="Page navigation example">
-        <ul class="pagination pagination-lg justify-content-center" id="pageItems">
+        <ul class="pagination justify-content-center" id="pageItems">
 
         </ul>
     </nav>
@@ -125,33 +125,11 @@
 
                     $('<div>').prop({
                         id: 'dog4cuts' + index,
-                        className: 'flexItem'
+                        className: 'flexItem card'
                         }).attr("onclick", "")
                     );
 
                     $('#' + 'dog4cuts' + index).append(
-                        $('<div>').prop({
-                            id: 'divContent' + index,
-                            className: 'divContent'
-                        })
-                    );
-
-                    $('#' + 'divContent' + index).append(
-                        '<b class="card-text">' + contentList[index].createtime + '</b>'
-                    );
-
-                    if(contentList[index].publicstate == 'F'){
-                        $('#' + 'divContent' + index).append(
-                            '<b class="card-text" style="margin-left:55%;">공개</b>'
-                        );
-                    }
-                    else{
-                        $('#' + 'divContent' + index).append(
-                            '<b class="card-text" style="margin-left:55%;">비공개</b>'
-                        );
-                    }
-
-                    $('#' + 'divContent' + index).append(
                         $('<div>').prop({
                             id: 'divimg' + index,
                             className: 'imgDiv'
@@ -162,12 +140,47 @@
                         '<img src="/images/X/' + img + '">'
                     );
 
-                    $('#divimg' + index).append(
+                    $('#' + 'dog4cuts' + index).append(
+                        $('<div>').prop({
+                            id: 'divContent' + index,
+                            className: 'divContent d-flex'
+                        })
+                    );
+
+                    $('#' + 'divContent' + index).append(
+                        $('<div>').prop({
+                            id: 'divContentFlag' + index,
+                            className: ''
+                        })
+                    );
+
+
+
+                    if(contentList[index].publicstate == 'F'){
+                        $('#' + 'divContentFlag' + index).append(
+                            '<b class="card-text" style="color: blue;text-align: center">공개</b>'
+                        );
+                    }
+                    else{
+                        $('#' + 'divContentFlag' + index).append(
+                            '<b class="card-text" style=" color: red;text-align: center">비공개</b>'
+                        );
+                    }
+
+                    $('#' + 'divContent' + index).append(
+                        '<b class="card-text" style="margin-right: 10%;margin-left: 10%;">' + contentList[index].createtime + '</b>'
+                    );
+
+
+
+                    $('#divContent' + index).append(
                         $('<div>').prop({
                             id: 'divbtn' + index,
                             className: 'divbtn'
                         })
                     );
+
+                    $('#' + 'divbtn' + index).css("margin-left", "auto");
 
                     if(username == contentList[index].userId){
                         $('#divbtn' + index).append(
@@ -271,6 +284,7 @@
                    "publicstate": state
                   },
             success : function(data){
+                alert("공개설정 변경");
                 location.replace("/dog4cuts/dog4cutsview");
             },
             error: function (xhr){

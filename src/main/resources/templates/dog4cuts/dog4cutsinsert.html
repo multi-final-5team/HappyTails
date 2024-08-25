@@ -105,20 +105,21 @@
 
     <div class="container mt-5">
 
-    <h1 class="mb-4">견생네컷 생성</h1>
+        <h1 class="mb-4 text-center">🎞견생네컷 생성📷</h1>
+        <h3 class="mb-4 text-center">🐶반려견과의 소중한 순간을 꾸며보세요🐾</h3>
 
     <div class="fileInputTotal" id="" style="margin: 3%;">
         <div class="">
             <label>이미지1</label><br>
-            <input class="form-control" type="file" id="inputFile1" name="inputFile1" onchange="setThumbnail(event);" >
+            <input class="form-control" type="file" id="inputFile1" name="inputFile1" onchange="setThumbnail(event);">
         </div>
         <div class="">
             <label>이미지2</label><br>
-            <input class="form-control" type="file" id="inputFile2" name="inputFile2" onchange="setThumbnail(event);" >
+            <input class="form-control" type="file" id="inputFile2" name="inputFile2" onchange="setThumbnail(event);">
         </div>
         <div class="">
             <label>이미지3</label><br>
-            <input class="form-control" type="file" id="inputFile3" name="inputFile3" onchange="setThumbnail(event);" >
+            <input class="form-control" type="file" id="inputFile3" name="inputFile3" onchange="setThumbnail(event);">
         </div>
         <div class="">
             <label>이미지4</label><br>
@@ -226,8 +227,11 @@
         //클릭 좌표
         console.log(e.offsetX + " , " + e.offsetY);
 
+        console.log(e.target.id);
         console.log(e.target.nodeName.toLowerCase());
         var targetTag = e.target.nodeName.toLowerCase();
+
+
         if(stickerFlag == 1){
             x = e.offsetX - 50;
             y = e.offsetY - 50;
@@ -293,16 +297,14 @@
                 processData : false,
                 contentType : false,
                 success : function (data) {
+                    if(confirm("이미지저장완료. 만든 이미지를 확인하시겠습니까?")){
+                        location.replace("/dog4cuts/dog4cutsview");
+	                }else{
 
+	                }
                 }
             });
         });
-
-        if(confirm("이미지저장완료. 만든 이미지를 확인하시겠습니까?")){
-            location.replace("/dog4cuts/dog4cutsview");
-	    }else{
-
-	    }
 
         }
     });
