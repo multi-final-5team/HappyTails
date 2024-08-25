@@ -45,10 +45,10 @@
                 <tr th:each="item, itemStat : ${ranking}">
                     <td>
                         <div style="display: flex; align-items: center;">
-                            <img th:if="${itemStat.count == 1}" src="https://kr.object.ncloudstorage.com/team-5/1-rank.png" alt="1st Place" style="width: 38px; height: 38px; margin-right: 5px;">
-                            <img th:if="${itemStat.count == 2}" src="https://kr.object.ncloudstorage.com/team-5/2-rank.png" alt="2nd Place" style="width: 38px; height: 38px; margin-right: 5px;">
-                            <img th:if="${itemStat.count == 3}" src="https://kr.object.ncloudstorage.com/team-5/3-rank.png" alt="3rd Place" style="width: 38px; height: 38px; margin-right: 5px;">
-                            <span th:text="${itemStat.count}"></span>
+                            <h4 th:if="${itemStat.count == 1}">🥇</h4>
+                            <h4 th:if="${itemStat.count == 2}">🥈</h4>
+                            <h4 th:if="${itemStat.count == 3}">🥉</h4>
+                            <p th:text="${itemStat.count} + '위'"></p>
                         </div>
                     </td>
 

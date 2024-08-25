@@ -6,63 +6,64 @@
 </head>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
-<main>
-    <div class="container">
+<main class="container py-4">
+    <div>
         <h1 class="mb-4 text-center">🐾 찾아주개 🐾</h1>
         <h3 class="mb-4 text-center">잃어버린 반려견, 함께 찾습니다. 🐶</h3>
-        <div style="margin-left: 215px;">
+        <div>
             <div class="row">
+                    <div class="col-md-10 py-3" style="margin-left: 250px;">
+                        <form class="row align-items-end">
+                            <div class="col-md-3">
+                                <select class="form-select" id="state">
+                                    <option value="" selected>상태(전체)</option>
+                                    <option value="N">미해결</option>
+                                    <option value="Y">해결</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" id="area" class="form-control" placeholder="장소를 입력하세요">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="text" id="title" class="form-control" placeholder="제목을 입력하세요">
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-outline-success" id="searchBtn">🔎</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            <div class="row" style="margin-bottom: 10px; margin-left: 3px; width: 980px;">
                 <div class="list-group flex-row col-4" id="list-tab" role="tablist">
-                    <a class="border border-secondary list-group-item list-group-item-action active" data-bs-toggle="list" href="#list-find" role="tab" aria-controls="list-find" id="tab1">잃어버린 강아지</a>
-                    <a class="border border-secondary list-group-item list-group-item-action" data-bs-toggle="list" href="#list-misgiving" role="tab" aria-controls="list-misgiving" id="tab2">유기 의심 공유</a>
+                    <a class="border border-secondary list-group-item list-group-item-action active" data-bs-toggle="list" role="tab" aria-controls="list-find" id="tab1">잃어버린 강아지</a>
+                    <a class="border border-secondary list-group-item list-group-item-action" data-bs-toggle="list" role="tab" aria-controls="list-misgiving" id="tab2">유기 의심 공유</a>
                 </div>
             </div>
-            <div class="row align-items-end">
-                <div class="col">
-                    <label for="state" class="form-label">상태</label>
-                    <select class="form-select" id="state">
-                        <option value="" selected>전체</option>
-                        <option value="N">미해결</option>
-                        <option value="Y">해결</option>
-                    </select>
-                </div>
-                <div class="col">
-                    <label for="area" class="form-label">장소</label>
-                    <input type="text" id="area" class="form-control">
-                </div>
-                <div class="col">
-                    <label for="title" class="form-label">제목</label>
-                    <input type="text" id="title" class="form-control">
-                </div>
-                <div class="col">
-                    <br>
-                    <button type="button" class="btn btn-primary" id="searchBtn">검색</button>
-                </div>
-            </div>
-            <div class="col-9 mt-3 tab-content">
-                <div class="tab-pane fade show active" id="list-find">
-                    <h3>잃어버린강아지 리스트</h3>
-                    <div class="row" id="findListDiv">
 
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="list-misgiving">
-                    <h3>유기의심공유 리스트</h3>
-                    <div class="row" id="misgivingListDiv">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="findListDiv">
 
-                    </div>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination" id="pagination">
-                        </ul>
-                    </nav>
-                </div>
-                <div class="d-flex justify-content-end">
-                    <input type="button" class="btn btn-primary" value="글쓰기" style="" id="writePageBtn"/>
-                </div>
-            </div>
         </div>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="misgivingListDiv">
+
+        </div>
+
+    </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+        <div class="d-flex justify-content-center">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination" id="pagination">
+                </ul>
+            </nav>
+
+        </div>
+    <div class="d-flex justify-content-end">
+        <input type="button" class="btn btn-primary" value="글작성" style="" id="writePageBtn"/>
     </div>
 </main>
 <menu th:replace="fragments/head :: footer"></menu>
@@ -115,8 +116,12 @@
 
         if (listSwtich == 0) {
             categoryValue = 'F';
+            $('#findListDiv').addClass('g-4');
+            $('#misgivingListDiv').removeClass('g-4');
         } else {
             categoryValue = 'M';
+            $('#misgivingListDiv').addClass('g-4');
+            $('#findListDiv').removeClass('g-4');
         }
 
         let stateValue = $('#state').val();
@@ -149,9 +154,11 @@
                         stateClass = "bg-success";
                     }
                     template += `
-                        <div class="col-md-4 mb-4 d-flex align-items-stretch listRow" data-find-dog-no="`+result.viewAll[i].findDogNo+`">
-                            <div class="card" style="width: 100%;">
-                                <img src="/images/F/`+result.imageMap[result.viewAll[i].findDogNo]+`" class="card-img-top" onerror="this.onerror=null; this.src='https://kr.object.ncloudstorage.com/team-5/Non-Img.png';" width="300" height="200">
+                        <div class="col listRow" data-find-dog-no="`+result.viewAll[i].findDogNo+`">
+                            <div class="card h-100">
+                                <div class="ratio ratio-1x1">
+                                <img src="/images/F/`+result.imageMap[result.viewAll[i].findDogNo]+`" class="card-img-top object-fit-cover" onerror="this.onerror=null; this.src='https://kr.object.ncloudstorage.com/team-5/Non-Img.png';">
+                                </div>
                                 <div class="card-body">
                                     <h5 class="card-title">`+result.viewAll[i].title+`</h5>
                                     <p class="card-text">장소: `+result.viewAll[i].area+`</p>

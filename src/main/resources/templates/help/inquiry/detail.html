@@ -8,7 +8,7 @@
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
     <main>
-        <div class="container">
+        <div class="container py-4">
             <h1 class="mb-4 text-center">🐾 고객센터 🐾</h1>
             <h3 class="mb-4 text-center">고민 있으면 여기다 얘기하개 🐶</h3>
             <div class="card w-75 mx-auto">
@@ -36,13 +36,13 @@
                     <!-- 작성자만 보이게 -->
                     <div th:if="${inquiryDto.writerId} == ${#authentication.principal.username} and ${inquiryDto.result} == 'N'">
                         <input type="button" class="btn btn-danger float-end" id="deleteBtn" value="삭제">
-                        <input type="button" class="btn btn-success float-end" id="updatePageBtn" value="수정">
+                        <input type="button" class="btn btn-success float-end" id="updatePageBtn" value="문의 수정">
                     </div>
 
                     <!-- 관리자만 보이게-->
                     <th:block sec:authorize="hasRole('ROLE_ADMIN')" th:if="${inquiryDto.result} != 'Y'">
                         <div class="mb-3">
-                            <label for="content" class="form-label">결과 작성</label>
+                            <label for="content" class="form-label">결과</label>
                             <textarea class="form-control" id="content" rows="3"></textarea>
                         </div>
                         <div class="mb-3">
@@ -53,7 +53,7 @@
 
                         </div>
                         <div>
-                            <input type="button" class="btn btn-primary float-end" value="작성" id="createBtn"/>
+                            <input type="button" class="btn btn-primary float-end" value="답변 작성" id="createBtn"/>
                         </div>
                     </th:block>
                     <!-- 관리자만 보이게 -->

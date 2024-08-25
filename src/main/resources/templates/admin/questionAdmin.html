@@ -15,8 +15,10 @@
                     자주묻는 질문을 관리하는 페이지 입니다.
                 </div>
             </div>
-            <input type="button" class="btn btn-primary mb-3" id="questionWriteModalOn" value="작성">
-            <div class="card mb-4">
+            <div style="position: relative;">
+                <input type="button" class="btn btn-primary" style="position: absolute; top: -10px; right: 0;" id="questionWriteModalOn" value="작성">
+            </div>
+            <div class="card mb-4" style="top: 35px;">
                 <div class="card-header">
                     <i class="fas fa-table me-1"></i>
                     고객센터
@@ -28,8 +30,7 @@
                             <th>번호</th>
                             <th>카테고리</th>
                             <th>질문</th>
-                            <th>수정</th>
-                            <th>삭제</th>
+                            <th>관리</th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -37,8 +38,7 @@
                             <th>번호</th>
                             <th>카테고리</th>
                             <th>질문</th>
-                            <th>수정</th>
-                            <th>삭제</th>
+                            <th>관리</th>
                         </tr>
                         </tfoot>
                         <tbody>
@@ -47,8 +47,7 @@
                                 <td th:text="${question.questionNo}"></td>
                                 <td th:text="${question.categoryName}"></td>
                                 <td th:text="${question.questionContent}"></td>
-                                <td><input type="button" class="btn btn-success updateBtn" value="수정" th:data-question-no="${question.questionNo}" th:data-question-content="${question.questionContent}" th:data-answer-content="${question.answerContent}" th:data-help-category="${question.helpCategoryCode}"></td>
-                                <td><input type="button" class="btn btn-danger deleteBtn" value="삭제" th:data-question-no="${question.questionNo}"></td>
+                                <td><input type="button" class="btn btn-success updateBtn" value="수정" th:data-question-no="${question.questionNo}" th:data-question-content="${question.questionContent}" th:data-answer-content="${question.answerContent}" th:data-help-category="${question.helpCategoryCode}"><input type="button" class="btn btn-danger deleteBtn ms-1" value="삭제" th:data-question-no="${question.questionNo}"></td>
                             </tr>
                         </th:block>
                         </tbody>
