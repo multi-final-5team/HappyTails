@@ -7,8 +7,8 @@
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
 <main class="container py-4">
-    <h1 class="mb-4 text-center">🐾 내 새꾸 자랑 게시판 🐾</h1>
-    <h3 class="mb-4 text-center">우리 아이의 사랑스러운 순간들을 자랑하시개! 🐶</h3>
+    <h1 class="mb-4 text-center">🐾 내 새꾸 자랑 🐾</h1>
+    <h3 class="mb-4 text-center"  style="padding-bottom: 50px;">우리 아이의 사랑스러운 순간들을 자랑하시개! 🐶</h3>
 
     <!-- 추천순/최신순 / 새 글 작성 -->
     <div class="row mb-3">
@@ -16,12 +16,12 @@
             <form action="/community/doglove" method="get" class="d-inline me-2">
                 <input type="hidden" name="sort" value="date"/>
                 <input type="hidden" name="keyword" th:value="${keyword}"/>
-                <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'date' ? '🐶 최신순(현재)' : '🐶 최신순'}"></button>
+                <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'date' ? '최신순' : '최신순'}"></button>
             </form>
             <form action="/community/doglove" method="get" class="d-inline">
                 <input type="hidden" name="sort" value="recommendCount"/>
                 <input type="hidden" name="keyword" th:value="${keyword}"/>
-                <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'recommendCount' ? '❤️ 추천순(현재)' : '❤️ 추천순'}"></button>
+                <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'recommendCount' ? '❤️ 추천순' : '❤️ 추천순'}"></button>
             </form>
         </div>
         <!-- 검색 -->
@@ -31,9 +31,6 @@
                 <input type="text" name="keyword" class="form-control me-2" placeholder="제목을 입력하세요" aria-label="검색" th:value="${keyword}">
                 <button type="submit" class="btn btn-outline-success">🔎</button>
             </form>
-        </div>
-        <div class="col-md-4 text-end">
-            <a href="/community/doglove/create" onclick="return checkLogin()" class="btn btn-primary btn-sm">🦴 새 글 작성하기</a>
         </div>
     </div>
 
@@ -66,9 +63,12 @@
             </div>
         </div>
     </div>
+    <a href="/community/doglove/create" onclick="return checkLogin()" class="btn btn-primary btn-sm" style="float: right; margin-top: 20px;">글 작성</a>
+
+
 
     <!-- 페이징 부분 -->
-    <nav aria-label="Page navigation" class="mt-4">
+    <nav aria-label="Page navigation" class="mt-4" style="padding-left: 110px;">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                 <a class="page-link" th:href="@{/community/doglove(page=${currentPage - 1}, sort=${sort}, keyword=${keyword})}" aria-label="Previous" th:if="${currentPage > 1}">

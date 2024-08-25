@@ -12,22 +12,12 @@
         width: 45%;
         height: 25%;
         margin: 2.5%;
-        max-height = 25%;
+        max-height : 500px;
     }
 
-    .imgDiv{
-        width : 200px;
-        height: 300px;
-    }
-
-    .patrolImg{
-	display:block;
-	width:100%;
-	height:100%;
-    }
-
-    .divbody{
-        width : 50%;
+    .card-img-top {
+        height: 15rem;
+        object-fit: fill;
     }
 
     #patroldiv{
@@ -45,16 +35,24 @@
 <main>
 <div class="container mt-5">
     <h1 class="mb-4 text-center">순찰대 소개</h1>
-    <h5 class="mb-4 text-center">반려견과 함께 산책하면서 동네를 살피며 시설물 파손이나 주취자 신고 등 방범 활동을 벌이는 지역봉사 활동</h5>
+    <h3 class="mb-4 text-center">🐶반려견과 함께 하는 방범 활동🐾</h3>
 
-<button class="btn btn-primary" id="goPatrolInsertBtn" sec:authorize="isAuthenticated()">생성</button>
 
 <div id="patroldiv">
 
 </div>
 
+    <div class="d-flex" style="margin: 1%;">
+
+        <button class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
+
+        <div style="margin-left:auto;"></div>
+
+        <button class="btn btn-primary" id="goPatrolInsertBtn" sec:authorize="isAuthenticated()">생성</button>
+    </div>
+
     <nav aria-label="Page navigation example">
-        <ul class="pagination pagination-lg justify-content-center" id="pageItems">
+        <ul class="pagination justify-content-center" id="pageItems">
 
         </ul>
     </nav>
@@ -114,7 +112,7 @@
                     $('#' + 'patrol' + index).append(
                         $('<div>').prop({
                             id: 'divContent' + index,
-                            className: 'bg-white border rounded d-flex h-100'
+                            className: 'card'
                         })
                     );
 
@@ -126,30 +124,30 @@
                     );
 
                     $('#divimg' + index).append(
-                        '<img src="/images/Z/' + img + '" class="patrolImg" onerror="this.onerror=null; this.src=\'https://kr.object.ncloudstorage.com/team-5/Non-Img.png\';">'
+                        '<img src="/images/Z/' + img + '" class="card-img-top"  onerror="this.onerror=null; this.src=\'https://kr.object.ncloudstorage.com/team-5/Non-Img.png\';">'
                     );
 
                     $('#' + 'divContent' + index).append(
                         $('<div>').prop({
                             id: 'divbody' + index,
-                            className: 'divbody'
+                            className: 'card-body'
                         })
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '<b class="card-text">강아지 이름: ' + contentList[index].name + '</b><br>'
+                        '<b class="card-text" style="font-size: 1.2em;">🐶이름: ' + contentList[index].name + '</b><br>'
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '<sub class="card-text">강아지 나이:' + contentList[index].age + '</sub><br>'
+                        '<sub class="card-text" style="font-size: 1.1em;">나이:' + contentList[index].age + '살</sub><br>'
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '<sub class="card-text">품종:' + contentList[index].breed + '</sub><br>'
+                        '<sub class="card-text" style="font-size: 1.1em;">품종:' + contentList[index].breed + '</sub><br>'
                     );
 
                     $('#' + 'divbody' + index).append(
-                        '<sub class="card-text">활동지역:' + contentList[index].location + '</sub>'
+                        '<sub class="card-text" style="font-size: 1.1em;">활동지역:' + contentList[index].location + '</sub>'
                     );
 
                     img = "";

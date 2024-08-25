@@ -1,73 +1,66 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head th:replace="fragments/head :: head">
 
 </head>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
-<main>
-    <div class="container">
-        <figure class="text-center">
-            <h1 class="mb-4 text-center">🐾 멍샵 🐾</h1>
-            <h3 class="mb-4 text-center"> 오늘 뭐 사개? 🐶</h3>
-        </figure>
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <form id="searchForm" action="/sales/search" method="get" class="d-flex align-items-center">
-                    <input type="text" name="keyword" class="form-control me-2" placeholder="제품명" aria-label="검색" required>
-                    <button type="submit" class="btn btn-outline-success">🔎</button>
-                </form>
-            </div>
+<main class="container py-4">
+    <h1 class="mb-4 text-center">🐾 멍샵 🐾</h1>
+    <h3 class="mb-4 text-center">오늘 뭐 사개? 🐶</h3>
+
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <form id="searchForm" action="/sales/search" method="get" class="d-flex align-items-center">
+                <input type="text" name="keyword" class="form-control me-2" placeholder="제품명" aria-label="검색" required>
+                <button type="submit" class="btn btn-outline-success">🔎</button>
+            </form>
         </div>
-        <div class="col-9 mt-3 tab-content" style="margin-left: 170px;">
-            <div class="tab-pane fade show active" id="list-find">
-                <div class="row">
-                    <th:block th:each="salesGoods : ${salesGoodsList}">
-                        <div class="col-md-4 mb-4 d-flex align-items-stretch listRow" th:data-no="${salesGoods.no}">
-                            <div class="card" style="width: 100%;">
-                                <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}" class="card-body">
-                                    <img th:src="@{/images/S/{file}(file=${salesGoodsMap[salesGoods.no][0].storedFileName})}" alt="대표 이미지" class="card-img-top" width="300" height="200">
-                                </div>
-                                <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}"
-                                     class="card-body"
-                                     th:style="${salesGoods.quantity <= 10} ? 'color: red;' : ''">
-                                    <h5 class="card-title" th:text="${salesGoods.name}">
-                                    </h5>
-                                    <p class="card-text"th:text="${#numbers.formatCurrency(salesGoods.price)}"> </p>
-                                    <p class="card-text"th:text="'#' + ${salesGoods.categoryCode}"> </p>
-                                    <p class="card-text"th:text="'남은 재고 : ' + ${salesGoods.quantity}"> </p>
-                                </div>
-                                <div class="card-body">
-                                    <a th:href="@{/sales/updateform(no=${salesGoods.no})}"
-                                       class="btn btn-success">
-                                        수정
-                                    </a>
-                                    <a th:href="@{/sales/deleteGoods(no=${salesGoods.no})}"
-                                       class="btn btn-danger">
-                                        삭제
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </th:block>
+    </div>
+    <br>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="col" th:each="salesGoods : ${salesGoodsList}">
+            <div class="card h-100 details" th:data-no="${salesGoods.no}">
+                <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}" class="ratio ratio-1x1">
+                    <img th:src="@{/images/S/{file}(file=${salesGoodsMap[salesGoods.no][0].storedFileName})}" alt="대표 이미지" class="card-img-top object-fit-cover">
+                </div>
+                <div th:if="${salesGoodsMap[salesGoods.no].size() > 0}"
+                     class="card-body"
+                     th:style="${salesGoods.quantity <= 10} ? 'color: red;' : ''">
+                    <h5 class="card-title" th:text="${salesGoods.name}">
+                    </h5>
+                    <p class="card-text"th:text="${#numbers.formatCurrency(salesGoods.price)}"> </p>
+                    <p class="card-text"th:text="'#' + ${salesGoods.categoryCode}"> </p>
+                    <p class="card-text"th:text="'남은 재고 : ' + ${salesGoods.quantity}"> </p>
+                </div>
+                <div class="card-body">
+                    <a th:href="@{/sales/updateform(no=${salesGoods.no})}"
+                       class="btn btn-success">
+                        수정
+                    </a>
+                    <a th:href="@{/sales/deleteGoods(no=${salesGoods.no})}"
+                       class="btn btn-danger">
+                        삭제
+                    </a>
                 </div>
             </div>
-
-            <br>
-            <!-- 페이징 네비게이션 추가 -->
-            <div class="d-flex justify-content-center">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination">
-                        <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages != null ? totalPages : 1)}" th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link" th:href="@{/sales/salesListBusiness(page=${i})}" th:text="${i}"></a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="d-flex justify-content-end">
-                <a class="navbar-brand btn btn-primary" href="/sales/insertform"> 판매 상품 등록</a>
-            </div>
         </div>
+    </div>
+
+    <br>
+    <!-- 페이징 네비게이션 추가 -->
+    <div class="d-flex justify-content-center">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages != null ? totalPages : 1)}" th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/sales/salesListBusiness(page=${i})}" th:text="${i}"></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <div class="d-flex justify-content-end">
+        <a class="navbar-brand btn btn-primary" href="/sales/insertform"> 판매 상품 등록</a>
     </div>
 </main>
 
@@ -81,7 +74,7 @@
     });
 </script>
 <script>
-    $(".listRow").on("click",function(){
+    $(".details").on("click",function(){
     let DataNo = $(this).attr('data-no');
     console.log(DataNo);
     location.href='/sales/selectGoods?no='+DataNo;

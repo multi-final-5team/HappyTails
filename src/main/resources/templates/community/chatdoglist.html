@@ -4,113 +4,105 @@
     <meta charset="UTF-8">
     <title>떠들개 게시판 목록</title>
     <style>
-        body {
-            font-family: 'Gaegu', cursive;
-            background-color: #FFF5EE;
-            background-image: url('paw-pattern.png');
-        }
         .table th, .table td {
             vertical-align: middle;
-        }
-        .btn {
-            border-radius: 20px;
-        }
-        .text-muted {
-            color: #6c757d;
         }
     </style>
 </head>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
-<h1 class="mb-4 text-center">🐾 떠들개 게시판 🐾</h1>
+<h1 class="mb-4 text-center" style="margin-top: 40px;">🐾 떠들개 🐾</h1>
 <h3 class="mb-4 text-center">견주들과 자유롭게 얘기하시개! 🐶</h3>
     <div class="container">
-    <!-- 추천순/최신순 / 새 글 작성 -->
-    <div class="d-flex justify-content-between mb-3">
-        <div>
-        <form action="/community/chatdog" method="get" class="d-inline me-2">
-            <input type="hidden" name="sort" value="date"/>
-            <input type="hidden" name="keyword" th:value="${keyword}"/>
-            <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'date' ? '🐶 최신순(현재)' : '🐶 최신순'}"></button>
-        </form>
-        <form action="/community/chatdog" method="get" class="d-inline">
-            <input type="hidden" name="sort" value="recommendCount"/>
-            <input type="hidden" name="keyword" th:value="${keyword}"/>
-            <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'recommendCount' ? '❤️ 추천순(현재)' : '❤️ 추천순'}"></button>
-        </form>
-    </div>
-    <!-- 검색 -->
-    <form action="/community/chatdog" method="get" class="d-flex">
-        <input type="hidden" name="sort" th:value="${sort}">
-        <input type="text" name="keyword" class="form-control me-2" placeholder="제목을 입력하세요" aria-label="검색" th:value="${keyword}">
-        <button type="submit" class="btn btn-outline-success">🔎</button>
-    </form>
-    <div>
-        <a href="/community/chatdog/create" onclick="return checkLogin()" class="btn btn-primary btn-sm me-2">🦴 새 글 작성하기</a>
-    </div>
-</div>
 
-
-<!-- 게시글 목록 (테이블 형식) -->
-<table class="table table-striped">
-    <thead>
-    <tr>
-        <th> </th>
-        <th>제목</th>
-        <th>작성자</th>
-        <th>내용</th>
-        <th>작성일</th>
-        <th>추천수</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="chatdog : ${chatdog}">
-        <td th:text="${chatdog.chatdogNo}"></td>
-        <td>
-            <a th:href="@{/community/chatdog/{chatdogNo}(chatdogNo=${chatdog.chatdogNo})}" th:text="${chatdog.title}"></a>
-        </td>
-        <td th:text="${chatdog.userId}"></td>
-        <td th:text="${#strings.abbreviate(chatdog.content, 50)}"></td>
-        <td th:text="${#temporals.format(chatdog.createTime, 'yyyy-MM-dd')}"></td>
-        <td th:text="${chatdog.recommendCount + ' ❤️'}"></td>
-        <td>
-            <div th:if="${#authentication.name == 'admin'}" class="mt-2">
-                <a th:href="@{/chatdog/delete/{chatdogNo}(chatdogNo=${chatdog.chatdogNo})}" class="btn btn-sm btn-danger" onclick="return confirmDelete();">삭제</a>
+        <!-- 추천순/최신순 / 새 글 작성 -->
+        <div class="d-flex justify-content-between mb-3">
+            <div>
+                <form action="/community/chatdog" method="get" class="d-inline me-2">
+                    <input type="hidden" name="sort" value="date"/>
+                    <input type="hidden" name="keyword" th:value="${keyword}"/>
+                    <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'date' ? '최신순' : '최신순'}"></button>
+                </form>
+                <form action="/community/chatdog" method="get" class="d-inline">
+                    <input type="hidden" name="sort" value="recommendCount"/>
+                    <input type="hidden" name="keyword" th:value="${keyword}"/>
+                    <button type="submit" class="btn btn-outline-primary btn-sm" th:text="${sort == 'recommendCount' ? '❤️ 추천순' : '❤️ 추천순'}"></button>
+                </form>
             </div>
-        </td>
-    </tr>
-    </tbody>
-</table>
+        </div>
 
-<!-- 페이징 부분 -->
-<div class="d-flex justify-content-center">
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
-            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/community/chatdog(page=${currentPage - 1}, sort=${sort}, keyword=${keyword})}" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{/community/chatdog(page=${i}, sort=${sort}, keyword=${keyword})}" th:text="${i}"></a>
-            </li>
-            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                <a class="page-link" th:href="@{/community/chatdog(page=${currentPage + 1}, sort=${sort}, keyword=${keyword})}" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-    </div>
+        <!-- 검색 -->
+        <div class="d-flex justify-content-center mb-3">
+            <form action="/community/chatdog" method="get" class="d-flex" style="width: 50%;">
+                <input type="hidden" name="sort" th:value="${sort}">
+                <input type="text" name="keyword" class="form-control me-2" placeholder="제목을 입력하세요" style="width:359.4px; margin-left: 128px; margin-right: 0px;" aria-label="검색" th:value="${keyword}">
+                <button type="submit" class="btn btn-outline-success btn-sm">🔎</button>
+            </form>
+        </div>
 
-<script>
-    function confirmDelete() {
-        return confirm("삭제하시겠습니까?");
-    }
-</script>
+        <!-- 게시글 목록 (테이블 형식) -->
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th> </th>
+                <th>제목</th>
+                <th style="width: 150px;">작성자</th>
+                <th>내용</th>
+                <th style="width: 150px;">작성일</th>
+                <th style="width: 100px;">추천수</th>
+                <th> </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="chatdog : ${chatdog}">
+                <td th:text="${chatdog.chatdogNo}"></td>
+                <td>
+                    <a th:href="@{/community/chatdog/{chatdogNo}(chatdogNo=${chatdog.chatdogNo})}" th:text="${chatdog.title}"></a>
+                </td>
+                <td th:text="${chatdog.userId}"></td>
+                <td th:text="${#strings.abbreviate(chatdog.content, 50)}"></td>
+                <td th:text="${#temporals.format(chatdog.createTime, 'yyyy-MM-dd')}"></td>
+                <td th:text="${chatdog.recommendCount + ' ❤️'}"></td>
+                <td>
+                    <div th:if="${#authentication.name == 'admin'}" class="mt-2">
+                        <a th:href="@{/chatdog/delete/{chatdogNo}(chatdogNo=${chatdog.chatdogNo})}" class="btn btn-sm btn-danger" onclick="return confirmDelete();">삭제</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <a href="/community/chatdog/create" onclick="return checkLogin()"  class="btn btn-primary btn-sm" style="float: right; margin-top: 20px;">글 작성</a>
+
+
+        <!-- 페이징 부분 -->
+        <div class="d-flex justify-content-center" style="padding-left: 62px;">
+            <nav aria-label="Page navigation" style="padding-left : 30px;">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{/community/chatdog(page=${currentPage - 1}, sort=${sort}, keyword=${keyword})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{/community/chatdog(page=${i}, sort=${sort}, keyword=${keyword})}" th:text="${i}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                        <a class="page-link" th:href="@{/community/chatdog(page=${currentPage + 1}, sort=${sort}, keyword=${keyword})}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+    <footer th:replace="fragments/head :: footer"></footer>
+    <script>
+        function confirmDelete() {
+            return confirm("삭제하시겠습니까?");
+        }
+    </script>
 </main>
 </body>
-<footer th:replace="fragments/head :: footer"></footer>
 </html>

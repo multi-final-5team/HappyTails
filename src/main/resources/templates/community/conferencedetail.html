@@ -13,9 +13,9 @@
  <div class="container">
 <div class="card mb-4">
     <div class="card-body">
-        <h2 class="card-title">🐶 <strong>제목 : </strong> <span th:text="${conference.title}"></span></h2>
-        <p class="card-text">📝 <strong>작성자 : </strong> <span th:text="${conference.userId}"></span></p>
-        <p class="card-text">🗓️ <strong>작성일 : </strong> <span th:text="${#temporals.format(conference.createTime, 'yyyy-MM-dd')}"></span></p>
+        <h2 class="card-title"><strong>제목 : </strong> <span th:text="${conference.title}"></span></h2>
+        <p class="card-text"><strong>작성자 : </strong> <span th:text="${conference.userId}"></span></p>
+        <p class="card-text"><strong>작성일 : </strong> <span th:text="${#temporals.format(conference.createTime, 'yyyy-MM-dd')}"></span></p>
         <p class="card-text" th:text="${conference.content}"></p>
         <p class="card-text">❤️ <strong>추천 수:</strong> <span th:id="recommendCount" th:text="${conference.recommendCount}"></span></p>
     </div>
@@ -34,7 +34,7 @@
                 <textarea name="content" required rows="3" class="form-control" placeholder="댓글을 남겨주시개"></textarea>
             </div>
             <div style="display: flex; justify-content: flex-end;">
-                <button type="submit" class="btn btn-blue">🐾 댓글 남기기</button>
+                <button type="submit" class="btn btn-blue">댓글 남기기</button>
             </div>
         </form>
     </div>
@@ -45,7 +45,7 @@
         <input type="hidden" name="conferenceNo" th:value="${conference.conferenceNo}"/>
     </form>
 
-    <h3 class="mt-4">🐾 댓글 목록</h3>
+    <h3 class="mt-4">댓글 목록</h3>
     <ul class="reply-list mt-4" style="list-style-type: none; padding: 0;">
         <li th:each="reply : ${reply}" class="comment-item" th:data-reply-no="${reply.communityReplyNo}" th:data-reply-content="${reply.content}">
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -54,16 +54,17 @@
                     <span class="reply-content" th:text="${reply.content}">내용</span>
                 </p>
                 <div>
-                    <button th:if="${#authentication.name == reply.writerId}" class="btn btn-sm btn-blue reply-update-btn">✏️ 수정</button>
-                    <button th:if="${#authentication.name == 'admin' or #authentication.name == reply.writerId}" class="btn btn-sm btn-danger reply-delete-btn">🗑️ 삭제</button>
+                    <button th:if="${#authentication.name == reply.writerId}" class="btn btn-sm btn-blue reply-update-btn">수정</button>
+                    <button th:if="${#authentication.name == 'admin' or #authentication.name == reply.writerId}" class="btn btn-sm btn-danger reply-delete-btn">삭제</button>
                 </div>
             </div>
             <div class="reply-edit-form" style="display: none; margin-top: 10px;">
                 <input type="text" class="replyContent form-control" />
-                <button class="btn btn-sm btn-primary replyUpdateBtn">작성</button>
+                <button  type="submit" class="btn btn-sm btn-primary replyUpdateBtn">작성</button>
                 <button class="btn btn-sm btn-secondary replyUpdateClose">취소</button>
             </div>
         </li>
+
     </ul>
 
     <div class="d-flex justify-content-between mt-4">
@@ -71,16 +72,16 @@
         <div style="margin-bottom: 20px;">
             <div th:if="${#authentication.name == conference.userId}" class="d-inline-block me-2">
                 <a th:href="@{/community/conference/update/{conferenceNo}(conferenceNo=${conference.conferenceNo})}"
-                   class="btn btn-info me-2" style="margin-right: 10px;" >✏️ 게시글 수정</a>
+                   class="btn btn-info me-2" style="margin-right: 10px;" >게시글 수정</a>
                 <form th:action="@{/community/conference/delete}" method="post" class="d-inline-block me-2"
                       onsubmit="return confirm('게시글을 삭제하시겠어요?');">
                     <input type="hidden" name="conferenceNo" th:value="${conference.conferenceNo}">
-                    <button type="submit" class="btn btn-danger">🗑️ 게시글 삭제</button>
+                    <button type="submit" class="btn btn-danger">게시글 삭제</button>
                 </form>
             </div>
         </div>
         <div style="margin-bottom: 20px;">
-            <a href="/community/conference" class="btn btn-secondary me-2" style="margin-right: 10px;">🏠 목록으로</a>
+            <button class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
         </div>
     </div>
 </div>

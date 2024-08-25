@@ -398,4 +398,27 @@ public class MemberController {
 
         return "/admin/memberRoleAdmin";
     }
+
+    @PostMapping("/deleteUser")
+    @ResponseBody
+    public String deleteUser (@RequestParam("id") String id) {
+
+        if (id != null) {
+            memberService.deleteMember(id);
+
+            return "계정이 성공적으로 삭제되었습니다.";
+        }
+        return "계정 삭제에 실패했습니다.";
+    }
+
+    @PostMapping("/recoverUser")
+    @ResponseBody
+    public String recoverUser (@RequestParam("id") String id) {
+        try {
+            memberService.recoverAccount(id);
+            return "계정이 성공적으로 복구되었습니다.";
+        } catch (Exception e) {
+            return "계정 복구에 실패했습니다.";
+        }
+    }
 }

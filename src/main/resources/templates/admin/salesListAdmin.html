@@ -24,7 +24,7 @@
                     <table id="datatablesSimple">
                         <thead>
                         <tr>
-                            <th>번호</th>
+                            <th>상품 번호</th>
                             <th>상품이름</th>
                             <th>가격</th>
                             <th>카테고리</th>
@@ -52,7 +52,7 @@
                             </td>
                             <td th:text="${#numbers.formatCurrency(salesGoods.price)}"></td>
                             <td>
-                                <span class="badge bg-secondary" th:text="${salesGoods.categoryCode}"></span>
+                                <p th:text="${salesGoods.categoryCode}"></p>
                             </td>
                             <td>
                                 <p th:text="${salesGoods.id}"></p>

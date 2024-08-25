@@ -7,58 +7,61 @@
 <main>
     <div class="container mt-5">
         <h1 class="mb-4 text-center">🐾 상품 수정 🐾</h1>
+        <h3 class="mb-4 text-center">무엇을 수정하고 싶냐멍? 🐶</h3>
         <div class="card w-75 mx-auto">
             <div class="card-body">
-        <div class="mb-3">
-            <label for="name" class="form-label">상품 이름:</label>
-            <input type="text" class="form-control" id="name" name="name" required th:value="${salesDetails.name}" minlength="1">
-        </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">상품 이름:</label>
+                    <input type="text" class="form-control" id="name" name="name" required th:value="${salesDetails.name}" minlength="1">
+                </div>
 
-        <div th:if="${uploadDtos != null && !uploadDtos.isEmpty()}" class="mb-3">
-            <label for="IMGFile" class="form-label">대표이미지:</label>
-            <input type="file" class="form-control" id="IMGFile" name="IMGFile" hidden="hidden">
-            <div class="imgDiv">
-                <img th:src="@{/images/S/{file}(file=${uploadDtos[0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="100px" height="100px">
-                <input type="button" class="btn btn-success imgUpdateBtn" th:data-image-no="${uploadDtos[0].imageNo}" value="수정">
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="category" class="form-label">카테고리:</label>
-            <select id="category" name="categoryCode" class="form-select" th:value="${salesDetails.categoryCode}"></select>
-        </div>
-
-        <div class="mb-3">
-            <label for="price" class="form-label">가격:</label>
-            <input type="number" class="form-control" id="price" name="price" required th:value="${salesDetails.price}">
-        </div>
-
-        <div class="mb-3">
-            <label for="quantity" class="form-label">수량:</label>
-            <input type="number" class="form-control" id="quantity" name="quantity" required th:value="${salesDetails.quantity}">
-        </div>
-
-        <div class="mb-3">
-            <label for="content" class="form-label">상세 설명:</label>
-            <textarea class="form-control" id="content" name="content" rows="5" required th:text="${salesDetails.content}"></textarea>
-        </div>
-
-        <div th:if="${uploadDtos != null && !uploadDtos.isEmpty()}" class="mb-3">
-            <label class="form-label">상세 이미지:</label>
-            <input type="file" class="form-control" id="imageInput"/>
-            <div id="imgAddDiv">
-                <th:block th:each="dto, iterStat : ${uploadDtos}" th:if="${iterStat.index > 0}">
+                <div th:if="${uploadDtos != null && !uploadDtos.isEmpty()}" class="mb-3">
+                    <label for="IMGFile" class="form-label">대표이미지:</label>
+                    <input type="file" class="form-control" id="IMGFile" name="IMGFile" hidden="hidden">
                     <div class="imgDiv">
-                        <img th:src="@{/images/S/{file}(file=${dto.storedFileName})}" alt="추가 이미지" class="img-fluid" width="200px" height="200px">
-                        <input type="button" class="btn btn-danger imgDeleteBtn" th:data-image-no="${dto.imageNo}" value="삭제">
-                        <input type="button" class="btn btn-success imgUpdateBtn" th:data-image-no="${dto.imageNo}" value="수정">
+                        <img th:src="@{/images/S/{file}(file=${uploadDtos[0].storedFileName})}" alt="대표 이미지" class="img-fluid" width="100px" height="100px">
+                        <input type="button" class="btn btn-success imgUpdateBtn" th:data-image-no="${uploadDtos[0].imageNo}" value="수정">
                     </div>
-                </th:block>
-            </div>
-        </div>
+                </div>
+                <div class="row">
+                    <div class="mb-3 w-25">
+                        <label for="category" class="form-label">카테고리:</label>
+                        <select id="category" name="categoryCode" class="form-select" th:value="${salesDetails.categoryCode}"></select>
+                    </div>
 
-        <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
-        <button type="submit" class="btn btn-primary float-end" id="createBtn">수정</button>
+                    <div class="mb-3 w-25">
+                        <label for="price" class="form-label">가격:</label>
+                        <input type="number" class="form-control" id="price" name="price" required th:value="${salesDetails.price}">
+                    </div>
+
+                    <div class="mb-3 w-25">
+                        <label for="quantity" class="form-label">수량:</label>
+                        <input type="number" class="form-control" id="quantity" name="quantity" required th:value="${salesDetails.quantity}">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="content" class="form-label">상세 설명:</label>
+                    <textarea class="form-control" id="content" name="content" rows="5" required th:text="${salesDetails.content}"></textarea>
+                </div>
+
+                <div th:if="${uploadDtos != null && !uploadDtos.isEmpty()}" class="mb-3">
+                    <label class="form-label">상세 이미지:</label>
+                    <input type="file" class="form-control" id="imageInput"/>
+                    <div id="imgAddDiv">
+                        <th:block th:each="dto, iterStat : ${uploadDtos}" th:if="${iterStat.index > 0}">
+                            <div class="imgDiv">
+                                <img th:src="@{/images/S/{file}(file=${dto.storedFileName})}" alt="추가 이미지" class="img-fluid" width="200px" height="200px">
+                                <input type="button" class="btn btn-danger imgDeleteBtn" th:data-image-no="${dto.imageNo}" value="삭제">
+                                <input type="button" class="btn btn-success imgUpdateBtn" th:data-image-no="${dto.imageNo}" value="수정">
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+
+                <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
+                <button class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
+                <button type="submit" class="btn btn-primary float-end" id="createBtn">수정</button>
             </div>
         </div>
     </div>

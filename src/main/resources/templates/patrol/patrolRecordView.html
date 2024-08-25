@@ -31,9 +31,11 @@
 
     <div class="container mt-5">
 
-<h1 class="mb-4 text-center" id="titleText">순찰일지 상세보기</h1>
+        <h1 class="mb-4 text-center">🐾순찰일지🐾</h1>
+        <h5 class="mb-4 text-center">시설물 파손이나 주취자 신고 등 특이사항을 기록해주세요</h5>
 
-    <div class="bg-white border rounded d-flex justify-content-center">
+        <div class="card w-75 mx-auto">
+    <div class="d-flex justify-content-center">
         <form  method="post" enctype="multipart/form-data" id="formId">
 
             <input type="hidden" id="beforePrecordNo" name="beforePrecordNo">
@@ -66,7 +68,7 @@
         </form>
     </div>
 
-    <div class="bg-light p-4 rounded" sec:authorize="isAuthenticated()">
+    <div class="bg-white border p-4 rounded" sec:authorize="isAuthenticated()">
         <form class="" id="replyForm" method="post" action="/patrolRecord/reply/repleyInsert">
             <input type="hidden" id="replyPrecordNo" name="replyPrecordNo">
             <textarea class="replyInput" id="replyContent" name="replyContent" rows="4" maxlength="255"></textarea><br>
@@ -77,7 +79,7 @@
                 <span class="comment_length">0</span>
                     / 255
                 </span>
-                <button type="submit" style="margin-left: 85%;">댓글작성</button>
+                <button class="btn btn-primary float-end" type="submit" style="margin-left: 85%;">댓글작성</button>
             </div>
         </form>
     </div>
@@ -85,6 +87,9 @@
     <div class="" id="allReplyDiv">
 
     </div>
+
+
+        </div>
 
     </div>
 
@@ -176,7 +181,7 @@
                     $('#' + 'precordReplyWrap' + index).append(
                         $('<div>').prop({
                             id: 'precordReply' + index,
-                            className: 'card'
+                            className: 'bg-white'
                         }).attr("onclick", "showReply(" + JSON.stringify(data[index]) + "," +  index +")")
                     );
 
@@ -200,11 +205,16 @@
                     );
 
                     $('#' + 'precordReplyWrap' + index).append(
+                        '<hr class="my-2">'
+                    );
+
+                    $('#' + 'precordReplyWrap' + index).append(
                         $('<div>').prop({
                             id: 'replyChange' + index,
-                            className: 'replyShowDiv'
+                            className: 'replyShowDiv bg-white'
                         })
                     );
+
             }
         },
         error: function (xhr){
@@ -315,9 +325,12 @@
                         '<textarea class="form-control" type="text" id="content" name="content" rows="10" maxlength="255">' + data.content +'</textarea><br>'
                     );
                     $('#formId').append(
+                        '<div class = "d-flex" id="formBtn"><div style="margin-left:auto;"></div></div>'
+                    );
+                    $('#formBtn').append(
                     '<button class="btn btn-warning" type="button" id="formUpdateSubmitBtn" onclick="updateSubmit()">수정</button>'
                     );
-                    $('#formId').append(
+                    $('#formBtn').append(
                     '<button class="btn btn-danger" type="button" id="formDeleteSubmitBtn" onclick="deleteSubmit()">삭제</button>'
                     );
                 }
@@ -459,7 +472,7 @@
 
             var replyTargetNum = $('#precordNo').val();
 
-            var replyChangeForm = $('<form></form>');
+            var replyChangeForm = $('<form style=""></form>');
 
             replyChangeForm.attr("name","replyChangeForm");
             replyChangeForm.attr("method","post");
@@ -470,6 +483,8 @@
             replyChangeForm.append('<textarea class="" id="replyContent" name="replyContent" style="resize:none;" rows="4" cols="70">' + replyDTO.content + '</textarea><br>');
             replyChangeForm.append('<button type="submit" formaction="/patrolRecord/reply/repleyUpdate" class="btn btn-primary">수정</button>');
             replyChangeForm.append('<button type="submit" formaction="/patrolRecord/reply/repleyDelete" class="btn btn-primary">삭제</button>');
+
+            replyChangeForm.append('<hr class="my-2">');
 
             replyChangeForm.appendTo('#replyChange' + index);
 
