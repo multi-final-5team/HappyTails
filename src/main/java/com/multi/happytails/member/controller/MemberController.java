@@ -321,16 +321,31 @@ public class MemberController {
         }
         String userId = customUser.getUsername();
         MemberDTO member = memberService.findMemberById(userId);
+        List<UploadDto> uploadDtos = uploadService.uploadSelect("P", customUser.getNo());
         model.addAttribute("member", member);
+        model.addAttribute("uploadDtos", uploadDtos);
         return "member/memberinfo";
     }
 
     @PostMapping("/memberinfo")
-    public String updateMemberInfo(@ModelAttribute MemberDTO memberDTO, @AuthenticationPrincipal CustomUser customUser) {
+    public String updateMemberInfo(
+            @ModelAttribute MemberDTO memberDTO,
+            @AuthenticationPrincipal CustomUser customUser,
+            @RequestParam("inputFile") MultipartFile inputFile,
+            @RequestParam(value = "cimgNo", required = false) Long cimgNo) {
 
         if (customUser != null) {
             String userId = customUser.getUsername();
             memberService.updateMember(userId, memberDTO);
+            if (!inputFile.isEmpty()) {
+                // cimgNo가 null일 때 처리
+                if (cimgNo != null) {
+                    uploadService.uploadUpdate(cimgNo, inputFile);
+                } else {
+                    uploadService.uploadInsert(UploadDto.builder().categoryCode("P").foreignNo(customUser.getNo()).file(inputFile).build());
+                    // cimgNo가 null일 경우의 처리
+                }
+            }
             return "redirect:/member/mypage";
         } else {
             return "redirect:/login";

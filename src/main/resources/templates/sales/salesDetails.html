@@ -23,6 +23,7 @@
             color: #f90;
         }
     </style>
+
 </head>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
@@ -52,7 +53,7 @@
                     <p><strong>가격:</strong> <span th:text="${#numbers.formatCurrency(salesDetails.price)}">가격</span></p>
                     <hr>
                     <!-- 추가 정보나 설명을 여기에 넣을 수 있습니다 -->
-                    <p><strong th:text="${salesDetails.content}" class="mt-4">상세 설명</strong></p>
+
                     <div class="mb-3" sec:authorize="isAuthenticated()">
                         <input type="hidden" id="goodsNo1" name="goodsNo" th:value="${goodsNo}">
                         <div class="form-group d-flex align-items-center">
@@ -63,11 +64,18 @@
                     </div>
                 </div>
                 <div class="col-md-1"></div>
-            </div>
-            <div class="text-center">
-                <div th:each="uploadDto, iterStat : ${uploadDtoList}" th:if="${iterStat.index > 0}" class="col">
-                    <img th:src="@{/images/S/{file}(file=${uploadDto.storedFileName})}" alt="상세 이미지" class="img-fluid" width="780px" height="980px">
+                <div class="text-center my-4">
+                    <h4><strong th:text="${salesDetails.content}" class="mt-4">상세 설명</strong></h4>
                 </div>
+            </div>
+
+            <div class="text-center">
+                <div th:each="uploadDto, iterStat : ${uploadDtoList}" th:if="${iterStat.index > 0}">
+                    <img th:src="@{/images/S/{file}(file=${uploadDto.storedFileName})}" alt="상세 이미지" class="ddd" width="780px" style="object-fit: cover; height: 1000px; object-position: top;">
+                </div>
+            </div>
+            <div class="d-flex justify-content-center align-items-center">
+                <input type="button" class="btn btn-primary m-3" id="adsa" value="더보기" style="width: 150px;">
             </div>
         </div>
         <div class="m-3" >
@@ -142,6 +150,10 @@
     </div>
 </div>
 <script>
+    $('#adsa').click(function(){
+        $('.ddd').removeAttr('style');
+        $('#adsa').remove();
+    });
     $(document).ready(function() {
     $('#insertCart').click(function(){
 

@@ -102,13 +102,14 @@
 
 <menu th:replace="fragments/head :: menu"></menu>
 
-<main>
+<main class="container mt-5">
 
-    <div class="container mt-5">
+    <div>
 
         <h1 class="mb-4 text-center">🎞견생네컷 생성📷</h1>
         <h3 class="mb-4 text-center">🐶반려견과의 소중한 순간을 꾸며보세요🐾</h3>
-
+        <div class="card w-75 mx-auto">
+            <div class="card-body">
     <div class="fileInputTotal" id="" style="margin: 3%;">
         <div class="">
             <input class="form-control" style="display:none;" type="file" id="inputFile1" name="inputFile1" onchange="setThumbnail(event);">
@@ -123,10 +124,10 @@
             <input class="form-control" style="display:none;" type="file" id="inputFile4" name="inputFile4" onchange="setThumbnail(event);" >
         </div>
 
-        <div>
-            <button id="inputBtn" class="btn btn-secondary" onclick="inputChange(); this.blur();">이미지 입력</button>
-            <label id="inputLabel"></label>
-        </div>
+<!--        <div>-->
+<!--            <button id="inputBtn" class="btn btn-secondary" onclick="inputChange(); this.blur();">이미지 입력</button>-->
+<!--            <label id="inputLabel"></label>-->
+<!--        </div>-->
     </div>
 
 
@@ -212,6 +213,8 @@
 
 
     </div>
+        </div>
+    </div>
 </main>
 
 <menu th:replace="fragments/head :: footer"></menu>
@@ -219,6 +222,9 @@
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
 <script>
+
+
+
     var stickerFlag = 0;
     var frameFlag = 0;
     var frameLoadFlag = 0;
@@ -234,6 +240,31 @@
     let saveToServerButton = document.getElementById('saveToServerButton');
 
     var className;
+
+    $('#inputFile1Div').click(function(){
+        if(stickerFlag == 0) {
+            $('#inputFile1').click();
+        }
+    });
+
+    $('#inputFile2Div').click(function(){
+        if(stickerFlag == 0) {
+            $('#inputFile2').click();
+        }
+    });
+
+    $('#inputFile3Div').click(function(){
+        if(stickerFlag == 0) {
+            $('#inputFile3').click();
+        }
+    });
+
+    $('#inputFile4Div').click(function(){
+        if(stickerFlag == 0) {
+            $('#inputFile4').click();
+        }
+    });
+
 
     captureDiv.addEventListener('click', (e) => {
 
