@@ -4,14 +4,9 @@
     <meta charset="UTF-8">
     <title>집사 회의 게시글 작성</title>
     <style>
-        .img-preview {
-            width: 150px; /* 원하는 너비로 설정 */
-            height: 150px; /* 원하는 높이로 설정 */
-            object-fit: cover; /* 이미지 비율을 유지하며 크기에 맞게 조정 */
-        }
     </style>
 
-    </style>
+
 </head>
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
@@ -58,9 +53,7 @@
                     var reader = new FileReader();
                     reader.onload = function(e) {
                         $('#imgAddDiv').append(
-                            `<div class="col-3 mb-2">
-                                <img src="${e.target.result}" alt="Selected Image" class="img-thumbnail">
-                            </div>`
+                            `<img src="${e.target.result}" alt="Selected Image" height="100px" style="width=;width: 108px;">`
                         );
                     }
                     reader.readAsDataURL(file);
