@@ -22,20 +22,22 @@
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
-<h1 class="mb-4 text-center">🐾 집사 회의 게시글 수정 🐾</h1>
 <div class="container">
-<div class="card">
-    <div class="card-body">
+    <h1 class="mb-4 text-center">🐾 집사 회의 게시글 수정 🐾</h1>
+    <h3 class="mb-4 text-center">견주들만의 고민을 공유하시개! 🐶</h3>
+    <div class="card w-75 mx-auto">
+        <div class="card-body" style="margin-top: 30px;">
+
         <form id="updateForm" th:action="@{/community/conference/update/{conferenceNo}(conferenceNo=${conference.conferenceNo})}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="conferenceNo" th:value="${conference.conferenceNo}"/>
             <button type="submit" class="btn btn-primary" id="createBtn" onclick="return confirm('수정 하시겠습니까?');" style="position: absolute; top: 10px; right: 10px;">게시글 수정</button>
 
             <div class="mb-3">
-                <label for="title" class="form-label">🐶 제목:</label>
+                <label for="title" class="form-label">제목:</label>
                 <input type="text" id="title" name="title" class="form-control" th:value="${conference.title}" required>
             </div>
             <div class="mb-3">
-                <label for="content" class="form-label">📝 내용:</label>
+                <label for="content" class="form-label">내용:</label>
                 <textarea id="content" name="content" class="form-control" rows="5" required th:text="${conference.content}"></textarea>
             </div>
             <div class="mb-3">
@@ -60,48 +62,46 @@
             <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
         </form>
             <div>
-                <a href="/community/conference" class="btn btn-secondary mt-3" style="float: right;">🏠 목록으로</a>
+                <a href="/community/conference" class="btn btn-secondary mt-3" style="float: right;">뒤로가기</a>
             </div>
     </div>
 </div>
 </div>
+<script>
+let conferenceNo = [[${conference.conferenceNo}]];
 
-    <script>
-    let conferenceNo = [[${conference.conferenceNo}]];
+$(document).ready(function() {
+      let imageDeleteImageNo = [];
+      let imageUpdateImageNo = [];
+      let imageUpdateFiles = [];
+      let imageFiles = [];
 
-    $(document).ready(function() {
-        let imageDeleteImageNo = [];
-        let imageUpdateImageNo = [];
-        let imageUpdateFiles = [];
-        let imageFiles = [];
-
-        function logImageState() {
+      function logImageState() {
             console.log('Current state:');
             console.log('imageDeleteImageNo:', imageDeleteImageNo);
             console.log('imageUpdateImageNo:', imageUpdateImageNo);
             console.log('imageUpdateFiles:', imageUpdateFiles);
             console.log('imageFiles:', imageFiles);
             console.log('Total images:', $('#imgAddDiv').children().length);
-        }
+      }
 
-        $('#imageInput').on('change', function(event) {
-            let files = event.target.files;
+      $('#imageInput').on('change', function(event) {
+          let files = event.target.files;
 
-            for (let i = 0; i < files.length; i++) {
-                let file = files[i];
-                if (file && file.type.startsWith('image/')) {
-                    let reader = new FileReader();
-                    reader.onload = function(e) {
-                        let newImageDiv = $(`
-                        <div class="imgDiv col-md-3 mb-3">
-                            <img src="${e.target.result}" class="img-thumbnail w-100">
-                            <div class="mt-2">
-                                <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" value="삭제">
-                            </div>
-                        </div>
-                        `);
-                        $('#imgAddDiv').append(newImageDiv);
-
+          for (let i = 0; i < files.length; i++) {
+              let file = files[i];
+              if (file && file.type.startsWith('image/')) {
+                  let reader = new FileReader();
+                  reader.onload = function(e) {
+                      let newImageDiv = $(`
+                      <div class="imgDiv col-md-3 mb-3">
+                          <img src="${e.target.result}" class="img-thumbnail w-100">
+                          <div class="mt-2">
+                              <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" value="삭제">
+                          </div>
+                      </div>
+                      `);
+                      $('#imgAddDiv').append(newImageDiv);
                         newImageDiv.find('.imgDeleteBtn').on('click', function() {
                             let index = imageFiles.indexOf(file);
                             if (index > -1) {

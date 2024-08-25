@@ -23,22 +23,22 @@
 <body>
 <menu th:replace="fragments/head :: menu"></menu>
 <main>
-
-<h1 class="mb-4 text-center">🐾 내 새꾸 자랑 게시글 수정 🐾</h1>
 <div class="container">
+    <h1 class="mb-4 text-center">🐾 내 새꾸 자랑 게시글 수정 🐾</h1>
+    <h3 class="mb-4 text-center">우리 아이의 사랑스러운 순간들을 자랑하시개! 🐶</h3>
 
-<div class="card">
-    <div class="card-body">
+    <div class="card w-75 mx-auto">
+        <div class="card-body" style="margin-top: 30px;">
         <form id="updateForm" th:action="@{/community/doglove/update/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="dogloveNo" th:value="${doglove.dogloveNo}"/>
             <button type="submit" class="btn btn-primary" id="createBtn" onclick="return confirm('수정 하시겠습니까?');" style="position: absolute; top: 10px; right: 10px;">게시글 수정</button>
 
             <div class="mb-3">
-                <label for="title" class="form-label">🐶 제목:</label>
+                <label for="title" class="form-label">제목:</label>
                 <input type="text" id="title" name="title" class="form-control" th:value="${doglove.title}" required>
             </div>
             <div class="mb-3">
-                <label for="content" class="form-label">📝 내용:</label>
+                <label for="content" class="form-label">내용:</label>
                 <textarea id="content" name="content" class="form-control" rows="5" required th:text="${doglove.content}"></textarea>
             </div>
             <div class="mb-3">
@@ -63,7 +63,7 @@
             <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
         </form>
         <div>
-            <a href="/community/doglove" class="btn btn-secondary mt-3" style="float: right;">🏠 목록으로</a>
+            <button class="btn btn-secondary" onclick="history.back()">뒤로가기</button>
         </div>
     </div>
 </div>
