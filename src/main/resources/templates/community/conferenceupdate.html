@@ -4,11 +4,6 @@
     <meta charset="UTF-8">
     <title>집사 회의 게시글 수정</title>
     <style>
-        .img-thumbnail {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-        }
         .img-container:empty {
             display: none;
         }
@@ -49,7 +44,7 @@
                     <th:block th:if="${not #lists.isEmpty(uploadDtos)}">
                         <th:block th:each="uploadDto, iterStat : ${uploadDtos}">
                             <div class="imgDiv col-md-3 mb-3" th:id="'imgDiv' + ${uploadDto.imageNo}">
-                                <img th:src="@{/images/O/{file}(file=${uploadDto.storedFileName})}" class="img-thumbnail w-100">
+                                <img th:src="@{/images/O/{file}(file=${uploadDto.storedFileName})}">
                                 <div class="mt-2">
                                     <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" th:data-image-no="${uploadDto.imageNo}" value="삭제">
                                     <input type="button" class="btn btn-success btn-sm imgUpdateBtn" th:data-image-no="${uploadDto.imageNo}" value="수정">
@@ -94,8 +89,8 @@ $(document).ready(function() {
                   let reader = new FileReader();
                   reader.onload = function(e) {
                       let newImageDiv = $(`
-                      <div class="imgDiv col-md-3 mb-3">
-                          <img src="${e.target.result}" class="img-thumbnail w-100">
+                      <div class="imgDiv col-md-3 mb-3" style="width: 100px; height: 100px;">
+                            <img src="${e.target.result}">
                           <div class="mt-2">
                               <input type="button" class="btn btn-danger btn-sm imgDeleteBtn" value="삭제">
                           </div>

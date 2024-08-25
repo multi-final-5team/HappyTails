@@ -50,22 +50,20 @@
                $('#imgAddDiv').empty();
                imageFiles = Array.from(event.target.files);
 
-               imageFiles.forEach(file => {
-                   if (file && file.type.startsWith('image/')) {
-                       var reader = new FileReader();
-                       reader.onload = function(e) {
-                           $('#imgAddDiv').append(
-                               `<div class="col-3 mb-2">
-                                   <img src="${e.target.result}" alt="Selected Image" class="img-thumbnail">
-                               </div>`
-                           );
-                       }
-                       reader.readAsDataURL(file);
-                   } else {
-                       alert('이미지 파일만 선택해주세요');
+            imageFiles.forEach(file => {
+                if (file && file.type.startsWith('image/')) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#imgAddDiv').append(
+                            `<img src="${e.target.result}" alt="Selected Image" height="100px" style="width=;width: 100px;">`
+                        );
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('이미지 파일만 선택해주세요');
                     imageFiles = imageFiles.filter(f => f !== file);
 
-                   }
+                }
                });
            });
            // 폼 서브밋
