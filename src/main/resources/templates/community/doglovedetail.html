@@ -35,12 +35,13 @@
                 <dd class="col-sm-9" style="white-space: pre-wrap;" th:text="${doglove.content}">
                 </dd>
                 <div class="row">
-                    <div th:each="uploadDto : ${imageFiles}" class="col-md-4 mb-3">
-                        <div style="text-align: center;">
-                            <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" class="img-fluid rounded">
+                    <div th:each="uploadDto : ${imageFiles}" class="col-md-4 offset-md-4 mb-3">
+                        <div style="width: 100%; text-align: center;">
+                            <img th:src="@{/images/L/{file}(file=${uploadDto.storedFileName})}" class="img-fluid rounded" style="display: block; margin: auto;">
                         </div>
                     </div>
                 </div>
+
                 <form th:action="@{/community/doglove/dogloveRecommend}" method="post" onsubmit="return confirm('이 게시글을 추천하시겠어요?');">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                     <button type="submit" class="btn btn-green" style="background-color: pink; color: white; margin-left: 816px;">❤️ 추천하기</button>
