@@ -99,7 +99,7 @@
                 </form>
             </div>
 
-            <div class="bg-white border p-4 rounded" sec:authorize="isAuthenticated()">
+            <!--<div class="bg-white border p-4 rounded" sec:authorize="isAuthenticated()">
                 <form class="" id="replyForm" method="post" action="/patrolRecord/reply/repleyInsert">
                     <input type="hidden" id="replyPrecordNo" name="replyPrecordNo">
                     <textarea class="replyInput" id="replyContent" name="replyContent" rows="4" maxlength="255"></textarea><br>
@@ -113,7 +113,7 @@
                         <button class="btn btn-primary float-end" type="submit" style="margin-left: 85%;">댓글작성</button>
                     </div>
                 </form>
-            </div>
+            </div>-->
 
             <div class="" id="allReplyDiv">
 
@@ -201,7 +201,7 @@
             data: {precordNo : pnum},
             url: "/patrolRecord/reply/findRepleyAllByPrecordNo",
             success : function(data){
-
+            /**
                 for(let index in data){
 
                     $('#allReplyDiv').append(
@@ -250,6 +250,7 @@
                     );
 
                 }
+                */
             },
             error: function (xhr){
                 console.log(xhr);
