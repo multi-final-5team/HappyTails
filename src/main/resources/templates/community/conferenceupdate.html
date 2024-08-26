@@ -25,7 +25,6 @@
 
         <form id="updateForm" th:action="@{/community/conference/update/{conferenceNo}(conferenceNo=${conference.conferenceNo})}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="conferenceNo" th:value="${conference.conferenceNo}"/>
-            <button type="submit" class="btn btn-primary" id="createBtn" onclick="return confirm('수정 하시겠습니까?');" style="position: absolute; top: 10px; right: 10px;">게시글 수정</button>
 
             <div class="mb-3">
                 <label for="title" class="form-label">제목:</label>
@@ -55,9 +54,11 @@
                 </div>
             </div>
             <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
+            <button type="submit" class="btn btn-primary" id="createBtn" onclick="return confirm('수정 하시겠습니까?');" style="float: right;">게시글 수정</button>
+
         </form>
             <div>
-                <a href="/community/conference" class="btn btn-secondary mt-3" style="float: right;">뒤로가기</a>
+                <a href="/community/conference" class="btn btn-secondary mt-3" style="float: left;">뒤로가기</a>
             </div>
         </div>
     </div>

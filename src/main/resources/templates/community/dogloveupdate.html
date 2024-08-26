@@ -27,7 +27,6 @@
         <div class="card-body" style="margin-top: 30px;">
         <form id="updateForm" th:action="@{/community/doglove/update/{dogloveNo}(dogloveNo=${doglove.dogloveNo})}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="dogloveNo" th:value="${doglove.dogloveNo}"/>
-            <button type="submit" class="btn btn-primary" id="createBtn" onclick="return confirm('수정 하시겠습니까?');" style="position: absolute; top: 10px; right: 10px;">게시글 수정</button>
 
             <div class="mb-3">
                 <label for="title" class="form-label">제목:</label>
@@ -57,9 +56,12 @@
                 </div>
             </div>
             <input class="form-control" type="file" id="imageUpdate" hidden="hidden">
+            <button type="submit" class="btn btn-primary" id="createBtn" onclick="return confirm('수정 하시겠습니까?');" style="float: right;">게시글 수정</button>
+
         </form>
+
             <div>
-                <a href="/community/doglove" class="btn btn-secondary mt-3" style="float: right;">뒤로가기</a>
+                <a href="/community/doglove" class="btn btn-secondary mt-3" style="float: left;">뒤로가기</a>
             </div>
         </div>
     </div>
