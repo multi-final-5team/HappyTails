@@ -1,7 +1,6 @@
 package com.multi.happytails.config;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 /**
  * packageName    : com.multi.happytails.config
@@ -17,9 +16,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class ErrorControllerConfig {
 
-    @ExceptionHandler
-    public String handleBadRequestException(Exception e) {
-
-        return "/error/error";
-    }
+//    @ExceptionHandler
+//    public String handleBadRequestException(Exception e) {
+//
+//        return "/error/error";
+//    }
 }
