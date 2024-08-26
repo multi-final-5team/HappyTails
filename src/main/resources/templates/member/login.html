@@ -31,15 +31,14 @@
             </form>
 
             <div class="d-grid gap-2">
-                <div class="text-center mt-1">
-                  <button onclick="kakaoLogin()" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 39px; background-color: #fee500; border: none; border-radius: 12px; text-decoration: none; padding: 0 20px; font-family: Pretendard, '-apple-system', 'Apple SD Gothic Neo', Roboto, 'Noto Sans KR', helvetica, Gulim, sans-serif;">
-                      <img src="https://kr.object.ncloudstorage.com/team-5/Symbol.png" style="width: 20px; height: 20px; margin-right: 10px;">
-                      <span style="font-weight: 500; font-size: 14px; color: #000;">카카오 로그인</span>
-                  </button>
-                </div>
                 <button class="btn btn-primary w-100" style="border-color: #5c636a; background-color: #5c636a;" onclick="location.href='/member/findUserIdForm'">아이디 찾기</button>
                 <button class="btn btn-primary w-100" style="border-color: #5c636a; background-color: #5c636a;" onclick="location.href='/member/findUserPwdForm'">비밀번호 변경</button>
                 <button class="btn btn-primary w-100" style="border-color: #5c636a; background-color: #5c636a;" onclick="location.href='/member/signup'">회원가입</button>
+                <div class="text-center mt-1">
+                    <a href="/member/kakaoLogin">
+                        <img src="https://kr.object.ncloudstorage.com/team-5/kakao_login_medium_wide.png" alt="">
+                    </a>
+                </div>
             </div>
         </div>
     </div>
