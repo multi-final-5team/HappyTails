@@ -64,18 +64,15 @@ public class dog4cutsController {
     }
 
     @PostMapping("dog4CutsInsert")
-    public String dog4CutsInsert(@RequestParam(value="file") MultipartFile[] file, @AuthenticationPrincipal CustomUser customUser, @RequestParam(value = "publicstate",required = false) char publicstate) {
+    public String dog4CutsInsert(@RequestParam(value="file") MultipartFile[] file, @AuthenticationPrincipal CustomUser customUser) {
         System.out.println(file[0]);
 
         Dog4CutsDTO dog4CutsDTO = new Dog4CutsDTO();
         dog4CutsDTO.setUserNo((int) customUser.getNo());
 
-        if(publicstate == 'F'){
-            dog4CutsDTO.setPublicstate('F');
-        }
-        else {
-            dog4CutsDTO.setPublicstate('N');
-        }
+
+        dog4CutsDTO.setPublicstate('N');
+
 
         dog4CutsService.dog4CutsInsert(dog4CutsDTO);
 
