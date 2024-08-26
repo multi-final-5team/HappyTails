@@ -21,15 +21,13 @@
             BUSINESS_OWNER,
             BUSINESS_TEL,
             BUSINESS_NUMBER,
-            BUSINESS_ADDRESS,
-            BUSINESS_REGISTRATION_FLAG
+            BUSINESS_ADDRESS
         ) VALUES (
             #{businessId},
             #{businessOwner},
             #{businessTel},
             #{businessNumber},
-            #{businessAddress},
-            #{businessRegistrationFlag}
+            #{businessAddress}
         )
     </insert>
 
