@@ -42,7 +42,7 @@
                             </div>
                         </div>
                     </div>
-                    <form th:action="@{/community/conference/conferenceRecommend}" method="post" onsubmit="return confirm('이 게시글을 추천하시겠어요?');">
+                    <form th:action="@{/community/conference/conferencerecommend}" method="post" onsubmit="return confirm('이 게시글을 추천하시겠어요?');">
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                         <button type="submit" class="btn btn-green" style="background-color: pink; color: white; margin-left: 816px; ">❤️ 추천하기</button>
                         <input type="hidden" name="conferenceNo" th:value="${conference.conferenceNo}"/>
@@ -50,7 +50,7 @@
 
                     <div class="mb-4">
                         <form th:action="@{/community/O/{foreignNo}/reply/add(foreignNo=${conference.conferenceNo})}" method="post" class="comment-form">
-                            <input type="hidden" name="communityCategoryCode" value="C" />
+                            <input type="hidden" name="communityCategoryCode" value="O" />
                             <input type="hidden" name="foreignNo" th:value="${conference.conferenceNo}" />
                             <div class="mb-3">
                                 <label  class="form-label">댓글</label>

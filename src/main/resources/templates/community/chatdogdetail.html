@@ -42,7 +42,7 @@
                         </div>
                     </div>
 
-                    <form th:action="@{/community/chatdog/chatdogRecommend}" method="post" onsubmit="return confirm('이 게시글을 추천하시겠어요?');">
+                    <form th:action="@{/community/chatdog/chatdogrecommend}" method="post" onsubmit="return confirm('이 게시글을 추천하시겠어요?');">
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                         <button type="submit" class="btn btn-green" style="background-color: pink; color: white; margin-left: 816px;">❤️ 추천하기</button>
                         <input type="hidden" name="chatdogNo" th:value="${chatdog.chatdogNo}"/>
