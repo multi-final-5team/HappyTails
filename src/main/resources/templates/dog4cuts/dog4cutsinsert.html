@@ -204,9 +204,6 @@
         &emsp;
         <div>
             <button class="btn btn-light border" id="saveToServerButton">업로드</button>
-            <br>
-            <label style="font-size : 1.2em;">견생네컷 공개</label>
-            <input type="checkbox" id="publicCheck" name="publicCheck" value="F">
         </div>
 
     </div>
@@ -339,13 +336,7 @@
         if(inputCheck()){
             public = '';
 
-            checked = $("input[name='publicCheck']:checked").length
-            if(checked > 0){
-                public = 'F';
-            }
-            else{
-                public = 'N';
-            }
+            public = 'N';
 
             html2canvas(captureDiv).then(canvas => {
             var imgDataUrl = canvas.toDataURL('image/jpg');

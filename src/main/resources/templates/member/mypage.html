@@ -29,8 +29,8 @@
                 border: 2px solid #fff;
                 box-sizing: border-box;">
 
-                <img th:if="${profileImage} != null and ${profileImage.storedFileName} != null and ${member.signupPathFlag} == 'K'"
-                     th:src="${profileImage.storedFileName}"
+                <img th:if="${member.signupPathFlag} == 'K'"
+                     th:src="${profileImage.imageName}"
                      alt="profile"
                      class="profile-image"
                      style="width: 150px;
